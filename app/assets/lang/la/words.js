@@ -1,6 +1,6 @@
 /* 词库由 scripts/t19/build-packs.mjs 从 review/t19-batches/t19-batch63-20261112/compiled 生成（T19 新范围），勿手改。语种：Latin
 数据来源与许可（与借物页一致；来源地址为纯文本）：
-- 维基词典（经 kaikki.org 抽取），CC BY-SA 4.0 / GFDL：kaikki.org/dictionary/Latin/ —— 词头、词性、变格变位与英文释义的依据
+- 维基词典（经 kaikki.org 抽取），CC BY-SA 4.0（来源是双许可，这里按 CC BY-SA 4.0 使用）：kaikki.org/dictionary/Latin/ —— 词头、词性、变格变位与英文释义的依据
 - Dickinson College Commentaries 拉丁语核心词表（选词用的频序），CC BY-SA（来源页未写版本号）：dcc.dickinson.edu
 - Whitaker's Words（早期选词的参考），William A. Whitaker，作者声明可自由用于任何用途：github.com/mk270/whitakers-words
 - 断词点：TeX hyph-utf8 的 hyph-la 连字符模式，MIT，© Claudio Beccari：github.com/hyphenation/tex-hyphen

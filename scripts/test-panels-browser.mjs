@@ -83,6 +83,12 @@ try {
     assert.match(await page.locator(".credits-table").innerText(), /维基词典[\s\S]*CC BY-SA 4\.0[\s\S]*FrequencyWords[\s\S]*CFDICT[\s\S]*HanDeDict[\s\S]*LDNOOBW/, "借物页列全六语词库和屏蔽词表的来源");
     await page.locator("#credits summary").first().focus(); await page.keyboard.press("Enter");
     assert.equal(await page.locator("#credits details").first().getAttribute("open"), "");
+    // T07：第一项是 GPL，全文展开时才读（assets/licenses.js）；开头的本项目许可段与省流三行在表格之前
+    await page.waitForFunction(() => /GNU GENERAL PUBLIC LICENSE/.test(document.querySelector('#credits details[data-license="GPL-3.0"] pre').textContent));
+    await page.locator('#credits details[data-license="CC-BY-SA-4.0"] summary').click();
+    await page.waitForFunction(() => /Attribution-ShareAlike 4\.0 International/.test(document.querySelector('#credits details[data-license="CC-BY-SA-4.0"] pre').textContent));
+    assert.equal(await page.locator("#credits .credits-tldr li").count(), 3);
+    assert.match(await page.locator("#credits .credits-own").innerText(), /第 3 版，或由你选择的任一更新版本[\s\S]*不提供任何担保[\s\S]*github\.com\/bydpass\/backronym/);
     assert.equal(await page.evaluate(() => document.getElementById("credits").scrollWidth <= innerWidth), true);
     await page.keyboard.press("Escape"); assert.equal(await page.evaluate(() => document.activeElement.id), "setCredits");
     assert.deepEqual(errors, []); await context.close();

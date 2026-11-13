@@ -694,6 +694,11 @@ button { font-size: inherit; }
 /* 借物与版权（全屏页的正文） */
 .credits-body { border-top: 3px solid var(--ink); padding-top: 4px; font-size: calc(14px + var(--fs)); line-height: 1.75; color: var(--soft); }
 .credits-body h3 { font-size: calc(15px + var(--fs)); margin: 16px 0 6px; color: var(--ink); }
+/* 借物页开头的本项目许可段与省流（T07）：字号随正文，省流三行各自起头加粗 */
+.credits-own p, .credits-parts { margin: 6px 0; }
+.credits-own b, .credits-tldr b { color: var(--ink); }
+.credits-tldr { margin: 0; padding-left: 1.2em; }
+.credits-tldr li { margin: 4px 0; }
 .credits-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: calc(12px + var(--fs)); line-height: 1.6; }
 .credits-table th, .credits-table td { padding: 10px 5px; vertical-align: top; text-align: left; border-bottom: 1px solid var(--line); overflow-wrap: break-word; }
 .credits-table th:first-child { width: 20%; padding-left: 0; }

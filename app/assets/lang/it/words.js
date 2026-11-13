@@ -1,6 +1,6 @@
 /* 词库由 scripts/t19/build-packs.mjs 从 review/t19-batches/t19-batch63-20261112/compiled 生成（T19 新范围），勿手改。语种：Italian
 数据来源与许可（与借物页一致；来源地址为纯文本）：
-- 维基词典（经 kaikki.org 抽取），CC BY-SA 4.0 / GFDL：kaikki.org/dictionary/Italian/ —— 词头、词性、变格变位与英文释义的依据
+- 维基词典（经 kaikki.org 抽取），CC BY-SA 4.0（来源是双许可，这里按 CC BY-SA 4.0 使用）：kaikki.org/dictionary/Italian/ —— 词头、词性、变格变位与英文释义的依据
 - FrequencyWords（选词用的词频），数据 CC BY-SA 4.0，Hermit Dave：github.com/hermitdave/FrequencyWords
 - 断词点：TeX hyph-utf8 的 hyph-it 连字符模式，MIT，© Claudio Beccari：github.com/hyphenation/tex-hyphen
 改编说明：据上述数据选词、合并词形、去掉不属于本词的词形；中文释义、冠词与用法说明逐条核写（核对时查阅过别的词典，未收录其文字）。改编部分随来源许可。

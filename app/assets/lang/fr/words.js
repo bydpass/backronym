@@ -1,6 +1,6 @@
 /* 词库由 scripts/t19/build-packs.mjs 从 review/t19-batches/t19-batch63-20261112/compiled 生成（T19 新范围），勿手改。语种：French
 数据来源与许可（与借物页一致；来源地址为纯文本）：
-- 维基词典（经 kaikki.org 抽取），CC BY-SA 4.0 / GFDL：kaikki.org/dictionary/French/ —— 词头、词性、变格变位与英文释义的依据
+- 维基词典（经 kaikki.org 抽取），CC BY-SA 4.0（来源是双许可，这里按 CC BY-SA 4.0 使用）：kaikki.org/dictionary/French/ —— 词头、词性、变格变位与英文释义的依据
 - FrequencyWords（选词用的词频），数据 CC BY-SA 4.0，Hermit Dave：github.com/hermitdave/FrequencyWords
 - CFDICT（早期选词与释义的参考），CC BY-SA（来源页未写版本号）：chine.in
 - 断词点：TeX hyph-utf8 的 hyph-fr 连字符模式，MIT，© Daniel Flipo、Bernard Gaulle、Arthur Reutenauer：github.com/hyphenation/tex-hyphen

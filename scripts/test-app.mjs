@@ -1232,6 +1232,33 @@ assert.match(html, /LDNOOBW[\s\S]*Shutterstock, Inc\.[\s\S]*CC BY 4\.0/); assert
 for (const who of ["Daniel Flipo", "Deutschsprachige Trennmustermannschaft", "Javier Bezos", "Claudio Beccari"]) assert.ok(html.split(who).length >= 3, who + "：表格与 MIT 许可全文里都署名");
 assert.match(html, /CFDICT：CC BY-SA（来源页未写版本号）/); assert.match(html, /HanDeDict：CC BY-SA 3\.0/); assert.match(html, /核心词表 CC BY-SA（来源页未写版本号）/);
 assert.doesNotMatch(html, /见来源项目/, "不再有「见来源项目」这种没核对的写法");
+// T07 协议与证书更新（2026-11-12）：代码 GPL-3.0-or-later；借物页开头四项齐全（版权声明、「第 3 版或任一更新版本」、不提供担保、全文入口）
+{
+  const own = html.slice(html.indexOf('class="credits-own"'), html.indexOf('class="credits-table"'));
+  assert.match(own, /© 2026 BeyondPassenger/); assert.match(own, /第 3 版，或由你选择的任一更新版本/); assert.match(own, /不提供任何担保/); assert.match(own, /LICENSES\/GPL-3\.0\.txt/);
+  assert.doesNotMatch(html, /<td>MIT License<\/td><\/tr>\s*<tr><th scope="row">词库 · 英语/, "本工具一行不再写 MIT");
+  assert.doesNotMatch(html, /Copyright \(c\) 2026 BeyondPassenger/, "MIT 全文里不再有本工具的版权行");
+  assert.doesNotMatch(html, /GFDL/, "维基词典只按 CC BY-SA 4.0 使用（用户 11-12 定）");
+  assert.match(html, /仅用于筛选，未随包分发其内容/); assert.doesNotMatch(html, /工具不可商用/);
+  // 省流三行：借物页与 README 第 07 节是同一段文字
+  const plain = t => t.replace(/<[^>]+>/g, "").replace(/\*\*/g, "").replace(/\s+/g, " ").trim();
+  const lis = [...html.matchAll(/<li><b>(可以|不可以|注意)<\/b>([\s\S]*?)<\/li>/g)].map(m => plain(m[1] + m[2]));
+  assert.equal(lis.length, 3);
+  const readme = plain(fs.readFileSync(new URL("../README.md", import.meta.url), "utf8"));
+  for (const li of lis) assert.ok(readme.includes(li), "README 第 07 节缺这一行：" + li.slice(0, 12));
+  // 许可全文随包：六份独立文件都在；借物页里直接写的 MIT、OFL 与文件同文；展开才读的四份与 licenses.js 一致
+  const { ALL, LAZY, render } = await import("./build-licenses.mjs");
+  const dir = new URL("../app/LICENSES/", import.meta.url);
+  for (const k of ALL) assert.ok(fs.statSync(new URL(k + ".txt", dir)).size > 1000, "缺许可全文：" + k);
+  assert.match(fs.readFileSync(new URL("GPL-3.0.txt", dir), "utf8"), /GNU GENERAL PUBLIC LICENSE\s+Version 3, 29 June 2007/);
+  assert.equal(fs.readFileSync(new URL("../LICENSE", import.meta.url), "utf8"), fs.readFileSync(new URL("GPL-3.0.txt", dir), "utf8"), "仓库的 LICENSE 就是 GPL 第 3 版全文");
+  assert.equal(fs.readFileSync(new URL("../app/assets/licenses.js", import.meta.url), "utf8"), render(), "licenses.js 与 app/LICENSES 一致（重跑 npm run licenses）");
+  for (const k of LAZY) assert.ok(html.includes('data-license="' + k + '"'), "借物页缺全文入口：" + k);
+  const unesc = t => t.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, "&");
+  const inline = [...html.matchAll(/<details>\s*<summary>[^<]+<\/summary>\s*<pre lang="en">([\s\S]*?)<\/pre>/g)].map(m => unesc(m[1]).replace(/\n+$/, "") + "\n");
+  assert.deepEqual(inline, ["MIT", "OFL-1.1"].map(k => fs.readFileSync(new URL(k + ".txt", dir), "utf8")), "借物页里的 MIT、OFL 全文与 LICENSES 下的文件同文");
+  assert.equal(JSON.parse(fs.readFileSync(new URL("../package.json", import.meta.url), "utf8")).license, "GPL-3.0-or-later AND CC-BY-SA-4.0");
+}
 // T19/T21a：这些符号已核对包内字形；防止重新引入依赖系统字体的箭头。
 {
   const symbols = Array.from(html.matchAll(/<(?:span|button)[^>]*(?:class="(?:crop-arrow|custom-mark)"|id="crop(?:Minus|Plus)")[^>]*>([^<]+)</g), m => m[1]).join("");

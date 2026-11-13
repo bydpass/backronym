@@ -208,6 +208,27 @@
     b.addEventListener("click", function () { creditsFrom = b; el.credits.hidden = false; el.creditsClose.focus(); });
   });
   el.creditsClose.addEventListener("click", closeCredits);
+  // 许可全文（T07）：GPL 与三份 CC 许可共约 96 KB，不写进 index.html；展开某一项时才插一个 <script> 读 assets/licenses.js（与语言包同一种读法，离线容器里可用）。
+  // 读不到时保留原来的提示（指向包内 LICENSES/ 下的同名文件）。
+  var licenseWait = null;
+  var fillLicenses = function () {
+    Array.prototype.forEach.call(el.credits.querySelectorAll("details[data-license]"), function (d) {
+      var text = window.LICENSES && window.LICENSES[d.getAttribute("data-license")];
+      if (text && d.open) d.querySelector("pre").textContent = text;
+    });
+  };
+  Array.prototype.forEach.call(el.credits.querySelectorAll("details[data-license]"), function (d) {
+    d.addEventListener("toggle", function () {
+      if (!d.open) return;
+      if (window.LICENSES) return fillLicenses();
+      if (licenseWait) return;
+      licenseWait = document.createElement("script");
+      licenseWait.src = "assets/licenses.js";
+      licenseWait.onload = fillLicenses;
+      licenseWait.onerror = function () { licenseWait = null; };
+      document.head.appendChild(licenseWait);
+    });
+  });
   app.model.trapKeys(el.credits, closeCredits);
 
   // 捕获阶段先检查，挂起后第一下输入不能把过期作品复活。

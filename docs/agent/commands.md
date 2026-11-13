@@ -15,6 +15,7 @@ npm run lexicon:extract  # v00.03.00 第 2 批：kaikki JSONL → scripts/.cache
 npm run lexicon    # 旧管线（西文五语）。不再写入正式词包：必须设 BACKRONYM_LEXICON_OUT=<目录> 做隔离核对；可只跑几门：npm run lexicon -- fr de
 npm run lexicon:check    # 只检查审核文件（dsh-NNN.tsv / codex-NNN.tsv）的格式，不生成词库；可只查几门：npm run lexicon:check -- fr de
 npm run lexicon:audit    # 主会话按规则独立核对普查与复审结果，写 review/lexicon/<语种>/audit.json；--samples 出抽样表，--after-build 核对 words.js 实际写入值（用法见 scripts/lexicon/audit-review.mjs 文件头）
+npm run licenses   # 许可全文（T07）：从 app/LICENSES/*.txt 生成借物页展开时读的 app/assets/licenses.js；改了哪份全文就重跑，test-app 会比对
 npm run fonts      # 重新生成字体子集（需 scripts/.cache/fonts/ 原始字体 + pyftsubset；本机用 PYFTSUBSET=$PWD/scripts/.cache/font-tools-venv/bin/pyftsubset npm run fonts）
 node scripts/test-core.mjs   # 全部自检脚本（清单见 package.json）都能单独跑（只改了 core.js 时只跑这个即可）
 ```

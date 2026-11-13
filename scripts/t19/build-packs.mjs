@@ -20,7 +20,7 @@ const fold=s=>String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').re
 const exact=s=>String(s).normalize('NFC').toLowerCase();
 const read=async file=>{const bytes=fs.readFileSync(file);return {value:JSON.parse(bytes),sha256:crypto.createHash('sha256').update(bytes).digest('hex')};};
 // 文件头：这门语言的数据来源与许可（与借物页一致；许可逐个对过本地缓存里的原文，2026-11-12）。
-const KAIKKI=l=>`- 维基词典（经 kaikki.org 抽取），CC BY-SA 4.0 / GFDL：kaikki.org/dictionary/${NAMES[l]}/ —— 词头、词性、变格变位与英文释义的依据`;
+const KAIKKI=l=>`- 维基词典（经 kaikki.org 抽取），CC BY-SA 4.0（来源是双许可，这里按 CC BY-SA 4.0 使用）：kaikki.org/dictionary/${NAMES[l]}/ —— 词头、词性、变格变位与英文释义的依据`;
 const HYPH={fr:'Daniel Flipo、Bernard Gaulle、Arthur Reutenauer',de:'Deutschsprachige Trennmustermannschaft',es:'Javier Bezos、CervanTeX',it:'Claudio Beccari',la:'Claudio Beccari'};
 const SOURCES={
  en:['- ECDICT，MIT，© 2025 Linwei：github.com/skywind3000/ECDICT —— 选词、词形与释义的依据'],

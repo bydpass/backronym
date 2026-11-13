@@ -29,6 +29,11 @@ function assertBlocker(dir, name) {
     if (!tagOf(f).test(html)) throw new Error(name + " 的 index.html 没加载 " + f);
   }
 }
+// 许可全文（T07）：两版包里都要有这六份独立文件，只在借物页写许可名称不算交付
+const LICENSE_FILES = ["GPL-3.0", "CC-BY-SA-4.0", "CC-BY-SA-3.0", "CC-BY-4.0", "MIT", "OFL-1.1"].map((k) => "LICENSES/" + k + ".txt");
+function assertLicenses(dir, name) {
+  for (const f of LICENSE_FILES) if (!fs.existsSync(path.join(dir, f)) || !fs.statSync(path.join(dir, f)).size) throw new Error(name + " 缺许可全文 " + f);
+}
 // 还不存在的路径：取最近一级已存在的上级的真实路径，再接上剩下的部分
 function realOf(p) {
   let head = p;
@@ -70,9 +75,11 @@ function checkOut() {
 }
 
 assertBlocker(src, "app/（小红书版）");
+assertLicenses(src, "app/（小红书版）");
 checkOut();
 fs.rmSync(out, { recursive: true, force: true });
 fs.cpSync(src, out, { recursive: true, filter: (p) => !path.basename(p).startsWith(".") && path.basename(p) !== "_recovery" });
 fs.writeFileSync(path.join(out, MARK), "由 scripts/build-web.mjs 生成；再次构建会整体替换本目录。\n");
 assertBlocker(out, "网页版");
+assertLicenses(out, "网页版");
 console.log("网页版 → " + path.relative(root, out) + "（含屏蔽器）");

@@ -1,7 +1,7 @@
 {
   "name": "backronym",
   "version": "0.3.0",
-  "license": "MIT",
+  "license": "GPL-3.0-or-later AND CC-BY-SA-4.0",
   "private": true,
   "description": "小红书小工具：藏头 - Backronym（英文单词首字母梗图）",
   "scripts": {
@@ -18,6 +18,7 @@
     "test": "node scripts/test-blocklist.mjs && node scripts/test-core.mjs && node scripts/test-app.mjs && node scripts/test-draft.mjs && node scripts/test-media.mjs && node scripts/test-lang.mjs && node scripts/test-lexicon.mjs && node scripts/test-lexicon-scope.mjs && node scripts/test-build-web.mjs && node scripts/test-lexicon-baseline.mjs && node scripts/test-lexicon-picker.mjs && node scripts/test-german-expansion.mjs && node scripts/test-t19.mjs && node scripts/test-t19-lookup.mjs && node scripts/test-t19-store.mjs && node scripts/test-t19-editor-query.mjs && node scripts/test-t19-numerals.mjs && node scripts/test-t19-names.mjs && node scripts/test-t19-conjugation.mjs && node scripts/test-t19-packs.mjs && node scripts/test-presets.mjs",
     "pack": "npm test && npm run audit && rm -f dist/backronym.zip && mkdir -p dist && cd app && zip -r -X ../dist/backronym.zip . -x '.*' -x '*/.*' -x '_recovery/*' -x '*/_recovery/*' && cd .. && node .claude/skills/minitool-zip-builder/scripts/audit_artifact.mjs dist/backronym.zip",
     "pack:web": "node scripts/build-web.mjs",
-    "dev": "python3 scripts/dev.py 5173"
+    "dev": "python3 scripts/dev.py 5173",
+    "licenses": "node scripts/build-licenses.mjs"
   }
 }
