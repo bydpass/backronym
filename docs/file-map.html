@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>项目文件地图 · 藏头 Backronym</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper: #f5f5f5; --color-ink: #2d3142; --color-muted: #4f5d75; --color-accent: #bf4520;
+      --font-sans: 'Geist', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+      --font-serif: 'Instrument Serif', 'Noto Serif SC', 'Songti SC', serif;
+      --font-mono: 'Geist Mono', ui-monospace, monospace;
+    }
+    body { font-family: var(--font-sans); background: var(--color-paper); color: var(--color-ink); padding: 3rem 2rem; line-height: 1.6; }
+    .frame { max-width: 1200px; margin: 0 auto; }
+    .diagram-container { width: 100%; overflow-x: auto; margin-bottom: 0.75rem; }
+    .eyebrow { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-muted); margin-bottom: 0.5rem; }
+    h1 { font-family: var(--font-serif); font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem); font-weight: 400; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 0.75rem; }
+    h2 { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 400; margin: 3rem 0 0.5rem; }
+    p.lede, p.note { color: var(--color-muted); font-size: 0.9rem; max-width: 60rem; margin-bottom: 1.25rem; }
+    svg { width: 100%; min-width: 960px; display: block; }
+    .table-wrap { overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; min-width: 880px; font-size: 0.84rem; background: #fff; border: 1px solid rgba(45,49,66,0.12); border-radius: 6px; }
+    th, td { text-align: left; vertical-align: top; padding: 0.55rem 0.75rem; border-bottom: 1px solid rgba(45,49,66,0.12); }
+    th { font-weight: 600; background: #ececec; white-space: nowrap; }
+    tr.group td { background: rgba(45,49,66,0.05); font-weight: 600; }
+    td code, p code { font-family: var(--font-mono); font-size: 0.78rem; }
+    td.num { white-space: nowrap; font-family: var(--font-mono); font-size: 0.78rem; }
+    .warn { color: var(--color-accent); font-weight: 600; }
+    @media print { .diagram-container, .table-wrap { overflow-x: visible; } svg, table { min-width: 0; } }
+  </style>
+</head>
+<body>
+<div class="frame">
+  <p class="eyebrow">Dependency graph · 2026-11-12</p>
+  <h1>项目文件地图：谁读谁</h1>
+  <p class="lede">箭头从「使用方」指向「被使用方」。右上角的数字是有几类文件依赖它。实线框进了 git，虚线框只在本机。自检里另有两个脚本直接读来源缓存，图上没有画这条线。</p>
+
+  <div class="diagram-container">
+    <svg viewBox="0 0 960 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="file-map-title file-map-desc">
+      <title id="file-map-title">藏头项目各类文件的依赖关系</title>
+      <desc id="file-map-desc">交付包由应用包打成；应用包里的数据由生成脚本写出；生成脚本和自检读词库批次、人工审定表、旧审核数据和不入库的来源缓存。</desc>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+      </defs>
+      <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+      <!-- 连线（先画） -->
+      <g fill="none" stroke="#4f5d75" stroke-width="1.2">
+        <line x1="508" y1="96" x2="508" y2="159" marker-end="url(#arrow)"/>
+        <path d="M200 96 V120 Q200 128 208 128 H444 Q452 128 452 136 V159" marker-end="url(#arrow)"/>
+        <line x1="120" y1="96" x2="120" y2="399" marker-end="url(#arrow)"/>
+        <path d="M160 96 V368 Q160 376 168 376 H312 Q320 376 320 384 V399" marker-end="url(#arrow)"/>
+        <path d="M480 216 V240 Q480 248 488 248 H632 Q640 248 640 256 V279" marker-end="url(#arrow)"/>
+        <path d="M560 308 H408 Q400 308 400 316 V399" marker-end="url(#arrow)"/>
+        <line x1="600" y1="336" x2="600" y2="399" marker-end="url(#arrow)"/>
+        <path d="M680 336 V360 Q680 368 688 368 H792 Q800 368 800 376 V399" marker-end="url(#arrow)"/>
+        <line x1="440" y1="428" x2="519" y2="428" marker-end="url(#arrow)"/>
+      </g>
+
+      <!-- 连线标签 -->
+      <g font-family="'Geist','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="500" fill="#4f5d75" text-anchor="middle">
+        <rect x="516" y="116" width="36" height="16" fill="#f5f5f5"/><text x="534" y="128">打包</text>
+        <rect x="284" y="104" width="76" height="16" fill="#f5f5f5"/><text x="322" y="116">载入并运行</text>
+        <rect x="44" y="240" width="68" height="16" fill="#f5f5f5"/><text x="78" y="252">读旧数据</text>
+        <rect x="204" y="352" width="68" height="16" fill="#f5f5f5"/><text x="238" y="364">读编译包</text>
+        <rect x="520" y="224" width="92" height="16" fill="#f5f5f5"/><text x="566" y="236">数据由它生成</text>
+        <rect x="444" y="284" width="68" height="16" fill="#f5f5f5"/><text x="478" y="296">读交付63</text>
+        <rect x="608" y="352" width="52" height="16" fill="#f5f5f5"/><text x="634" y="364">读来源</text>
+        <rect x="708" y="344" width="68" height="16" fill="#f5f5f5"/><text x="742" y="356">读审定表</text>
+        <rect x="448" y="404" width="64" height="16" fill="#f5f5f5"/><text x="480" y="416">读抽取</text>
+      </g>
+
+      <!-- 节点 -->
+      <g font-family="'Geist','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif">
+        <!-- 自检 -->
+        <rect x="80" y="40" width="160" height="56" rx="6" fill="#f5f5f5"/><rect x="80" y="40" width="160" height="56" rx="6" fill="#ffffff" stroke="#2d3142"/>
+        <text x="96" y="64" font-size="13" font-weight="600" fill="#2d3142">自检脚本</text>
+        <text x="96" y="82" font-size="11" font-family="'Geist Mono',monospace" fill="#5a6580">scripts/test-*.mjs</text>
+        <rect x="198" y="46" width="36" height="16" rx="2" fill="#ffffff" stroke="rgba(45,49,66,0.30)"/><text x="216" y="58" font-size="11" font-family="'Geist Mono',monospace" fill="#4f5d75" text-anchor="middle">0 IN</text>
+        <!-- 交付包 -->
+        <rect x="428" y="40" width="160" height="56" rx="6" fill="#f5f5f5"/><rect x="428" y="40" width="160" height="56" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-dasharray="4,3"/>
+        <text x="444" y="64" font-size="13" font-weight="600" fill="#2d3142">交付包</text>
+        <text x="444" y="82" font-size="11" font-family="'Geist Mono',monospace" fill="#5a6580">dist/ · zip + web</text>
+        <rect x="546" y="46" width="36" height="16" rx="2" fill="#f5f5f5" stroke="rgba(45,49,66,0.30)"/><text x="564" y="58" font-size="11" font-family="'Geist Mono',monospace" fill="#4f5d75" text-anchor="middle">0 IN</text>
+        <!-- 应用包 -->
+        <rect x="400" y="160" width="160" height="56" rx="6" fill="#f5f5f5"/><rect x="400" y="160" width="160" height="56" rx="6" fill="#ffffff" stroke="#2d3142"/>
+        <text x="416" y="184" font-size="13" font-weight="600" fill="#2d3142">应用包</text>
+        <text x="416" y="202" font-size="11" font-family="'Geist Mono',monospace" fill="#5a6580">app/ · 53 files</text>
+        <rect x="518" y="166" width="36" height="16" rx="2" fill="#ffffff" stroke="rgba(45,49,66,0.30)"/><text x="536" y="178" font-size="11" font-family="'Geist Mono',monospace" fill="#4f5d75" text-anchor="middle">2 IN</text>
+        <!-- 生成脚本 -->
+        <rect x="560" y="280" width="160" height="56" rx="6" fill="#f5f5f5"/><rect x="560" y="280" width="160" height="56" rx="6" fill="#ffffff" stroke="#2d3142"/>
+        <text x="576" y="304" font-size="13" font-weight="600" fill="#2d3142">生成脚本</text>
+        <text x="576" y="322" font-size="11" font-family="'Geist Mono',monospace" fill="#5a6580">build-* · t19/</text>
+        <rect x="678" y="286" width="36" height="16" rx="2" fill="#ffffff" stroke="rgba(45,49,66,0.30)"/><text x="696" y="298" font-size="11" font-family="'Geist Mono',monospace" fill="#4f5d75" text-anchor="middle">1 IN</text>
+        <!-- 旧审核数据 -->
+        <rect x="40" y="400" width="160" height="56" rx="6" fill="#f5f5f5"/><rect x="40" y="400" width="160" height="56" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75"/>
+        <text x="56" y="424" font-size="13" font-weight="600" fill="#2d3142">旧词库审核数据</text>
+        <text x="56" y="442" font-size="11" font-family="'Geist Mono',monospace" fill="#5a6580">review/lexicon/</text>
+        <rect x="158" y="406" width="36" height="16" rx="2" fill="#f5f5f5" stroke="rgba(45,49,66,0.30)"/><text x="176" y="418" font-size="11" font-family="'Geist Mono',monospace" fill="#4f5d75" text-anchor="middle">1 IN</text>
+        <!-- 词库批次 -->
+        <rect x="280" y="400" width="160" height="56" rx="6" fill="#f5f5f5"/><rect x="280" y="400" width="160" height="56" rx="6" fill="#ffffff" stroke="#2d3142"/>
+        <text x="296" y="424" font-size="13" font-weight="600" fill="#2d3142">词库批次</text>
+        <text x="296" y="442" font-size="11" font-family="'Geist Mono',monospace" fill="#5a6580">review/t19-batches/</text>
+        <rect x="398" y="406" width="36" height="16" rx="2" fill="#ffffff" stroke="rgba(45,49,66,0.30)"/><text x="416" y="418" font-size="11" font-family="'Geist Mono',monospace" fill="#4f5d75" text-anchor="middle">2 IN</text>
+        <!-- 来源缓存 -->
+        <rect x="520" y="400" width="160" height="56" rx="6" fill="#f5f5f5"/><rect x="520" y="400" width="160" height="56" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-dasharray="4,3"/>
+        <text x="536" y="424" font-size="13" font-weight="600" fill="#2d3142">来源缓存</text>
+        <text x="536" y="442" font-size="11" font-family="'Geist Mono',monospace" fill="#5a6580">.cache/ · 629 MB</text>
+        <rect x="638" y="406" width="36" height="16" rx="2" fill="#f5f5f5" stroke="rgba(45,49,66,0.30)"/><text x="656" y="418" font-size="11" font-family="'Geist Mono',monospace" fill="#4f5d75" text-anchor="middle">2 IN</text>
+        <!-- 人工审定表 -->
+        <rect x="760" y="400" width="160" height="56" rx="6" fill="#f5f5f5"/><rect x="760" y="400" width="160" height="56" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75"/>
+        <text x="776" y="424" font-size="13" font-weight="600" fill="#2d3142">人工审定表</text>
+        <text x="776" y="442" font-size="11" font-family="'Geist Mono',monospace" fill="#5a6580">presets + block</text>
+        <rect x="878" y="406" width="36" height="16" rx="2" fill="#f5f5f5" stroke="rgba(45,49,66,0.30)"/><text x="896" y="418" font-size="11" font-family="'Geist Mono',monospace" fill="#4f5d75" text-anchor="middle">1 IN</text>
+      </g>
+
+      <!-- 图例 -->
+      <line x1="30" y1="488" x2="930" y2="488" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+      <g font-family="'Geist','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="500" fill="#4f5d75">
+        <rect x="40" y="504" width="24" height="14" rx="3" fill="#ffffff" stroke="#2d3142"/><text x="72" y="516">进了 git，会被改动</text>
+        <rect x="220" y="504" width="24" height="14" rx="3" fill="rgba(45,49,66,0.05)" stroke="#4f5d75"/><text x="252" y="516">进了 git，只被读取</text>
+        <rect x="400" y="504" width="24" height="14" rx="3" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-dasharray="4,3"/><text x="432" y="516">只在本机，不进 git</text>
+        <line x1="580" y1="511" x2="612" y2="511" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/><text x="622" y="516">使用方 → 被使用方</text>
+      </g>
+    </svg>
+  </div>
+
+  <h2>应用包内部：下层先加载，上层用下层</h2>
+  <p class="note">这是 <code>app/index.html</code> 里的加载顺序。第 2 层是生成产物，不能手改；要改内容，去改对应的生成脚本或词库源。</p>
+
+  <div class="diagram-container">
+    <svg viewBox="0 0 960 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="app-layers-title app-layers-desc">
+      <title id="app-layers-title">应用包的五层文件</title>
+      <desc id="app-layers-desc">从下到上依次是页面外壳、生成的数据、规则与查词、设备与存储、界面模块；上层依赖下层。</desc>
+      <rect width="100%" height="100%" fill="#f5f5f5"/>
+      <!-- 方向 -->
+      <g font-family="'Geist','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="500" fill="#4f5d75" text-anchor="middle">
+        <line x1="60" y1="330" x2="60" y2="70" stroke="#4f5d75" stroke-width="1.2"/><polygon points="56,72 60,62 64,72" fill="#4f5d75"/>
+        <text x="60" y="352">先加载</text><text x="60" y="52">后加载</text>
+      </g>
+      <g font-family="'Geist','Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif">
+        <rect x="120" y="40" width="800" height="320" fill="#ffffff" stroke="#2d3142"/>
+        <rect x="120" y="232" width="800" height="64" fill="rgba(191,69,32,0.08)" stroke="#bf4520"/>
+        <g stroke="rgba(45,49,66,0.12)"><line x1="120" y1="104" x2="920" y2="104"/><line x1="120" y1="168" x2="920" y2="168"/></g>
+        <g font-family="'Geist Mono',monospace" font-size="11" fill="#4f5d75" letter-spacing="0.14em">
+          <text x="136" y="76">L5</text><text x="136" y="140">L4</text><text x="136" y="204">L3</text><text x="136" y="268">L2</text><text x="136" y="332">L1</text>
+        </g>
+        <g font-size="15" font-weight="600" fill="#2d3142">
+          <text x="184" y="77">界面模块</text><text x="184" y="141">设备与存储</text><text x="184" y="205">规则与查词</text><text x="184" y="269">生成的数据（勿手改）</text><text x="184" y="333">页面外壳</text>
+        </g>
+        <g font-family="'Geist Mono',monospace" font-size="11" fill="#4f5d75" text-anchor="end">
+          <text x="904" y="76">app-model · title · media · view · editor · entry · publish · draft · app.js</text>
+          <text x="904" y="140">draft.js · media.js</text>
+          <text x="904" y="204">core.js · lexicon-policy.js · lexicon-store.js · lang/packs.js · lang/*/rules.js</text>
+          <text x="904" y="268">lang/*/words.js · block.js · en/phrases.js · presets.js · fonts/*.woff2</text>
+          <text x="904" y="332">index.html · style.css · theme.js</text>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <h2>每一类文件：谁在用，进没进 git</h2>
+  <p class="note">2026-11-12 清理之后的状态；体积在本机量得。「没有」表示搜遍脚本、测试和规则文件都没有找到引用。</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>类别</th><th>位置</th><th>谁在用它</th><th>进 git</th><th>体积</th></tr></thead>
+    <tbody>
+      <tr class="group"><td colspan="5">一、交给用户的东西</td></tr>
+      <tr><td>页面外壳</td><td><code>app/index.html</code>、<code>style.css</code>、<code>theme.js</code></td><td>容器或浏览器直接加载</td><td>是</td><td class="num" rowspan="3">7.1 MB</td></tr>
+      <tr><td>运行逻辑</td><td><code>app/assets/</code> 下的 <code>core.js</code>、<code>lexicon-*.js</code>、<code>draft.js</code>、<code>media.js</code>、<code>app-*.js</code>、<code>lang/packs.js</code>、<code>lang/*/rules.js</code></td><td><code>index.html</code> 按顺序加载；自检把它们载入后直接调用</td><td>是</td></tr>
+      <tr><td>生成的数据</td><td><code>lang/*/words.js</code>、<code>block.js</code>、<code>en/phrases.js</code>、<code>block/core.js</code>、<code>lang/presets.js</code>、<code>fonts/*.woff2</code></td><td>运行时读取；内容由生成脚本写出，不能手改</td><td>是</td></tr>
+      <tr><td>交付包</td><td><code>dist/backronym.zip</code>、<code>dist/web/</code></td><td>上传小红书、外链网页；由 <code>npm run pack</code> 和 <code>pack:web</code> 生成</td><td>否</td><td class="num">13 MB</td></tr>
+
+      <tr class="group"><td colspan="5">二、把源数据变成应用数据的脚本</td></tr>
+      <tr><td>词包生成</td><td><code>scripts/t19/</code>（<code>build-packs</code>、<code>compile</code>、<code>schema</code>、<code>forms</code> 等）</td><td>手动运行；词包自检也调用它重新生成一遍来比对</td><td>是</td><td class="num">—</td></tr>
+      <tr><td>字体、屏蔽词、预设词、网页版</td><td><code>scripts/build-fonts</code>、<code>build-block</code>、<code>build-presets</code>、<code>build-web</code></td><td>手动运行，对应 <code>npm run fonts</code> 等命令</td><td>是</td><td class="num">—</td></tr>
+      <tr><td>旧词库管线</td><td><code>scripts/build-lexicon</code>、<code>build-dict</code>、<code>legacy-packs</code>、<code>scripts/lexicon/</code></td><td>产品已不用它出词包；五个旧自检和各批合并脚本仍引用其中的工具函数</td><td>是</td><td class="num">—</td></tr>
+      <tr><td>开发工具</td><td><code>scripts/dev.py</code>、体积 hook 三件、<code>export-hash.js</code>、<code>check-dom-layout.js</code></td><td>本地预览、提交前检查体积、控制台对照</td><td>是</td><td class="num">—</td></tr>
+      <tr><td>自检</td><td><code>scripts/test-*.mjs</code>：21 个进 <code>npm test</code>，11 个是浏览器回归</td><td><code>npm test</code>、<code>npm run pack</code>；浏览器回归手动跑</td><td>是</td><td class="num">—</td></tr>
+      <tr><td>来源缓存</td><td><code>scripts/.cache/</code>：来源词典、词频表、原始字体、字体工具</td><td>生成脚本、各批合并脚本、两个自检</td><td class="warn">否，删了无法恢复</td><td class="num">629 MB</td></tr>
+
+      <tr class="group"><td colspan="5">三、词库源与审定表（都在 review/ 下）</td></tr>
+      <tr><td>当前词库源</td><td><code>review/t19-batches/t19-batch63-20261112/</code></td><td><code>build-packs</code> 默认读它；两个自检读它</td><td>是</td><td class="num">31 MB</td></tr>
+      <tr><td>自检固定读的旧批次</td><td>交付 5、10、11、20、21、50 的 <code>compiled/</code>，交付 61 的 <code>lexicon/</code></td><td>自检脚本里写死了路径</td><td>是</td><td class="num">28 MB</td></tr>
+      <tr><td>其余中间批次</td><td>交付 13—62 中除上面以外的 45 个</td><td>只留各批的 <code>REPORT.md</code>，供交接和审计记录里的链接打开；数据已于 2026-11-12 删除，在 git 历史里</td><td>是</td><td class="num">很小</td></tr>
+      <tr><td>概念清单</td><td><code>review/t19-batches/t19-batch4-20261111/concepts.json</code></td><td>各批合并脚本生成进度页时读它</td><td>是（2026-11-12 补入库）</td><td class="num">76 KB</td></tr>
+      
+      
+      <tr><td>预设词审定表</td><td><code>review/presets-approved.txt</code> 指向 <code>review/presets-20261112b/</code></td><td><code>build-presets</code>、预设词自检</td><td>是</td><td class="num">60 KB</td></tr>
+      
+      <tr><td>旧管线审核数据</td><td><code>review/lexicon/</code></td><td><code>build-block</code> 读其中的 <code>block-review.tsv</code>；旧管线脚本和五个旧自检读其余部分</td><td>部分（771 个文件入库）</td><td class="num">116 MB</td></tr>
+      
+      
+      <tr><td>复审报告</td><td><code>review/t19-review-*</code></td><td>交接、审计、路线图里的链接</td><td>是</td><td class="num">约 100 KB</td></tr>
+
+      <tr class="group"><td colspan="5">四、给人和代理看的</td></tr>
+      <tr><td>规则入口</td><td><code>CLAUDE.md</code>、<code>AGENTS.md</code>、<code>docs/agent/</code></td><td>每个会话开工时读</td><td>是</td><td class="num" rowspan="3">约 5 MB</td></tr>
+      <tr><td>进度与问题记录</td><td><code>HANDOFF.md</code>、<code>ROADMAP.md</code>、<code>AUDIT.MD</code>、<code>plans/</code></td><td>实现方和审核方交接；<code>plans/</code> 里的选词器页面被浏览器回归打开</td><td>是</td></tr>
+      <tr><td>说明与设计</td><td><code>README.md</code>、<code>RELEASE.md</code>、<code>LICENSE</code>、<code>docs/</code>、<code>design/</code>、<code>plans/v00.02.01/</code> 的三份真机清单</td><td>上架、改界面前读</td><td>是</td></tr>
+      
+      <tr><td>代理与工具配置</td><td><code>.claude/</code>、<code>.agents/</code>、<code>.dsh/</code> 等隐藏目录</td><td>各种编码工具自己读</td><td>只有 <code>.claude/</code> 的 17 个文件</td><td class="num">—</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+</body>
+</html>

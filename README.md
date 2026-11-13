@@ -41,7 +41,6 @@ npm test           # 屏蔽器 + core.js 纯函数 + 应用模块 + draft.js 18h
 npm run audit      # 审计 app/ 的文件与体积（不检查 ES2017 语法或 CSP，这两项另测）
 npm run pack       # test → 审计 → dist/backronym.zip（小红书版，含屏蔽器）
 npm run pack:web   # dist/web/（外链网页版，同样含屏蔽器）
-npm run pack:spike # dist/edit-scale-spike.zip（真机试验页，不进正式包）
 npm run dict       # 重新生成词库（需 scripts/.cache/ecdict.csv）
 npm run fonts      # 重新生成字体子集（需原始字体 + pyftsubset）
 ```
@@ -69,10 +68,9 @@ app/                 原样打成 zip 的离线 H5
     fonts/           Noto Sans / Noto Sans SC 子集
 scripts/             构建、测试、回归脚本
 design/              设计记录；第六稿母版 folio-swiss.html
-docs/                项目地图、施工记录
+docs/                项目地图（file-map.html）、代理规则细则
 plans/v00.03.00/     当前计划（西文模式）与调研
-plans/v00.02.01/     上一版任务表、交付记录与待执行真机清单
-spikes/edit-scale/   真机试验页
+plans/v00.02.01/     待执行的真机清单（上一版的任务表与交付记录已于 2026-11-12 删除，见 git 历史）
 ```
 
 **排版只算一次。** `core.js` 的 `layoutCard` / `layoutGrid` 输出 1080×1440 坐标的版式框；编辑用的 DOM 卡和 Canvas 导出按同一份框摆放和绘制，所以编辑所见即导出所得。
@@ -92,7 +90,6 @@ spikes/edit-scale/   真机试验页
 | [`CLAUDE.md`](CLAUDE.md) | 规则入口与文档索引（Claude 与 GPT 共用）；细则在 `docs/agent/` |
 | [`RELEASE.md`](RELEASE.md) | 上架清单 |
 | [`ROADMAP.md`](ROADMAP.md) | 迭代标准 |
-| [`docs/construction-log.md`](docs/construction-log.md) | 施工记录与待决定事项 |
 | [`design/folio-swiss.html`](design/folio-swiss.html) | 界面母版（满版 folio × 国际主义 × 左对齐） |
 
 ## 07　许可

@@ -8,7 +8,6 @@ npm test           # 全部自检脚本（清单见 package.json）串行（v00.
 npm run audit      # 只审计 app/ 的文件与体积（语法和运行行为另测），不打包
 npm run pack       # test → 审计 app/ → 打 zip → 再审计 zip 体积
 npm run pack:web   # 外链网页版 → dist/web/
-npm run pack:spike # 审计并打包 spikes/edit-scale → dist/edit-scale-spike.zip（真机试验页，不进正式包）
 npm run packs      # T19（2026-11-11）起的正式词包：从已复审的新范围词库（scripts/t19/build-packs.mjs 里的 DEFAULT_COMPILED）生成六语 app/assets/lang/<语种>/words.js 与 en/phrases.js；改完跑 npm run fonts
 npm run dict       # 旧管线（英语，ECDICT）。不再写入正式词包：必须设 BACKRONYM_DICT_OUT=<目录> 做隔离核对
 npm run block      # v00.03.00 T23：西文五语屏蔽词表 app/assets/lang/<语种>/block.js + 送审表 review/lexicon/block-review.tsv（读候选表与审核文件）
