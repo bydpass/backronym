@@ -1,0 +1,55 @@
+import { execFileSync, spawnSync } from 'node:child_process';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync, readFileSync } from 'node:fs';
+import { randomBytes } from 'node:crypto';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import { fileURLToPath } from 'node:url';
+
+const scripts = path.dirname(fileURLToPath(import.meta.url));
+const temporary = mkdtempSync(path.join(tmpdir(), 'backronym-hook-test-'));
+const git = (...args) => execFileSync('git', args, { cwd: temporary, encoding: 'utf8' }).trim();
+const put = (name, content) => {
+  mkdirSync(path.dirname(path.join(temporary, name)), { recursive: true });
+  writeFileSync(path.join(temporary, name), content);
+};
+const check = () => spawnSync(process.execPath, [path.join(scripts, 'check-staged-size.mjs')], { cwd: temporary, encoding: 'utf8' });
+try {
+  git('init', '-q');
+  put('app/index.html', '<html>fixture</html>');
+  git('add', 'app');
+  assert.equal(check().status, 0, 'small staged app passes');
+  put('app/index.html', randomBytes(5_000_000));
+  assert.equal(check().status, 0, 'unstaged data does not mask the staged snapshot');
+  git('add', 'app');
+  assert.match(check().stderr, /individual files must be/, 'exact 5 MB file is rejected');
+  put('app/index.html', '<html>fixture</html>');
+  for (let i = 0; i < 3; i++) put(`app/blob ${i}.bin`, randomBytes(3_400_000));
+  git('add', 'app');
+  assert.match(check().stderr, /Release ZIP must be/, 'aggregate ZIP limit catches individually allowed files');
+  git('rm', '--cached', '-f', 'app/blob 0.bin');
+  const warning = check();
+  assert.equal(warning.status, 0);
+  assert.match(warning.stderr, /6–8 MB/, 'tolerance band warns without blocking');
+  git('rm', '--cached', '-f', 'app/blob 1.bin', 'app/blob 2.bin');
+  symlinkSync('index.html', path.join(temporary, 'app/link'));
+  git('add', 'app/link');
+  assert.match(check().stderr, /Unsupported package entry/, 'symlinks cannot bypass package sizing');
+  git('rm', '--cached', '-f', 'app/link');
+  const inherited = path.join(temporary, 'old-hooks');
+  mkdirSync(inherited);
+  writeFileSync(path.join(inherited, 'pre-commit'), '#!/bin/sh\nexit 23\n', { mode: 0o755 });
+  writeFileSync(path.join(inherited, 'pre-push'), '#!/bin/sh\nexit 24\n', { mode: 0o755 });
+  git('config', '--local', 'core.hooksPath', inherited);
+  put('scripts/check-staged-size.mjs', readFileSync(path.join(scripts, 'check-staged-size.mjs')));
+  execFileSync(process.execPath, [path.join(scripts, 'install-size-hook.mjs')], { cwd: temporary });
+  const hooks = git('config', '--get', 'core.hooksPath');
+  assert.equal(spawnSync(path.join(hooks, 'pre-commit'), [], { cwd: temporary }).status, 23, 'existing commit rejection preserved');
+  assert.equal(spawnSync(path.join(hooks, 'pre-push'), [], { cwd: temporary }).status, 24, 'existing push hook preserved');
+  writeFileSync(path.join(inherited, 'pre-commit'), '#!/bin/sh\nexit 0\n', { mode: 0o755 });
+  assert.equal(spawnSync(path.join(hooks, 'pre-commit'), [], { cwd: temporary }).status, 0, 'wrapper invokes size check after existing hook');
+  execFileSync(process.execPath, [path.join(scripts, 'install-size-hook.mjs')], { cwd: temporary });
+  console.log('Size hook fixtures passed: staged isolation, file boundary, ZIP limit, warnings, symlinks, hook chaining, reinstall.');
+} finally {
+  rmSync(temporary, { recursive: true, force: true });
+}

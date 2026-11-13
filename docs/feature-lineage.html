@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>藏头功能系谱</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif; background: #e9e8e4; color: #1c1c1b; padding: 48px 16px 64px; line-height: 1.6; }
+.frame { max-width: 1040px; margin: 0 auto; }
+.eyebrow { font-size: 12px; font-weight: 500; color: #5f5d58; margin-bottom: 8px; }
+h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; margin-bottom: 12px; }
+h2 { font-size: 16px; font-weight: 700; margin: 40px 0 4px; border-top: 2px solid #1c1c1b; padding-top: 12px; }
+p { font-size: 14px; color: #5f5d58; max-width: 720px; }
+p + p { margin-top: 6px; }
+.versions { margin: 16px 0 8px; font-size: 13px; color: #1c1c1b; }
+.versions b { font-weight: 700; }
+.scroll { overflow-x: auto; margin-top: 12px; }
+svg { display: block; width: 100%; }
+code { font-family: ui-monospace,'SF Mono',Menlo,monospace; font-size: 0.9em; }
+.foot { margin-top: 40px; padding-top: 12px; border-top: 1px solid #d3d1cc; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="frame">
+<p class="eyebrow">功能系谱 · 树形</p>
+<h1>藏头 - Backronym 的功能是怎么长出来的</h1>
+<p>四个分支，按用户做一张卡的顺序排列。每个现有功能的正下方，虚线连着它取代掉的前身。</p>
+<p class="versions"><b>v0.0.1</b> 藏头情况表 MVP（10-06）→ <b>印谱改版</b>（10-19，<code>a6a886d</code>）→ <b>v00.02.00</b> 在图上编辑（当前 <code>40886e8</code>）→ <b>v00.03.00</b> 西文模式（规划；日语顺延，11-08）</p>
+<h2>总览</h2>
+<div class="scroll"><svg viewBox="0 0 1000 264" style="min-width:1000px" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="feature-lineage-overview-title feature-lineage-overview-desc">
+<title id="feature-lineage-overview-title">藏头功能系谱总览</title>
+<desc id="feature-lineage-overview-desc">藏头 - Backronym 的四个功能分支，以及每个分支里现有、已被取代和规划中的功能数量。</desc>
+<rect width="1000" height="264" fill="#e9e8e4"/>
+<text x="40" y="72" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">产品</text>
+<text x="40" y="172" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">功能分支</text>
+<path d="M 540.0 92 L 540.0 116.0" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 210.0 116.0 L 870.0 116.0" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 210.0 116.0 L 210.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 430.0 116.0 L 430.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 650.0 116.0 L 650.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 870.0 116.0 L 870.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<rect x="440.0" y="40" width="200" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="440.0" y="40" width="200" height="52" rx="6" fill="rgba(176,48,28,0.08)" stroke="#b0301c" stroke-width="1"/>
+<rect x="448.0" y="48" width="28" height="12" rx="2" fill="none" stroke="rgba(176,48,28,0.55)" stroke-width="0.8"/>
+<text x="462.0" y="57" fill="#b0301c" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">ROOT</text>
+<text class="nm" x="540.0" y="74" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">藏头 - Backronym</text>
+<text class="sb" x="540.0" y="86" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">v00.02.00 · 40886e8</text>
+<rect x="120.0" y="140" width="180" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="120.0" y="140" width="180" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1.2"/>
+<rect x="128.0" y="148" width="28" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="142.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">AREA</text>
+<text class="nm" x="210.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">起词与标题</text>
+<text class="sb" x="210.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">NOW 4 · GONE 2 · NEXT 1</text>
+<rect x="340.0" y="140" width="180" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="340.0" y="140" width="180" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1.2"/>
+<rect x="348.0" y="148" width="28" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="362.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">AREA</text>
+<text class="nm" x="430.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">逐格选词</text>
+<text class="sb" x="430.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">NOW 4 · GONE 3 · NEXT 1</text>
+<rect x="560.0" y="140" width="180" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="560.0" y="140" width="180" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1.2"/>
+<rect x="568.0" y="148" width="28" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="582.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">AREA</text>
+<text class="nm" x="650.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">卡面与外观</text>
+<text class="sb" x="650.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">NOW 4 · GONE 4</text>
+<rect x="780.0" y="140" width="180" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="780.0" y="140" width="180" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1.2"/>
+<rect x="788.0" y="148" width="28" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="802.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">AREA</text>
+<text class="nm" x="870.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">交付与留存</text>
+<text class="sb" x="870.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">NOW 5 · GONE 2</text>
+
+<line x1="40" y1="224" x2="960" y2="224" stroke="rgba(28,28,27,0.12)" stroke-width="0.8"/>
+<text x="40" y="242" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">图例</text>
+<rect x="96" y="232" width="16" height="12" rx="2" fill="rgba(176,48,28,0.08)" stroke="#b0301c" stroke-width="1"/>
+<text x="120" y="242" fill="#5f5d58" font-size="12" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">ROOT 产品</text>
+<rect x="212.0" y="232" width="16" height="12" rx="2" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1.2"/>
+<text x="236.0" y="242" fill="#5f5d58" font-size="12" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">AREA 功能分支</text>
+</svg></div>
+<h2>起词与标题</h2>
+<p>单词改在标题框里输入，标题留空时直接用单词。</p>
+<div class="scroll"><svg viewBox="0 0 1000 364" style="min-width:1000px" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="feature-lineage-word-title feature-lineage-word-desc">
+<title id="feature-lineage-word-title">起词与标题</title>
+<desc id="feature-lineage-word-desc">起词与标题分支：标题框里输单词、标题留空用单词、富文本标题、填表人为现有功能，各自的前身，以及规划中的日语假名拆格。</desc>
+<rect width="1000" height="364" fill="#e9e8e4"/>
+<text x="40" y="72" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">分支</text>
+<text x="40" y="172" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">现有功能</text>
+<text x="40" y="272" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">前身</text>
+<path d="M 540.0 92 L 540.0 116.0" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 196.0 116.0 L 884.0 116.0" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 196.0 116.0 L 196.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 368.0 116.0 L 368.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 540.0 116.0 L 540.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 712.0 116.0 L 712.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 884.0 116.0 L 884.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 196.0 192 L 196.0 240" fill="none" stroke="#5f5d58" stroke-width="1" stroke-dasharray="5,4"/>
+<path d="M 368.0 192 L 368.0 240" fill="none" stroke="#5f5d58" stroke-width="1" stroke-dasharray="5,4"/>
+<rect x="440.0" y="40" width="200" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="440.0" y="40" width="200" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1.2"/>
+<rect x="448.0" y="48" width="28" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="462.0" y="57" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">AREA</text>
+<text class="nm" x="540.0" y="74" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">起词与标题</text>
+<text class="sb" x="540.0" y="86" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">单词 ≤ 10 个字母</text>
+<rect x="120.0" y="140" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="120.0" y="140" width="152" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<rect x="128.0" y="148" width="24" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="140.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NOW</text>
+<text class="nm" x="196.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">标题框里输单词</text>
+<text class="sb" x="196.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">v00.02 · T16 / D18</text>
+<rect x="120.0" y="240" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="120.0" y="240" width="152" height="52" rx="6" fill="#dfded9" stroke="#5f5d58" stroke-width="0.8" stroke-dasharray="4,3"/>
+<rect x="128.0" y="248" width="28" height="12" rx="2" fill="none" stroke="rgba(95,93,88,0.55)" stroke-width="0.8"/>
+<text x="142.0" y="257" fill="#5f5d58" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">GONE</text>
+<text class="nm" x="196.0" y="274" fill="#5f5d58" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">独立的单词输入框</text>
+<text class="sb" x="196.0" y="286" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">v0.0.1 · 507b805</text>
+<rect x="292.0" y="140" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="292.0" y="140" width="152" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<rect x="300.0" y="148" width="24" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="312.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NOW</text>
+<text class="nm" x="368.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">标题留空用单词</text>
+<text class="sb" x="368.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">v00.02 · D17</text>
+<rect x="292.0" y="240" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="292.0" y="240" width="152" height="52" rx="6" fill="#dfded9" stroke="#5f5d58" stroke-width="0.8" stroke-dasharray="4,3"/>
+<rect x="300.0" y="248" width="28" height="12" rx="2" fill="none" stroke="rgba(95,93,88,0.55)" stroke-width="0.8"/>
+<text x="314.0" y="257" fill="#5f5d58" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">GONE</text>
+<text class="nm" x="368.0" y="274" fill="#5f5d58" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">默认「总之 N 种情况」</text>
+<text class="sb" x="368.0" y="286" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">v0.0.1</text>
+<rect x="464.0" y="140" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="464.0" y="140" width="152" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<rect x="472.0" y="148" width="24" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="484.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NOW</text>
+<text class="nm" x="540.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">富文本标题</text>
+<text class="sb" x="540.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">78b15cc 起</text>
+<rect x="636.0" y="140" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="636.0" y="140" width="152" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<rect x="644.0" y="148" width="24" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="656.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NOW</text>
+<text class="nm" x="712.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">填表人（卡顶右上）</text>
+<text class="sb" x="712.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">176da83 起 · T22</text>
+<rect x="808.0" y="140" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="808.0" y="140" width="152" height="52" rx="6" fill="#e9e8e4" stroke="#1c1c1b" stroke-width="1" stroke-dasharray="6,3"/>
+<rect x="816.0" y="148" width="28" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="830.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NEXT</text>
+<text class="nm" x="884.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">日语：按假名拆格</text>
+<text class="sb" x="884.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">v00.03.00 · さくら</text>
+
+<line x1="40" y1="324" x2="960" y2="324" stroke="rgba(28,28,27,0.12)" stroke-width="0.8"/>
+<text x="40" y="342" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">图例</text>
+<rect x="96" y="332" width="16" height="12" rx="2" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<text x="120" y="342" fill="#5f5d58" font-size="12" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">NOW 现有</text>
+<rect x="204.8" y="332" width="16" height="12" rx="2" fill="#dfded9" stroke="#5f5d58" stroke-width="0.8" stroke-dasharray="4,3"/>
+<text x="228.8" y="342" fill="#5f5d58" font-size="12" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">GONE 已被取代（前身）</text>
+<rect x="392.8" y="332" width="16" height="12" rx="2" fill="#e9e8e4" stroke="#1c1c1b" stroke-width="1" stroke-dasharray="6,3"/>
+<text x="416.8" y="342" fill="#5f5d58" font-size="12" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">NEXT 规划中</text>
+<line x1="520.8" y1="338" x2="544.8" y2="338" stroke="#5f5d58" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="552.8" y="342" fill="#5f5d58" font-size="12" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">虚线连到前身</text>
+</svg></div>
+<h2>逐格选词</h2>
+<p>从「随机填满再换」改成每格自己打词、候选只作灵感。日语释义的中文来源还没找到，是下一版风险最大的一项。</p>
+<div class="scroll"><svg viewBox="0 0 1000 364" style="min-width:1000px" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="feature-lineage-pick-title feature-lineage-pick-desc">
+<title id="feature-lineage-pick-title">逐格选词</title>
+<desc id="feature-lineage-pick-desc">逐格选词分支：逐格自己打词、候选八个一批、关键字母点选、中文模糊检索为现有功能，各自的前身，以及风险最大的规划项日语中文释义来源。</desc>
+<rect width="1000" height="364" fill="#e9e8e4"/>
+<text x="40" y="72" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">分支</text>
+<text x="40" y="172" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">现有功能</text>
+<text x="40" y="272" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">前身</text>
+<path d="M 540.0 92 L 540.0 116.0" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 196.0 116.0 L 884.0 116.0" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 196.0 116.0 L 196.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 368.0 116.0 L 368.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 540.0 116.0 L 540.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 712.0 116.0 L 712.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 884.0 116.0 L 884.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 196.0 192 L 196.0 240" fill="none" stroke="#5f5d58" stroke-width="1" stroke-dasharray="5,4"/>
+<path d="M 368.0 192 L 368.0 240" fill="none" stroke="#5f5d58" stroke-width="1" stroke-dasharray="5,4"/>
+<path d="M 540.0 192 L 540.0 240" fill="none" stroke="#5f5d58" stroke-width="1" stroke-dasharray="5,4"/>
+<rect x="440.0" y="40" width="200" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="440.0" y="40" width="200" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1.2"/>
+<rect x="448.0" y="48" width="28" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="462.0" y="57" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">AREA</text>
+<text class="nm" x="540.0" y="74" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">逐格选词</text>
+<text class="sb" x="540.0" y="86" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">词首优先 · 词中也可</text>
+<rect x="120.0" y="140" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="120.0" y="140" width="152" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<rect x="128.0" y="148" width="24" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="140.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NOW</text>
+<text class="nm" x="196.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">逐格自己打词</text>
+<text class="sb" x="196.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">v00.02 · T12</text>
+<rect x="120.0" y="240" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="120.0" y="240" width="152" height="52" rx="6" fill="#dfded9" stroke="#5f5d58" stroke-width="0.8" stroke-dasharray="4,3"/>
+<rect x="128.0" y="248" width="28" height="12" rx="2" fill="none" stroke="rgba(95,93,88,0.55)" stroke-width="0.8"/>
+<text x="142.0" y="257" fill="#5f5d58" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">GONE</text>
+<text class="nm" x="196.0" y="274" fill="#5f5d58" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">先随机填满再换</text>
+<text class="sb" x="196.0" y="286" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">779af34 · fillEmpty</text>
+<rect x="292.0" y="140" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="292.0" y="140" width="152" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<rect x="300.0" y="148" width="24" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="312.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NOW</text>
+<text class="nm" x="368.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">候选 8 个一批</text>
+<text class="sb" x="368.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">779af34 起 · T13</text>
+<rect x="292.0" y="240" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="292.0" y="240" width="152" height="52" rx="6" fill="#dfded9" stroke="#5f5d58" stroke-width="0.8" stroke-dasharray="4,3"/>
+<rect x="300.0" y="248" width="28" height="12" rx="2" fill="none" stroke="rgba(95,93,88,0.55)" stroke-width="0.8"/>
+<text x="314.0" y="257" fill="#5f5d58" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">GONE</text>
+<text class="nm" x="368.0" y="274" fill="#5f5d58" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">格内显示全部候选</text>
+<text class="sb" x="368.0" y="286" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">4e2a153</text>
+<rect x="464.0" y="140" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="464.0" y="140" width="152" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<rect x="472.0" y="148" width="24" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="484.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NOW</text>
+<text class="nm" x="540.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">关键字母点选</text>
+<text class="sb" x="540.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">v00.02 · state.keys</text>
+<rect x="464.0" y="240" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="464.0" y="240" width="152" height="52" rx="6" fill="#dfded9" stroke="#5f5d58" stroke-width="0.8" stroke-dasharray="4,3"/>
+<rect x="472.0" y="248" width="28" height="12" rx="2" fill="none" stroke="rgba(95,93,88,0.55)" stroke-width="0.8"/>
+<text x="486.0" y="257" fill="#5f5d58" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">GONE</text>
+<text class="nm" x="540.0" y="274" fill="#5f5d58" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">只高亮首字母</text>
+<text class="sb" x="540.0" y="286" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">78b15cc</text>
+<rect x="636.0" y="140" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="636.0" y="140" width="152" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<rect x="644.0" y="148" width="24" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="656.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NOW</text>
+<text class="nm" x="712.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">中文模糊检索</text>
+<text class="sb" x="712.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">176da83 起</text>
+<rect x="808.0" y="140" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="808.0" y="140" width="152" height="52" rx="6" fill="rgba(176,48,28,0.08)" stroke="#b0301c" stroke-width="1" stroke-dasharray="4,4"/>
+<rect x="816.0" y="148" width="28" height="12" rx="2" fill="none" stroke="rgba(176,48,28,0.55)" stroke-width="0.8"/>
+<text x="830.0" y="157" fill="#b0301c" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">RISK</text>
+<text class="nm" x="884.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">日语：中文释义来源</text>
+<text class="sb" x="884.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">v00.03.00 · 待找数据</text>
+
+<line x1="40" y1="324" x2="960" y2="324" stroke="rgba(28,28,27,0.12)" stroke-width="0.8"/>
+<text x="40" y="342" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">图例</text>
+<rect x="96" y="332" width="16" height="12" rx="2" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<text x="120" y="342" fill="#5f5d58" font-size="12" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">NOW 现有</text>
+<rect x="204.8" y="332" width="16" height="12" rx="2" fill="#dfded9" stroke="#5f5d58" stroke-width="0.8" stroke-dasharray="4,3"/>
+<text x="228.8" y="342" fill="#5f5d58" font-size="12" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">GONE 已被取代（前身）</text>
+<rect x="392.8" y="332" width="16" height="12" rx="2" fill="rgba(176,48,28,0.08)" stroke="#b0301c" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="416.8" y="342" fill="#5f5d58" font-size="12" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">RISK 规划中风险最大</text>
+<line x1="568.8" y1="338" x2="592.8" y2="338" stroke="#5f5d58" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="600.8" y="342" fill="#5f5d58" font-size="12" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">虚线连到前身</text>
+</svg></div>
+<h2>卡面与外观</h2>
+<p>编辑面就是成品；版式先后换过三次。</p>
+<div class="scroll"><svg viewBox="0 0 1000 464" style="min-width:1000px" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="feature-lineage-card-title feature-lineage-card-desc">
+<title id="feature-lineage-card-title">卡面与外观</title>
+<desc id="feature-lineage-card-desc">卡面与外观分支：在图上编辑、folio 满版版式、深浅三档与深色导出、单图与列阵为现有功能；版式经历 C-margin、印谱到 folio 两次更替。</desc>
+<rect width="1000" height="464" fill="#e9e8e4"/>
+<text x="40" y="72" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">分支</text>
+<text x="40" y="172" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">现有功能</text>
+<text x="40" y="272" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">前身</text>
+<text x="40" y="372" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">更早前身</text>
+<path d="M 540.0 92 L 540.0 116.0" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 210.0 116.0 L 870.0 116.0" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 210.0 116.0 L 210.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 430.0 116.0 L 430.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 650.0 116.0 L 650.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 870.0 116.0 L 870.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 210.0 192 L 210.0 240" fill="none" stroke="#5f5d58" stroke-width="1" stroke-dasharray="5,4"/>
+<path d="M 430.0 192 L 430.0 240" fill="none" stroke="#5f5d58" stroke-width="1" stroke-dasharray="5,4"/>
+<path d="M 430.0 292 L 430.0 340" fill="none" stroke="#5f5d58" stroke-width="1" stroke-dasharray="5,4"/>
+<path d="M 650.0 192 L 650.0 240" fill="none" stroke="#5f5d58" stroke-width="1" stroke-dasharray="5,4"/>
+<rect x="440.0" y="40" width="200" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="440.0" y="40" width="200" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1.2"/>
+<rect x="448.0" y="48" width="28" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="462.0" y="57" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">AREA</text>
+<text class="nm" x="540.0" y="74" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">卡面与外观</text>
+<text class="sb" x="540.0" y="86" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">DOM 卡 = 导出成品</text>
+<rect x="120.0" y="140" width="180" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="120.0" y="140" width="180" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<rect x="128.0" y="148" width="24" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="140.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NOW</text>
+<text class="nm" x="210.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">在图上编辑</text>
+<text class="sb" x="210.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">v00.02 · T09 / D5</text>
+<rect x="120.0" y="240" width="180" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="120.0" y="240" width="180" height="52" rx="6" fill="#dfded9" stroke="#5f5d58" stroke-width="0.8" stroke-dasharray="4,3"/>
+<rect x="128.0" y="248" width="28" height="12" rx="2" fill="none" stroke="rgba(95,93,88,0.55)" stroke-width="0.8"/>
+<text x="142.0" y="257" fill="#5f5d58" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">GONE</text>
+<text class="nm" x="210.0" y="274" fill="#5f5d58" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">格内编辑，生成后见图</text>
+<text class="sb" x="210.0" y="286" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">v0.0.1</text>
+<rect x="340.0" y="140" width="180" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="340.0" y="140" width="180" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<rect x="348.0" y="148" width="24" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="360.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NOW</text>
+<text class="nm" x="430.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">folio 满版版式</text>
+<text class="sb" x="430.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">v00.02 · 第六稿</text>
+<rect x="340.0" y="240" width="180" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="340.0" y="240" width="180" height="52" rx="6" fill="#dfded9" stroke="#5f5d58" stroke-width="0.8" stroke-dasharray="4,3"/>
+<rect x="348.0" y="248" width="28" height="12" rx="2" fill="none" stroke="rgba(95,93,88,0.55)" stroke-width="0.8"/>
+<text x="362.0" y="257" fill="#5f5d58" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">GONE</text>
+<text class="nm" x="430.0" y="274" fill="#5f5d58" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">S2-seal 印谱</text>
+<text class="sb" x="430.0" y="286" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">a6a886d</text>
+<rect x="340.0" y="340" width="180" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="340.0" y="340" width="180" height="52" rx="6" fill="#dfded9" stroke="#5f5d58" stroke-width="0.8" stroke-dasharray="4,3"/>
+<rect x="348.0" y="348" width="28" height="12" rx="2" fill="none" stroke="rgba(95,93,88,0.55)" stroke-width="0.8"/>
+<text x="362.0" y="357" fill="#5f5d58" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">GONE</text>
+<text class="nm" x="430.0" y="374" fill="#5f5d58" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">C-margin 留白</text>
+<text class="sb" x="430.0" y="386" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">3a2a49e</text>
+<rect x="560.0" y="140" width="180" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="560.0" y="140" width="180" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<rect x="568.0" y="148" width="24" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="580.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NOW</text>
+<text class="nm" x="650.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">深浅三档 · 深色导出</text>
+<text class="sb" x="650.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">a6a886d 起 · D19</text>
+<rect x="560.0" y="240" width="180" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="560.0" y="240" width="180" height="52" rx="6" fill="#dfded9" stroke="#5f5d58" stroke-width="0.8" stroke-dasharray="4,3"/>
+<rect x="568.0" y="248" width="28" height="12" rx="2" fill="none" stroke="rgba(95,93,88,0.55)" stroke-width="0.8"/>
+<text x="582.0" y="257" fill="#5f5d58" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">GONE</text>
+<text class="nm" x="650.0" y="274" fill="#5f5d58" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">导出固定浅色</text>
+<text class="sb" x="650.0" y="286" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">a6a886d</text>
+<rect x="780.0" y="140" width="180" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="780.0" y="140" width="180" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<rect x="788.0" y="148" width="24" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="800.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NOW</text>
+<text class="nm" x="870.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">单图 / 列阵 · 取景</text>
+<text class="sb" x="870.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">176da83 起 · 默认单图</text>
+
+<line x1="40" y1="424" x2="960" y2="424" stroke="rgba(28,28,27,0.12)" stroke-width="0.8"/>
+<text x="40" y="442" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">图例</text>
+<rect x="96" y="432" width="16" height="12" rx="2" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<text x="120" y="442" fill="#5f5d58" font-size="12" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">NOW 现有</text>
+<rect x="204.8" y="432" width="16" height="12" rx="2" fill="#dfded9" stroke="#5f5d58" stroke-width="0.8" stroke-dasharray="4,3"/>
+<text x="228.8" y="442" fill="#5f5d58" font-size="12" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">GONE 已被取代（前身）</text>
+<line x1="392.8" y1="438" x2="416.8" y2="438" stroke="#5f5d58" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="424.8" y="442" fill="#5f5d58" font-size="12" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">虚线连到前身</text>
+</svg></div>
+<h2>交付与留存</h2>
+<p>导出收进完成面板；草稿从永久保存改成 18 小时无更新即清除。</p>
+<div class="scroll"><svg viewBox="0 0 1000 364" style="min-width:1000px" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="feature-lineage-ship-title feature-lineage-ship-desc">
+<title id="feature-lineage-ship-title">交付与留存</title>
+<desc id="feature-lineage-ship-desc">交付与留存分支：完成面板逐张导出、保存相册与发布笔记、屏蔽器、草稿十八小时销毁、外链网页版为现有功能，以及生成图片按钮和永久草稿两个前身。</desc>
+<rect width="1000" height="364" fill="#e9e8e4"/>
+<text x="40" y="72" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">分支</text>
+<text x="40" y="172" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">现有功能</text>
+<text x="40" y="272" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">前身</text>
+<path d="M 540.0 92 L 540.0 116.0" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 196.0 116.0 L 884.0 116.0" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 196.0 116.0 L 196.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 368.0 116.0 L 368.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 540.0 116.0 L 540.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 712.0 116.0 L 712.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 884.0 116.0 L 884.0 140" fill="none" stroke="#5f5d58" stroke-width="1"/>
+<path d="M 196.0 192 L 196.0 240" fill="none" stroke="#5f5d58" stroke-width="1" stroke-dasharray="5,4"/>
+<path d="M 712.0 192 L 712.0 240" fill="none" stroke="#5f5d58" stroke-width="1" stroke-dasharray="5,4"/>
+<rect x="440.0" y="40" width="200" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="440.0" y="40" width="200" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1.2"/>
+<rect x="448.0" y="48" width="28" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="462.0" y="57" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">AREA</text>
+<text class="nm" x="540.0" y="74" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">交付与留存</text>
+<text class="sb" x="540.0" y="86" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">导出 · 发布 · 草稿</text>
+<rect x="120.0" y="140" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="120.0" y="140" width="152" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<rect x="128.0" y="148" width="24" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="140.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NOW</text>
+<text class="nm" x="196.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">完成面板逐张导出</text>
+<text class="sb" x="196.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">v00.02 · T18</text>
+<rect x="120.0" y="240" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="120.0" y="240" width="152" height="52" rx="6" fill="#dfded9" stroke="#5f5d58" stroke-width="0.8" stroke-dasharray="4,3"/>
+<rect x="128.0" y="248" width="28" height="12" rx="2" fill="none" stroke="rgba(95,93,88,0.55)" stroke-width="0.8"/>
+<text x="142.0" y="257" fill="#5f5d58" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">GONE</text>
+<text class="nm" x="196.0" y="274" fill="#5f5d58" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">「生成图片」按钮</text>
+<text class="sb" x="196.0" y="286" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">v0.0.1</text>
+<rect x="292.0" y="140" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="292.0" y="140" width="152" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<rect x="300.0" y="148" width="24" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="312.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NOW</text>
+<text class="nm" x="368.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">保存相册 · 发布笔记</text>
+<text class="sb" x="368.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">v0.0.1 起 · 端能力</text>
+<rect x="464.0" y="140" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="464.0" y="140" width="152" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<rect x="472.0" y="148" width="24" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="484.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NOW</text>
+<text class="nm" x="540.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">屏蔽器（仅小红书版）</text>
+<text class="sb" x="540.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">a6f93d4 起</text>
+<rect x="636.0" y="140" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="636.0" y="140" width="152" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<rect x="644.0" y="148" width="24" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="656.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NOW</text>
+<text class="nm" x="712.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">草稿 18 小时销毁</text>
+<text class="sb" x="712.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">f5da4c6 · draft.js</text>
+<rect x="636.0" y="240" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="636.0" y="240" width="152" height="52" rx="6" fill="#dfded9" stroke="#5f5d58" stroke-width="0.8" stroke-dasharray="4,3"/>
+<rect x="644.0" y="248" width="28" height="12" rx="2" fill="none" stroke="rgba(95,93,88,0.55)" stroke-width="0.8"/>
+<text x="658.0" y="257" fill="#5f5d58" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">GONE</text>
+<text class="nm" x="712.0" y="274" fill="#5f5d58" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">草稿永久保存</text>
+<text class="sb" x="712.0" y="286" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">a6f93d4 · v1 / v2</text>
+<rect x="808.0" y="140" width="152" height="52" rx="6" fill="#e9e8e4"/>
+<rect x="808.0" y="140" width="152" height="52" rx="6" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<rect x="816.0" y="148" width="24" height="12" rx="2" fill="none" stroke="rgba(28,28,27,0.40)" stroke-width="0.8"/>
+<text x="828.0" y="157" fill="#1c1c1b" font-size="7" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle" letter-spacing="0.08em">NOW</text>
+<text class="nm" x="884.0" y="174" fill="#1c1c1b" font-size="12" font-weight="700" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif" text-anchor="middle">外链网页版</text>
+<text class="sb" x="884.0" y="186" fill="#5f5d58" font-size="9" font-family="ui-monospace,'SF Mono',Menlo,monospace" text-anchor="middle">9edb7be 起 · 无屏蔽器</text>
+
+<line x1="40" y1="324" x2="960" y2="324" stroke="rgba(28,28,27,0.12)" stroke-width="0.8"/>
+<text x="40" y="342" fill="#5f5d58" font-size="12" font-weight="500" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">图例</text>
+<rect x="96" y="332" width="16" height="12" rx="2" fill="#f4f3f0" stroke="#1c1c1b" stroke-width="1"/>
+<text x="120" y="342" fill="#5f5d58" font-size="12" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">NOW 现有</text>
+<rect x="204.8" y="332" width="16" height="12" rx="2" fill="#dfded9" stroke="#5f5d58" stroke-width="0.8" stroke-dasharray="4,3"/>
+<text x="228.8" y="342" fill="#5f5d58" font-size="12" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">GONE 已被取代（前身）</text>
+<line x1="392.8" y1="338" x2="416.8" y2="338" stroke="#5f5d58" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="424.8" y="342" fill="#5f5d58" font-size="12" font-family="'Noto Sans','Noto Sans SC','PingFang SC','Hiragino Sans GB',sans-serif">虚线连到前身</text>
+</svg></div>
+<p class="foot">依据：<code>git log</code>、<code>plans/v00.02.00/PLAN.md</code> 任务表、<code>ROADMAP.md</code>、<code>docs/construction-log.md</code>。韩语与拉丁四语排在日语之后，未画入。</p>
+</div>
+</body>
+</html>

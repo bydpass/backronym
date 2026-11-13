@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>藏头 - Backronym · 满版 × 国际主义（母版）</title>
+<style>
+@font-face { font-family: "Noto Sans"; src: url("../app/assets/fonts/NotoSans-Regular.woff2") format("woff2"); font-weight: 400; }
+@font-face { font-family: "Noto Sans"; src: url("../app/assets/fonts/NotoSans-Bold.woff2") format("woff2"); font-weight: 700; }
+@font-face { font-family: "Noto Sans SC"; src: url("../app/assets/fonts/NotoSansSC-Regular.woff2") format("woff2"); font-weight: 400; }
+@font-face { font-family: "Noto Sans SC"; src: url("../app/assets/fonts/NotoSansSC-Bold.woff2") format("woff2"); font-weight: 700; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Noto Sans", "Noto Sans SC", sans-serif; background: #cfcdc8; color: #1c1c1b; padding: 28px; }
+.board-head, .sec { max-width: 1520px; margin: 0 auto 28px; }
+.board-head h1 { font-size: 26px; letter-spacing: -0.3px; }
+.board-head p { margin-top: 6px; font-size: 13px; color: #3d3c39; line-height: 1.75; max-width: 1180px; }
+.notes { display: flex; margin-top: 14px; font-size: 12px; line-height: 1.7; color: #2d2c2a; }
+.notes > div { flex: 1; padding-right: 24px; }
+.notes h3 { font-size: 12px; margin-bottom: 3px; }
+.notes li { margin-left: 16px; }
+.notes .ask { color: #b0301c; font-weight: 700; }
+.sec { background: #f1f0ed; border-radius: 3px; padding: 22px; }
+.sec-head { display: flex; align-items: baseline; margin-bottom: 12px; }
+.sec-head .id { font-size: 13px; font-weight: 700; color: #f4f3f0; background: #1c1c1b; padding: 2px 8px; margin-right: 10px; }
+.sec-head h2 { font-size: 20px; letter-spacing: -0.2px; }
+.sec-head span.sub { margin-left: 12px; font-size: 12px; color: #55534f; }
+.frames { display: flex; flex-wrap: wrap; align-items: flex-start; }
+figure { margin: 0 18px 18px 0; position: relative; }
+figcaption { font-size: 12px; color: #55534f; margin-top: 8px; width: 300px; line-height: 1.5; }
+figcaption b { color: #1c1c1b; }
+.exp { position: relative; }
+
+/* ---------- 界面 token（随深浅） ---------- */
+.phone { width: 300px; height: 640px; border-radius: 26px; overflow: hidden; position: relative; box-shadow: 0 0 0 7px #111;
+  --bg: #e9e8e4; --ink: #1c1c1b; --mute: #5f5d58; --faint: #c4c2bc; --line: #d3d1cc; --zhu: #b0301c; --panel: #f4f3f0;
+  background: var(--bg); color: var(--ink); }
+.phone.dark { --bg: #171716; --ink: #e7e5e0; --mute: #a09d97; --faint: #403f3c; --line: #2c2b29; --zhu: #e5674f; --panel: #232321; }
+/* 界面左边距 22px = 卡的 80px 页边距 × (300/1080)：界面与卡共用同一条网格线 */
+.top { position: absolute; top: 28px; left: 22px; right: 22px; display: flex; justify-content: space-between; font-size: 11px; color: var(--mute); z-index: 3; }
+.top b { color: var(--ink); }
+.top .on { color: var(--ink); font-weight: 700; border-bottom: 2px solid var(--ink); padding-bottom: 1px; }
+.top span + span { margin-left: 10px; }
+.pager { position: absolute; left: 22px; right: 22px; display: flex; justify-content: space-between; align-items: baseline; }
+.pager .ls span { font-size: 20px; font-weight: 700; margin-right: 13px; color: var(--ink); }
+.pager .ls span.todo { color: var(--faint); }
+.pager .ls span.on { color: var(--zhu); border-bottom: 2.5px solid var(--zhu); }
+.pager .no { font-size: 11px; color: var(--mute); }
+.hint { position: absolute; left: 22px; right: 22px; font-size: 10px; color: var(--mute); line-height: 1.5; }
+.kb { position: absolute; left: 0; right: 0; bottom: 0; height: 178px; background: #d1d3d8; padding: 8px 4px 0; }
+.dark .kb { background: #2b2b2d; }
+.kb .row { display: flex; justify-content: center; margin-bottom: 7px; }
+.kb .row i { width: 25px; height: 34px; margin: 0 1.5px; border-radius: 4px; background: #fff; box-shadow: 0 1px 0 #8f9094; }
+.dark .kb .row i { background: #4a4a4c; box-shadow: none; }
+.kb .row i.w { width: 120px; }
+.kb .lab { position: absolute; right: 8px; bottom: 6px; font-size: 9px; color: #6b6b70; }
+/* 候选 / 提示栏：平直、直角、无阴影，上沿一条 2px 墨线 */
+.cand { position: absolute; left: 0; right: 0; background: var(--panel); border-top: 2px solid var(--ink); padding: 6px 22px 6px; z-index: 2; }
+.cand .lab { display: flex; justify-content: space-between; font-size: 9.5px; color: var(--mute); margin-bottom: 2px; }
+.cand .lab b { color: var(--ink); }
+.cand .row { display: flex; align-items: baseline; padding: 4px 0; border-bottom: 1px solid var(--line); font-size: 12.5px; }
+.cand .row:last-child { border-bottom: 0; }
+.cand .row b { width: 84px; flex: none; }
+.cand .row .k { color: var(--zhu); }
+.cand .row span { color: var(--mute); font-size: 10.5px; }
+.cand .msg { background: var(--ink); color: var(--bg); font-size: 11px; font-weight: 700; padding: 5px 8px; margin: 2px 0 6px; }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--panel); border-top: 2px solid var(--ink); padding: 12px 22px 22px; z-index: 2; }
+.sheet .lab { display: flex; justify-content: space-between; font-size: 11px; color: var(--mute); }
+.sheet .lab b { color: var(--ink); }
+.sheet .prog { height: 3px; background: var(--line); margin: 10px 0 14px; }
+.sheet .prog i { display: block; width: 50%; height: 100%; background: var(--ink); }
+.btn { display: inline-block; height: 38px; line-height: 36px; font-size: 12px; font-weight: 700; text-align: center; border: 1.5px solid var(--ink); }
+.btn.solid { background: var(--ink); color: var(--bg); }
+.btn.dis { opacity: .4; }
+.btns { display: flex; } .btns .btn { flex: 1; } .btns .btn + .btn { margin-left: 8px; }
+
+/* ---------- 卡 = 导出图（1080×1440 坐标 × k），浅 / 深两套 ---------- */
+.card { position: absolute; background: #e9e8e4; color: #1c1c1b; overflow: hidden; }
+.card.dark { background: #171716; color: #e7e5e0; }
+.card .tx { position: absolute; line-height: 1; white-space: nowrap; font-weight: 700; }
+.card .reg { font-weight: 400; }
+.card .mu { color: #5f5d58; } .card.dark .mu { color: #a09d97; }
+.card .so { color: #3b3a38; } .card.dark .so { color: #cfccc6; }
+.card .key { color: #b0301c; } .card.dark .key { color: #e5674f; }
+.card .ph-t { color: #a3a09a; } .card.dark .ph-t { color: #6f6c66; }
+.card .plate { position: absolute; background: #dfded9; overflow: hidden; } .card.dark .plate { background: #232321; }
+.card .photo { position: absolute; background: linear-gradient(180deg, #b9bcbf 0%, #dad9d5 46%, #7f7d79 47%, #c7c5c0 100%); }
+.card .giant { position: absolute; font-weight: 700; line-height: 1; }
+.card .bar, .card .rule { position: absolute; background: #1c1c1b; } .card.dark .bar, .card.dark .rule { background: #e7e5e0; }
+.card .uline { border-bottom-style: solid; border-bottom-color: #1c1c1b; } .card.dark .uline { border-bottom-color: #e7e5e0; }
+.card .alt { position: relative; }
+/* 选择圆点放在字母上方：下方是粗短墨条，会压住 */
+.card .alt::after, .card .key.pick::after { content: ""; position: absolute; left: 50%; top: -0.32em; width: .3em; height: .3em; margin-left: -.15em; border-radius: 50%; border: 1px solid #1c1c1b; }
+.card.dark .alt::after { border-color: #e7e5e0; }
+.card .key.pick { position: relative; }
+.card .key.pick::after { background: #b0301c; border-color: #b0301c; }
+.card.dark .key.pick::after { background: #e5674f; border-color: #e5674f; }
+.card .caret { display: inline-block; width: 1.5px; height: .9em; margin-left: 1px; background: #1c1c1b; vertical-align: -0.08em; animation: blink 1s steps(1) infinite; }
+.card.dark .caret { background: #e7e5e0; }
+@keyframes blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .card .caret { animation: none; } }
+.card .ul { position: absolute; background: #a3a09a; } .card.dark .ul { background: #6f6c66; }
+.card .wavy { text-decoration: underline wavy #5f5d58; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.card .tap { position: absolute; outline: 1px solid rgba(28,28,27,.16); } .card.dark .tap { outline-color: rgba(231,229,224,.2); }
+.card .tag { display: inline-block; font-weight: 700; color: #e9e8e4; background: #1c1c1b; vertical-align: middle; } .card.dark .tag { color: #171716; background: #e7e5e0; }
+</style>
+</head>
+<body>
+<header class="board-head">
+  <p><strong>历史设计稿：</strong>以下保留原方案与批准记录。v00.02.01 已改为独立入场页、只认首字母、取消圆圈选字；当前交互见 <a href="v00.02.01-gate-a.html">本版设计定稿</a>，任务状态见 <a href="../plans/v00.02.01/PLAN.md">本版 PLAN</a>。</p>
+  <h1>藏头 - Backronym · 满版 folio × 国际主义 × 左对齐（母版，第六稿）</h1>
+  <p>卡 = 导出图本身（1080×1440 坐标直接缩放；这里写的坐标就是实现坐标）。示例：单词 LIFE，当前编辑 I 格。<b>深色模式下卡面与导出图同为深色。</b>键盘为示意。示意文案：配文「她看人从不绕弯」、填表人「小满」。</p>
+  <div class="notes">
+    <div><h3>本稿按你的修改</h3><ul>
+      <li>填表人移到卡顶右上（原单词索引的位置），留空不导出</li>
+      <li>单词在<b>标题框</b>里输入；标题留空时灰色显示单词作占位，<b>导出时用单词作标题</b></li>
+      <li>深色模式下卡面与导出图（单图、列阵）都是深色</li>
+      <li>只保留左对齐：居中方案全部删除</li>
+    </ul></div>
+    <div><h3>沿用的定稿</h3><ul>
+      <li>满版 folio；国际主义风格；网格页边距 80 / 内容宽 920；界面左边距 22px 对齐卡网格</li>
+      <li>粗短墨条 140×10；无配图时图版里放超大关键字母；配图上无印</li>
+      <li>石白 / 墨 / 朱三色，朱只标关键字母；字体只用 Noto Sans</li>
+    </ul></div>
+    <div><h3>请你审</h3><ul>
+      <li class="ask">改单词的入口：聚焦标题框时，键盘上方「单词 LIFE · 修改单词」（第 3 节 ①）</li>
+      <li class="ask">第 3 节其余补稿（② 填表人已按新位置重画）</li>
+    </ul></div>
+  </div>
+</header>
+<div id="root"></div>
+
+<script>
+var M = 80, CW = 920, WORD = 'LIFE', LETTERS = WORD.split('');
+var TITLE = '总之 这里有四种情况', CAP = '她看人从不绕弯', LIV = 'L<span class="key">i</span>ving';
+// 卡：o = {x,y,w,dark, title|null, titleEdit, titleCaret, titleLines, titleSize, firstRun, wordMode,
+//          img, letter, word, wordSize, gloss, cap, empty, emptyText, caret, filler, fillerEdit, folio, taps}
+function card(o) {
+  var k = o.w / 1080, H = 1440 * k;
+  var s = '<div class="card' + (o.dark ? ' dark' : '') + '" style="left:' + o.x + 'px;top:' + o.y + 'px;width:' + o.w + 'px;height:' + H + 'px">';
+  var text = function (base, size, html, cls, extra) {
+    return '<div class="tx ' + (cls || '') + '" style="left:' + M * k + 'px;width:' + CW * k + 'px;top:' + (base - size * 0.86) * k + 'px;font-size:' + size * k + 'px;' + (extra || '') + '">' + html + '</div>';
+  };
+  var tight = 'letter-spacing:' + (-1 * k) + 'px';
+  // 顶部信息栏：左页码，右填表人（可编辑；留空不导出）
+  s += '<div class="tx reg mu" style="left:' + M * k + 'px;top:' + (96 - 22) * k + 'px;font-size:' + 26 * k + 'px">' + o.folio + '</div>';
+  if (o.fillerEdit !== undefined) {
+    s += '<div class="tx reg uline" style="right:' + M * k + 'px;top:' + (96 - 22) * k + 'px;font-size:' + 26 * k + 'px;border-bottom-width:' + Math.max(1, 3 * k) + 'px;padding-bottom:' + 3 * k + 'px">' +
+      (o.fillerEdit ? '填表人 ' + o.fillerEdit : '<span class="ph-t">填表人（选填）</span>') + '<span class="caret"></span></div>';
+  } else if (o.filler) {
+    s += '<div class="tx reg mu" style="right:' + M * k + 'px;top:' + (96 - 22) * k + 'px;font-size:' + 26 * k + 'px">填表人 ' + o.filler + '</div>';
+  }
+  s += '<div class="rule" style="left:' + M * k + 'px;top:' + 120 * k + 'px;width:' + CW * k + 'px;height:' + Math.max(1, 3 * k) + 'px"></div>';
+  // 标题框 = 单词入口：首次进入输单词；之后标题留空 → 编辑时灰色单词占位，导出时墨色单词
+  if (o.firstRun) {
+    s += text(236, 76, '<span class="ph-t">输入一个单词</span><span class="caret"></span>', '', tight);
+  } else if (o.wordMode) {
+    s += text(236, 76, '<span class="tag" style="font-size:' + 30 * k + 'px;padding:' + 6 * k + 'px ' + 12 * k + 'px;margin-right:' + 20 * k + 'px">单词</span>' + WORD + '<span class="caret"></span>', '', 'letter-spacing:' + (4 * k) + 'px');
+  } else if (o.titleLines) {
+    o.titleLines.forEach(function (ln, j) { s += text(o.titleLines.length > 1 ? 204 + j * 70 : 236, o.titleSize || 76, ln, '', tight); });
+  } else if (o.title) {
+    s += text(236, 76, o.title + (o.titleCaret ? '<span class="caret"></span>' : ''), '', tight);
+  } else {
+    s += text(236, 76, (o.titleEdit ? '<span class="ph-t">' + WORD + '</span>' : WORD) + (o.titleCaret ? '<span class="caret"></span>' : ''), '', tight);
+  }
+  // 图版
+  var px = 'left:' + M * k + 'px;top:' + 290 * k + 'px;width:' + CW * k + 'px;height:' + 600 * k + 'px;';
+  if (o.img) s += '<div class="photo" style="' + px + '"></div>';
+  else {
+    s += '<div class="plate" style="' + px + '">';
+    if (o.letter) s += '<div class="giant" style="left:' + 48 * k + 'px;top:' + (600 - 56 - 620 * 0.86) * k + 'px;font-size:' + 620 * k + 'px;letter-spacing:' + (-8 * k) + 'px">' + o.letter + '</div>';
+    s += '</div>';
+  }
+  // 单词 / 粗短墨条 / 释义 / 配文
+  if (o.empty) {
+    s += text(1036, o.emptyText ? 44 : 72, '<span class="ph-t reg">' + (o.emptyText || ('打一个含 ' + o.letter + ' 的词')) + '</span>' + (o.caret ? '<span class="caret"></span>' : ''));
+    s += '<div class="ul" style="left:' + M * k + 'px;top:' + 1062 * k + 'px;width:' + 560 * k + 'px;height:' + Math.max(1, 3 * k) + 'px"></div>';
+  } else {
+    s += text(1036, o.wordSize || 120, o.word, '', 'letter-spacing:' + (-2 * k) + 'px');
+    s += '<div class="bar" style="left:' + M * k + 'px;top:' + 1068 * k + 'px;width:' + 140 * k + 'px;height:' + 10 * k + 'px"></div>';
+    s += text(1158, 48, o.gloss);
+    if (o.cap) s += text(1228, 38, o.cap, 'reg so');
+    else if (o.capEdit) s += text(1228, 38, '<span class="ph-t">配文（选填）</span>', 'reg');
+  }
+  if (o.taps) [[80, 160, 920, 100], [80, 290, 920, 600], [80, 920, 920, 160], [80, 1110, 920, 64], [80, 1182, 920, 64], [560, 60, 440, 50]].forEach(function (r) {
+    s += '<div class="tap" style="left:' + r[0] * k + 'px;top:' + r[1] * k + 'px;width:' + r[2] * k + 'px;height:' + r[3] * k + 'px"></div>';
+  });
+  return s + '</div>';
+}
+// 列阵（n = 1..10）：≤5 一行；6–10 两行、每行 ⌈n/2⌉ 格；行一律左对齐。标题留空 → 用单词
+var WORDMAP = { A: ['<span class="key">A</span>ria', '咏叹调'], B: ['<span class="key">B</span>loom', '开花，繁盛'], C: ['<span class="key">C</span>inder', '余烬'], D: ['<span class="key">D</span>usk', '黄昏'], E: ['<span class="key">E</span>dge', '边缘，尖锐'],
+  F: ['So<span class="key">f</span>t', '软的，温和的'], G: ['<span class="key">G</span>lint', '闪光'], H: ['<span class="key">H</span>ush', '安静'], I: ['L<span class="key">i</span>ving', '活的，逼真的'], K: ['<span class="key">K</span>ind', '善良的'],
+  L: ['<span class="key">L</span>ucid', '明晰的，清澈的'], M: ['<span class="key">M</span>ist', '薄雾'], N: ['<span class="key">N</span>ova', '新星'], O: ['<span class="key">O</span>rbit', '轨道'], R: ['<span class="key">R</span>ain', '雨'],
+  S: ['<span class="key">S</span>alt', '盐'], T: ['<span class="key">T</span>ide', '潮汐'], Y: ['<span class="key">Y</span>arn', '纱线，故事'] };
+function grid(word, x, y, w, title, dark, photoAt) {
+  var n = word.length, cols = n > 5 ? Math.ceil(n / 2) : n, rows = Math.ceil(n / cols);
+  var GM = 100, W = Math.max(cols * 300 + (cols - 1) * 48 + 2 * GM, 1080), H = 300 + rows * 620 + 40, k = w / W;
+  var s = '<div class="card' + (dark ? ' dark' : '') + '" style="left:' + x + 'px;top:' + y + 'px;width:' + w + 'px;height:' + H * k + 'px">';
+  s += '<div class="tx reg mu" style="left:' + GM * k + 'px;top:' + (80 - 22) * k + 'px;font-size:' + 26 * k + 'px">' + n + ' 格</div>';
+  s += '<div class="tx reg mu" style="right:' + GM * k + 'px;top:' + (80 - 22) * k + 'px;font-size:' + 26 * k + 'px">填表人 小满</div>';
+  s += '<div class="rule" style="left:' + GM * k + 'px;top:' + 104 * k + 'px;width:' + (W - 2 * GM) * k + 'px;height:' + Math.max(1, 3 * k) + 'px"></div>';
+  s += '<div class="tx" style="left:' + GM * k + 'px;top:' + (230 - 96 * 0.86) * k + 'px;font-size:' + 96 * k + 'px;letter-spacing:' + (-1.5 * k) + 'px">' + (title || word) + '</div>';
+  word.split('').forEach(function (l, i) {
+    var r = Math.floor(i / cols), c = i % cols, cx = GM + c * 348, cy = 300 + r * 620, m = WORDMAP[l] || ['<span class="key">' + l + '</span>', ''];
+    if (photoAt === i) s += '<div class="photo" style="left:' + cx * k + 'px;top:' + cy * k + 'px;width:' + 300 * k + 'px;height:' + 400 * k + 'px"></div>';
+    else s += '<div class="plate" style="left:' + cx * k + 'px;top:' + cy * k + 'px;width:' + 300 * k + 'px;height:' + 400 * k + 'px"><div class="giant" style="left:' + 22 * k + 'px;top:' + (400 - 30 - 300 * 0.86) * k + 'px;font-size:' + 300 * k + 'px">' + l + '</div></div>';
+    s += '<div class="tx" style="left:' + cx * k + 'px;top:' + (cy + 490 - 56 * 0.86) * k + 'px;font-size:' + 56 * k + 'px;letter-spacing:' + (-1 * k) + 'px">' + m[0] + '</div>';
+    s += '<div class="bar" style="left:' + cx * k + 'px;top:' + (cy + 508) * k + 'px;width:' + 60 * k + 'px;height:' + 6 * k + 'px"></div>';
+    s += '<div class="tx reg so" style="left:' + cx * k + 'px;top:' + (cy + 560 - 28 * 0.86) * k + 'px;font-size:' + 28 * k + 'px">' + m[1] + '</div>';
+  });
+  return { html: s + '</div>', h: H * k };
+}
+function kb() { return '<div class="kb"><div class="row">' + '<i></i>'.repeat(10) + '</div><div class="row">' + '<i></i>'.repeat(9) + '</div><div class="row">' + '<i></i>'.repeat(7) + '</div><div class="row"><i style="width:50px"></i><i class="w"></i><i style="width:50px"></i></div><span class="lab">键盘（示意）</span></div>'; }
+function topBar(view, dark, right) {
+  return '<div class="top"><span><span class="' + (view === 'single' ? 'on' : '') + '">单图</span><span class="' + (view === 'grid' ? 'on' : '') + '">列阵</span></span><span><span>' + (dark ? '深色' : '跟随系统') + '</span><span><b>' + (right || '完成') + '</b></span></span></div>';
+}
+function pager(y, done) {
+  return '<div class="pager" style="top:' + y + 'px"><span class="ls">' + LETTERS.map(function (l, i) {
+    return '<span class="' + (i === 1 ? 'on' : (done && !done[i] ? 'todo' : '')) + '">' + l + '</span>';
+  }).join('') + '</span><span class="no">02 / 04</span></div>';
+}
+function frame(inner, dark) { return '<div class="phone' + (dark ? ' dark' : '') + '">' + inner + '</div>'; }
+function fig(inner, title, note, w) { return '<figure>' + inner + '<figcaption' + (w ? ' style="width:' + w + 'px"' : '') + '><b>' + title + '</b>' + (note ? '<br>' + note : '') + '</figcaption></figure>'; }
+var BASE = { x: 0, w: 300, folio: '02 / 04', letter: 'I', filler: '小满', title: null, img: true, word: LIV, gloss: '活的，逼真的', cap: CAP };
+function C(extra) { return card(Object.assign({}, BASE, { y: 56 }, extra)); }
+var CY = 56, CH = 400, K = 300 / 1080;
+var CANDS = [['L<span class="k">i</span>ve', '活的'], ['L<span class="k">i</span>ving', '活的，逼真的'], ['L<span class="k">i</span>vely', '活泼的'], ['L<span class="k">i</span>ver', '肝脏']];
+
+// 第 2 节：状态
+function phone(state, dark) {
+  var s = '', o = Object.assign({}, BASE, { y: CY, dark: dark, titleEdit: true });
+  if (state === 'grid') {
+    var g = grid(WORD, 0, 92, 300, null, dark, 1);
+    return frame(topBar('grid', dark) + g.html + '<div class="hint" style="top:' + (92 + g.h + 12) + 'px">只预览 · 点一格进入该字母的单图编辑</div>', dark);
+  }
+  if (state === 'default') o.taps = true;
+  if (state === 'empty') { o.img = false; o.empty = true; o.caret = true; o.filler = null; o.fillerEdit = undefined; }
+  if (state === 'typing') { o.y = -40; o.img = false; o.word = 'L<span class="key">i</span>v<span class="caret"></span>'; o.gloss = '<span class="ph-t reg">释义</span>'; o.cap = null; }
+  if (state === 'invalid') { o.y = -40; o.img = false; o.word = '<span class="wavy">Lovely</span><span class="caret"></span>'; o.gloss = '可爱的，美好的'; o.cap = null; }
+  if (state === 'pick') { o.word = '<span class="key pick">I</span>n<span class="alt">i</span>t<span class="alt">i</span>al'; o.gloss = '最初的，开始的'; }
+  s += card(o);
+  var under = o.y + 1082 * K;
+  if (state === 'typing') return frame(s + '<div class="cand" style="top:' + under + 'px"><div class="lab"><span>I 开头 · 无匹配 “liv”　含 I</span><span><b>随机一个</b>　换一批</span></div>' + CANDS.map(function (c) { return '<div class="row"><b>' + c[0] + '</b><span>' + c[1] + '</span></div>'; }).join('') + '</div>' + kb(), dark);
+  if (state === 'invalid') return frame(s + '<div class="cand" style="top:' + under + 'px"><div class="msg">Lovely 里没有 I</div><div class="lab"><span>I 格的词要以 I 开头，或词里含 I。试试：</span><span></span></div><div class="row"><b>Lov<span class="k">i</span>ng</b><span>爱的，慈爱的</span></div></div>' + kb(), dark);
+  s += topBar('single', dark, state === 'save' ? '保存中…' : '完成');
+  var py = CY + CH + 16;
+  if (state === 'save') return frame(s + '<div class="sheet"><div class="lab"><b>导出 4 张单图</b><span>2 / 4</span></div><div class="prog"><i></i></div><div class="btns"><span class="btn solid dis">保存到相册</span><span class="btn dis">发布笔记</span></div></div>', dark);
+  s += pager(py, state === 'empty' ? [0, 0, 0, 0] : null);
+  var h = { default: '左右滑动或点字母切换 · 细框为卡上可点区域（仅标注）', empty: '先打一个含 I 的词，候选才会出现<br>还有 4 格没填，填完才能保存', pick: 'Initial 里有 3 个 i · 点圆圈改高亮的那一个' }[state];
+  return frame(s + '<div class="hint" style="top:' + (py + 36) + 'px">' + h + '</div>', dark);
+}
+var STATES = [
+  ['default', '① 默认编辑（单图）', '标题留空：灰色显示单词 LIFE（导出为墨色 LIFE）；右上填表人'],
+  ['typing', '② 打关键词 + 候选 + 键盘', 'I 格打 “liv”：卡上出光标、i 已朱红；卡上滚，候选平直栏贴在词下方'],
+  ['invalid', '③ 校验失败', 'Lovely：不高亮、波浪线；候选栏顶部墨底提示 + 建议词'],
+  ['empty', '④ 空格占位', '四格为空：词位灰色占位 + 灰线；右上填表人未填（不显示）；字母索引全灰'],
+  ['grid', '⑤ 列阵（只预览）', '标题留空 → 列阵标题也用单词；点格跳单图'],
+  ['pick', '⑥ 点选高亮位置', 'Initial：实心朱点 = 当前，空心圈 = 可点选'],
+  ['save', '⑦ 保存 / 发布反馈', '「完成」后底部面板：逐张导出进度'],
+];
+
+// 字号适配（按真实字宽）
+var MC = document.createElement('canvas').getContext('2d');
+function width(t, size, track) { MC.font = '700 ' + size + 'px "Noto Sans","Noto Sans SC"'; return MC.measureText(t).width + track * (t.length - 1); }
+function fitWord(plain) { for (var z = 120; z > 56; z -= 4) if (width(plain, z, -2) <= CW) return z; return 56; }
+function fitTitle(t) {
+  if (width(t, 76, -1) <= CW) return { size: 76, lines: [t] };
+  if (width(t, 60, -1) <= CW) return { size: 60, lines: [t] };
+  var a = '', i = 0; for (; i < t.length && width(a + t[i], 60, -1) <= CW; i++) a += t[i];
+  var b = t.slice(i); while (b && width(b + '…', 60, -1) > CW) b = b.slice(0, -1);
+  return { size: 60, lines: [a, b + (b.length < t.length - i ? '…' : '')] };
+}
+function row(y, html, bottom) { return '<div class="cand" style="' + (bottom ? 'bottom:178px' : 'top:' + y + 'px') + ';padding-top:8px;padding-bottom:8px">' + html + '</div>'; }
+
+function render() {
+  var h = '';
+  // ===== 1. 导出图 =====
+  h += '<section class="sec"><div class="sec-head"><span class="id">1</span><h2>导出图（左对齐）：浅色 / 深色</h2><span class="sub">深色模式导出深色图；第 2、4 张标题留空 → 导出时标题位为单词 LIFE</span></div><div class="frames">';
+  [[false, true, TITLE, '浅 · 有配图 · 自定标题'], [false, false, null, '浅 · 无配图 · 标题留空 → LIFE'], [true, true, TITLE, '深 · 有配图 · 自定标题'], [true, false, null, '深 · 无配图 · 标题留空 → LIFE']].forEach(function (v) {
+    h += fig('<div class="exp" style="width:330px;height:440px">' + card(Object.assign({}, BASE, { x: 0, y: 0, w: 330, dark: v[0], img: v[1], title: v[2] })) + '</div>', v[3], '', 330);
+  });
+  h += '</div><div class="frames">';
+  [[false, '列阵 · 浅'], [true, '列阵 · 深']].forEach(function (v) {
+    var g = grid(WORD, 0, 0, 540, null, v[0], 1);
+    h += fig('<div class="exp" style="width:540px;height:' + g.h + 'px">' + g.html + '</div>', v[1], '标题留空 → 用单词', 540);
+  });
+  h += '</div></section>';
+  // ===== 2. 状态 =====
+  h += '<section class="sec"><div class="sec-head"><span class="id">2</span><h2>编辑状态（左对齐）</h2><span class="sub">界面元素左对齐到卡的网格线</span></div><div class="frames">';
+  STATES.forEach(function (st) { h += fig(phone(st[0], false), st[1], st[2]); });
+  h += fig(phone('default', true), '① 深色', '界面与卡一起变深（卡 = 深色导出图）');
+  h += fig(phone('typing', true), '② 深色', '');
+  h += '</div></section>';
+  // ===== 3. 补稿 =====
+  h += '<section class="sec"><div class="sec-head"><span class="id">3</span><h2>补稿（T05）：母版没画到的 11 处 · 推荐方案</h2><span class="sub">① ② 已按你的修改重画；其余沿用上一版</span></div><div class="frames">';
+  // ① 单词：首次 / 改单词入口 / 单词模式
+  h += fig(frame(topBar('single') + C({ firstRun: true, img: false, letter: '', empty: true, emptyText: '格子会在你输入单词后出现', filler: null }) + row(0, '<div class="lab"><span>标题框就是单词输入：只收 A–Z，自动转大写，最多 10 个字母</span><span></span></div>', true) + kb()),
+    '① 单词 · 首次进入', '光标在标题框，占位「输入一个单词」。确认后格子按字母生成，全部为空；标题框随即变为标题模式');
+  h += fig(frame(topBar('single') + C({ titleEdit: true, titleCaret: true }) + row(0, '<div class="lab"><span>单词 <b>LIFE</b>　· 标题留空 = 导出时用 LIFE 作标题</span><span><b style="text-decoration:underline">修改单词</b></span></div>', true) + kb()),
+    '① 标题模式（含改单词入口）', '聚焦标题框：灰色占位是单词；直接打字 = 自定义标题。键盘上方一行给出当前单词与「修改单词」');
+  h += fig(frame(topBar('single') + C({ wordMode: true }) + row(0, '<div class="lab"><span>同位置字母没变的格保留，其余清空</span><span><b>完成</b></span></div>', true) + kb()),
+    '① 单词模式', '点「修改单词」后标题框前出现「单词」标签，框内是 LIFE；改完点「完成」回到标题模式');
+  // ② 填表人（卡顶右上）
+  h += fig(frame(topBar('single') + C({ fillerEdit: '' }) + row(0, '<div class="lab"><span>填表人 · 留空 = 导出图不出现</span><span>最多 12 字</span></div>', true) + kb()),
+    '② 填表人（卡顶右上）', '点卡顶右上直接编辑；空时为灰色占位「填表人（选填）」');
+  // ③ 配图面板
+  h += fig(frame(topBar('single') + C({}) + '<div class="sheet" style="padding-top:12px"><div class="lab"><b>这一格（I）的配图</b><span></span></div>' +
+    '<div style="font-size:12.5px;line-height:2.3;border-bottom:1px solid var(--line);padding-bottom:6px">选择图片<br>调整取景<br>移除</div>' +
+    '<div class="lab" style="margin-top:8px"><b>所有格共用的默认图</b><span>没单独配图的格用它</span></div><div style="font-size:12.5px;line-height:2.3">选择图片　·　移除</div></div>'),
+    '③ 配图 / 默认图', '点卡上的图版 → 底部平直面板；默认图收在同一面板下半');
+  // ④ 标题工具栏
+  h += fig(frame(topBar('single') + C({ title: '总之 这里有<span class="key">四</span>种情况', titleCaret: true }) +
+    '<div class="cand" style="bottom:178px;padding:7px 22px;display:flex;align-items:center;font-size:13px">' +
+    '<b style="margin-right:16px">B</b><i style="margin-right:16px">I</i><span style="width:1px;height:16px;background:var(--line);margin-right:16px"></span>' +
+    '<span style="width:16px;height:16px;background:#1c1c1b;margin-right:12px"></span><span style="width:16px;height:16px;background:#b0301c;margin-right:12px"></span><span style="width:16px;height:16px;background:#8d877d;margin-right:12px"></span><span style="width:16px;height:16px;border:1.5px solid var(--ink);margin-right:6px"></span><span style="font-size:10px;color:var(--mute)">自选色</span></div>' + kb()),
+    '④ 标题工具栏', '自定义标题时：粗体 / 斜体 + 墨、朱、灰 + 自选色（角色代表色）；直角色块');
+  // ⑤⑥ 候选 8 个
+  var C8 = [['Live', '活的'], ['Living', '活的，逼真的'], ['Lively', '活泼的'], ['Liver', '肝脏'], ['Livestock', '家畜'], ['Livelihood', '生计'], ['Liven', '使活跃'], ['Livery', '制服']];
+  var cell = function (p) { return '<div style="display:flex;align-items:baseline;width:50%;padding:4px 6px 4px 0;border-bottom:1px solid var(--line);font-size:12px"><b style="flex:none;margin-right:5px">' + p[0].replace('i', '<span style="color:var(--zhu)">i</span>') + '</b><span style="color:var(--mute);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + p[1] + '</span></div>'; };
+  h += fig(frame(C({ y: -40, img: false, word: 'L<span class="key">i</span>v<span class="caret"></span>', gloss: '<span class="ph-t reg">释义</span>', cap: null, titleEdit: true }) +
+    '<div class="cand" style="top:' + (-40 + 1082 * K) + 'px"><div class="lab"><span>含 I · 1 / 3 批</span><span><b>随机一个</b>　换一批</span></div><div style="display:flex;flex-wrap:wrap">' + C8.map(cell).join('') + '</div></div>' + kb()),
+    '⑤⑥ 候选 8 个 + 随机', '每批 8 个排成 2 列 × 4 行；标签行右侧「随机一个」「换一批」');
+  // ⑦ 义项
+  h += fig(frame(C({ y: -110, img: false, gloss: '活的，逼真的<span class="caret"></span>', cap: null, titleEdit: true }) +
+    '<div class="cand" style="top:' + (-110 + 1180 * K) + 'px"><div class="lab"><span>Living 的义项 · 点选替换，也可直接打字</span><span></span></div>' +
+    '<div class="row"><b style="width:34px;font-style:italic;font-weight:400;color:var(--mute)">adj.</b><span style="color:var(--zhu);font-weight:700;margin-right:12px;font-size:12px">活的</span><span style="color:var(--zhu);font-weight:700;margin-right:12px;font-size:12px">逼真的</span><span style="font-size:12px">现存的</span></div>' +
+    '<div class="row"><b style="width:34px;font-style:italic;font-weight:400;color:var(--mute)">n.</b><span style="font-size:12px;margin-right:12px">生计</span><span style="font-size:12px">生活方式</span></div></div>' + kb()),
+    '⑦ 义项', '点卡上的释义 → 词下栏按词性分行列出义项，朱色 = 已选');
+  h += '</div><div class="frames">';
+  // ⑧ 列阵 1 / 3 / 7 / 10
+  [['I', 220], ['ART', 300], ['MORNING', 380], ['BACKRONYMS', 460]].forEach(function (g) {
+    var r = grid(g[0], 0, 0, g[1], null, false);
+    h += fig('<div class="exp" style="width:' + g[1] + 'px;height:' + r.h + 'px">' + r.html + '</div>', '⑧ 列阵 · ' + g[0].length + ' 个字母', '≤5 一行；6–10 两行、每行 ⌈n/2⌉ 格；末行左对齐', g[1]);
+  });
+  h += '</div><div class="frames">';
+  // ⑨ 长词 / 长标题
+  var LONG = 'Internationalization', lz = fitWord(LONG);
+  var ft = fitTitle('总之 这里有四种以上的情况吧'), ft2 = fitTitle('关于他的四种情况：看起来温柔其实心很硬，说话很少但句句都算数');
+  h += fig('<div class="exp" style="width:330px;height:440px">' + card(Object.assign({}, BASE, { x: 0, y: 0, w: 330, title: TITLE, word: '<span class="key">I</span>nternationalization', wordSize: lz })) + '</div>', '⑨ 长词', LONG + '：单词 120 起每次 −4，到 ' + lz + 'px 放进 920 宽；下限 56', 330);
+  h += fig('<div class="exp" style="width:330px;height:440px">' + card(Object.assign({}, BASE, { x: 0, y: 0, w: 330, titleLines: ft.lines, titleSize: ft.size })) + '</div>', '⑨ 长标题 · 缩字号', '76 放不下先缩到 ' + ft.size + '（实际 ' + ft.lines.length + ' 行）', 330);
+  h += fig('<div class="exp" style="width:330px;height:440px">' + card(Object.assign({}, BASE, { x: 0, y: 0, w: 330, titleLines: ft2.lines, titleSize: ft2.size })) + '</div>', '⑨ 长标题 · 两行', '60 仍放不下折两行，第二行再放不下末尾省略；图版位置不动', 330);
+  h += '</div><div class="frames">';
+  // ⑩ 可点区域
+  h += fig(frame(topBar('single') + C({ titleEdit: true }) + pager(CY + CH + 16) + '<div class="hint" style="top:' + (CY + CH + 52) + 'px">左右滑动或点字母切换</div>'), '⑩ 常态：不显示细框', '卡面干净；标题留空时灰色单词是输入框占位');
+  h += fig(frame(topBar('single') + C({ taps: true, titleEdit: true }) + '<div style="position:absolute;left:22px;top:' + (CY + CH + 14) + 'px;background:var(--ink);color:var(--bg);font-size:11px;padding:6px 10px">卡上的字和图都可以直接点来改</div>' + pager(CY + CH + 56)),
+    '⑩ 首次进入提示一次', '细框 + 一行提示，任意点击后消失，之后不再出现');
+  // ⑪
+  h += fig(frame(topBar('single') + C({}) + '<div class="sheet" style="padding-top:12px"><div class="lab"><b>调整取景 · I</b><span>拖动画面 · 双指缩放</span></div>' +
+    '<div style="margin:10px 0;height:150px;position:relative;overflow:hidden;background:#dfded9"><div style="position:absolute;left:-30px;top:-20px;width:320px;height:200px;background:linear-gradient(180deg,#b9bcbf 0%,#dad9d5 46%,#7f7d79 47%,#c7c5c0 100%)"></div><div style="position:absolute;left:12px;right:12px;top:14px;bottom:14px;outline:2px solid #1c1c1b;box-shadow:0 0 0 999px rgba(233,232,228,.55)"></div></div>' +
+    '<div style="height:3px;background:var(--line);margin:4px 0 12px;position:relative"><i style="position:absolute;left:30%;top:-5px;width:12px;height:12px;background:var(--ink)"></i></div><div class="btns"><span class="btn">还原</span><span class="btn solid">完成</span></div></div>'),
+    '⑪ 取景面板', '取景框比例 920:600（与图版一致）');
+  var finish = function (dark) { return '<div class="sheet"><div class="lab"><b>导出 4 张单图' + (dark ? '（深色）' : '') + '</b><span>LIFE</span></div><div class="prog"><i style="width:0"></i></div><div class="btns"><span class="btn solid">保存到相册</span><span class="btn">发布笔记</span></div><div style="display:flex;justify-content:space-between;margin-top:12px;font-size:10px;color:var(--mute)"><span style="text-decoration:underline">借物与版权</span><span>v00.02.00</span></div></div>'; };
+  h += fig(frame(topBar('single') + C({}) + finish(false)), '⑪ 完成面板 + 借物与版权入口', '面板底行固定「借物与版权」与版本号；发布笔记标题留空时用单词 LIFE');
+  h += fig(frame('<div class="top"><span><b>借物与版权</b></span><span><b>关闭</b></span></div><div style="position:absolute;top:60px;left:22px;right:22px;border-top:3px solid var(--ink);padding-top:10px;font-size:11px;line-height:1.75;color:var(--ink)">' +
+    '<div style="font-size:20px;font-weight:700;letter-spacing:-.3px;margin-bottom:8px">藏头 - Backronym<br><span style="font-weight:400;font-size:12px;color:var(--mute)">v00.02.00 · © 2026 BeyondPassenger · MIT</span></div>' +
+    ['词库　ECDICT（MIT）', '字体　Noto Sans / Noto Sans SC（SIL OFL 1.1）'].map(function (l) { return '<div style="border-top:1px solid var(--line);padding:6px 0">' + l + '</div>'; }).join('') +
+    '<div style="border-top:1px solid var(--line);padding:6px 0;color:var(--mute)">许可证全文（展开）</div></div>'), '⑪ 借物与版权页', '内容沿用现有借物页');
+  h += fig(frame('<div class="top"><span><b>导出结果</b>　4 张</span><span><b>关闭</b></span></div><div style="position:absolute;top:58px;left:22px;right:22px;font-size:10px;color:var(--mute);border-top:3px solid var(--ink);padding-top:6px">当前不在小红书内：长按或右键图片保存</div>' +
+    card(Object.assign({}, BASE, { x: 22, y: 92, w: 256 })) + '<div style="position:absolute;left:22px;top:' + (92 + 256 * 1440 / 1080 + 8) + 'px;font-size:10px;color:var(--mute)">1 / 4　向下滚动看其余 3 张</div>'), '⑪ 浏览器导出结果', '没有端能力时「完成」面板按钮变为「导出图片」');
+  h += '</div><div class="frames">';
+  h += fig(frame(topBar('single', true) + C({ dark: true, titleEdit: true, titleCaret: true }) + row(0, '<div class="lab"><span>单词 <b>LIFE</b>　· 标题留空 = 导出时用 LIFE 作标题</span><span><b style="text-decoration:underline">修改单词</b></span></div>', true) + kb(), true), '深色 · ① 标题模式', '');
+  h += fig(frame(topBar('single', true) + C({ dark: true }) + finish(true), true), '深色 · 完成面板', '导出的就是深色图');
+  h += '</div></section>';
+  document.getElementById('root').innerHTML = h;
+}
+(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(render);
+</script>
+</body>
+</html>

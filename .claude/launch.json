@@ -1,0 +1,8 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "app", "runtimeExecutable": "python3", "runtimeArgs": ["scripts/dev.py", "5173"], "port": 5173 },
+    { "name": "docs", "runtimeExecutable": "python3", "runtimeArgs": ["-m", "http.server", "5174", "-d", "docs"], "port": 5174 },
+    { "name": "design", "runtimeExecutable": "python3", "runtimeArgs": ["-m", "http.server", "5175"], "port": 5175 }
+  ]
+}

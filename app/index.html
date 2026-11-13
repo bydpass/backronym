@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <!-- 不禁止双指缩放：视力不好的用户需要放大（WCAG 1.4.4） -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>藏头 - Backronym</title>
+  <link rel="stylesheet" href="./assets/style.css" />
+  <script src="./assets/theme.js"></script>
+</head>
+<body>
+  <!-- 图标（v00.03.00 界面重构）：Phosphor Icons light 粗细（MIT，见借物表），内嵌一份，各处用 <use> 引用；不联网。图标只是装饰，读屏名是按钮上的字 -->
+  <svg class="sprite" aria-hidden="true" focusable="false" width="0" height="0">
+    <symbol id="i-gear" viewBox="0 0 256 256"><path d="M128,82a46,46,0,1,0,46,46A46.06,46.06,0,0,0,128,82Zm0,80a34,34,0,1,1,34-34A34,34,0,0,1,128,162ZM214,130.84c.06-1.89.06-3.79,0-5.68L229.33,106a6,6,0,0,0,1.11-5.29A105.34,105.34,0,0,0,219.76,74.9a6,6,0,0,0-4.53-3l-24.45-2.71q-1.93-2.07-4-4l-2.72-24.46a6,6,0,0,0-3-4.53,105.65,105.65,0,0,0-25.77-10.66A6,6,0,0,0,150,26.68l-19.2,15.37c-1.89-.06-3.79-.06-5.68,0L106,26.67a6,6,0,0,0-5.29-1.11A105.34,105.34,0,0,0,74.9,36.24a6,6,0,0,0-3,4.53L69.23,65.22q-2.07,1.94-4,4L40.76,72a6,6,0,0,0-4.53,3,105.65,105.65,0,0,0-10.66,25.77A6,6,0,0,0,26.68,106l15.37,19.2c-.06,1.89-.06,3.79,0,5.68L26.67,150.05a6,6,0,0,0-1.11,5.29A105.34,105.34,0,0,0,36.24,181.1a6,6,0,0,0,4.53,3l24.45,2.71q1.94,2.07,4,4L72,215.24a6,6,0,0,0,3,4.53,105.65,105.65,0,0,0,25.77,10.66,6,6,0,0,0,5.29-1.11L125.16,214c1.89.06,3.79.06,5.68,0l19.21,15.38a6,6,0,0,0,3.75,1.31,6.2,6.2,0,0,0,1.54-.2,105.34,105.34,0,0,0,25.76-10.68,6,6,0,0,0,3-4.53l2.71-24.45q2.07-1.93,4-4l24.46-2.72a6,6,0,0,0,4.53-3,105.49,105.49,0,0,0,10.66-25.77,6,6,0,0,0-1.11-5.29Zm-3.1,41.63-23.64,2.63a6,6,0,0,0-3.82,2,75.14,75.14,0,0,1-6.31,6.31,6,6,0,0,0-2,3.82l-2.63,23.63A94.28,94.28,0,0,1,155.14,218l-18.57-14.86a6,6,0,0,0-3.75-1.31h-.36a78.07,78.07,0,0,1-8.92,0,6,6,0,0,0-4.11,1.3L100.87,218a94.13,94.13,0,0,1-17.34-7.17L80.9,187.21a6,6,0,0,0-2-3.82,75.14,75.14,0,0,1-6.31-6.31,6,6,0,0,0-3.82-2l-23.63-2.63A94.28,94.28,0,0,1,38,155.14l14.86-18.57a6,6,0,0,0,1.3-4.11,78.07,78.07,0,0,1,0-8.92,6,6,0,0,0-1.3-4.11L38,100.87a94.13,94.13,0,0,1,7.17-17.34L68.79,80.9a6,6,0,0,0,3.82-2,75.14,75.14,0,0,1,6.31-6.31,6,6,0,0,0,2-3.82l2.63-23.63A94.28,94.28,0,0,1,100.86,38l18.57,14.86a6,6,0,0,0,4.11,1.3,78.07,78.07,0,0,1,8.92,0,6,6,0,0,0,4.11-1.3L155.13,38a94.13,94.13,0,0,1,17.34,7.17l2.63,23.64a6,6,0,0,0,2,3.82,75.14,75.14,0,0,1,6.31,6.31,6,6,0,0,0,3.82,2l23.63,2.63A94.28,94.28,0,0,1,218,100.86l-14.86,18.57a6,6,0,0,0-1.3,4.11,78.07,78.07,0,0,1,0,8.92,6,6,0,0,0,1.3,4.11L218,155.13A94.13,94.13,0,0,1,210.85,172.47Z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 256 256"><path d="M228.24,76.24l-128,128a6,6,0,0,1-8.48,0l-56-56a6,6,0,0,1,8.48-8.48L96,191.51,219.76,67.76a6,6,0,0,1,8.48,8.48Z"/></symbol>
+    <symbol id="i-back" viewBox="0 0 256 256"><path d="M222,128a6,6,0,0,1-6,6H54.49l61.75,61.76a6,6,0,1,1-8.48,8.48l-72-72a6,6,0,0,1,0-8.48l72-72a6,6,0,0,1,8.48,8.48L54.49,122H216A6,6,0,0,1,222,128Z"/></symbol>
+    <symbol id="i-save" viewBox="0 0 256 256"><path d="M217.9,73.42,182.58,38.1a13.9,13.9,0,0,0-9.89-4.1H48A14,14,0,0,0,34,48V208a14,14,0,0,0,14,14H208a14,14,0,0,0,14-14V83.31A13.9,13.9,0,0,0,217.9,73.42ZM170,210H86V152a2,2,0,0,1,2-2h80a2,2,0,0,1,2,2Zm40-2a2,2,0,0,1-2,2H182V152a14,14,0,0,0-14-14H88a14,14,0,0,0-14,14v58H48a2,2,0,0,1-2-2V48a2,2,0,0,1,2-2H172.69a2,2,0,0,1,1.41.58L209.42,81.9a2,2,0,0,1,.58,1.41ZM158,72a6,6,0,0,1-6,6H96a6,6,0,0,1,0-12h56A6,6,0,0,1,158,72Z"/></symbol>
+    <symbol id="i-x" viewBox="0 0 256 256"><path d="M204.24,195.76a6,6,0,1,1-8.48,8.48L128,136.49,60.24,204.24a6,6,0,0,1-8.48-8.48L119.51,128,51.76,60.24a6,6,0,0,1,8.48-8.48L128,119.51l67.76-67.75a6,6,0,0,1,8.48,8.48L136.49,128Z"/></symbol>
+  </svg>
+  <div id="app" class="app">
+    <!-- 顶部栏（v00.03.00 界面重构）：编辑页 左 单图 / 列阵，右 设置 + 完成；入场页 左 品牌名或返回，右（改词时）保存 + 设置。
+         按钮一律「图标 + 文字」（Phosphor light 20px，点按区高 44px）；深浅收进设置页。一行放不下时「单图 / 列阵」移到下一行（style.css）。
+         #leavePop（T30 / R2）：改词页有未保存修改时点返回，从返回按钮向下展开的确认 -->
+    <header id="top" class="top">
+      <span id="brand" class="brand" hidden>藏头 - Backronym</span>
+      <button id="entryBack" class="tbtn back" type="button" aria-label="返回编辑界面" aria-haspopup="dialog" aria-expanded="false" hidden><svg class="ic" width="20" height="20" aria-hidden="true" focusable="false"><use xlink:href="#i-back"/></svg><span>返回</span></button>
+      <div class="views" role="group" aria-label="版式">
+        <button id="viewSingle" class="vbtn" type="button" aria-pressed="true"><span>单图</span></button>
+        <button id="viewGrid" class="vbtn" type="button" aria-pressed="false"><span>列阵</span></button>
+      </div>
+      <div class="top-r">
+        <button id="entrySave" class="tbtn save" type="button" aria-disabled="true" hidden><svg class="ic" width="20" height="20" aria-hidden="true" focusable="false"><use xlink:href="#i-save"/></svg><span id="entrySaveText">保存</span></button>
+        <button id="settingsOpen" class="tbtn" type="button"><svg class="ic" width="20" height="20" aria-hidden="true" focusable="false"><use xlink:href="#i-gear"/></svg><span>设置</span></button>
+        <button id="finish" class="tbtn finish" type="button" disabled><svg class="ic" width="20" height="20" aria-hidden="true" focusable="false"><use xlink:href="#i-check"/></svg><span id="finishText">完成</span></button>
+      </div>
+      <div id="leavePop" class="leave-pop" role="alertdialog" aria-labelledby="leaveTitle" aria-describedby="leaveDiff" hidden>
+        <p id="leaveTitle" class="leave-title">有未保存的修改</p>
+        <ul id="leaveDiff" class="leave-diff"></ul>
+        <div class="leave-btns">
+          <button id="leaveSave" class="btn solid" type="button">保存并返回</button>
+          <button id="leaveDrop" class="btn outline" type="button">放弃修改</button>
+          <button id="leaveStay" class="btn outline" type="button">继续编辑</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 入场界面（T18，闸口 A 第 1 节）：没有草稿时先到这里；编辑界面里点「改单词 / 填表人」也回到这里。
+         输入只暂存在本页，点「开始填充」或返回箭头时统一校验，通过后一次性更新作品并保存 -->
+    <section id="entry" class="entry" aria-labelledby="entryTitle" hidden>
+      <h1 id="entryTitle" class="ent-h"></h1>
+      <p id="entryNote" class="ent-note"></p>
+      <p id="entryWait" class="ent-note" role="status"></p>
+      <p id="entrySaveMsg" class="ent-save-msg" role="alert"></p>
+      <div class="ent-field">
+        <div class="ent-lab"><label for="wordInput">单词</label><span id="wordCount" class="ent-count"></span></div>
+        <input id="wordInput" class="ent-input word" type="text" disabled placeholder="输入一个英语单词" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" lang="en"
+               aria-describedby="wordSense wordErr" />
+        <!-- T36：单词框下固定一行——查到的第一个义项 / 词库里没有 / 屏蔽提示；点「开始填充」或保存被拦下时，这一行让给错误说明（U10），行高不变（T28） -->
+        <div class="ent-line">
+          <p id="wordSense" class="ent-sense"></p>
+          <p id="wordErr" class="ent-err" role="alert"></p>
+        </div>
+        <div id="wordPreview" class="ent-preview" aria-hidden="true"></div>
+        <!-- T42：超过 10 格时自动分两张：写明分几张、各几格、切在哪；「调整分图」默认折叠（U17），只移动分界、不改内容 -->
+        <p id="splitInfo" class="ent-help" role="status" hidden></p>
+        <details id="splitAdjust" class="ent-split" hidden>
+          <summary>调整分图</summary>
+          <div class="split-btns">
+            <button id="splitLeft" class="split-btn" type="button">‹ 分界左移</button>
+            <button id="splitRight" class="split-btn" type="button">分界右移 ›</button>
+            <button id="splitAuto" class="split-btn" type="button">恢复自动</button>
+          </div>
+          <p class="ent-help">每张 3～10 格</p>
+        </details>
+        <!-- 语言栏（T20）：语言属于作品，存进草稿。默认折叠成一行摘要；「更多语言……」展开六个单选（app-entry.js 生成）。
+             选中别的语言先加载语言包，行内写状态；已填的格会被清空时先确认（#wordConfirm） -->
+        <div class="ent-lang">
+          <div class="lang-sum">
+            <span class="lang-k">语言</span>
+            <span id="langNow" class="lang-now"></span>
+            <button id="langMore" class="ent-more" type="button" aria-expanded="false" aria-controls="langList">更多语言……</button>
+          </div>
+          <div id="langList" class="lang-list" role="group" aria-label="作品的语言（可多选）" hidden></div>
+          <p id="langRule" class="ent-help"></p>
+        </div>
+      </div>
+      <div id="presetField" class="ent-field">
+        <div class="ent-lab"><span id="presetLab">选一个单词作为主题：</span><button id="presetMore" class="ent-more" type="button">换一组</button></div>
+        <div id="presets" class="ent-presets" role="group" aria-labelledby="presetLab"></div>
+      </div>
+      <div class="ent-field">
+        <div class="ent-lab"><label for="fillerCtl">填表人（选填）</label><span id="fillerCount" class="ent-count"></span></div>
+        <input id="fillerCtl" class="ent-input" type="text" maxlength="12" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+               aria-describedby="fillerHelp fillerErr" />
+        <p id="fillerHelp" class="ent-help">留空则图上不出现</p>
+        <p id="fillerErr" class="ent-err" role="alert"></p>
+      </div>
+      <p id="langWait" class="ent-help ent-wait" role="status"></p>
+      <button id="entryStart" class="btn solid ent-start" type="button">开始填充</button>
+    </section>
+
+    <!-- 满宽卡：内容由 app.js 按 CORE.layoutCard / layoutGrid 的框摆（T09）；单图只渲染当前格，列阵整张只预览 -->
+    <!-- #mirror = 镜像层（只读显示，app.js 每次重摆都重建）；#ctl = 控件层（输入框等，重摆时不动，保住焦点和输入法状态；
+         透明文字叠在镜像对应的字上：T12 单词、T15 释义 / 配文）。卡顶三个控件是可见的真控件、镜像不画它们：标题框 #title（富文本，T16）、
+         填表人只显示（T18 / D3：在入场界面改，镜像画出来）。#plateHit = 整块图版上的透明按钮（点了出配图面板）。
+         #cand = 贴在词下方的平直栏：焦点在单词框时是候选栏（T13），在释义框时是义项栏（T15） -->
+    <div id="card" class="card" role="group" aria-label="卡">
+      <div id="mirror" class="layer"></div>
+      <div id="ctl" class="layer">
+        <div id="title" class="ctl ctl-title" contenteditable="true" role="textbox" aria-multiline="false"
+             aria-label="标题（留空则导出时用单词作标题）" aria-describedby="titleHint" spellcheck="false" hidden></div>
+        <p id="titleHint" class="sr-only">选中部分文字再点样式，可以单独改颜色、粗细、斜体；不选则改整个标题</p>
+        <button id="plateHit" class="hit" type="button" hidden></button>
+        <input id="wordCtl" class="ctl ctl-word" type="text" maxlength="20" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="en" hidden />
+        <input id="glossCtl" class="ctl ctl-line" type="text" maxlength="16" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" hidden />
+        <input id="capCtl" class="ctl ctl-line cap" type="text" maxlength="16" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" hidden />
+        <div id="cand" class="cand ctl" hidden>
+          <!-- 栏头两行位置固定（2026-11-11 用户定）：第一行提示（出错时同一位置换成墨底说明），第二行左开关、右两个操作；用不上的操作停用而不拿掉 -->
+          <div class="cand-top">
+            <p id="candMsg" class="cand-msg" role="status" aria-atomic="true"></p>
+            <span id="candLab" class="cand-lab"></span>
+          </div>
+          <div id="candRow" class="cand-row">
+            <button id="candMore" class="cand-more" type="button" aria-pressed="false"><span class="cand-box" aria-hidden="true"></span><span class="cand-more-t">专业、历史文化词</span><span id="candMoreN" class="cand-more-n"></span></button>
+            <span class="cand-acts">
+              <button id="candRandom" class="cand-act" type="button">随机一个</button>
+              <button id="candNext" class="cand-act" type="button">下一批</button>
+            </span>
+          </div>
+          <ul id="candList" class="cand-grid" aria-label="候选词"></ul>
+          <div id="senseList" class="sense-list" role="group" aria-label="可选释义"></div>
+        </div>
+      </div>
+    </div>
+    <!-- 卡下字母栏 + 提示行（列阵时只有提示行）。页码在卡顶左上已有，字母栏不再重复（闸口 A · A3）；提示行右侧是去入场界面的入口 -->
+    <!-- T42：超过 10 格时列阵分两张，这里是换张的页签（横滑也可以） -->
+    <div id="sheetTabs" class="sheet-tabs" role="tablist" aria-label="分图" hidden></div>
+    <nav id="pager" class="pager" aria-label="字母">
+      <span id="pagerLetters" class="ls"></span>
+    </nav>
+    <div id="hintRow" class="hint-row">
+      <p id="hint" class="foot-hint"></p>
+      <button id="toEntry" class="to-entry" type="button">改单词 / 填表人</button>
+    </div>
+    <footer class="draft-note">
+      <p>草稿存在本设备，18 小时未改动自动清除</p>
+      <p id="draftStatus" role="status" aria-live="polite"></p>
+    </footer>
+    <!-- 给读屏的状态播报（不显示）：点「完成」被拦下的原因、导出 / 保存结果、标题超出两行等 -->
+    <p id="live" class="sr-only" role="status" aria-live="polite"></p>
+  </div>
+
+  <!-- 统一提示（T33）：固定在标题下方（编辑页卡顶标题 / 入场页页面标题），由 app-model.js 的 showToast 定位；不抢焦点，只播报 -->
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- 键盘上方一行（D18）：只在焦点在标题框时出现（T18 起单词与填表人在入场界面改）；位置由 app.js 按可视区底边定（软键盘弹起时贴在键盘上方）。
+       左边是说明文字或标题工具栏，右边是备注。按钮上按下鼠标不抢走输入框的焦点（app.js） -->
+  <div id="kbRow" class="kbrow" hidden>
+    <div class="kb-in">
+      <span id="kbText" class="kb-text" hidden></span>
+      <div id="kbTools" class="rte-toolbar" role="toolbar" aria-label="标题格式" aria-controls="title" hidden>
+        <button type="button" class="tool" data-cmd="bold" aria-pressed="true" aria-label="粗体"><b>B</b></button>
+        <button type="button" class="tool" data-cmd="italic" aria-pressed="false" aria-label="斜体"><i>I</i></button>
+        <span class="tool-sep" aria-hidden="true"></span>
+        <button type="button" class="tool dot" data-color="default" aria-label="墨色"><i class="sw ink"></i></button>
+        <button type="button" class="tool dot" data-color="red" aria-label="朱红"><i class="sw red"></i></button>
+        <button type="button" class="tool dot" data-color="#8d877d" aria-label="灰色"><i class="sw" style="background:#8d877d"></i></button>
+        <label class="tool dot pick"><span class="custom-mark" aria-hidden="true">＋</span><input id="tcolorCustom" class="tool-color" type="color" value="#b0301c" aria-label="自选颜色" /><span class="pick-lab" aria-hidden="true">自选色</span></label>
+      </div>
+      <span id="kbNote" class="kb-note" hidden></span>
+    </div>
+  </div>
+
+  <!-- 完成面板（§2-⑦ / §3-⑪，T18）：点顶部栏「完成」且检查通过后，从底部升起的平直面板（透明遮罩，点外面关闭；导出 / 保存中不可关）。
+       打开即自动逐张导出：左「导出 N 张单图」右「第几张 / 共几张」+ 进度条；导出完「保存到相册」「发布笔记」可点。
+       浏览器里没有端能力，这两个换成「导出图片」→ 全屏导出结果页。底行固定「借物与版权」（→ 全屏借物页）与版本号 -->
+  <div id="finishPanel" class="sheet flat" hidden>
+    <div class="sheet-panel fin-panel" role="dialog" aria-modal="true" aria-labelledby="finTitle" tabindex="-1">
+      <div class="fin-lab"><b id="finTitle"></b><span id="finCount"></span></div>
+      <div id="finProg" class="fin-prog" role="progressbar" aria-labelledby="finTitle" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="finBar"></i></div>
+      <!-- T43：导出完成后按顺序排的缩略图（编号 + 字母），点开看大图；不强制先看（U15）。图多时这一排自己横向滚动，页面不横滚 -->
+      <ul id="finThumbs" class="fin-thumbs" aria-label="导出的图" hidden></ul>
+      <div class="fin-btns">
+        <button id="save" class="btn solid" type="button">保存到相册</button>
+        <button id="post" class="btn outline" type="button">发布笔记</button>
+        <button id="exportView" class="btn solid" type="button" hidden>导出图片</button>
+      </div>
+      <p id="finMsg" class="fin-msg"></p>
+      <div class="fin-foot"><button id="creditsOpen" class="fin-credit" type="button">借物与版权</button><span>v00.03.00</span></div>
+    </div>
+  </div>
+
+  <!-- T43：缩略图点开的大图（全屏模态）：上一张 / 下一张 / 左右滑动 / 方向键换张，Esc 或关闭回到刚才点的缩略图 -->
+  <div id="viewer" class="page viewer" hidden>
+    <div class="page-in" role="dialog" aria-modal="true" aria-labelledby="viewTitle">
+      <div class="page-top"><h2 id="viewTitle"></h2><button id="viewClose" class="tbtn close" type="button" aria-label="关闭大图"><svg class="ic" width="20" height="20" aria-hidden="true" focusable="false"><use xlink:href="#i-x"/></svg><span>关闭</span></button></div>
+      <img id="viewImg" class="view-img" alt="" draggable="false" />
+      <div class="view-nav">
+        <button id="viewPrev" class="btn outline" type="button">‹ 上一张</button>
+        <button id="viewNext" class="btn outline" type="button">下一张 ›</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 改单词会清空已填格时先确认（闸口 A · A4，ATAG A.4.1.1）：列出要清空什么；初始焦点在安全选项「保留原单词」 -->
+  <div id="wordConfirm" class="sheet flat" hidden>
+    <div class="sheet-panel conf-panel" role="alertdialog" aria-modal="true" aria-labelledby="confTitle" aria-describedby="confList">
+      <p id="confTitle" class="conf-title"></p>
+      <ul id="confList" class="conf-list"></ul>
+      <div class="conf-btns">
+        <button id="confClear" class="btn outline" type="button"></button>
+        <button id="confKeep" class="btn solid" type="button"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 浏览器里没有端能力时的全屏「导出结果」页（§3-⑪）：逐张列出，长按或右键图片保存 -->
+  <div id="results" class="page" hidden>
+    <div class="page-in" role="dialog" aria-modal="true" aria-labelledby="resTitle">
+      <div class="page-top"><h2 id="resTitle">导出结果<span id="resCount"></span></h2><button id="resClose" class="tbtn close" type="button" aria-label="关闭导出结果"><svg class="ic" width="20" height="20" aria-hidden="true" focusable="false"><use xlink:href="#i-x"/></svg><span>关闭</span></button></div>
+      <p class="page-note">当前不在小红书内：长按或右键图片保存</p>
+      <div id="resList" class="res-list"></div>
+    </div>
+  </div>
+
+  <!-- 全屏借物与版权页（§3-⑪）：从完成面板底行或设置页底行进入 -->
+  <div id="credits" class="page" hidden>
+    <div class="page-in" role="dialog" aria-modal="true" aria-labelledby="creditsTitle">
+      <div class="page-top"><h2 id="creditsTitle">借物与版权</h2><button id="creditsClose" class="tbtn close" type="button" aria-label="关闭借物与版权"><svg class="ic" width="20" height="20" aria-hidden="true" focusable="false"><use xlink:href="#i-x"/></svg><span>关闭</span></button></div>
+      <div class="credits-body">
+        <table class="credits-table">
+          <caption class="sr-only">借物与版权</caption>
+          <thead><tr><th scope="col">用途</th><th scope="col">名称与版权人</th><th scope="col">许可证</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">本工具</th><td>藏头 - Backronym v00.03.00 · © 2026 BeyondPassenger</td><td>MIT License</td></tr>
+            <tr><th scope="row">词库 · 英语</th><td>ECDICT（<span lang="en">github.com/skywind3000/ECDICT</span>）· © 2025 Linwei<br>英语的选词、词形和释义依据。</td><td>MIT License</td></tr>
+            <tr><th scope="row">词库 · 法、德、西、意、拉丁</th><td>维基词典（<span lang="en">Wiktionary</span>，经 <span lang="en">kaikki.org</span> 抽取）· 维基词典的编者们<br>五门语言的词头、词性、变格变位和英文释义依据。</td><td>CC BY-SA 4.0 / GFDL</td></tr>
+            <tr><th scope="row">词库 · 选词用的词频</th><td>FrequencyWords（<span lang="en">github.com/hermitdave/FrequencyWords</span>）· Hermit Dave，法、德、西、意<br><span lang="en">Dickinson College Commentaries</span> 拉丁语核心词表（<span lang="en">dcc.dickinson.edu</span>）· Dickinson College</td><td>FrequencyWords 的数据 CC BY-SA 4.0；核心词表 CC BY-SA（来源页未写版本号）</td></tr>
+            <tr><th scope="row">词库 · 早期参考</th><td>CFDICT（法语，<span lang="en">chine.in</span>）；HanDeDict（德语，<span lang="en">handedict.zydeo.net</span>）· Gábor L Ugray 与原始团队；<span lang="en">Whitaker's Words</span>（拉丁语，<span lang="en">github.com/mk270/whitakers-words</span>）· William A. Whitaker<br>早期选词与中文释义的参考；现在的中文释义已逐条重写。</td><td>CFDICT：CC BY-SA（来源页未写版本号）；HanDeDict：CC BY-SA 3.0（介绍页另写 2.0 DE）；Whitaker's Words：作者声明可自由用于任何用途</td></tr>
+            <tr><th scope="row">断词点</th><td>TeX hyph-utf8 连字符模式（<span lang="en">github.com/hyphenation/tex-hyphen</span>）<br>法语 © Daniel Flipo、Bernard Gaulle、Arthur Reutenauer；德语 © <span lang="de">Deutschsprachige Trennmustermannschaft</span>；西语 © Javier Bezos、CervanTeX；意语、拉丁语 © Claudio Beccari</td><td>MIT License（意语另可选 LPPL 1.3，这里取 MIT）</td></tr>
+            <tr><th scope="row">词库的改编</th><td>据以上数据选词、合并词形、去掉不属于本词的词形；中文释义、冠词和用法说明逐条核写。核对时查阅了 Lewis &amp; Short、Gaffiot（经芝加哥大学 Logeion）、TLFi、Duden、DWDS、RAE、Treccani 等词典，未收录它们的文字。各语言的声明附在 <code>words.js</code> 文件头。许可原文：<span lang="en">creativecommons.org/licenses/by-sa/4.0</span>、<span lang="en">creativecommons.org/licenses/by-sa/3.0</span></td><td>改编部分随来源：CC BY-SA 4.0</td></tr>
+            <tr><th scope="row">屏蔽词表 · 五门西文</th><td><span lang="en">List of Dirty, Naughty, Obscene, and Otherwise Bad Words</span>（LDNOOBW，<span lang="en">github.com/LDNOOBW</span>）· Shutterstock, Inc.；维基词典的不雅、冒犯标注<br>经审核后取用，有增删。许可原文：<span lang="en">creativecommons.org/licenses/by/4.0</span></td><td>CC BY 4.0；维基词典 CC BY-SA 4.0</td></tr>
+            <tr><th scope="row">英文字体</th><td>Noto Sans · © 2022 The Noto Project Authors（<span lang="en">github.com/notofonts</span>）<br>已子集化为拉丁字符。</td><td>SIL Open Font License 1.1</td></tr>
+            <tr><th scope="row">中文字体</th><td>Noto Sans CJK SC（Noto Sans SC）· © 2014-2021 Adobe（<span lang="en">github.com/notofonts/noto-cjk</span>）<br>已子集化为常用字。</td><td>SIL Open Font License 1.1</td></tr>
+            <tr><th scope="row">主题字体 · 西文</th><td>fandom：Libre Baskerville · © 2012 The Libre Baskerville Project Authors（<span lang="en">github.com/impallari/Libre-Baskerville</span>）<br>单色画：Gowun Batang · © 2021 The Gowun Batang Project Authors（<span lang="en">github.com/yangheeryu/Gowun-Batang</span>）<br>印象派：Cormorant Garamond · © 2015 the Cormorant Project Authors（<span lang="en">github.com/CatharsisFonts/Cormorant</span>）<br>分离派：Federo · © 2011 Cyreal（<span lang="en">cyreal.org</span>）<br>都已子集化为拉丁字符。Libre Baskerville 与 Federo 是保留字体名，裁剪后的文件已改名为 BK Fandom Serif、BK Secession Display。</td><td>SIL Open Font License 1.1</td></tr>
+            <tr><th scope="row">主题字体 · 中文</th><td>fandom、分离派：思源宋体 Noto Serif CJK SC（Noto Serif SC）· © 2017-2024 Adobe（<span lang="en">github.com/notofonts/noto-cjk</span>）<br>单色画：霞鹜文楷 LXGW WenKai · © 2021-2026 LXGW（<span lang="en">github.com/lxgw/LxgwWenKai</span>），基于 Klee One · © 2020 The Klee Project Authors<br>都已子集化为常用字。霞鹜文楷的作者许可为网页字体投递而裁剪的版本沿用原名。</td><td>SIL Open Font License 1.1</td></tr>
+            <tr><th scope="row">图标</th><td>Phosphor Icons（<span lang="en">github.com/phosphor-icons/core</span>）· © 2023 Phosphor Icons<br>用了 light 粗细的五个图标，内嵌在页面里。</td><td>MIT License</td></tr>
+            <tr><th scope="row">主题的颜色</th><td>fandom 主题的颜色取自 <span lang="en">Archive of Our Own</span> 默认皮肤的样式表（<span lang="en">github.com/otwcode/otwarchive</span>）；其余三个主题的颜色是自己配的。只取了色值，没有使用其代码。</td><td>—</td></tr>
+            <tr><th scope="row">审核规则参考</th><td>《小红书社区公约 2.0》（内置的屏蔽词表依据此整理；小红书版与网页版相同）。</td><td>—</td></tr>
+          </tbody>
+        </table>
+
+        <h3>许可全文</h3>
+        <details>
+          <summary>MIT License（本工具 / ECDICT / Phosphor Icons / TeX 连字符模式）</summary>
+          <pre lang="en">Copyright (c) 2026 BeyondPassenger
+Copyright (c) 2025 Linwei (ECDICT)
+Copyright (c) 2023 Phosphor Icons
+Copyright (C) 1994-2002 Daniel Flipo, Bernard Gaulle, 2016 Arthur Reutenauer (hyph-fr)
+Copyright (c) 2013-2024 Deutschsprachige Trennmustermannschaft (hyph-de-1996)
+Copyright (C) 1993, 1997 Javier Bezos, 2001-2019 Javier Bezos, CervanTeX (hyph-es)
+Copyright (C) 2008-2011 Claudio Beccari (hyph-it)
+Copyright (C) 1999-2016 Claudio Beccari (hyph-la)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</pre>
+        </details>
+        <details>
+          <summary>SIL Open Font License 1.1（Noto Sans / Noto Sans CJK SC / 六套主题字体）</summary>
+          <pre lang="en">Noto Sans: Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)
+Noto Sans CJK SC: © 2014-2021 Adobe (http://www.adobe.com/)
+Libre Baskerville: Copyright 2012 The Libre Baskerville Project Authors (https://github.com/impallari/Libre-Baskerville) with Reserved Font Name Libre Baskerville.
+Gowun Batang: Copyright 2021 The Gowun Batang Project Authors (https://github.com/yangheeryu/Gowun-Batang)
+Cormorant Garamond: Copyright 2015 the Cormorant Project Authors (github.com/CatharsisFonts/Cormorant)
+Federo: Copyright (c) 2011, Cyreal (www.cyreal.org), with Reserved Font Name "Federo".
+Noto Serif CJK SC: © 2017-2024 Adobe (http://www.adobe.com/).
+LXGW WenKai: Copyright 2021-2026 LXGW (https://github.com/lxgw/LxgwWenKai), with Reserved Font Name '霞鹜', '霞鶩', '落霞孤鹜', '落霞孤鶩' and 'LXGW'. Copyright 2020 The Klee Project Authors (https://github.com/fontworks-fonts/Klee)
+
+This Font Software is licensed under the SIL Open Font License,
+Version 1.1.
+
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font
+creation efforts of academic and linguistic communities, and to
+provide a free and open framework in which fonts may be shared and
+improved in partnership with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded,
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply to
+any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software
+components as distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to,
+deleting, or substituting -- in part or in whole -- any of the
+components of the Original Version, by changing formats or by porting
+the Font Software to a new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION &amp; CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed,
+modify, redistribute, and sell modified and unmodified copies of the
+Font Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components, in
+Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the
+corresponding Copyright Holder. This restriction only applies to the
+primary font name as presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created using
+the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.</pre>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <!-- 设置页（v00.03.00 界面重构）：这台设备怎么显示。顶栏「设置」进，关闭后焦点还给「设置」。偏好存在设备上，不进草稿。
+       本批只有深浅三档；四个主题在第三步（主题）加进来。底行：借物与版权、版本号 -->
+  <div id="settings" class="page" hidden>
+    <div class="page-in" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="page-top"><h2 id="settingsTitle">设置</h2><button id="settingsClose" class="tbtn close" type="button" aria-label="关闭设置"><svg class="ic" width="20" height="20" aria-hidden="true" focusable="false"><use xlink:href="#i-x"/></svg><span>关闭</span></button></div>
+      <div class="set-body">
+        <h3 id="skinLab" class="set-lab">主题</h3>
+        <div id="skinGroup" class="set-ths" role="radiogroup" aria-labelledby="skinLab">
+          <label class="set-th"><input type="radio" name="skin" value="fandom" /><span class="set-th-in skin-opt"><span class="set-sw sk-fandom"></span><span class="set-th-n" lang="en">fandom</span><span class="set-th-x">仅浅色</span></span></label>
+          <label class="set-th"><input type="radio" name="skin" value="dansaekhwa" /><span class="set-th-in skin-opt"><span class="set-sw sk-dansaekhwa"></span><span class="set-th-n">单色画</span></span></label>
+          <label class="set-th"><input type="radio" name="skin" value="impressionism" /><span class="set-th-in skin-opt"><span class="set-sw sk-impressionism"></span><span class="set-th-n">印象派</span></span></label>
+          <label class="set-th"><input type="radio" name="skin" value="secession" /><span class="set-th-in skin-opt"><span class="set-sw sk-secession"></span><span class="set-th-n">分离派</span></span></label>
+        </div>
+        <h3 id="modeLab" class="set-lab set-lab2">深浅</h3>
+        <div id="modeGroup" class="set-seg" role="radiogroup" aria-labelledby="modeLab" aria-describedby="modeWhy">
+          <label class="set-opt"><input type="radio" name="mode" value="auto" /><span>跟随系统</span></label>
+          <label class="set-opt"><input type="radio" name="mode" value="light" /><span>浅色</span></label>
+          <label class="set-opt"><input type="radio" name="mode" value="dark" /><span>深色</span></label>
+        </div>
+        <p id="modeWhy" class="ent-help" hidden>这个主题只有浅色。系统是深色模式时，整个界面也是浅色</p>
+        <div class="set-foot"><button id="setCredits" class="fin-credit" type="button">借物与版权</button><span>v00.03.00</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 配图面板（§3-③）：点卡上的图版出来。底部平直面板，不遮卡（透明遮罩，点外面关闭）。两个隐藏的文件框：本格配图 / 默认图 -->
+  <div id="imgPanel" class="sheet flat" hidden>
+    <div class="sheet-panel img-panel" role="dialog" aria-modal="true" aria-labelledby="imgTitle">
+      <div class="sheet-head">
+        <h2 id="imgTitle"></h2>
+        <button id="imgClose" class="link" type="button">关闭</button>
+      </div>
+      <input id="cellPhoto" class="sr-only" type="file" accept="image/*" tabindex="-1" aria-hidden="true" />
+      <div class="plist">
+        <button id="imgPick" class="prow" type="button" aria-label="选择图片，这一格">选择图片</button>
+        <button id="imgAdjust" class="prow" type="button">调整取景</button>
+        <button id="imgRemove" class="prow" type="button" aria-label="移除这一格的配图">移除</button>
+      </div>
+      <div class="plab"><b>所有格共用的默认图</b></div>
+      <input id="photo" class="sr-only" type="file" accept="image/*" tabindex="-1" aria-hidden="true" />
+      <div class="plist inline">
+        <button id="defPick" class="prow" type="button" aria-label="选择图片，默认图">选择图片</button>
+        <button id="defRemove" class="prow" type="button" aria-label="移除默认图">移除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 取景面板（§3-⑪）：从配图面板进，比例 920:600（与图版一致）；拖动画面、方向键、滑条或双指缩放（T49：去掉「居中」，「还原」已含回中） -->
+  <div id="cropper" class="sheet flat" hidden>
+    <div class="sheet-panel crop-panel" role="dialog" aria-modal="true" aria-labelledby="cropTitle">
+      <div class="sheet-head">
+        <h2 id="cropTitle"></h2>
+      </div>
+      <p id="cropScope" class="crop-scope" hidden>应用后，所有没有单独配图的格都用它</p>
+      <canvas id="cropCanvas" class="crop-canvas" tabindex="0"
+              aria-label="配图预览：拖动或用方向键移动，加号减号缩放"></canvas>
+      <div id="cropMoves" class="crop-moves" role="group" aria-label="移动取景">
+        <button type="button" data-move="ArrowLeft" aria-label="向左移动"><span class="crop-arrow" aria-hidden="true">→</span></button>
+        <button type="button" data-move="ArrowUp" aria-label="向上移动"><span class="crop-arrow" aria-hidden="true">→</span></button>
+        <button type="button" data-move="ArrowDown" aria-label="向下移动"><span class="crop-arrow" aria-hidden="true">→</span></button>
+        <button type="button" data-move="ArrowRight" aria-label="向右移动"><span class="crop-arrow" aria-hidden="true">→</span></button>
+      </div>
+      <div class="crop-zoom">
+        <button id="cropMinus" type="button" aria-label="缩小">−</button>
+        <input id="cropZoom" type="range" min="1" max="3" step="0.01" value="1" aria-label="缩放" />
+        <button id="cropPlus" type="button" aria-label="放大">＋</button>
+      </div>
+      <div class="btns crop-btns">
+        <button id="cropCancel" class="btn outline" type="button">取消</button>
+        <button id="cropReset" class="btn outline" type="button">还原</button>
+        <button id="cropApply" class="btn solid" type="button">应用</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- v00.03.00 T02 / T03：英语语言包（词库、屏蔽词表）在 lang/en/；屏蔽器公共部分 block/core.js 先于各语言词表 -->
+  <script src="./assets/lang/en/words.js"></script>
+  <script src="./assets/block/core.js"></script>
+  <script src="./assets/lang/en/block.js"></script>
+  <!-- v00.02.00：纯逻辑，暴露 window.CORE；必须在 app.js 之前加载（app.js 开头即取 CORE） -->
+  <script src="./assets/core.js"></script>
+  <!-- T19：新范围词库的准入策略与查询（手动查词经它按义项匹配原形、词形与防误借清单） -->
+  <script src="./assets/lexicon-policy.js"></script>
+  <script src="./assets/lexicon-store.js"></script>
+  <!-- T05：语言包注册表与按需加载器 -->
+  <script src="./assets/lang/packs.js"></script>
+  <!-- 西文五门的字母规则（各约 2 KB）随页面加载：草稿按自身语言校验、单词框按语言规整都要它；词库与屏蔽词表仍按需加载（T20） -->
+  <script src="./assets/lang/fr/rules.js"></script>
+  <script src="./assets/lang/de/rules.js"></script>
+  <script src="./assets/lang/es/rules.js"></script>
+  <script src="./assets/lang/it/rules.js"></script>
+  <script src="./assets/lang/la/rules.js"></script>
+  <script src="./assets/lang/presets.js"></script>
+  <script src="./assets/draft.js"></script>
+  <script src="./assets/media.js"></script>
+  <script src="./assets/app-model.js"></script>
+  <script src="./assets/app-title.js"></script>
+  <script src="./assets/app-media.js"></script>
+  <script src="./assets/app-view.js"></script>
+  <script src="./assets/app-editor.js"></script>
+  <script src="./assets/app-entry.js"></script>
+  <script src="./assets/app-publish.js"></script>
+  <script src="./assets/app-draft.js"></script>
+  <script src="./assets/app.js"></script>
+</body>
+</html>

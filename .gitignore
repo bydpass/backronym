@@ -1,0 +1,47 @@
+scripts/.cache/
+dist/
+.DS_Store
+review/lexicon/*/candidates.tsv
+review/lexicon/*/merged.tsv
+review/lexicon/*/shard-*.tsv
+review/lexicon/*/_recovery/
+# 恢复副本不进 git（恢复备份目录规则）
+_recovery/
+# 第 3 批复审的工作检查点与报告草稿（定稿是 round2-report.html / .json）
+review/lexicon/round2/
+review/lexicon/round2-report-draft-*
+# 本机工具状态与指向本机路径的技能链接（不随仓库走）
+.agents/
+.dsh/
+.impeccable/
+.skill-packs-state/
+.skill-packs.json
+.opencode/
+.claude/skills/*--*
+.claude/skills/dual-audit/
+# T19 各批的中间数据与重建副本（体积大，词库重整完成后清理；报告与小文件仍可跟踪）
+review/t19-*/stage/
+review/t19-*/clean-stage/
+review/t19-*/*build*/
+review/t19-*/reproduce/
+review/t19-*/before/
+review/t19-*/after*/
+review/t19-*/final-scan/
+review/t19-*/latin-final/
+review/t19-*/edges-*.json
+review/lexicon-independent-*/lookup-results.json
+review/t19-*/rebuild/
+review/lexicon/de-expansion-*/before/
+review/lexicon/de-expansion-*/after/
+
+# T19 批次集中目录，保留原有中间产物忽略边界
+review/t19-batches/t19-*/stage/
+review/t19-batches/t19-*/clean-stage/
+review/t19-batches/t19-*/*build*/
+review/t19-batches/t19-*/reproduce/
+review/t19-batches/t19-*/before/
+review/t19-batches/t19-*/after*/
+review/t19-batches/t19-*/final-scan/
+review/t19-batches/t19-*/latin-final/
+review/t19-batches/t19-*/edges-*.json
+review/t19-batches/t19-*/rebuild/

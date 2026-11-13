@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "state": "needs-runtime-integration",
+  "bundles": [
+    {
+      "path": "en/creative.json",
+      "language": "en",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "rows": 2,
+      "bytes": 4215,
+      "sha256": "6639ab411157bca16ded806c6901080d355710ad954893c82126f6183915a22d"
+    },
+    {
+      "path": "en/daily.json",
+      "language": "en",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "rows": 2,
+      "bytes": 4054,
+      "sha256": "f3a76c36d96b3ba5cf95428b2eca6ed7bce938990f6754077aa5ccbcb08d35b7"
+    },
+    {
+      "path": "fr/creative.json",
+      "language": "fr",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "rows": 2,
+      "bytes": 4972,
+      "sha256": "d1b9b94191cd82182ef09e0a26291affe317d7937677edef3d13fc062918fc81"
+    },
+    {
+      "path": "fr/daily.json",
+      "language": "fr",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "rows": 2,
+      "bytes": 4522,
+      "sha256": "47412929e379065c58879b89df9784fc7735b0d8093f61038a9d63ee80a3f1b5"
+    },
+    {
+      "path": "de/creative.json",
+      "language": "de",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "rows": 2,
+      "bytes": 4656,
+      "sha256": "cd46026bcf3ca75b583a757d31140c9fa82f41c25c1c48b61219b46b50c26efd"
+    },
+    {
+      "path": "de/daily.json",
+      "language": "de",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "rows": 2,
+      "bytes": 4773,
+      "sha256": "4b06909c8c3d973ced428c6b7830418c8fdcb6a9b63c6b286b2e275031dc64a4"
+    },
+    {
+      "path": "es/creative.json",
+      "language": "es",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "rows": 2,
+      "bytes": 5365,
+      "sha256": "b2e2c3f5e63208c4ce0948ca45fbb9181e2cf4ccfb4c3b03d0b77cc98df95809"
+    },
+    {
+      "path": "es/daily.json",
+      "language": "es",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "rows": 2,
+      "bytes": 4595,
+      "sha256": "ce3c36d7dccf436a9b6e98be07470f2dfa21edc0794f7ed8b093bcb3706492b7"
+    },
+    {
+      "path": "it/creative.json",
+      "language": "it",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "rows": 2,
+      "bytes": 4637,
+      "sha256": "dbb5fe597c051a8053b298889d8459ec168e1013c733de5963823f1ef5a57756"
+    },
+    {
+      "path": "it/daily.json",
+      "language": "it",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "rows": 2,
+      "bytes": 4648,
+      "sha256": "0d7eeeb0099f1f16f7f96e51cb252ea79ade3506155c0591993d339bccc35299"
+    }
+  ]
+}

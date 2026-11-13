@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>藏头 - Backronym · v00.02.01 闸口 A 设计稿</title>
+<style>
+@font-face { font-family: "Noto Sans"; src: url("../app/assets/fonts/NotoSans-Regular.woff2") format("woff2"); font-weight: 400; }
+@font-face { font-family: "Noto Sans"; src: url("../app/assets/fonts/NotoSans-Bold.woff2") format("woff2"); font-weight: 700; }
+@font-face { font-family: "Noto Sans SC"; src: url("../app/assets/fonts/NotoSansSC-Regular.woff2") format("woff2"); font-weight: 400; }
+@font-face { font-family: "Noto Sans SC"; src: url("../app/assets/fonts/NotoSansSC-Bold.woff2") format("woff2"); font-weight: 700; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Noto Sans", "Noto Sans SC", "PingFang SC", sans-serif; background: #cfcdc8; color: #1c1c1b; padding: 28px; }
+.board-head, .sec { max-width: 1520px; margin: 0 auto 28px; }
+.board-head h1 { font-size: 26px; letter-spacing: -0.3px; }
+.board-head p { margin-top: 6px; font-size: 13px; color: #3d3c39; line-height: 1.75; max-width: 1180px; }
+.notes { display: flex; flex-wrap: wrap; margin-top: 14px; font-size: 13px; line-height: 1.7; color: #2d2c2a; }
+.notes > div { flex: 1 1 300px; padding-right: 24px; margin-bottom: 8px; }
+.notes h2 { font-size: 13px; margin-bottom: 3px; }
+.notes li { margin-left: 16px; }
+.notes .ask { font-weight: 700; }
+.sec { background: #f1f0ed; border-radius: 3px; padding: 22px; }
+.sec-head { display: flex; align-items: baseline; flex-wrap: wrap; margin-bottom: 12px; }
+.sec-head .id { font-size: 13px; font-weight: 700; color: #f4f3f0; background: #1c1c1b; padding: 2px 8px; margin-right: 10px; }
+.sec-head h2 { font-size: 20px; letter-spacing: -0.2px; }
+.sec-head span.sub { margin-left: 12px; font-size: 13px; color: #55534f; }
+.frames { display: flex; flex-wrap: wrap; align-items: flex-start; }
+figure { margin: 0 18px 18px 0; position: relative; }
+figcaption { font-size: 13px; color: #55534f; margin-top: 8px; width: 300px; line-height: 1.55; }
+figcaption b { color: #1c1c1b; }
+figcaption .std { display: block; margin-top: 4px; font-size: 12px; color: #3d3c39; }
+/* 手机框内为示意比例：框宽 300 对应真机 360–414，框内 10 px ≈ 真机 12–14 px，与第六稿母版同一套尺寸 */
+table.std-map { border-collapse: collapse; font-size: 13px; line-height: 1.6; width: 100%; max-width: 1180px; }
+table.std-map th, table.std-map td { text-align: left; vertical-align: top; padding: 6px 10px 6px 0; border-bottom: 1px solid #d3d1cc; }
+table.std-map th { font-size: 12px; color: #55534f; font-weight: 700; }
+code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em; }
+
+/* ---------- 界面 token（随深浅；占位色按 10-22 无障碍修订） ---------- */
+.phone { width: 300px; height: 640px; border-radius: 26px; overflow: hidden; position: relative; box-shadow: 0 0 0 7px #111;
+  --bg: #e9e8e4; --ink: #1c1c1b; --mute: #5f5d58; --ph: #69665f; --line: #d3d1cc; --zhu: #b0301c; --panel: #f4f3f0;
+  background: var(--bg); color: var(--ink); }
+.phone.dark { --bg: #171716; --ink: #e7e5e0; --mute: #a09d97; --ph: #88857f; --line: #2c2b29; --zhu: #e5674f; --panel: #232321; }
+.abs { position: absolute; left: 22px; right: 22px; }
+.top { position: absolute; top: 28px; left: 22px; right: 22px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--mute); }
+.top b { color: var(--ink); }
+.back { display: inline-flex; align-items: center; height: 24px; color: var(--ink); font-weight: 700; font-size: 12px; }
+.back i { font-style: normal; font-size: 16px; margin-right: 4px; line-height: 1; }
+.eyebrow { font-size: 11px; color: var(--mute); }
+.h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.2; }
+.lab { font-size: 11px; color: var(--mute); display: flex; justify-content: space-between; }
+.lab b { color: var(--ink); }
+.word { font-size: 40px; font-weight: 700; letter-spacing: 1px; line-height: 1; padding-bottom: 6px; border-bottom: 2px solid var(--ink); white-space: nowrap; }
+.word .ph { color: var(--ph); font-weight: 700; font-size: 26px; letter-spacing: 0; }
+.caret { display: inline-block; width: 2px; height: .8em; background: var(--ink); vertical-align: -0.05em; margin-left: 2px; }
+.help { font-size: 10px; color: var(--mute); line-height: 1.5; }
+.chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.chip { height: 40px; line-height: 37px; text-align: center; font-size: 14px; font-weight: 700; letter-spacing: .5px; border: 1.5px solid var(--ink); }
+.chip.on { background: var(--ink); color: var(--bg); }
+.preview { display: flex; align-items: baseline; }
+.preview span { font-size: 20px; font-weight: 700; margin-right: 13px; color: var(--ph); border-bottom: 2.5px dotted currentColor; }
+.preview em { font-style: normal; font-size: 11px; color: var(--mute); margin-left: auto; }
+.field { font-size: 15px; padding: 4px 0 6px; border-bottom: 1.5px solid var(--ink); }
+.field .ph { color: var(--ph); }
+.msg { background: var(--ink); color: var(--bg); font-size: 11px; font-weight: 700; padding: 5px 8px; line-height: 1.45; }
+.btn { display: block; height: 44px; line-height: 41px; font-size: 13px; font-weight: 700; text-align: center; border: 1.5px solid var(--ink); }
+.btn.solid { background: var(--ink); color: var(--bg); }
+.btns { display: flex; } .btns .btn { flex: 1; } .btns .btn + .btn { margin-left: 8px; }
+.foot { position: absolute; left: 22px; right: 22px; bottom: 18px; display: flex; justify-content: space-between; font-size: 10px; color: var(--mute); }
+.foot u { color: var(--ink); text-underline-offset: 2px; }
+.status { font-size: 10px; color: var(--mute); }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--panel); border-top: 2px solid var(--ink); padding: 14px 22px 22px; }
+.sheet .t { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.sheet .row { display: flex; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 12px; }
+.sheet .row b { width: 24px; flex: none; }
+.sheet .row span { color: var(--mute); font-size: 10.5px; margin-left: auto; }
+.veil { position: absolute; inset: 0; background: rgba(28,28,27,.45); }
+.dark .veil { background: rgba(0,0,0,.6); }
+.focus { outline: 2px solid var(--zhu); outline-offset: 2px; }
+/* 编辑界面局部（卡下区） */
+.pager { display: flex; align-items: baseline; }
+.pager span { font-size: 20px; font-weight: 700; margin-right: 13px; }
+.pager span.todo { color: var(--ph); border-bottom: 2.5px dotted currentColor; }
+.pager span.on { color: var(--zhu); border-bottom: 2.5px solid var(--zhu); }
+/* 示意比例：真机 360 宽每字 28 px（≥ 24 px 点按区）→ 本框 300 宽约 23 px */
+.pager.tight span { margin-right: 1px; padding: 0; min-width: 23px; font-size: 18px; text-align: center; }
+.hintline { display: flex; justify-content: space-between; align-items: baseline; font-size: 10px; color: var(--mute); line-height: 1.5; }
+.hintline u { color: var(--ink); font-weight: 700; font-size: 11px; text-underline-offset: 2px; white-space: nowrap; margin-left: 8px; }
+.cardstub { position: absolute; left: 0; right: 0; top: 60px; height: 400px; background: var(--bg); border-bottom: 1px solid var(--line); }
+.cardstub .info { position: absolute; left: 22px; right: 22px; top: 10px; display: flex; justify-content: space-between; font-size: 7px; color: var(--mute); border-bottom: 1px solid var(--ink); padding-bottom: 4px; }
+.cardstub .ttl { position: absolute; left: 22px; top: 30px; font-size: 21px; font-weight: 700; color: var(--ph); }
+.cardstub .plate { position: absolute; left: 22px; right: 22px; top: 80px; height: 167px; background: #dfded9; }
+.dark .cardstub .plate { background: #232321; }
+.cardstub .giant { position: absolute; left: 36px; top: 92px; font-size: 150px; font-weight: 700; line-height: 1; }
+.cardstub .w { position: absolute; left: 22px; top: 272px; font-size: 33px; font-weight: 700; }
+.cardstub .w .k { color: var(--zhu); }
+/* 取景 */
+.crop { position: absolute; left: 0; right: 0; top: 64px; height: 300px; background: linear-gradient(160deg, #8a6f5a 0%, #c9b48f 40%, #3f5662 70%, #b9bcbf 100%); }
+.crop .mask-t, .crop .mask-b, .crop .mask-l, .crop .mask-r { position: absolute; background: rgba(0,0,0,.55); }
+.crop .mask-t, .crop .mask-b { left: 0; right: 0; }
+.crop .mask-l, .crop .mask-r { width: 22px; }
+.crop .win { position: absolute; left: 22px; right: 22px; border: 2px solid #fff; outline: 1px solid rgba(0,0,0,.4); }
+.nudge { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.nudge i { font-style: normal; height: 36px; line-height: 33px; text-align: center; font-size: 13px; font-weight: 700; border: 1.5px solid var(--ink); }
+.zoom { display: flex; align-items: center; font-size: 11px; color: var(--mute); }
+.zoom i { font-style: normal; width: 36px; height: 36px; line-height: 33px; text-align: center; border: 1.5px solid var(--ink); color: var(--ink); font-weight: 700; font-size: 16px; }
+.zoom .bar { flex: 1; height: 3px; background: var(--line); margin: 0 10px; position: relative; }
+.zoom .bar b { position: absolute; left: 0; top: 0; bottom: 0; width: 30%; background: var(--ink); }
+.zoom .bar b::after { content: ""; position: absolute; right: -9px; top: -8px; width: 18px; height: 18px; border-radius: 50%; background: var(--ink); }
+/* 借物 */
+.ctab { width: 100%; border-collapse: collapse; font-size: 10.5px; line-height: 1.45; }
+.ctab td { padding: 6px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.ctab td:first-child { color: var(--mute); width: 52px; }
+.ctab td:last-child { text-align: right; color: var(--mute); width: 52px; }
+.ctab b { color: var(--ink); }
+.det { font-size: 11px; color: var(--ink); font-weight: 700; padding: 8px 0; border-bottom: 1px solid var(--line); }
+/* 标题工具栏 */
+.kbrow { position: absolute; left: 0; right: 0; background: var(--panel); border-top: 2px solid var(--ink); padding: 8px 22px; }
+.tools { display: flex; align-items: center; }
+.tools i { font-style: normal; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; margin-right: 6px; font-size: 13px; font-weight: 700; }
+.tools .sw { width: 16px; height: 16px; border-radius: 50%; }
+.tools .hollow { width: 22px; height: 22px; border: 1.5px dashed var(--ink); position: relative; }
+.tools .hollow::after { content: "+"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+.tools .sep { width: 1px; height: 18px; background: var(--line); margin: 0 6px; }
+.warn { margin-top: 8px; font-size: 10.5px; line-height: 1.5; }
+.warn b { display: block; font-size: 11px; }
+.toast { position: absolute; left: 22px; right: 22px; background: var(--ink); color: var(--bg); font-size: 12px; font-weight: 700; padding: 10px 12px; }
+</style>
+</head>
+<body>
+<header class="board-head">
+  <h1>藏头 - Backronym · v00.02.01 闸口 A 设计稿（2026-11-04 定稿）</h1>
+  <p>依据 <code>plans/v00.02.01/PLAN.md</code>（<code>80ccd44</code>）第 0 批：入场界面（T18）、6 个预设单词、T19–T22 改法、新草稿键名。视觉沿用第六稿母版 <code>design/folio-swiss.html</code>：满版 folio、国际主义、左对齐，石白 / 墨 / 朱三色，<b>朱只标关键字母与键盘焦点</b>，字体只用 Noto。占位色按 10-22 无障碍修订（浅 #69665f、深 #88857f）。手机宽 300 = 卡宽 1080 × 0.278，界面左边距 22 = 卡页边距 80 × 0.278。键盘为示意。示意文案：填表人「小满」。</p>
+  <p><b>标准</b>：用户 11-04 指定参照 W3C <b>WCAG 2.2</b>（界面本身）与 <b>ATAG 2.0</b>（藏头是创作工具：既要工具本身可用，也要帮作者做出看得清的图）。每个状态下注明对应条款；第 6 节为对照总表。</p>
+  <div class="notes">
+    <div><h2>本稿新增 / 改动</h2><ul>
+      <li>入场界面 4 个状态 + 改单词确认 + 深色（第 1 节）</li>
+      <li>编辑界面配套：字母栏去掉重复页码，提示行右侧加「改单词 / 填表人」入口；卡顶填表人只显示（第 2 节）</li>
+      <li>取景面板「大图 + 外围压暗」与不拖动的移动方式（第 3 节）</li>
+      <li>借物页紧凑表，入口挪到入场界面页脚（第 4 节）</li>
+      <li>自选色空心框 + 导出对比度提醒（第 5 节）</li>
+    </ul></div>
+    <div><h2>沿用的定稿</h2><ul>
+      <li>编辑卡、候选栏、完成面板、深浅三档</li>
+      <li>标题留空导出单词；朱只标关键字母（T17 后固定为首字母）</li>
+      <li>完成时的统一屏蔽检查保留</li>
+    </ul></div>
+    <div><h2 class="ask">已定（闸口 A，11-04）</h2><ul>
+      <li class="ask">A1 · 预设词从「文学艺术命题」高频词库里挑：60 个，每次打开入场界面随机抽 6 个</li>
+      <li class="ask">A2 · 入场主按钮「开始填充」</li>
+      <li class="ask">A3–A5 · 按本稿：改单词入口在卡下提示行右侧；改单词清空已填格先确认；新键 <code>backronym-draft-v2</code></li>
+      <li class="ask">A6 · 第 3、4 节按本稿；第 5 节改为选色即用、只用 toast 提醒</li>
+    </ul></div>
+  </div>
+</header>
+
+<section class="sec">
+  <div class="sec-head"><span class="id">1</span><h2>入场界面（T18，含 D3 填表人、Q2–Q6）</h2><span class="sub">没有新版草稿时打开工具先到这里；有草稿直接进编辑界面（Q2）</span></div>
+  <div class="frames">
+
+    <figure>
+      <div class="phone">
+        <div class="top"><span class="eyebrow">藏头 - Backronym</span><span>跟随系统</span></div>
+        <div class="abs h1" style="top:72px">起一个单词</div>
+        <div class="abs help" style="top:106px">每个字母会得到一格，再给每格找一个以它开头的词。</div>
+        <div class="abs lab" style="top:150px"><span>单词</span><span>0 / 10 个字母</span></div>
+        <div class="abs word" style="top:170px"><span class="caret"></span><span class="ph">输入一个英文单词</span></div>
+        <div class="abs help" style="top:226px">只收字母 A–Z，自动转大写。</div>
+        <div class="abs lab" style="top:258px"><span>或者选一个</span></div>
+        <div class="abs chips" style="top:278px"><span class="chip">LIFE</span><span class="chip">LOVE</span><span class="chip">HOME</span><span class="chip">DREAM</span><span class="chip">HOPE</span><span class="chip">TIME</span></div>
+        <div class="abs lab" style="top:390px"><span>填表人（选填）</span><span>最多 12 字</span></div>
+        <div class="abs field" style="top:408px"><span class="ph">留空则导出图上不出现</span></div>
+        <div class="abs btn solid" style="top:530px">开始填充</div>
+        <div class="foot"><u>借物与版权</u><span>v00.02.01</span></div>
+      </div>
+      <figcaption><b>① 首次进入（无草稿）</b>：光标在单词框；6 个预设词是按钮，每次打开从 60 个文艺命题高频词里随机抽取（图中为示例），点一个即填进单词框（可再改）。没有返回箭头。主按钮常亮，点了才校验，失败就地说明（不做无提示的置灰）。
+        <span class="std">WCAG 3.3.2 标签与说明 · 2.5.8 目标 ≥ 24 px（预设 80×40、主按钮 44 高）· ATAG A.3.1.1 全部可键盘完成</span></figcaption>
+    </figure>
+
+    <figure>
+      <div class="phone">
+        <div class="top"><span class="eyebrow">藏头 - Backronym</span><span>跟随系统</span></div>
+        <div class="abs h1" style="top:72px">起一个单词</div>
+        <div class="abs help" style="top:106px">每个字母会得到一格，再给每格找一个以它开头的词。</div>
+        <div class="abs lab" style="top:150px"><span>单词</span><span>4 / 10 个字母</span></div>
+        <div class="abs word" style="top:170px">LIFE<span class="caret"></span></div>
+        <div class="abs preview" style="top:228px"><span>L</span><span>I</span><span>F</span><span>E</span><em>将得到 4 格</em></div>
+        <div class="abs lab" style="top:270px"><span>或者选一个</span></div>
+        <div class="abs chips" style="top:290px"><span class="chip on">LIFE</span><span class="chip">LOVE</span><span class="chip">HOME</span><span class="chip">DREAM</span><span class="chip">HOPE</span><span class="chip">TIME</span></div>
+        <div class="abs lab" style="top:400px"><span>填表人（选填）</span><span>2 / 12</span></div>
+        <div class="abs field" style="top:418px">小满</div>
+        <div class="abs btn solid" style="top:530px">开始填充</div>
+        <div class="foot"><u>借物与版权</u><span>v00.02.01</span></div>
+      </div>
+      <figcaption><b>② 输入中 / 选了预设</b>：单词框下预览将得到的格子（虚下划线 = 未填，与编辑界面字母栏一致）。与单词一致的预设词显示为实心并带 <code>aria-pressed="true"</code>，不只靠颜色。
+        <span class="std">WCAG 1.4.1 不只靠颜色 · 4.1.2 状态可被读屏读出 · 3.3.2</span></figcaption>
+    </figure>
+
+    <figure>
+      <div class="phone">
+        <div class="top"><span class="eyebrow">藏头 - Backronym</span><span>跟随系统</span></div>
+        <div class="abs h1" style="top:72px">起一个单词</div>
+        <div class="abs lab" style="top:150px"><span>单词</span><span>4 / 10 个字母</span></div>
+        <div class="abs word focus" style="top:170px">XXXX<span class="caret"></span></div>
+        <div class="abs msg" style="top:228px" role="alert">这个词不适合在小红书发布，换一个吧。</div>
+        <div class="abs lab" style="top:276px"><span>或者选一个</span></div>
+        <div class="abs chips" style="top:296px"><span class="chip">LIFE</span><span class="chip">LOVE</span><span class="chip">HOME</span><span class="chip">DREAM</span><span class="chip">HOPE</span><span class="chip">TIME</span></div>
+        <div class="abs lab" style="top:400px"><span>填表人（选填）</span><span>0 / 12</span></div>
+        <div class="abs field" style="top:418px"><span class="ph">留空则导出图上不出现</span></div>
+        <div class="abs btn solid" style="top:530px">开始填充</div>
+        <div class="foot"><u>借物与版权</u><span>v00.02.01</span></div>
+      </div>
+      <figcaption><b>③ 屏蔽词命中（Q6）</b>：点主按钮时就地检查单词与填表人；命中则说明原因、焦点回到该字段、不进编辑界面，已填内容全部保留。说明文案不复述被拦的词（示意用 XXXX）。网页版无屏蔽器，不出现此状态。
+        <span class="std">WCAG 3.3.1 错误标识 · 3.3.3 错误建议 · 4.1.3 状态消息（role="alert"）· ui-pitfalls #17 一次说明、保留输入</span></figcaption>
+    </figure>
+
+    <figure>
+      <div class="phone">
+        <div class="top"><span class="back"><i aria-hidden="true">←</i>返回</span><span>跟随系统</span></div>
+        <div class="abs h1" style="top:72px">改单词 · 填表人</div>
+        <div class="abs status" style="top:106px">改动在返回时校验并自动保存。</div>
+        <div class="abs lab" style="top:150px"><span>单词</span><span>4 / 10 个字母</span></div>
+        <div class="abs word" style="top:170px">LIFE<span class="caret"></span></div>
+        <div class="abs preview" style="top:228px"><span style="color:var(--ink);border-bottom-style:solid">L</span><span style="color:var(--ink);border-bottom-style:solid">I</span><span>F</span><span style="color:var(--ink);border-bottom-style:solid">E</span><em>已填 3 / 4 格</em></div>
+        <div class="abs lab" style="top:270px"><span>或者选一个</span></div>
+        <div class="abs chips" style="top:290px"><span class="chip on">LIFE</span><span class="chip">LOVE</span><span class="chip">HOME</span><span class="chip">DREAM</span><span class="chip">HOPE</span><span class="chip">TIME</span></div>
+        <div class="abs lab" style="top:400px"><span>填表人（选填）</span><span>2 / 12</span></div>
+        <div class="abs field" style="top:418px">小满</div>
+        <div class="foot"><u>借物与版权</u><span>v00.02.01</span></div>
+      </div>
+      <figcaption><b>④ 从编辑界面进入（有草稿，Q3 / Q4）</b>：左上标准返回箭头（读屏名「返回编辑界面」）；单词与填表人<b>预先填好</b>；预览里实下划线 = 已填格。没有主按钮，返回箭头即「应用并返回」，避免两个按钮做同一件事。
+        <span class="std">WCAG 3.3.7 重复输入（不让用户再输一遍）· 3.2.3 一致导航（顶栏位置与编辑界面相同）· ATAG A.3.2.1 自动保存</span></figcaption>
+    </figure>
+
+    <figure>
+      <div class="phone">
+        <div class="top"><span class="back"><i aria-hidden="true">←</i>返回</span><span>跟随系统</span></div>
+        <div class="abs h1" style="top:72px">改单词 · 填表人</div>
+        <div class="abs lab" style="top:150px"><span>单词</span><span>4 / 10 个字母</span></div>
+        <div class="abs word" style="top:170px">LOVE</div>
+        <div class="veil"></div>
+        <div class="sheet" role="dialog">
+          <div class="t">改成 LOVE 会清空 2 格</div>
+          <div class="help" style="margin-bottom:6px">同位置字母没变的 L、E 两格保留；下面两格的词、释义、配文和配图会被清空，不能撤销。</div>
+          <div class="row"><b>I</b>Idea<span>释义 · 配文 · 配图</span></div>
+          <div class="row" style="margin-bottom:14px"><b>F</b>Fire<span>释义</span></div>
+          <span class="btn solid">清空 2 格，改成 LOVE</span><span class="btn focus" style="margin-top:8px">保留 LIFE</span>
+        </div>
+      </div>
+      <figcaption><b>⑤ 改单词会清空已填格</b>：返回时若新单词会清空<b>已有内容</b>的格，先列出要清空什么再确认；初始焦点在安全选项「保留 LIFE」，清空按钮写明后果。没有内容要丢时不弹此框。
+        <span class="std">ATAG A.4.1.1 内容改动可撤销或先确认 · WCAG 3.3.4 防错 · ui-pitfalls #03 主次分明</span></figcaption>
+    </figure>
+
+    <figure>
+      <div class="phone dark">
+        <div class="top"><span class="eyebrow">藏头 - Backronym</span><span>跟随系统</span></div>
+        <div class="abs h1" style="top:72px">起一个单词</div>
+        <div class="abs help" style="top:106px">每个字母会得到一格，再给每格找一个以它开头的词。</div>
+        <div class="abs lab" style="top:150px"><span>单词</span><span>4 / 10 个字母</span></div>
+        <div class="abs word" style="top:170px">LIFE<span class="caret"></span></div>
+        <div class="abs preview" style="top:228px"><span>L</span><span>I</span><span>F</span><span>E</span><em>将得到 4 格</em></div>
+        <div class="abs lab" style="top:270px"><span>或者选一个</span></div>
+        <div class="abs chips" style="top:290px"><span class="chip on">LIFE</span><span class="chip">LOVE</span><span class="chip">HOME</span><span class="chip">DREAM</span><span class="chip">HOPE</span><span class="chip">TIME</span></div>
+        <div class="abs lab" style="top:400px"><span>填表人（选填）</span><span>2 / 12</span></div>
+        <div class="abs field" style="top:418px">小满</div>
+        <div class="abs btn solid" style="top:530px">开始填充</div>
+        <div class="foot"><u>借物与版权</u><span>v00.02.01</span></div>
+      </div>
+      <figcaption><b>② 深色</b>：同一套变量换深色值；占位 #88857f 对 #171716 为 4.88:1。
+        <span class="std">WCAG 1.4.3 / 1.4.11 对比度 · ATAG A.3.6.3 跟随平台深浅设置</span></figcaption>
+    </figure>
+
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-head"><span class="id">2</span><h2>编辑界面配套改动（T18 入口 · T22 十个字母单行）</h2><span class="sub">只改卡下区域；卡面与导出图不变</span></div>
+  <div class="frames">
+
+    <figure>
+      <div class="phone">
+        <div class="top"><span><b>单图</b> <span style="margin-left:10px">列阵</span></span><span>跟随系统 <b style="margin-left:10px">完成</b></span></div>
+        <div class="cardstub"><div class="info"><span>01 / 04</span><span>小满</span></div><div class="ttl">LIFE</div><div class="plate"></div><div class="giant">L</div><div class="w"><span class="k">L</span>ake</div></div>
+        <div class="abs pager" style="top:482px"><span class="on">L</span><span class="todo">I</span><span>F</span><span class="todo">E</span></div>
+        <div class="abs hintline" style="top:516px"><span>左右滑动或点字母切换<br>还有 2 格没填，填完才能导出</span><u>改单词 / 填表人</u></div>
+      </div>
+      <figcaption><b>⑥ 卡下区（4 个字母）</b>：字母栏去掉页码（卡顶左上已有 01 / 04，此处重复）；提示行右侧加「改单词 / 填表人」→ 入场界面 ④。卡顶右上填表人只显示、不再是输入框（D3）。原标题框里的「修改单词」入口与改单词模式删除（Q3）。
+        <span class="std">WCAG 2.4.4 链接目的明确 · 3.2.3 一致导航 · 2.5.8</span></figcaption>
+    </figure>
+
+    <figure>
+      <div class="phone">
+        <div class="top"><span><b>单图</b> <span style="margin-left:10px">列阵</span></span><span>跟随系统 <b style="margin-left:10px">完成</b></span></div>
+        <div class="cardstub"><div class="info"><span>01 / 10</span><span>小满</span></div><div class="ttl">BACKRONYMS</div><div class="plate"></div><div class="giant">B</div><div class="w"><span class="k">B</span>old</div></div>
+        <div class="abs pager tight" style="top:482px"><span class="on">B</span><span class="todo">A</span><span class="todo">C</span><span class="todo">K</span><span class="todo">R</span><span class="todo">O</span><span class="todo">N</span><span class="todo">Y</span><span class="todo">M</span><span class="todo">S</span></div>
+        <div class="abs hintline" style="top:516px"><span>左右滑动或点字母切换<br>还有 9 格没填，填完才能导出</span><u>改单词 / 填表人</u></div>
+      </div>
+      <figcaption><b>⑦ 10 个字母（T22）</b>：去掉页码后整行可用；字母多于 8 个时字母间距收紧，每个字母点按区保持 ≥ 24 px 宽。示意按 300 宽画；360 宽下可用宽 306.7 px，10 × 28 px = 280 px，单行放得下（实现后用 DOM 实测验收）。
+        <span class="std">WCAG 2.5.8 目标尺寸（最小）· 1.4.10 重排</span></figcaption>
+    </figure>
+
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-head"><span class="id">3</span><h2>取景面板（T19 · §7-2）</h2><span class="sub">母版：大图 + 外围压暗；加不拖动的移动方式</span></div>
+  <div class="frames">
+    <figure>
+      <div class="phone dark">
+        <div class="top"><b>调整取景 · L</b><span>拖动画面 · 双指缩放</span></div>
+        <div class="crop"><div class="mask-t" style="top:0;height:68px"></div><div class="mask-b" style="top:232px;bottom:0"></div><div class="mask-l" style="left:0;top:68px;height:164px"></div><div class="mask-r" style="right:0;top:68px;height:164px"></div><div class="win" style="top:68px;height:164px"></div></div>
+        <div class="abs lab" style="top:384px"><span>移动画面</span></div>
+        <div class="abs nudge" style="top:404px"><i>←</i><i>↑</i><i>居中</i><i>↓</i><i>→</i></div>
+        <div class="abs zoom" style="top:458px"><i>−</i><span class="bar"><b></b></span><i>＋</i></div>
+        <div class="abs btns" style="top:540px"><span class="btn">还原</span><span class="btn solid">完成</span></div>
+      </div>
+      <figcaption><b>⑧ 取景（深色背景以突出画面）</b>：整张图铺满，取景框外压暗，框比例 920:600 与图版一致。除拖动与双指外，提供<b>不拖动</b>的方式：方向按钮每次移动一小步、「居中」、缩放 − ＋。画布本身仍保留方向键与 + − 键。
+        <span class="std">WCAG 2.5.7 拖动操作须有单指非拖动替代 · 2.5.1 指针手势（双指缩放有单指替代）· 2.5.8</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-head"><span class="id">4</span><h2>借物与版权（T20 · §7-5、§7-8）</h2><span class="sub">入口在入场界面页脚与完成面板，不需先填满所有格</span></div>
+  <div class="frames">
+    <figure>
+      <div class="phone">
+        <div class="top"><span class="back"><i aria-hidden="true">←</i>返回</span><span></span></div>
+        <div class="abs h1" style="top:72px">借物与版权</div>
+        <div class="abs" style="top:114px">
+          <table class="ctab">
+            <tr><td>本工具</td><td><b>藏头 - Backronym</b> v00.02.01<br>© 2026 BeyondPassenger</td><td>MIT</td></tr>
+            <tr><td>词库</td><td><b>ECDICT</b> · © 2025 Linwei<br>已按考纲词筛选、重排义项</td><td>MIT</td></tr>
+            <tr><td>英文字体</td><td><b>Noto Sans</b><br>© 2022 The Noto Project Authors</td><td>OFL 1.1</td></tr>
+            <tr><td>中文字体</td><td><b>Noto Sans CJK SC</b><br>© 2014–2021 Adobe · 已子集化</td><td>OFL 1.1</td></tr>
+            <tr><td>审核规则</td><td><b>《小红书社区公约 2.0》</b><br>仅小红书版内置的屏蔽词表依此整理</td><td>参考</td></tr>
+          </table>
+          <div class="det" style="margin-top:10px">▸ MIT License 全文（本工具 / ECDICT）</div>
+          <div class="det">▸ SIL Open Font License 1.1 全文</div>
+        </div>
+      </div>
+      <figcaption><b>⑨ 紧凑表</b>：一行一项「用途 · 名称与版权人 · 许可证」，许可证全文折叠在 <code>&lt;details&gt;</code> 里（原生可键盘展开）。条目与现借物页一致（`app/index.html` 借物页逐条核对），不新增不删减。
+        <span class="std">WCAG 1.3.1 信息与关系（表格语义）· 2.4.6 标题与标签</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-head"><span class="id">5</span><h2>标题自选色（T21a · §7-6）</h2><span class="sub">空心框 + 选色即用、toast 提醒</span></div>
+  <div class="frames">
+    <figure>
+      <div class="phone">
+        <div class="cardstub" style="top:40px"><div class="info"><span>01 / 04</span><span>小满</span></div><div class="ttl" style="color:#d9c27a">我的标题</div><div class="plate"></div><div class="giant">L</div></div>
+        <div class="toast" role="status" style="top:404px">这个颜色在导出图上容易看不清</div>
+        <div class="kbrow" style="top:452px">
+          <div class="tools"><i>B</i><i style="font-style:italic">I</i><span class="sep"></span><i><span class="sw" style="background:var(--ink)"></span></i><i><span class="sw" style="background:var(--zhu)"></span></i><i><span class="sw" style="background:#8d877d"></span></i><i><span class="hollow"></span></i><span style="font-size:10px;color:var(--mute);white-space:nowrap">自选色</span></div>
+        </div>
+      </div>
+      <figcaption><b>⑩ 自选色</b>：按钮固定为空心虚线框 + 「＋」（母版样式），不再显示当前色，深色下不会与「朱」混淆。选色后<b>直接应用</b>；同时按浅、深两套导出底色算对比度，任一低于 3:1（标题是大字）时弹一条 toast「这个颜色在导出图上容易看不清」，不拦截、不需操作。toast 用 <code>role="status"</code> 播报，至少停留 5 秒或直到下一次操作。示例色 #d9c27a（实算对浅底 1.43:1）。
+        <span class="std">ATAG B.3.1.1 检查协助 · B.3.1.2 帮作者判断 · B.2.2.1 无障碍选项不低于其他选项 · WCAG 1.4.3（大字 3:1）</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-head"><span class="id">6</span><h2>标准对照（本稿涉及的条款）</h2><span class="sub">条款编号与标题核对自 W3C 原文（WCAG 2.2；ATAG 2.0）</span></div>
+  <table class="std-map">
+    <tr><th>条款</th><th>要求（摘意）</th><th>本稿怎么做</th><th>落到</th></tr>
+    <tr><td>ATAG A.4.1.1 Content Changes Reversible (Minimum)</td><td>创作操作可撤销，或先请作者确认</td><td>改单词会清空已有内容的格时先确认（⑤）</td><td>T18</td></tr>
+    <tr><td>ATAG A.3.1.1 Keyboard Access (Minimum)</td><td>全部功能可用键盘操作</td><td>入场界面、预设词、确认框、取景的移动与缩放均可键盘完成</td><td>T18、T19</td></tr>
+    <tr><td>ATAG A.3.2.1 Auto-Save (Minimum)</td><td>不因超时丢失编辑</td><td>入场界面改动返回时自动保存；草稿 18 小时规则在页脚说明</td><td>T18</td></tr>
+    <tr><td>ATAG A.3.6.3 Apply Platform Settings</td><td>沿用平台的显示设置</td><td>深浅跟随系统（沿用）</td><td>—</td></tr>
+    <tr><td>ATAG B.3.1.1 / B.3.1.2 Checking Assistance / Help Authors Decide</td><td>帮作者检查可读性问题并说明如何判断</td><td>自选色按浅深两套导出底色检查对比度，不足时 toast 提醒（不拦截，用户 11-04 决定）</td><td>T21a</td></tr>
+    <tr><td>ATAG B.2.2.1 Accessible Option Prominence</td><td>可读的选项不比不可读的更隐蔽</td><td>预设三色（墨 / 朱 / 灰）在前，自选色在后</td><td>T21a</td></tr>
+    <tr><td>WCAG 2.5.7 Dragging Movements (AA)</td><td>拖动功能须有单指非拖动替代</td><td>取景加方向按钮、居中、缩放 − ＋</td><td>T19</td></tr>
+    <tr><td>WCAG 2.5.8 Target Size (Minimum) (AA)</td><td>点按目标 ≥ 24×24 CSS px（或间距例外）</td><td>预设 80×40、主按钮 44 高、字母栏每字 ≥ 24 宽</td><td>T18、T22</td></tr>
+    <tr><td>WCAG 2.4.11 Focus Not Obscured (Minimum) (AA)</td><td>获得焦点的元素不被完全遮住</td><td>确认框为模态、焦点在框内；T08（键盘上方一行遮挡）按此验收</td><td>T18、T08</td></tr>
+    <tr><td>WCAG 3.3.7 Redundant Entry (A)</td><td>同一流程中已输入的信息不要求再输</td><td>从编辑界面进入时预填单词与填表人（④）</td><td>T18</td></tr>
+    <tr><td>WCAG 3.3.1 / 3.3.3 / 4.1.3</td><td>错误标识、错误建议、状态消息</td><td>屏蔽命中就地说明、焦点回字段、<code>role="alert"</code>（③）</td><td>T18</td></tr>
+    <tr><td>WCAG 2.2.6 Timeouts (AAA)</td><td>可能因不活动丢数据时告知时长（保存 &gt; 20 小时可免）</td><td>18 小时短于 20 小时，页脚已告知时长与预计清除时间（沿用）</td><td>—</td></tr>
+  </table>
+</section>
+
+<section class="sec">
+  <div class="sec-head"><span class="id">7</span><h2>新草稿键名（T23）</h2></div>
+  <p style="font-size:13px;line-height:1.75;max-width:1180px">建议 <code>backronym-draft-v2</code>：用新产品名，与旧键 <code>acronym-draft-v1</code> / <code>acronym-draft-v1-bak</code> 一眼可分；<code>v2</code> 对应草稿内容格式里已有的 <code>v: 2</code>。旧键在升级后删除（Q1）。</p>
+</section>
+</body>
+</html>

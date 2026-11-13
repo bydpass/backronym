@@ -1,0 +1,1800 @@
+{
+  "schema": 1,
+  "language": "en",
+  "state": "draft-not-admitted",
+  "shards": [
+    {
+      "path": "creative/C01-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 47,
+      "sha256": "7f16211291c402220a46497c688b32f5dcb79dc3fe31de8a18e934040cae5fd3",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "creative/C02-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 24,
+      "sha256": "9b5093eb6b47096de88b6e5792e6646364ad7dc89980235383d47721540e2533",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "creative/C03-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 23,
+      "sha256": "f2cb740db2542e43dbdda47fcd0c10f5a0fd29ff5d3d00e4be57aced6f840a40",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "creative/C04-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 38,
+      "sha256": "97f01b47008f80dbeec82f28f104b35b78a22dc8155e7afd470d0cbc2a5e6742",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "creative/C05-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 25,
+      "sha256": "d6d71139217e6ea2e38fc40bd23691434648f90fda2377a377eab79e9fbbfd3e",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "creative/C06-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 17,
+      "sha256": "26e241442fded2ef8f7a151972cf4f1cd6aa69f52578909ee693d83c203933ef",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "daily/D01-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 34,
+      "sha256": "360b7be712a8110876bb63f112204252e4cd0731cd8d3e3c88d64c2c82d861fa",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "daily/D02-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 22,
+      "sha256": "61e873e5912835c465a42d31c8bf067a9110c0dca97cfed34231beab16b831ad",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "daily/D03-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 16,
+      "sha256": "46334e10cebb80da0337fe7a27446501ba583ececd3ac7e1618d3d33465eb22b",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "daily/D04-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 32,
+      "sha256": "6d8ebabc49b6afac03c780bca8ab5bcce5ea3bfeae045234be24cce67569d011",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "daily/D05-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 52,
+      "sha256": "bece989bb1c9dd5d78bdff0cdec36b247d13e283c86d6b08027b13bc37bf3e9e",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "daily/D06-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 18,
+      "sha256": "cff277250bc4ffb62362342f0a44fef6bb8cf2bceca33b5ddac065f48a08cef2",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "historical-cultural/K01-001.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 8,
+      "sha256": "147de6b4190026795156ba16b9062fea4c568d19083dd4842ef98d64e67e076e",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "historical-cultural/K02-001.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 13,
+      "sha256": "02917bb0d629155d9604f49e21db7e8b37875ffbec41f1ea9638b8feb051518e",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "historical-cultural/K03-001.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 4,
+      "sha256": "2bcc18358ac6b6647d735fba4ef922aa53db555faa65577bedcccfe0804d5e2d",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "professional/humanities/H01-001.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 22,
+      "sha256": "80b396e555d07ae5c1d068b4e3ad997ceb399fb196a9d85490f6c691a952d8b0",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "professional/humanities/H02-001.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 29,
+      "sha256": "5b3cd330bb06c46690d1c2b35862439e95a75fdc2ddb6625a58d086ec6f11d63",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "professional/humanities/H03-001.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 11,
+      "sha256": "2c3b5cfa1ddc1a5016924aaac411b142226071b4987f7fe11ffdede4d1bfaa3b",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "professional/humanities/H04-001.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 9,
+      "sha256": "aabcecb6546a0c52ba8bb69b48e5dca8f9ca0097526a92c1dfe76561e59f27ef",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "professional/natural/N01-001.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 13,
+      "sha256": "cbd32f287a61f3780920d7114917d19ac972e45ade69a54bc13778105c1c0b5f",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "professional/natural/N02-001.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 13,
+      "sha256": "60b055d71f08e8c27ada47b58c815dfebcaf30cd566f8fef7b5abef451c3ceaa",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "professional/natural/N03-001.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 10,
+      "sha256": "88a663176e070142044911c16de16c468ffc260e1051cd8b287868a08d5c4f9f",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "professional/natural/N04-001.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 13,
+      "sha256": "14408bf5e2c77110cd247a56d091479ab2282109234fb678e281030f8c1eb613",
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ]
+    },
+    {
+      "path": "creative/C01-002.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 30,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "4ee85e024e7caf12e83489f0f52be3839ca0b266c3d96e2e39020f90ca61a856"
+    },
+    {
+      "path": "creative/C02-002.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 15,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "602c6394625b8f9c9c4473b67fc8a0c73cf4a06234736bd95e71d5f6539e0573"
+    },
+    {
+      "path": "creative/C03-002.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 8,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "bea6defe7f90b8298e94e8516484687b51d9f8258d86633e9737caed44778786"
+    },
+    {
+      "path": "creative/C04-002.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 16,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "3fb9943cd9d38fb3647c92ce11e3dc769d909de219ae43d3d424e00b15ad58bb"
+    },
+    {
+      "path": "creative/C05-002.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 20,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "481bc9498e0df30d60929b18def63562ffd3085e3675c3a6f8bebf83c8391739"
+    },
+    {
+      "path": "creative/C06-002.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 34,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "ecccf8803e2e2fa8febf73132f2189d24e47ace9ed528639530c4254de15fe8f"
+    },
+    {
+      "path": "daily/D01-002.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 15,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "bf82237bdb725024b69fc37a704f200cb73ca0cc7fda338d16e895451080b2ea"
+    },
+    {
+      "path": "daily/D02-002.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "59220f588da0a6590f10bd432d7b71f8ca81369297d979a86b7b32ac0cebac51"
+    },
+    {
+      "path": "daily/D03-002.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 8,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "69770c615fdd8ed19381e56e6407f75ee4b52ba3a51f5a5484dca8ceabe8c71a"
+    },
+    {
+      "path": "daily/D04-002.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "0b4be9b99e1ac29020a68647a2156dc1b20d91e8cb3764ea009faa5de5822620"
+    },
+    {
+      "path": "daily/D05-002.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 7,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "90a5da6b4db01e47dc03487aba61f4cec67a73fa73ab27f355fd12fef9de80c1"
+    },
+    {
+      "path": "daily/D06-002.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 40,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "aefaf520d54c625781a9337e70cd458608e8b5499c53b3f9d975ef774b81f55a"
+    },
+    {
+      "path": "historical-cultural/K02-002.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "c696398537290332f236e23a1b432dff12f188efda590a16d006c030430b9887"
+    },
+    {
+      "path": "historical-cultural/K03-002.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "ec9c20b7552444ca4f7b7df62643fbad02663a02839e127bb447f5582193a2b6"
+    },
+    {
+      "path": "professional/humanities/H01-002.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 12,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "9a71fb39f41c116ffbdb3f03444a25ad4f91aa29edf3715d00219d8f045be3b8"
+    },
+    {
+      "path": "professional/humanities/H02-002.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 11,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "97be3ffd14c1af8091bfb078c86a29f7c95a1f98d05b2cd4ec89d2990915b1c9"
+    },
+    {
+      "path": "professional/humanities/H03-002.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "71dc6331c814efffafb4451d85e335b3f83ccfca1bdd13a64b0a1c3fddda7d53"
+    },
+    {
+      "path": "professional/humanities/H04-002.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 3,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "316dde3e540728b706d1513dddd6aafcc5c4aba4bcc4beb310f693a1826384f6"
+    },
+    {
+      "path": "professional/natural/N01-002.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 5,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "3c1f98513c3f4f1d544ee14de7fb3ea7af9e2829c52b1d7e3abd32d82b40e027"
+    },
+    {
+      "path": "professional/natural/N02-002.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "f91b235f72dfa6f3486215cd527866e43c6d47871c32b9a0373f0dbe60c8f3f7"
+    },
+    {
+      "path": "professional/natural/N03-002.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 8,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "526957e35aa0f7b7f31e40b1a531a6712aba43c974b0f8782efbd6b9718a53b6"
+    },
+    {
+      "path": "professional/natural/N04-002.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "1391c9ebd603891e3713cdc4db0f544897e25bd1e9a0f13f3eaf66cf7dbc6db4"
+    },
+    {
+      "path": "daily/D02-003.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "5e5ba234c983e1fc49b4038aef0d724abec9f84368831eb795d681cfbd6e1a9e"
+    },
+    {
+      "path": "query/numerals-001.tsv",
+      "category": "numerals",
+      "weight": null,
+      "visibility": "query",
+      "directory": "query",
+      "rows": 11,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "f05faa7048362b9260f1a1d1434e547e1cdeed6b929b0a5a7de3b95a13de8a58"
+    },
+    {
+      "path": "query/names-001.tsv",
+      "category": "names",
+      "weight": 1,
+      "visibility": "query",
+      "directory": "query",
+      "rows": 8,
+      "sources": [
+        "scripts/.cache/ecdict.csv",
+        "scripts/.cache/v003/kaikki-de/kaikki.org-dictionary-German.jsonl",
+        "scripts/.cache/v003/kaikki-es/kaikki.org-dictionary-Spanish.jsonl",
+        "scripts/.cache/v003/kaikki-fr/kaikki.org-dictionary-French.jsonl",
+        "scripts/.cache/v003/kaikki-it/kaikki.org-dictionary-Italian.jsonl"
+      ],
+      "sha256": "66ed39cedf315fef7d04fbdee684f7c1aaae64c18589ff8371d0fde996d076ba"
+    },
+    {
+      "path": "creative/C06-003.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "a18bbdb44a63eb6b5502c34dee2500a80e4b9bb3509cfb208a83d068f41981be"
+    },
+    {
+      "path": "daily/D04-003.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "df07b02f82711928eb3c03a63290ea7110e7826cdd3452a3cf6c1c37aec63dcc"
+    },
+    {
+      "path": "creative/C01-003.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 3,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "055d8d796a6ed277d01f330b058bc8d3b4007e864383e3b28f884a37bbffd905"
+    },
+    {
+      "path": "daily/C01-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "507dbb408e879b4cb095c6961ff81acb3a6ad0d5384298b840fb39898b5f63af"
+    },
+    {
+      "path": "daily/C02-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "aa65c54e1939781317e599e723e9906634354c15ae2a345c68f547af07ff554f"
+    },
+    {
+      "path": "creative/C02-003.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 6,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "ce7e4fc132f3867521e92fe403e89657221611d898670c8e083dc0d7125a4af6"
+    },
+    {
+      "path": "daily/C02-002.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 5,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "c642761a560b948b5ea0459cbc277c6aaa7bc9c390e05f0031bacad529439051"
+    },
+    {
+      "path": "creative/C03-003.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 7,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "ac954c7b482261862287e67c2b9e227bda8e60c4ceaf32719606fe37abf14404"
+    },
+    {
+      "path": "creative/C04-003.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 17,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "bac9135b9850201c7bf837db6a58146b3e24d4e1793a3a69e67595292dbc6b12"
+    },
+    {
+      "path": "historical-cultural/C04-001.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "74c0e8d35b046447e2a1f0d7c6d57b6f968504ec5dff5e449966204d94aabd53"
+    },
+    {
+      "path": "creative/C04-004.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 3,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "ef186d9495077ffb21eaba66ce6df172190b92e640b118f06c0eff55a6b3e9ba"
+    },
+    {
+      "path": "creative/C01-004.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 19,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "7947e1ee69ddeae9d544b3c19e2dac74fe7658d609b3315e982d7134ff37f7bd"
+    },
+    {
+      "path": "creative/C01-005.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "1cdf543bf47c1601d7dbc27cdf7cd5c83fbdb208f4d7cb11a53793986ecc41c6"
+    },
+    {
+      "path": "creative/C02-004.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 2,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "281a579a20b4634a4e671cd0c51de87f415a9e8f6ff74b002f66be0d9c40723e"
+    },
+    {
+      "path": "creative/C03-004.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 2,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "d384579848d6fcf8ec1fc66ecb1d2657f2fdb6a25016ac97b57301c885e02615"
+    },
+    {
+      "path": "creative/C04-005.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 2,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "3f0342ccc0cbb2b6aab863dc203aee7d11b0a8a2e5aba9fc39e20d117c709ec1"
+    },
+    {
+      "path": "creative/C06-004.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 2,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "0b0f139e4dd3852b0d034fa2ce5c44d00b90b8a9c4ede4bff1c0325e1c709291"
+    },
+    {
+      "path": "creative/D01-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "d004eb79699f0ce34ad31858aeba94db20477a438c1950bd437b85beb7219121"
+    },
+    {
+      "path": "creative/D03-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "52a0eb4379c124ed480d900c8c9169e578db34b1c9ab0baca1e9c249752bb01c"
+    },
+    {
+      "path": "creative/D06-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "2e04718b091aa8458ea75fe90d79b1e998a025fcbd691407e22a8a1a5d6e6512"
+    },
+    {
+      "path": "creative/H02-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 5,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "2e9b8f8111c8583f1e2c5d8a62cd59ec54fc00f5a5aab45725250d56ae2c6b7a"
+    },
+    {
+      "path": "creative/K03-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "6b70fb76ecd0baab93e3d6c2857f058631184ac7eca058d8642ee69f8c91a471"
+    },
+    {
+      "path": "creative/N04-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "344761253c654259d3dee340600be93af1b0ab29bcbccd37d6bf613a049a12ae"
+    },
+    {
+      "path": "daily/C06-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 11,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "2111952ff714da712c376ec9cec703dfb40175ec316bd6d794064f7ed09ca7af"
+    },
+    {
+      "path": "daily/D01-003.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 15,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "e6d89adb8712a30cf627aaefa8bf99986f2130d659a7cc668f591c53ecaa1b4f"
+    },
+    {
+      "path": "daily/D02-004.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "0f0960f529a279211ad581cc624c8b62adcef28bac8f72cba9d6b8aafe1f7fcc"
+    },
+    {
+      "path": "daily/D03-003.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 5,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "bb0f8443c2af7845e94191509c90b5d78381943597dd914d6f7bd4d45771b66e"
+    },
+    {
+      "path": "daily/D04-004.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "2d646fdbfdb6e1bd1233123d753be1134add91c85f11903862dfe5556ea6a13f"
+    },
+    {
+      "path": "daily/D05-003.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 19,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "ebb12588d8c51660dd731d6944d04f8eda2e8fa075ad95a6a203edf232994920"
+    },
+    {
+      "path": "daily/D06-003.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 17,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "d7530cd6a60c12f8996ba96dbdbdb02e146cfff33be49291484f33b6563bf088"
+    },
+    {
+      "path": "daily/H01-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 14,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "78d94e8a411ffb8e689d26f047ac1deca849e2f907d99d9b33276ce54b5edd7d"
+    },
+    {
+      "path": "daily/H02-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 11,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "bad1415f058d68867e823e3cb5b5b1afdffd96a4f37ff33bd60a0a7bb5f2aced"
+    },
+    {
+      "path": "daily/H04-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "1d85a97cb9fc26eda45ea4964d391ab41945252cf2a1bdd47bb8f0a7abf02f84"
+    },
+    {
+      "path": "daily/K01-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "8c776ee1708985221c1af5b90b1aecab5fb18cac87c78118c97baf2590ba3d9c"
+    },
+    {
+      "path": "daily/K02-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "0801b957d9536214728f3845cae7b5f496668dc087bddaab8614d4f4e8b81d5e"
+    },
+    {
+      "path": "daily/N01-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 3,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "cdb87128cb331a1c40def88e78813d0c58d36159252646ffcc5d3620993be781"
+    },
+    {
+      "path": "daily/N02-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "84e6a6dfe4fc78e1dd15d89a7ec87a77b9d86b77ee09e52a7230c34b4b97262c"
+    },
+    {
+      "path": "daily/N03-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 7,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "78fbcd4a0cd9a6b9a803830383e3235c0a5b84f30298ff4710ba2a17f8be580e"
+    },
+    {
+      "path": "daily/N04-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "c64e2a0cf429dc349041ce45e2bb7f0f8489222c47768a0bfb2df86f00c2b7c8"
+    },
+    {
+      "path": "historical-cultural/K01-002.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 4,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "19e34f79e78cd8b012475686aca51c775d0035c0fa5d5cee8c8fb72bb2499845"
+    },
+    {
+      "path": "historical-cultural/K02-003.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 8,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "b3630d93f6956242b52a61d105fcde1f96de4956cfd6055526c480aef0fe690a"
+    },
+    {
+      "path": "historical-cultural/K03-003.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 7,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "334f3f660549ee532db6eb834f45bb20d439650a080f0c3364b05f33c63016c0"
+    },
+    {
+      "path": "historical-cultural/K04-001.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 9,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "0e8df88df69e21e7ee1575dbe4eb5c55190d78281c756e6803b47f556a9e5141"
+    },
+    {
+      "path": "professional/humanities/D01-001.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "06e41f60d9205336864082a909e543bc0a78b32a59b23fec1a2ff4057419f3b6"
+    },
+    {
+      "path": "professional/humanities/H01-003.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "db6d1016bfc0e96fe09afe8cbfa98cff1bbaeb4718b784575941e9ea788417c4"
+    },
+    {
+      "path": "professional/humanities/H02-003.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 4,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "0d8b539c813ef0d5c6e52dae65c472776f69dc033d0043a107b2ec9684d013f7"
+    },
+    {
+      "path": "professional/humanities/H03-003.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 7,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "c73bd2be5eab22eab20d3079b42ca84c1aaa275a63f8d58c1c72aa6fac9de132"
+    },
+    {
+      "path": "professional/humanities/H04-003.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 5,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "5cb15e73c58f3e571b17b98b5f104550814bf5e763266152375a6ebe5f97ab90"
+    },
+    {
+      "path": "professional/natural/H01-001.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "1647e04ace61ad003d9c8e06efddd82b12cf87f85500d749728d76bc85e76a78"
+    },
+    {
+      "path": "professional/natural/N01-003.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "24d90fc0740933dff11515ff2f19aad987070564a1bc503e1fd258641d0a8aed"
+    },
+    {
+      "path": "professional/natural/N02-003.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 5,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "170a740f7feeb64d56d4cf352e2a73be7dc7a0deb304ea9a44fb9ec6fb974159"
+    },
+    {
+      "path": "professional/natural/N03-003.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "363db5336aa082c28fe3ea2404158a1d4713bd4fe08fe58fc75fb2c3f714426b"
+    },
+    {
+      "path": "professional/natural/N04-003.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 4,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "8b6648ce225750d27292e203b4d5376afe85e89db6e87f6a8d4852f3971dff3b"
+    },
+    {
+      "path": "daily/D05-004.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "231c44823a19f7d5ab9ef6c725cfd40b39d34d88904b212f27b9206a5dc6ca82"
+    },
+    {
+      "path": "historical-cultural/K01-003.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "76d492191357377ce81cc3ff1176b1ae91ca89137b9414255c9559e97437dd18"
+    },
+    {
+      "path": "historical-cultural/K03-004.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 3,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "c1f44183fb9a40b4d82e33c4ddf432b4ac8289f037d3c2d3de580dd1ebcdcba3"
+    },
+    {
+      "path": "historical-cultural/K04-002.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 3,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "1464a127819575fa7a0ef89ba300aa547b0073b62a5eb418ce0bb2204a20c5af"
+    },
+    {
+      "path": "professional/humanities/H03-004.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "92dea59827021b5e003c80732c82fed4767bf90687dacb7444e92a715653c34e"
+    },
+    {
+      "path": "professional/humanities/H04-004.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "c9247f590ecddf1d2fd9abba144a74d9848c3bb61b4f12e4ec6c4b33805ad638"
+    },
+    {
+      "path": "professional/natural/N03-004.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 2,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "203710ab2c06b07ea3861e23a7d468339fd82e83c0e3f4136bcd2800a6e51cce"
+    },
+    {
+      "path": "daily/D04-005.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "99787958c2b80a421d42610638e7b70b46ce7cc946d3e5029a1e74688c399ac4"
+    },
+    {
+      "path": "daily/D06-004.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "62ed79edbf7152467224dab4f05105d335686f3355b2ece798e900a870902462"
+    },
+    {
+      "path": "professional/humanities/H03-005.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "c3c38ddec93eeca9c775d4d26bdf6baf92b61dd15f09dbd9efe3e60a6b3adae7"
+    },
+    {
+      "path": "professional/natural/N02-004.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 3,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "846f94def431f69019c6fee4b7f4a0b2b2b1817584786336614d69acf533877e"
+    },
+    {
+      "path": "daily/C02-003.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "add6acdb1c8057388b74c79dec96fa77f40990de639a2f6d74a52c777658902d"
+    },
+    {
+      "path": "daily/D01-004.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "ee4d8330fda29566f3e1ab51c9b322268a4320ac72eee713005ece09e559cf02"
+    },
+    {
+      "path": "daily/D02-005.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "eebc7498918cc40ae7a06a0a4d16c45ec3e2bd96906d4a9ca6d3c40cc232c19d"
+    },
+    {
+      "path": "daily/D06-005.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 3,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "0f4bae8f7cf1a540821b3970e298fb0a7222c54e020b605f7c1f658d8b09062e"
+    },
+    {
+      "path": "daily/D06-006.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/en/words.js",
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "611399fd694fc3237eeef3a39e335cea78eae20279e8d281d8510c2eeadaa525"
+    },
+    {
+      "path": "creative/C03-005.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "1281fcafe4b31694e0d46e4184942858c8bce6d566d52a06c52541f88e0d248e"
+    },
+    {
+      "path": "creative/C04-006.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "5ec7a835c3870269db324671709b900668eaccc66ea3a61fde32270e3fee9cc0"
+    },
+    {
+      "path": "daily/D03-004.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 2,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "fcc56134d9443c7ce9809576eef8ca68ba4e3697cbed75f9e5a68f722860ed9e"
+    },
+    {
+      "path": "daily/D05-005.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "0f12f2a32360451d89bcb720a9bb39de9c0943f286a1c8345a4288ad32f2bba4"
+    },
+    {
+      "path": "daily/D06-007.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "32611c5c7cfed9343984317249519909dba54938280aae4ec48b11d42dd02da9"
+    },
+    {
+      "path": "daily/H04-002.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "14aebddb86eacb5ca262843378183c5469a8c6da952b02e09a3498e4c1ef99c7"
+    },
+    {
+      "path": "creative/C01-006.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 11,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "5f0b4a7d7f0d0ca13d02c0ce65b256c0eb4a5ae267ca5923e053d74895f7575b"
+    },
+    {
+      "path": "creative/C02-005.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 4,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "1864c195242a9d2c05f565ec37fa8479283b1331d6d06cf42abcdaba26a85251"
+    },
+    {
+      "path": "creative/C03-006.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 6,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "92e1bc4abf696e06204bbcba7ec6a97edf45e549e990bdfeb5721af1c80f8f7f"
+    },
+    {
+      "path": "creative/C04-007.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 12,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "432257ab37ee99df322f98c0b58951b843fed076c31bcc0152d86ef9fce2c0aa"
+    },
+    {
+      "path": "creative/C05-003.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 10,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "7ffa292ddf767e0d99c9c844a91601dba08a0284d4ffe02a245488c5ced86649"
+    },
+    {
+      "path": "daily/C03-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "7051f51d17d536c0a5d5dced93eb233044d943fe3b1365b2c1ac4ac17641835c"
+    },
+    {
+      "path": "daily/C04-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "3f6d55ac0efbe98e3fb89864294661d20c8e90f764d375ca25d4d5ae27fa72b3"
+    },
+    {
+      "path": "daily/C05-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 2,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "ddd42e1058d0531202d55b0ae943ba2c9f7614d7052a7f13796bf31eef562b21"
+    },
+    {
+      "path": "daily/D01-005.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 10,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "1849d2eb2c389c350007e6ff09b2781d2f981e4650cdbc747297c920c3e9e45d"
+    },
+    {
+      "path": "daily/D02-006.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 6,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "2cfa4d5a02824f6df7c8c3df73007cba60378da03b821551c116736e3e4c70f1"
+    },
+    {
+      "path": "daily/D03-005.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 15,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "5849f2232ca77e8ddf6a9f3ebdddbb4af2ed3a29cba5448c9e6ebfa1c69936f7"
+    },
+    {
+      "path": "daily/D04-006.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 40,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "cfe4bf2dfaf0a9e0516b1056ee27d80d72185f4217392249383365db425cb055"
+    },
+    {
+      "path": "daily/D05-006.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 82,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "682a98030616d071af3e69546066ba08b6f34124331ff2823855fdfeefe1a526"
+    },
+    {
+      "path": "daily/D06-008.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 23,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "7252dd5b26f678d88538c11029588ce9ab52490699425569b05d493cf5de4f69"
+    },
+    {
+      "path": "daily/D01-006.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "1170188d1eef5aac9556f2a3933844c794fa2688c4cd789187517c94c848aa35"
+    },
+    {
+      "path": "daily/D04-007.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 9,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "20349f5c413ea78e1a6fbe085cb34054051b302d80f9d3f95a1f0f8ef2489378"
+    },
+    {
+      "path": "daily/D05-007.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 4,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "f5c1a079e4ee9d0864ac621746624f519206e955c3af1d2f951793806e87ddeb"
+    },
+    {
+      "path": "daily/D06-009.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 21,
+      "sources": [
+        "scripts/.cache/ecdict.csv"
+      ],
+      "sha256": "6c2bdd53c26272c98b0dee58a0d98011951b514257355dd476dc5f3c722d3909"
+    }
+  ]
+}

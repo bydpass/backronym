@@ -1,0 +1,306 @@
+{
+  "schema": 2,
+  "state": "needs-runtime-integration",
+  "bundles": [
+    {
+      "path": "en/creative.json",
+      "language": "en",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "rows": 62,
+      "bytes": 110231,
+      "sha256": "5a0def34e563493aceb1338ee2ae7a82d6c9870ae66473dd83e5c5e8546deeb5"
+    },
+    {
+      "path": "en/daily.json",
+      "language": "en",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "rows": 21,
+      "bytes": 39215,
+      "sha256": "c3bce6b4ec4c68ef41bf8e2645519c975004dba3cfbc36a3122ec13ca7868673"
+    },
+    {
+      "path": "en/professional-humanities.json",
+      "language": "en",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "rows": 4,
+      "bytes": 6782,
+      "sha256": "feac2cc5a0478946e1bbb2dfda0d99e2697bcbe40d80a62c26a9aca33dda62d7"
+    },
+    {
+      "path": "en/professional-natural.json",
+      "language": "en",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "rows": 12,
+      "bytes": 21338,
+      "sha256": "7fa182f85de2c4d0ffa1f0e6377618c431a05f5f2dc785951e8800d640ed0c8f"
+    },
+    {
+      "path": "en/numerals.json",
+      "language": "en",
+      "category": "numerals",
+      "weight": null,
+      "visibility": "query",
+      "rows": 11,
+      "bytes": 16091,
+      "sha256": "02f7df4b9198c3f89bce4bf51da8c9eb69613e6ece1f9090264f685716d611e6"
+    },
+    {
+      "path": "en/names.json",
+      "language": "en",
+      "category": "names",
+      "weight": 1,
+      "visibility": "query",
+      "rows": 8,
+      "bytes": 44734,
+      "sha256": "215ef29cc36aa1156f4a1130740da322d2f5c3bb2d9f30224175cce35a7cb089"
+    },
+    {
+      "path": "fr/creative.json",
+      "language": "fr",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "rows": 66,
+      "bytes": 147917,
+      "sha256": "2af3208321bc0bd5f88cfdcd764fe3240514e07cb0599a5045a27a4402a3d15f"
+    },
+    {
+      "path": "fr/daily.json",
+      "language": "fr",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "rows": 21,
+      "bytes": 47657,
+      "sha256": "cc4917268a738a29e9a58d6666bdbd923d6c8df912f7ef8d1ce4a7065fbb6099"
+    },
+    {
+      "path": "fr/professional-humanities.json",
+      "language": "fr",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "rows": 4,
+      "bytes": 8810,
+      "sha256": "c78786d69b25c06599583c376876e87c640341bdbf1504f73902fbf78f084277"
+    },
+    {
+      "path": "fr/professional-natural.json",
+      "language": "fr",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "rows": 11,
+      "bytes": 23938,
+      "sha256": "4c732c9335915769387859d677a8f7d4b80febafe83fb0543eccf3e8c36d901f"
+    },
+    {
+      "path": "fr/numerals.json",
+      "language": "fr",
+      "category": "numerals",
+      "weight": null,
+      "visibility": "query",
+      "rows": 11,
+      "bytes": 14598,
+      "sha256": "29132a26d84339093de7c99db15f0bae27987fb7b01710b515a09972f693629f"
+    },
+    {
+      "path": "fr/names.json",
+      "language": "fr",
+      "category": "names",
+      "weight": 1,
+      "visibility": "query",
+      "rows": 1,
+      "bytes": 6116,
+      "sha256": "262d4be2bc6b1a8b19af0abda665f5d6643439b2fa7572edb24e5a090ec0f774"
+    },
+    {
+      "path": "de/creative.json",
+      "language": "de",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "rows": 72,
+      "bytes": 165491,
+      "sha256": "9cedfbddd84b9b31424ecc2bdc867aaef08a7f84fc58b0f215a68efe5276587f"
+    },
+    {
+      "path": "de/daily.json",
+      "language": "de",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "rows": 20,
+      "bytes": 46951,
+      "sha256": "3fddec80bf686ae97322aa5befe0906a476987de9bdd40f65550915d7b879d1e"
+    },
+    {
+      "path": "de/professional-humanities.json",
+      "language": "de",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "rows": 6,
+      "bytes": 12896,
+      "sha256": "e6eaf3afbe85a7ec52f5d5259acea16b3d6ca7b44dac751f42a71c94057033f6"
+    },
+    {
+      "path": "de/professional-natural.json",
+      "language": "de",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "rows": 4,
+      "bytes": 8937,
+      "sha256": "cb94dff2f38b29887a2f9d576755cef09f55578907dac3b8620aac104a22ce16"
+    },
+    {
+      "path": "de/numerals.json",
+      "language": "de",
+      "category": "numerals",
+      "weight": null,
+      "visibility": "query",
+      "rows": 11,
+      "bytes": 15562,
+      "sha256": "fce324ac32bde639dee133fb94067d8d4a1f864cf652fbcf0d125010d3e12944"
+    },
+    {
+      "path": "de/names.json",
+      "language": "de",
+      "category": "names",
+      "weight": 1,
+      "visibility": "query",
+      "rows": 2,
+      "bytes": 10194,
+      "sha256": "054ab4717a8b5bcd7ef191bb6982a8b0770943c0dbdb453f9026e9c9a77a6789"
+    },
+    {
+      "path": "es/creative.json",
+      "language": "es",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "rows": 71,
+      "bytes": 177562,
+      "sha256": "6c588a048dd6cc9aa2fcdb90d38f6e9b5198d7c06081233ea5d00501e522fbf0"
+    },
+    {
+      "path": "es/daily.json",
+      "language": "es",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "rows": 21,
+      "bytes": 50906,
+      "sha256": "53f8b07086d69cc0269f38a54c4691619aecc98472ef156b632a8ec00040bc5a"
+    },
+    {
+      "path": "es/professional-humanities.json",
+      "language": "es",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "rows": 4,
+      "bytes": 8580,
+      "sha256": "d9ba08fb69f8e1d9c615dbf48c931ff5031681ecf3f9a2e60b4a8429d740c8d8"
+    },
+    {
+      "path": "es/professional-natural.json",
+      "language": "es",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "rows": 11,
+      "bytes": 23976,
+      "sha256": "1721f50da62cfe369448b05285cee9ce40eb263b23656358f21ef0b74b4ad8f3"
+    },
+    {
+      "path": "es/numerals.json",
+      "language": "es",
+      "category": "numerals",
+      "weight": null,
+      "visibility": "query",
+      "rows": 11,
+      "bytes": 15008,
+      "sha256": "71aa499fe08fa8500e0d61af9433f3ec8d64987135aa471948b84c40c8ea35ec"
+    },
+    {
+      "path": "es/names.json",
+      "language": "es",
+      "category": "names",
+      "weight": 1,
+      "visibility": "query",
+      "rows": 2,
+      "bytes": 14228,
+      "sha256": "83e291854f37524bf806c55cb79a5a7d886b09222fcbe7d198f3610a2f963ab1"
+    },
+    {
+      "path": "it/creative.json",
+      "language": "it",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "rows": 79,
+      "bytes": 182835,
+      "sha256": "61b21256eb8908e4e057124712aaaaf3b491cabd28a7374d9da093ca7e2f51c8"
+    },
+    {
+      "path": "it/daily.json",
+      "language": "it",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "rows": 21,
+      "bytes": 50400,
+      "sha256": "889f19dcd8b43ec06bbec893c89de9f7115cc482c1bff58270ffbd01653cdd3b"
+    },
+    {
+      "path": "it/professional-humanities.json",
+      "language": "it",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "rows": 4,
+      "bytes": 8337,
+      "sha256": "2935c213e3b6ad34ebbcbf17df57610df81e926b2b58fa009a1a2b93dc5859f0"
+    },
+    {
+      "path": "it/professional-natural.json",
+      "language": "it",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "rows": 10,
+      "bytes": 21229,
+      "sha256": "1603a3b1835a5ca26449c8b4aea9238fdc80f9ddaec329f10217ce198abaa531"
+    },
+    {
+      "path": "it/numerals.json",
+      "language": "it",
+      "category": "numerals",
+      "weight": null,
+      "visibility": "query",
+      "rows": 11,
+      "bytes": 14508,
+      "sha256": "614c3f27d6c2f4b54fdd9b5c5cd7efae561c325791d1f48df81c9f738ca7178c"
+    },
+    {
+      "path": "it/names.json",
+      "language": "it",
+      "category": "names",
+      "weight": 1,
+      "visibility": "query",
+      "rows": 3,
+      "bytes": 14439,
+      "sha256": "76b5f8279b445e9f231244423b919ec33fdb9284ce29b566b0126c72e493ab7b"
+    }
+  ]
+}

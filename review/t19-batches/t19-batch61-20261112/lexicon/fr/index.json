@@ -1,0 +1,1726 @@
+{
+  "schema": 1,
+  "language": "fr",
+  "state": "draft-not-admitted",
+  "shards": [
+    {
+      "path": "creative/C01-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 27,
+      "sha256": "2867ad56e18ddc850f60a131e8ea6083e8d55ce3f5c6a2aad4a600e321946703",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "creative/C02-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 20,
+      "sha256": "b128895b36d3ce2f68a0c2e21f5e859de4c374448f0f9ad52b1c6683e512feb6",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "creative/C03-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 15,
+      "sha256": "ed8ec7226b5964892309bb397fc18102f8bf56fb3e8949ee8ad5e61ba39f1c2d",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "creative/C04-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 23,
+      "sha256": "47bc2ce55476ca0ec8284898e93cae7d5c78a4f3259e4eebb1ccd0453708e2af",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "creative/C05-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 19,
+      "sha256": "c9904bd16b8d7d4ec875ce195bcb34268660293991b3cf198187defefd7d2421",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "creative/C06-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 13,
+      "sha256": "f3ff4347469c2af4ee70a61a2bce5d6c95a1fac403a7502937e6bbbabfff6d95",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "daily/D01-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 22,
+      "sha256": "79fb4087abeeeee092bda7337f5a40adcfd5ce209a9eea8dd89f502dc3c76a0b",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "daily/D02-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 32,
+      "sha256": "cdad79a0a2c398eb5e903d314958997d70cff90381232cc5d8705e5cf9886d51",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "daily/D03-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 15,
+      "sha256": "98d70509b62b4fe21ce5d041c0744b11c453013968f056f31f95ffad93402bce",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "daily/D04-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 21,
+      "sha256": "21544821c200a9496991f345be8ce4a032b6f08444267476842d884b052aeb38",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "daily/D05-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 40,
+      "sha256": "0714a91cce6a01185ec7fa4c07c15b790d03ea05e871717e13b78c8edc3ecf2c",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "daily/D06-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 9,
+      "sha256": "98af73351a5d5e29a1887d4f4a03b8bcc97cae4005dc2aa51163561ad43c1a68",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "historical-cultural/K01-001.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 6,
+      "sha256": "6f8498d4098406dd05c8df69cb346dca2b702bdac7ecbd960893133308cf3fba",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "historical-cultural/K02-001.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 13,
+      "sha256": "c8b3c67f5cc23a867373b33c5200ee2cd15ad64dd6d4447232841facbf2e0645",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "historical-cultural/K03-001.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 7,
+      "sha256": "aa98eb359a905f38a2a8b52c36e45142360261e68ecdf2cc1747d6f0316895fe",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "professional/humanities/H01-001.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 12,
+      "sha256": "a8f48837c0e65a33d254e672b3f7874615952d5ac7995fb76ef7e440a96fff08",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "professional/humanities/H02-001.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 13,
+      "sha256": "bbb6ce6abe71903f95bbe6f6d22efbd1a38e046777ecf765238a0cdc6c57f113",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "professional/humanities/H03-001.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 6,
+      "sha256": "9db2a528bb8807d20ae1f164861d94e5e5ba8df37c04a88175be71a9096bf971",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "professional/humanities/H04-001.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 12,
+      "sha256": "7bb00435fe9cdfc39d83e3e42b54508377c0fd0d17194274218ebaf778bc09e9",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "professional/natural/N01-001.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 10,
+      "sha256": "a625e264645c270fe15e84f8389bd246e0746db6a58c8438414893da95f06cf4",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "professional/natural/N02-001.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 7,
+      "sha256": "1029e8416983c198795eb549b322f6aaebb42b2ee8b4e8b61bf8f759802feed7",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "professional/natural/N03-001.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 6,
+      "sha256": "3c742ac0b94415c58b921ee6b01a66a986ddac1e30d9068aa4669719d7b034b2",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "professional/natural/N04-001.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 15,
+      "sha256": "ebd91714b37365bf2446e1f90a3b3316fc18181f0520e2d85f9b9afd467bafdb",
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ]
+    },
+    {
+      "path": "creative/C01-002.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 15,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "b3cf67d7a8f0abe496d1e7a78b51b4b0964386cc1a0bd36f5365764186dc36f3"
+    },
+    {
+      "path": "creative/C02-002.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 7,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "c046c72b5c6f4ac2c13e20b06f360842affaf81e41aa76f71bd67e66b41b8bf4"
+    },
+    {
+      "path": "creative/C03-002.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "60d1590acfb49076771e7d92769a5a63dfa27fcd38e417ba93ad2112a0ac7223"
+    },
+    {
+      "path": "creative/C04-002.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 5,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "804b14c1ffa60b46c215d023c4bc6328468463d4230ae8818c70c847771c8ba7"
+    },
+    {
+      "path": "creative/C05-002.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "e0d19d3b6d74cab80b12e26d84ba9c1f45727dcc09109b815f6105f475736e5b"
+    },
+    {
+      "path": "creative/C06-002.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 13,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "7dcbccf8fb89209d07b2b72b980a802d8319c9678f6a53a8417fb8bfa125e77b"
+    },
+    {
+      "path": "daily/D01-002.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 9,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "83de3fa4a104856a0533419e8afeb11c840262d11e74e750745c91f4fd587b29"
+    },
+    {
+      "path": "daily/D03-002.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 8,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "4b62a5ad9ff1b380cd67193e15c7d50f1eba43a05fe165b2672b8b79f6d3dc52"
+    },
+    {
+      "path": "daily/D04-002.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "018c1a6e134a4ab175077487cbe51c08b32305bd3275119238c9d249209608ac"
+    },
+    {
+      "path": "daily/D05-002.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "977f95e38f2e0085e71b631faab1b3af99ed1b113cc9457cc93ce81f1d06de49"
+    },
+    {
+      "path": "daily/D06-002.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 22,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "6bf7156b788e15c10b23ec186950f2d663ac04a9838ee50dafba21375955690f"
+    },
+    {
+      "path": "historical-cultural/K02-002.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "5b7698e91b8963412eb933cfac7bd93b4b8f504fe500f120ad0bcac166da378f"
+    },
+    {
+      "path": "historical-cultural/K04-001.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "37904f4c6ca52ea22152331ed2f3277941287d2f645465a0be1dcfbf273a0dec"
+    },
+    {
+      "path": "professional/humanities/H01-002.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 10,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "ae580062b5fa7500856e3b2978a0028a7528b4873f139148d32ded6f09810d9a"
+    },
+    {
+      "path": "professional/humanities/H02-002.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "4811ffdbe846ca1cc9d7c7257dfa9e24b99377a65f938c1c4a3093162cda7f07"
+    },
+    {
+      "path": "professional/humanities/H03-002.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "0bc9361d9d872ae1db270694adbe1075b7b2b7d46847d3bed699e31700b5b68e"
+    },
+    {
+      "path": "professional/humanities/H04-002.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "b997318ccc5410f5453b703fef5a3c7011fb281d9ebc0ff0aa764a8c759a9c42"
+    },
+    {
+      "path": "professional/natural/N01-002.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "35c4b5a8e6372c2462da2d845cbbed1801fdde09a682792f1cf17091be59132c"
+    },
+    {
+      "path": "professional/natural/N02-002.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 7,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "c7b07cef6f4bb78b68dbb3a773cab61e511d20f97146e92b00a8757eeb3d8ead"
+    },
+    {
+      "path": "professional/natural/N03-002.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 7,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "074a0245ac47a7c25062ebc067051d9481e33adaa7220a8c8c3f276692d177af"
+    },
+    {
+      "path": "professional/natural/N04-002.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 5,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "1495d42e97a29c7e0825b6504483c83621460779b445b2e0a6b3b4511ab73296"
+    },
+    {
+      "path": "daily/D02-002.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "991651f1c86ce6971381ecc68f13422e19bcc803f2bfe4e3bfc1a046cc6d7153"
+    },
+    {
+      "path": "query/numerals-001.tsv",
+      "category": "numerals",
+      "weight": null,
+      "visibility": "query",
+      "directory": "query",
+      "rows": 11,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "1a160c34252bdbfde1b73cb1dea25ab42d6d9c472f752f93f8f3de80809e80e6"
+    },
+    {
+      "path": "query/names-001.tsv",
+      "category": "names",
+      "weight": 1,
+      "visibility": "query",
+      "directory": "query",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/ecdict.csv",
+        "scripts/.cache/v003/kaikki-fr/kaikki.org-dictionary-French.jsonl"
+      ],
+      "sha256": "ef5683022af57b23c144bee5fb908a52e56174f74f33583373f823224daf2432"
+    },
+    {
+      "path": "daily/D04-003.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "ccc17f10c46c844e1ad523da2d0a6c67780feb64711858b76281bd03beb75049"
+    },
+    {
+      "path": "creative/C01-003.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "3911ca5015f73a4e7be8c850eb9ea1da5a39d49ddd99fb97ebdf277107c4e95a"
+    },
+    {
+      "path": "creative/C02-003.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "63dc716ecf29c595d2c4db99326a1c696f3d8ad24ba752effe36c6629ef657f0"
+    },
+    {
+      "path": "creative/C02-004.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 3,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "5d265a67bedbd703090183855006ff9f769fa32598ee983053d00c08b49fbd27"
+    },
+    {
+      "path": "daily/C02-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "b2a2d9d89b9e4200d19443b3e432ce4390e38042a99c8e04d2aaf738767a05f1"
+    },
+    {
+      "path": "daily/C03-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "848580a259139c4da5fd42266297e66a12fbac666b4af9d30b541dfd702a257e"
+    },
+    {
+      "path": "creative/C04-003.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "c89093591d43329d05324b6ba81c282d5d79a0aa9a05729fae7e91b8706a0882"
+    },
+    {
+      "path": "historical-cultural/C04-001.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "cf8de05f588bdabb001add67bdf6ca7f70b19a3c38a661ffe6ef7506a65c08ac"
+    },
+    {
+      "path": "creative/C01-004.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 8,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "f3411790fa4840169ad51cd4c72c6ef93b570480afbe7fdec2063ba2daef1b9c"
+    },
+    {
+      "path": "creative/C04-004.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 2,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "36d7418b3067837fcf7a5134ef6da69a462f962151f2c35ee82d6e1c80461ba1"
+    },
+    {
+      "path": "creative/C05-003.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 2,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "cf31f1615f0b9cefa288ba2c39c3a6853d79abf362ee5ebf8b02e730c7fb969a"
+    },
+    {
+      "path": "creative/C06-003.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 3,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "e3423c2077acc36aa0f0c27940d6c43a1c5639a280895a599cc8c04cd36d393d"
+    },
+    {
+      "path": "creative/D01-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "ab247e127883a62144af9244d782a8d7fb8ceddf8c555306cd9149a7ed57796f"
+    },
+    {
+      "path": "creative/D02-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "8cb582744332bfe86f749105063824346b3bcf8bdeec269dadd999b65dc0a66b"
+    },
+    {
+      "path": "creative/D03-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "7a437709e2a69e59900e6bd87c70b0fbf0848aac967bf925991ee17941e41201"
+    },
+    {
+      "path": "creative/D06-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "f25c3d5c23462ba370b769da3c2ada329add9a404dc5783a3771a5d62971216c"
+    },
+    {
+      "path": "creative/H01-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "34339ee3c429a39fceeed6e20a2aa5f6bbc9e10c1542dc9705961bd30d1b2e6c"
+    },
+    {
+      "path": "creative/H02-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "5f6008eaebc9bc32573616c338b4abf5f5e68181a09ac633c8b8193117b1b946"
+    },
+    {
+      "path": "creative/H04-001.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "e277f45b24d4ede876d8d4a4f5ceecde732a5defe3abd8e060e938651b65d28d"
+    },
+    {
+      "path": "daily/C06-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "a955e1ca30680414a69e4e6bd00921f4bcc2284075637b145c1b69e35fc44c75"
+    },
+    {
+      "path": "daily/D01-003.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 7,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "8fa95e07f95f664933cbf0e3e72af7c6a9d3949ffc5ee959b691b1b4b097ced4"
+    },
+    {
+      "path": "daily/D02-003.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 10,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "c357702177d9b5f64b3be1b0c57ac50f1bb7ca57aaacbbfa502fc580f6eb87b4"
+    },
+    {
+      "path": "daily/D03-003.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "6e43b8fe76a935dd1950c5043f652432fc18d187a0f0aaf0c47623c3a00e2b42"
+    },
+    {
+      "path": "daily/D04-004.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "2244b8cc7b7e0106270f16220eeeda62f95f446811c49ace917a3f68a35c23f2"
+    },
+    {
+      "path": "daily/D05-003.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 12,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "e02349f3cd6ff0c8798046bb3463e245a07b62cf6b4f37358970986e373f2261"
+    },
+    {
+      "path": "daily/D06-003.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 7,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "9af0ed566495f271c7f005bba5a35363bc7ffa173eac14288af4727e4b2fd542"
+    },
+    {
+      "path": "daily/H01-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 6,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "88be509915e3a77d2939bbc0c087db34c5b5121b812535255707b1796fc279c9"
+    },
+    {
+      "path": "daily/H04-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "468dd9194397950be69f9c92cdc4fa4a92531d28712a62514653eaf7acfb372f"
+    },
+    {
+      "path": "daily/K01-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "45bd395fd675b3a7f4cd37439867ef742068e3b12e7281ec27f268c6002adba2"
+    },
+    {
+      "path": "daily/K02-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "8beb7ba2904a89c5d066a38f928b8a4a4653e56010edc97efd22cb5564f70be6"
+    },
+    {
+      "path": "daily/N01-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "446d76c03e9d3ec4c5168420c052a020e909144869dfb13c9756f440e74a7775"
+    },
+    {
+      "path": "daily/N02-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "f07b4a0b65fc422f6a1970267de8376904c4915d6d59680810ca36d542286db2"
+    },
+    {
+      "path": "daily/N03-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 3,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "8d77a6c7e5f456edbb2e1dc857a74bf542b9508f0b1b588c4b45ba918d5b2564"
+    },
+    {
+      "path": "daily/N04-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 3,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "71b22de9ec1b8524d6355854d7b6ed0c15f6481e83c58b3be4fd2af983568acd"
+    },
+    {
+      "path": "historical-cultural/K01-002.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 3,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "686de7f0827833ebc5c8a09a29ca4e9ec570d7a4d86c2d12f3f7e4f87fd2fa5a"
+    },
+    {
+      "path": "historical-cultural/K02-003.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "dcea4556f49c40ee8d87164ad95f4ed5013c5adc35feb54836931253baa0acc1"
+    },
+    {
+      "path": "historical-cultural/K03-002.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 4,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "0434457aa2615d623aab07f3263fd94268cd358a7d0a51d8a6bd0d3065a1644d"
+    },
+    {
+      "path": "historical-cultural/K04-002.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 6,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "da05f015e482386832ba6a606ea931ba010de5b9c07c9a9b10fcd2d007ffc6c2"
+    },
+    {
+      "path": "professional/humanities/D05-001.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "c4a0df7f0cc2c2cbba827ae2a62e0da9048981b7ee27e94b8b02027cee0548ca"
+    },
+    {
+      "path": "professional/humanities/H01-003.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "6ac113f4b9cc924f1ae2e196ef8a75b6ddbb53b056fc989bcf59d13afef49e0f"
+    },
+    {
+      "path": "professional/humanities/H02-003.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 5,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "3d6557d0f58b5d7ac61e0dce216d3fad9aab7f9ab631a5f964e9dddb2f4a3b17"
+    },
+    {
+      "path": "professional/humanities/H03-003.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 5,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "93336805d31af7fa79b7ec730fd2a78e225b31d1f42aa43cfec7a45fc9100f58"
+    },
+    {
+      "path": "professional/natural/N01-003.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "6454bf20c98585e8a54769526ab327660c8547f4099f583b9156d97e7a2494f2"
+    },
+    {
+      "path": "professional/natural/N02-003.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 5,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "be2c6220d81fee1a5dff25bf0e81d1a14e8aa57f438dd7c7a1fdcb4ba9a3f78a"
+    },
+    {
+      "path": "professional/natural/N04-003.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "185d268b3f0182ed89bdfbbae2e659e8ddf27c73bdd7b7639c9589e777f70f12"
+    },
+    {
+      "path": "daily/D06-004.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "9bfeb2a80cf092eff500d8b05d04a0c42cf2e22d8467a3eaa349c89224ab5433"
+    },
+    {
+      "path": "historical-cultural/K01-003.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 4,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "a6c57c3ae4c14a21775aaaeda26641a7156fe77a702503979010dd1a48b44857"
+    },
+    {
+      "path": "historical-cultural/K03-003.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 2,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "c3f6004928fffe1649b2c1a376d642c502a4593234055e1188e9d4615973b0c0"
+    },
+    {
+      "path": "historical-cultural/K04-003.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 3,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "21ed175389cba6f6e4ee6d04c62ca9d08e3157e90d9517bd06ca962d20de83fa"
+    },
+    {
+      "path": "professional/humanities/H01-004.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "4330cc922fe523a19c86b10e419be3039187f8094874d93ceebf92cf2c3b3196"
+    },
+    {
+      "path": "professional/humanities/H04-003.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "601bd46b3c050eac360ebf9713be8090bdc8b512bd530bfc2535f3d3ef431e7f"
+    },
+    {
+      "path": "professional/natural/N02-004.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "ccccac6a6bd72e40b0327ac902fa1f0d00f667631736397b6c3510b1cc3e3f77"
+    },
+    {
+      "path": "professional/natural/N03-003.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 2,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "5405330599c4bd76abc5f700dfedcd8f2259a6e3346c1f4e5668e3a97ed4b699"
+    },
+    {
+      "path": "professional/humanities/H04-004.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "25b3f7eada09bafa39c2e51394ae8ac18593e66d622465b3dd3d7fa1fb1edba3"
+    },
+    {
+      "path": "professional/natural/N03-004.tsv",
+      "category": "professional-natural",
+      "weight": 55,
+      "visibility": "expanded",
+      "directory": "professional/natural",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "df741fa229a2d4b123eac19b796e9009d5deb716dd0b56f8e24236d5b634da52"
+    },
+    {
+      "path": "daily/D04-005.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "f72359284fe99dfd6dd5bfbff18b32b8d7530adcce1c3ddc360473e8d1cc8c3f"
+    },
+    {
+      "path": "historical-cultural/K04-004.tsv",
+      "category": "historical-cultural",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "historical-cultural",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "a71a06d4cd9e587908ae08caff42dde88df111689ec9dd0ac9ba086079da53db"
+    },
+    {
+      "path": "professional/humanities/H03-004.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 2,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "5f794e66ee33631dd635197c0882ca74a41249ca9a4697f7e45e3dded01e54f4"
+    },
+    {
+      "path": "creative/H01-002.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "cf76b70982a9422098c0aa3bca5012c7406d50ff1281bb32fde635e3f5c8d36d"
+    },
+    {
+      "path": "daily/D06-005.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "f74f446920b54dc684b212bcf4ecd3ab4dabe0f872591667d6f71b14994a079c"
+    },
+    {
+      "path": "daily/D01-004.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "6a6718560771889660c4d1f9f9d57d71f09587c0da91397df1c10d31f5553119"
+    },
+    {
+      "path": "daily/D05-004.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 2,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "3b7b970cb86ac3779890124628e7b4783e5d79be5be13840148bda8d7cd5a319"
+    },
+    {
+      "path": "professional/humanities/H01-005.tsv",
+      "category": "professional-humanities",
+      "weight": 60,
+      "visibility": "expanded",
+      "directory": "professional/humanities",
+      "rows": 1,
+      "sources": [
+        "app/assets/lang/fr/words.js",
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "509a9fe22500beb8754bc019fd6ffc373e23697759db6599f58bd3494ca36ef2"
+    },
+    {
+      "path": "creative/C03-003.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "e7c912ac90cc53f058bff3fdd0ef223b5da8f076f691c6f8acddddcd07e92e51"
+    },
+    {
+      "path": "creative/C04-005.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "1b65f9cc62cde8b936ffab0ad1085c109f7acab977328c2f1b7f903d89c871dc"
+    },
+    {
+      "path": "daily/D02-004.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "c921b5eb9f82842fc2433308c5e51359a6eb9f5037b4da77d6c66b022b30230a"
+    },
+    {
+      "path": "daily/D03-004.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 3,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "f1a17f443477a5318c9c0c29a8b1cfeee6d3f450cfb0731e3c6d17750984ab51"
+    },
+    {
+      "path": "daily/D05-005.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 4,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "f61d088bdab0450339a7fbfee54afa56338df238e3efaefa46a0a7774ed84f26"
+    },
+    {
+      "path": "daily/D06-006.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "e7fbf4f2ceb4652d1bb0b57c4de8b58fe69d867641a41d5f8cb497e53a89aaf9"
+    },
+    {
+      "path": "daily/H04-002.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "302a7a9f9c3b1a849f35aa4a4e2da3399c8b7b07c40e72cfaeb08c51211cd90c"
+    },
+    {
+      "path": "daily/D05-006.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "5cce716e460b46770a3c9a14207cc90de30ab837c68c7d31e2848980f7c80a92"
+    },
+    {
+      "path": "creative/C01-005.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 6,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "5460d0279dcb038e71d4a565f7d4490f426da96d4d400c46909ed05fa64d524e"
+    },
+    {
+      "path": "creative/C02-005.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 11,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "be63bcca3c35484fa48585941dc1a3d14b19ff9fedfda6bed9f370189bd09133"
+    },
+    {
+      "path": "creative/C03-004.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 7,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "97759950a58aa51fdc1086abfc9fe58f3ff5f0a07c1989739d70539711162021"
+    },
+    {
+      "path": "creative/C04-006.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 5,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "5e3398e2ccf097dfecc787f267544e4ac2c2cbf733ce8ba5362fd6f2d4cc10db"
+    },
+    {
+      "path": "creative/C05-004.tsv",
+      "category": "creative",
+      "weight": 90,
+      "visibility": "default",
+      "directory": "creative",
+      "rows": 6,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "d5cc6ba60967a30e0b87bfc7a6083fa6c54243e8aea503ad3d25927645ad8e8e"
+    },
+    {
+      "path": "daily/C01-001.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "95ef771431fd9812d8c6f59f158e349e08d7c7c1c3de12066246a487359a0a60"
+    },
+    {
+      "path": "daily/C02-002.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 2,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "34a6cc154df068223340c8c5f6ee86ee9c86b897af5e84e39d901c008e47f2f0"
+    },
+    {
+      "path": "daily/C03-002.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "10804f4202b0729282000fbce8d9a16df7828e5d6288410a449bca8dc066e5e0"
+    },
+    {
+      "path": "daily/D01-005.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 12,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "8150b24f039ac77b9675281813f22b388a9b50c7a5cd6f6d770a2e0710a0474e"
+    },
+    {
+      "path": "daily/D02-005.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 4,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "ffbf49f7b8dd8f920425ac84bd012b055dac5011fcc3219ca1769172f8661011"
+    },
+    {
+      "path": "daily/D03-005.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 13,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "73182bb8dc36e814bd1d2e1c04cb0159f60ed6454e18fb91f68ec703e9380535"
+    },
+    {
+      "path": "daily/D04-006.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 26,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "5aba5a40517ced17921ec98fdc3d27c02ca56f2b9c1dcef6bfee33f42854573a"
+    },
+    {
+      "path": "daily/D05-007.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 62,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "edb9f92aaa786f659e87fc6be920718fdc59f464aa8f5b2fc3532644a7cd15cc"
+    },
+    {
+      "path": "daily/D06-007.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 14,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "9f66a367e286a745fa5e219ad6d29f13ac15fe778d7808d7f2ae81aa3fa43084"
+    },
+    {
+      "path": "daily/D01-006.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "9e999bc8a235bc364576720ee82e4f2ebcf169eb2628aff83cd7c6982b8f5245"
+    },
+    {
+      "path": "daily/D04-007.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "74c80398624e6b3cbb137fc9b9376445da570dafaa551fcab52a8f678c867524"
+    },
+    {
+      "path": "daily/D05-008.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 1,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "213557aad84d61435c986a6cd51f7d21bc9fa288c24d7b42a662b9eac7e78775"
+    },
+    {
+      "path": "daily/D06-008.tsv",
+      "category": "daily",
+      "weight": 100,
+      "visibility": "default",
+      "directory": "daily",
+      "rows": 23,
+      "sources": [
+        "scripts/.cache/v003/stage/fr.json"
+      ],
+      "sha256": "dd3109b932d7de062301d044d5be6d63909f85e8125e52070a4697775f50bf7e"
+    }
+  ]
+}

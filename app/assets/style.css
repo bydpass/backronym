@@ -1,0 +1,859 @@
+/* 基线：Chrome 61。不用 flex gap / inset / clamp / aspect-ratio / :focus-visible / :is()
+   方向 folio-swiss（design/folio-swiss.html 第六稿）：满版卡 × 国际主义 × 左对齐。石白 / 墨 / 朱三色，朱只标关键字母；
+   界面元素的尺寸以 --u（母版 300px 宽稿面上的 1px = 实际宽度 / 300）度量，界面左边距 --m = 卡的 80px 页边距 × k，与卡的网格线对齐 */
+
+/* 包内字体（scripts/build-fonts.mjs 生成的子集，SIL OFL 1.1）。只有 400/700 两个字重 */
+@font-face { font-family: "Noto Sans"; src: url("./fonts/NotoSans-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Noto Sans"; src: url("./fonts/NotoSans-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Noto Sans SC"; src: url("./fonts/NotoSansSC-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Noto Sans SC"; src: url("./fonts/NotoSansSC-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+/* 四个主题的字体（2026-11-12，同样是 build-fonts.mjs 生成的子集，SIL OFL 1.1；用到哪个主题才下载哪个）。
+   "BK …" 是 Libre Baskerville 与 Federo 裁剪后的名字（原名是保留字体名）。只有一个字重的 Federo、没有 Bold 的霞鹜文楷：
+   两个字重都指到已有的文件，浏览器就不会自己描粗（Chrome 61 没有 font-synthesis） */
+@font-face { font-family: "BK Fandom Serif"; src: url("./fonts/ThemeFandom-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "BK Fandom Serif"; src: url("./fonts/ThemeFandom-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Gowun Batang"; src: url("./fonts/GowunBatang-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Gowun Batang"; src: url("./fonts/GowunBatang-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Cormorant Garamond"; src: url("./fonts/CormorantGaramond-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Cormorant Garamond"; src: url("./fonts/CormorantGaramond-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "BK Secession Display"; src: url("./fonts/ThemeSecession-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "BK Secession Display"; src: url("./fonts/ThemeSecession-Regular.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Noto Serif SC"; src: url("./fonts/NotoSerifSC-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Noto Serif SC"; src: url("./fonts/NotoSerifSC-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "LXGW WenKai"; src: url("./fonts/LXGWWenKai-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "LXGW WenKai"; src: url("./fonts/LXGWWenKai-Medium.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+
+/* 颜色：浅 = 石白，深 = 墨黑，--red = 朱。DOM 卡直接用这些变量（D19），与 core.js 的 PALETTE 同值（npm test 核对）。
+   <html data-theme> 由 theme.js 设：没有 = 跟随系统，light / dark = 手动。--k 由 app.js 按屏宽写在 <html> 上（卡显示宽 / 1080） */
+:root {
+  --paper: #e9e8e4;
+  --ink: #1c1c1b;
+  --soft: #3b3a38;
+  --mute: #5f5d58;   /* 次要文字 */
+  --ph: #69665f;     /* 占位（卡上）；对纸色 4.67:1，满足小字 4.5:1，仍比墨色淡约 3:1 */
+  --dim: #6a6863;    /* 非当前格摘要：变淡但仍可读 */
+  --faint: #c4c2bc;  /* 未填的格、细线 */
+  --line: #d3d1cc;
+  --plate: #dfded9;
+  --panel: #f4f3f0; /* 底部面板 */
+  --red: #b0301c;    /* 朱 */
+  --sel: rgba(176, 48, 28, 0.28); /* 卡上输入框的选区（朱） */
+  --sheet-veil: rgba(28, 28, 27, 0.45);
+  --paper-veil: rgba(233, 232, 228, 0.86); /* 大图页的底：paper 的颜色加透明度（2026-11-12） */
+  --font-latin: "Noto Sans";    /* 主题的西文字体（见下面 :root[data-skin]）；没有主题时就是 Noto */
+  --font-cjk: "Noto Sans SC";   /* 主题的中文字体：只用在卡上和页面大标题 */
+  --k: 0.3333;
+  --u: calc(3.6px * var(--k));
+  --m: calc(80px * var(--k));
+  --fs: 1.5px; /* T31a：界面文字统一加大（卡面与导出不走这个变量）；改这一处即可整体调 */
+  --bar: 48px; /* T29：固定顶栏高（不含安全区） */
+}
+/* T31b（U13）：深色改近黑——底 #0b0b0a、图版 #1a1a19、面板 #151514；与 CORE.PALETTE.dark 同值（npm test 核对）。
+   ponytail: 深色块写两遍（系统深色 + 手动深色）。Chrome 61 没有 :is()，合不成一个选择器；改色时两处一起改 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0b0b0a;
+    --ink: #e7e5e0;
+    --soft: #cfccc6;
+    --mute: #a09d97;
+    --ph: #88857f;
+    --dim: #8f8c86;
+    --faint: #403f3c;
+    --line: #2c2b29;
+    --plate: #1a1a19;
+    --panel: #151514;
+    --red: #e5674f;
+    --sel: rgba(229, 103, 79, 0.4);
+    --sheet-veil: rgba(0, 0, 0, 0.6);
+  --paper-veil: rgba(11, 11, 10, 0.86);
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0b0b0a;
+  --ink: #e7e5e0;
+  --soft: #cfccc6;
+  --mute: #a09d97;
+  --ph: #88857f;
+  --dim: #8f8c86;
+  --faint: #403f3c;
+  --line: #2c2b29;
+  --plate: #1a1a19;
+  --panel: #151514;
+  --red: #e5674f;
+  --sel: rgba(229, 103, 79, 0.4);
+  --sheet-veil: rgba(0, 0, 0, 0.6);
+  --paper-veil: rgba(11, 11, 10, 0.86);
+}
+
+/* ---------- 四个主题（2026-11-11 用户批准，2026-11-12 实现颜色）----------
+   <html data-skin> 由 theme.js 设：fandom（默认，只有浅色）、dansaekhwa 单色画、impressionism 印象派、secession 分离派。
+   每个主题用同一组变量名，组件不用改；--red 在各主题里是强调色，不一定是红。取值与 core.js 的 PALETTES 同值（npm test 核对），来源见设计系统「四个主题」。
+   深浅仍由 data-theme 定（没有 = 跟随系统）；fandom 只有浅色，theme.js 选着它时固定写 data-theme="light"。
+   没有 data-skin 时（脚本没跑）落回上面 :root 的石白 / 墨，产品里选不到。深色块写两遍的原因同上（Chrome 61 没有 :is()）。 */
+:root[data-skin="fandom"] {
+  --font-latin: "BK Fandom Serif";
+  --font-cjk: "Noto Serif SC";
+  --paper: #ffffff;
+  --ink: #2a2a2a;
+  --soft: #444444;
+  --mute: #606060;
+  --ph: #666666;
+  --dim: #666666;
+  --faint: #bbbbbb;
+  --line: #cccccc;
+  --plate: #dddddd;
+  --panel: #eeeeee;
+  --red: #990000;
+  --sel: rgba(153, 0, 0, 0.28);
+  --sheet-veil: rgba(42, 42, 42, 0.45);
+  --paper-veil: rgba(255, 255, 255, 0.86);
+}
+:root[data-skin="dansaekhwa"] {
+  --font-latin: "Gowun Batang";
+  --font-cjk: "LXGW WenKai";
+  --paper: #e9e6df;
+  --ink: #2b2b2b;
+  --soft: #44423e;
+  --mute: #605d56;
+  --ph: #69655d;
+  --dim: #69655d;
+  --faint: #c4bfb4;
+  --line: #cfcac0;
+  --plate: #dcd8ce;
+  --panel: #f2f0ea;
+  --red: #7a4f2a;
+  --sel: rgba(122, 79, 42, 0.28);
+  --sheet-veil: rgba(43, 43, 43, 0.45);
+  --paper-veil: rgba(233, 230, 223, 0.86);
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-skin="dansaekhwa"]:not([data-theme="light"]) {
+    --paper: #1e1d1b;
+    --ink: #e9e6df;
+    --soft: #cfcac0;
+    --mute: #a39e93;
+    --ph: #938e85;
+    --dim: #938e85;
+    --faint: #45423e;
+    --line: #3a3835;
+    --plate: #2f2d2a;
+    --panel: #272624;
+    --red: #d2a273;
+    --sel: rgba(210, 162, 115, 0.4);
+    --sheet-veil: rgba(0, 0, 0, 0.6);
+    --paper-veil: rgba(30, 29, 27, 0.86);
+  }
+}
+:root[data-skin="dansaekhwa"][data-theme="dark"] {
+  --paper: #1e1d1b;
+  --ink: #e9e6df;
+  --soft: #cfcac0;
+  --mute: #a39e93;
+  --ph: #938e85;
+  --dim: #938e85;
+  --faint: #45423e;
+  --line: #3a3835;
+  --plate: #2f2d2a;
+  --panel: #272624;
+  --red: #d2a273;
+  --sel: rgba(210, 162, 115, 0.4);
+  --sheet-veil: rgba(0, 0, 0, 0.6);
+  --paper-veil: rgba(30, 29, 27, 0.86);
+}
+:root[data-skin="impressionism"] {
+  --font-latin: "Cormorant Garamond";
+  --font-cjk: "Noto Sans SC";
+  --paper: #eef0ea;
+  --ink: #2a3350;
+  --soft: #3f4867;
+  --mute: #5a6280;
+  --ph: #626a85;
+  --dim: #626a85;
+  --faint: #c3cad2;
+  --line: #d0d6da;
+  --plate: #dfe4e4;
+  --panel: #f6f7f3;
+  --red: #a34732;
+  --sel: rgba(163, 71, 50, 0.28);
+  --sheet-veil: rgba(42, 51, 80, 0.45);
+  --paper-veil: rgba(238, 240, 234, 0.86);
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-skin="impressionism"]:not([data-theme="light"]) {
+    --paper: #171b2b;
+    --ink: #eef0ea;
+    --soft: #cdd2e0;
+    --mute: #9aa3bd;
+    --ph: #838cab;
+    --dim: #838cab;
+    --faint: #3d4666;
+    --line: #323a57;
+    --plate: #272d45;
+    --panel: #1f2438;
+    --red: #e99a8a;
+    --sel: rgba(233, 154, 138, 0.4);
+    --sheet-veil: rgba(0, 0, 0, 0.6);
+    --paper-veil: rgba(23, 27, 43, 0.86);
+  }
+}
+:root[data-skin="impressionism"][data-theme="dark"] {
+  --paper: #171b2b;
+  --ink: #eef0ea;
+  --soft: #cdd2e0;
+  --mute: #9aa3bd;
+  --ph: #838cab;
+  --dim: #838cab;
+  --faint: #3d4666;
+  --line: #323a57;
+  --plate: #272d45;
+  --panel: #1f2438;
+  --red: #e99a8a;
+  --sel: rgba(233, 154, 138, 0.4);
+  --sheet-veil: rgba(0, 0, 0, 0.6);
+  --paper-veil: rgba(23, 27, 43, 0.86);
+}
+:root[data-skin="secession"] {
+  --font-latin: "BK Secession Display";
+  --font-cjk: "Noto Serif SC";
+  --paper: #f3efe2;
+  --ink: #151515;
+  --soft: #3a3936;
+  --mute: #62625d;
+  --ph: #6b6b66;
+  --dim: #6b6b66;
+  --faint: #cfc6ab;
+  --line: #d8d0b8;
+  --plate: #e6e0cf;
+  --panel: #faf7ee;
+  --red: #8f1d1d;
+  --sel: rgba(143, 29, 29, 0.28);
+  --sheet-veil: rgba(21, 21, 21, 0.45);
+  --paper-veil: rgba(243, 239, 226, 0.86);
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-skin="secession"]:not([data-theme="light"]) {
+    --paper: #131312;
+    --ink: #f3efe2;
+    --soft: #d6d1c2;
+    --mute: #a7a294;
+    --ph: #8d887b;
+    --dim: #8d887b;
+    --faint: #3f3c35;
+    --line: #33312c;
+    --plate: #242320;
+    --panel: #1c1b19;
+    --red: #c6a24a;
+    --sel: rgba(198, 162, 74, 0.4);
+    --sheet-veil: rgba(0, 0, 0, 0.6);
+    --paper-veil: rgba(19, 19, 18, 0.86);
+  }
+}
+:root[data-skin="secession"][data-theme="dark"] {
+  --paper: #131312;
+  --ink: #f3efe2;
+  --soft: #d6d1c2;
+  --mute: #a7a294;
+  --ph: #8d887b;
+  --dim: #8d887b;
+  --faint: #3f3c35;
+  --line: #33312c;
+  --plate: #242320;
+  --panel: #1c1b19;
+  --red: #c6a24a;
+  --sel: rgba(198, 162, 74, 0.4);
+  --sheet-veil: rgba(0, 0, 0, 0.6);
+  --paper-veil: rgba(19, 19, 18, 0.86);
+}
+/* 主题字体用在哪：候选栏里的词、作品页的单词和预设词、语言名的原文用主题的西文字体；页面大标题用主题的西文 + 中文。
+   候选的释义、按钮、提示、说明一律是 Noto Sans SC（body 的字体）。卡上的字体由 app-view.js 按同一套写在 #card 上 */
+.cand-w b, .ent-input.word, .preset b, .lang-orig, .set-th-n[lang] { font-family: var(--font-latin), "Noto Sans", "Noto Sans SC", sans-serif; }
+.ent-h { font-family: var(--font-latin), var(--font-cjk), "Noto Sans", "Noto Sans SC", sans-serif; }
+/* fandom 的西文字体（Libre Baskerville 裁剪版）字形宽：预设词略收字号、不加字距，十个字母的词在 320 宽下才放得进两列按钮（scripts/test-lang-browser.mjs 四个主题逐词量） */
+:root[data-skin="fandom"] .preset b { font-size: 0.86em; letter-spacing: 0; }
+/* 只有 fandom 用小圆角（取自 AO3 的按钮）：按钮、预设词、主题卡、深浅分段。另外三个主题仍是直角 */
+:root[data-skin="fandom"] .btn, :root[data-skin="fandom"] .preset, :root[data-skin="fandom"] .skin-opt, :root[data-skin="fandom"] .set-seg, :root[data-skin="fandom"] .set-opt span { border-radius: 0.25em; }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
+html { touch-action: manipulation; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+/* ponytail: 不用 scroll-padding-top 给固定顶栏让位——Chrome 打字时按它把光标「挪进留白区」，每按一键都滚一下（T28 的跳动会回来）。
+   焦点被顶栏盖住时由 app.js 的 focusin 只滚一次（WCAG 2.4.11） */
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: "Noto Sans", "Noto Sans SC", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+button, input { font-family: inherit; color: inherit; }
+button { font-size: inherit; }
+
+/* 只给读屏看的文字 / 藏起来但仍可被程序点击的 file input */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 焦点框只给键盘用户：按 Tab 时 app.js 给 <html> 加 .kbd，点击/触摸时去掉。
+   Chrome 61 没有 :focus-visible，用这个办法做同样的事：点击不出高亮框，键盘仍看得见焦点 */
+:focus { outline: none; }
+.kbd button:focus, .kbd input:focus, .kbd canvas:focus, .kbd summary:focus {
+  outline: 2px solid var(--red);
+  outline-offset: 3px;
+}
+
+/* ---------- 满版 folio 外壳（D16） ---------- */
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding-bottom: calc(40px + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)));
+}
+
+/* 顶部栏（T29；v00.03.00 界面重构）：钉在页顶，带底色与一条细线，内容在栏下滚动；一行高 48px（含 44px 点按区），安全区加在栏内顶部。
+   左「单图 / 列阵」（当前项粗体 + 下划线）或品牌名 / 返回，右（改词页）保存、设置与「完成」；按钮一律图标 + 文字。
+   一行放不下（容器按钮让位后的窄屏、放大文字）时左边那组移到下一行，右边那组留在第一行：
+   row-reverse 让右边那组先排（order 1），左边那组靠 margin-right: auto 贴左；折行时它自然落到第二行。DOM 顺序不变，Tab 仍是先左后右 */
+.top {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: var(--bar);
+  padding: 0 var(--m);
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  font-size: calc(11 * var(--u) + var(--fs));
+  color: var(--mute);
+}
+/* 安全区单独写：Chrome < 69 不认 env()，整条声明在计算期失效，只丢这两条，不连累上面的高度与内边距 */
+.top { min-height: calc(var(--bar) + var(--safe-area-inset-top, env(safe-area-inset-top, 0px))); padding-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px)); }
+.top-r, .views { display: flex; align-items: center; }
+.top-r { order: 1; }
+.top > .brand, .top > .back, .top > .views { order: 2; margin-right: auto; }
+.top button {
+  min-height: 44px;
+  margin: 0;
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  line-height: 1.4;
+  color: var(--mute);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.top button + button { margin-left: calc(10 * var(--u)); }
+.top .vbtn[aria-pressed="true"] { color: var(--ink); font-weight: 700; }
+.top .vbtn[aria-pressed="true"] span { border-bottom: 2px solid var(--ink); padding-bottom: 1px; }
+.top .finish { font-weight: 700; }
+.top .finish[disabled], .top .vbtn[disabled] { opacity: 0.45; cursor: default; }
+/* 图标 + 文字的按钮（设置、完成、返回、保存、全屏页关闭）：20px 图标在前，颜色跟文字走；点按区高 44px */
+.sprite { position: absolute; }
+.tbtn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 2px; border: 0; background: none; color: var(--ink); white-space: nowrap; cursor: pointer; }
+.top .tbtn { color: var(--ink); }
+.ic { display: block; flex: none; fill: currentColor; }
+.tbtn .ic { margin-right: 4px; }
+.kbd .tbtn:focus { outline: 2px solid var(--red); outline-offset: -2px; }
+/* 改词页保存（T30）：无修改 = 虚线框灰字（aria-disabled，仍可聚焦，读屏听得到）；有修改 / 重试 = 实心墨底；保存中 = 实线框灰字 */
+.top .save { min-height: 34px; padding: 0 10px; border: 1.5px dashed var(--mute); color: var(--mute); font-weight: 700; }
+.top .save { color: var(--mute); }
+.top .save.on { border: 1.5px solid var(--ink); background: var(--ink); color: var(--paper); }
+.top .save[aria-busy="true"] { border-style: solid; }
+.top .save[aria-disabled="true"] { cursor: default; }
+.kbd .top .save:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+/* 返回确认（T30 / R2）：从返回按钮向下展开的平直面板，三项竖排；「保存并返回」实心（U2），初始焦点在「继续编辑」 */
+.leave-pop { position: absolute; top: 100%; left: var(--m); z-index: 8; width: calc(100% - 2 * var(--m)); max-width: 340px; padding: 12px 14px 14px; background: var(--panel); border-top: 2px solid var(--ink); border-bottom: 1px solid var(--line); color: var(--ink); }
+.leave-title { margin: 0; font-size: calc(15px + var(--fs)); font-weight: 700; line-height: 1.4; }
+.leave-diff { margin: 6px 0 0; padding: 0; list-style: none; font-size: calc(13px + var(--fs)); line-height: 1.6; color: var(--soft); white-space: normal; }
+.leave-btns { display: flex; flex-direction: column; margin-top: 10px; }
+/* 弹层在顶栏里：.top button 的「无边框、无底色」比 .solid / .outline 更具体，这里按弹层再写一遍 */
+.top .leave-btns .btn { width: 100%; height: 44px; line-height: 41px; margin: 0; padding: 0; border: 1.5px solid var(--ink); background: none; font-size: calc(14px + var(--fs)); color: var(--ink); }
+.top .leave-btns .btn.solid { background: var(--ink); color: var(--paper); }
+.top .leave-btns .btn + .btn { margin-top: 6px; margin-left: 0; }
+
+/* 卡：占满屏宽，内容由 app.js 按版式框摆（D5）；颜色全用 CSS 变量，界面深浅时卡一起变 */
+.card { position: relative; width: 100%; background: var(--paper); color: var(--ink); touch-action: pan-y; } /* pan-y：竖滑交给浏览器滚页面，横滑由 app.js 收去换格（D16，T11）；提示栏 #cand 会伸到卡外，所以不裁切，镜像层自己裁 */
+.layer { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+#mirror { overflow: hidden; -webkit-user-select: none; user-select: none; }
+#ctl { pointer-events: none; }
+.ctl { pointer-events: auto; }
+.card.grid { margin-top: calc(36 * var(--u)); }
+.card.grid ~ .hint-row { margin-top: calc(12 * var(--u)); }
+.card .b, .card .clip { position: absolute; margin: 0; }
+/* T02 / D2：义项栏开着时配文镜像与配文框隐藏（visibility：不可见也不可聚焦、不可点）；T09：候选 / 义项栏开着时栏下方的首次提示虚框不画 */
+.card.sense-open .b-caption, .card.sense-open .b-caption-ph, .card.sense-open .ctl-line.cap { visibility: hidden; }
+.card .b { white-space: pre; line-height: 1; }
+.card .clip { overflow: hidden; }
+.card canvas.b { display: block; }
+.card .key { color: var(--red); }
+.card .b.invalid { text-decoration: underline; text-decoration: underline wavy var(--mute); text-decoration-thickness: 1px; text-underline-offset: 0.06em; } /* 词不是以该字母开头（母版 §2-③）；thickness / offset 是 Chrome 87+ 才有，老内核用默认粗细 */
+.card .cell-hit { position: absolute; padding: 0; border: 0; background: none; cursor: pointer; }
+.kbd .card .cell-hit:focus { outline: 2px solid var(--red); outline-offset: -2px; }
+
+/* 卡上单词输入框（T12）：文字透明，叠在镜像对应的字上，只露出光标和选区；位置、字号、字距由 app.js 的 renderCtl 逐次写入。
+   组字期间（.ime）输入框自己显示文字并盖住镜像，组字结束再还原，镜像不跳 */
+.ctl-word, .ctl-line {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: transparent;
+  caret-color: var(--ink);
+  line-height: 1;
+  white-space: pre;
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.ctl-word::selection, .ctl-line::selection { background: var(--sel); color: transparent; } /* 选区颜色跟深浅色板走（--sel） */
+.ctl-title::selection { background: var(--sel); } /* 标题字可见，只换底色，不动字色 */
+.ctl-word.ime, .ctl-line.ime, .ctl-word.own { color: var(--ink); background: var(--paper); }
+/* 折了行的词正在编辑：输入框自己显示（.own），镜像里的词先藏起来（app-editor.js 的 syncOwn） */
+.card.word-own .b-word { visibility: hidden; }
+.ctl-word:focus, .ctl-line:focus { outline: none; }
+.kbd .ctl-word:focus, .kbd .ctl-line:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+/* 释义 / 配文输入框（T15）：位置、字号、点按区由 app.js 的 placeLine 写入；光标颜色同镜像字色 */
+.ctl-line { font-weight: 700; }
+.ctl-line.cap { font-weight: 400; caret-color: var(--soft); }
+.ctl-line.cap.ime { color: var(--soft); }
+/* 整块图版上的透明按钮（点了出配图面板）。不加 .ctl：触点起于控件内的不算横滑，图版是最大的横滑起点 */
+.hit { position: absolute; display: block; margin: 0; padding: 0; border: 0; background: none; cursor: pointer; pointer-events: auto; }
+.kbd .hit:focus { outline: 2px solid var(--red); outline-offset: -2px; }
+
+/* 卡顶三个控件（T16 / T22，D18）：可见的真控件，不透明叠层。位置、字号、行高由 app.js 的 renderTopCtl / placeFiller 写入；1080 坐标的长度写成 calc(Npx * var(--k)) */
+.ctl-title {
+  position: absolute;
+  margin: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  caret-color: var(--ink);
+  font-weight: 700;
+  white-space: pre-wrap; /* 超过一行按字折行（与 layoutCard 的两行排法一致：第一行放得下的最长前缀） */
+  word-break: break-all;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.ctl-title:focus { outline: none; }
+.ctl-title.empty::before { content: attr(data-ph); color: var(--ph); } /* 标题留空：灰色显示单词，导出时用它 */
+.kbd .ctl-title:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+
+/* 键盘上方一行（D18 / 母版 §3-①②④）：平直面板，2px 墨线上沿。固定在可视区底边（app.js 的 placeKbRow 随软键盘上移） */
+.kbrow { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--panel); border-top: 2px solid var(--ink); }
+.kb-in { display: flex; justify-content: space-between; align-items: center; max-width: 480px; min-height: calc(36 * var(--u)); margin: 0 auto; padding: 2px var(--m); font-size: calc(9.5 * var(--u) + var(--fs)); line-height: 1.5; color: var(--mute); }
+.kb-text { flex: 1; min-width: 0; }
+.kb-text b { color: var(--ink); }
+.kb-note { flex: none; margin-left: calc(8 * var(--u)); white-space: nowrap; }
+.kbd .tool:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+/* 标题工具栏（母版 §3-④）：粗体 / 斜体，墨、朱、灰三个色块，自选色。直角色块，按钮本身撑到 ≥ 36px 的点按区 */
+.rte-toolbar { flex: 1; min-width: 0; display: flex; align-items: center; }
+.rte-toolbar > * { flex: none; } /* 360 / 375 宽下可用宽度只有约 232px：各项按内容宽排，不让 flex 压缩互相重叠（间距靠下面收紧的 min-width / padding） */
+.tool { min-width: 28px; height: 36px; margin: 0; padding: 0 calc(3 * var(--u)); border: 0; background: none; font-size: calc(13 * var(--u) + var(--fs)); color: var(--ink); cursor: pointer; }
+.tool[aria-pressed="true"] { background: var(--plate); box-shadow: inset 0 -2px 0 var(--ink); } /* T31b：按下态加 2px 下划线（深色里底色差只有约 1.05:1，不能只靠底色，WCAG 1.4.1 / 1.4.11） */
+.tool-sep { width: 1px; height: calc(16 * var(--u)); margin: 0 calc(4 * var(--u)); background: var(--line); }
+.tool.dot { display: inline-flex; align-items: center; justify-content: center; }
+.tool .sw { display: block; flex: none; width: 22px; height: 22px; } /* T31a：图标 22px */
+.tool .sw.ink { background: var(--ink); }
+.tool .sw.red { background: var(--red); }
+.tool.pick { cursor: pointer; position: relative; }
+.custom-mark { display: block; width: 22px; height: 22px; border: 1.5px dashed var(--ink); line-height: 19px; text-align: center; color: var(--ink); }
+.tool.pick .tool-color { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; margin: 0; padding: 0; font-size: 16px; cursor: pointer; } /* T27：可聚焦的输入框字号 ≥ 16px，iOS 聚焦不自动放大 */
+.kbd .tool.pick:focus-within { outline: 2px solid var(--red); outline-offset: 2px; }
+.pick-lab { margin-left: calc(4 * var(--u)); font-size: calc(10 * var(--u) + var(--fs)); color: var(--mute); white-space: nowrap; }
+
+/* 词下方的栏（母版 §2-②③、§3-⑤⑥⑦）：面板底色、2px 墨线上沿、直角、无阴影。T13 候选（标签行 + 2 列 × 4 行）、T15 义项 */
+.cand { position: absolute; left: 0; right: 0; z-index: 2; padding: calc(6 * var(--u)) var(--m); background: var(--panel); border-top: 2px solid var(--ink); }
+.cand-top { position: relative; height: calc(9.5 * 1.6 * var(--u) + 1.6 * var(--fs) + 6 * var(--u)); font-size: calc(9.5 * var(--u) + var(--fs)); color: var(--mute); } /* 提示行：固定一行高，放不下省略，不换行 */
+.cand-lab, .cand-msg { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.6; }
+.cand-lab { padding: calc(3 * var(--u)) 0; }
+.cand-msg { position: absolute; left: 0; right: 0; top: 0; margin: 0; padding: calc(3 * var(--u)) calc(8 * var(--u)); background: var(--ink); color: var(--paper); font-weight: 700; } /* 墨底说明占提示行的位置，不另起一行 */
+.cand-msg:not([hidden]) + .cand-lab { visibility: hidden; }
+.cand-row { display: flex; align-items: center; height: 44px; font-size: calc(9.5 * var(--u) + var(--fs)); color: var(--mute); border-bottom: 1px solid var(--line); }
+.cand-more { display: flex; flex: 1; min-width: 0; align-items: center; height: 44px; padding: 0; border: 0; background: none; font-size: inherit; color: var(--ink); text-align: left; cursor: pointer; white-space: nowrap; }
+.cand-box { flex: none; width: calc(11 * var(--u)); height: calc(11 * var(--u)); margin-right: calc(5 * var(--u)); border: 1.5px solid var(--ink); box-sizing: border-box; }
+.cand-more[aria-pressed="true"] .cand-box { background: var(--ink); box-shadow: inset 0 0 0 2px var(--panel); }
+.cand-more[aria-pressed="true"] .cand-more-t { font-weight: 700; }
+.cand-more-n { margin-left: calc(5 * var(--u)); color: var(--mute); }
+.cand-acts { display: flex; flex: none; }
+.cand-act { width: calc(9.5 * 5 * var(--u) + 5 * var(--fs)); height: 44px; padding: 0; border: 0; background: none; font-size: inherit; color: var(--mute); text-align: right; cursor: pointer; white-space: nowrap; }
+.cand-act:first-child { color: var(--ink); font-weight: 700; }
+.cand-more:disabled, .cand-act:disabled { opacity: 0.4; cursor: default; }
+.cand-grid { display: flex; flex-wrap: wrap; list-style: none; }
+.cand-grid li { width: 50%; min-width: 0; }
+/* 候选项两行（T27 / V003-D04）：第一行「冠词 + 词」，第二行释义；各自放不下用省略号截断，不换行、栏不滚动。读屏名是完整的（aria-label） */
+.cand-it { display: block; width: 100%; min-height: 44px; padding: calc(4 * var(--u)) calc(6 * var(--u)) calc(4 * var(--u)) 0; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; cursor: pointer; }
+.cand-w, .cand-g { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cand-w { font-size: calc(12 * var(--u) + var(--fs)); font-weight: 700; line-height: 1.35; color: var(--ink); }
+.cand-w .k { font-style: normal; color: var(--red); }
+.cand-art { margin-right: calc(4 * var(--u)); font-size: calc(10 * var(--u) + var(--fs)); font-weight: 400; color: var(--mute); } /* 冠词：比词小一号、不加粗、不占固定宽度 */
+.cand-art.tight { margin-right: 0; }
+.cand-tag { color: var(--ink); } /* 开关加进来的词的类别标注 */
+.cand-g { min-height: 1.4em; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.4; color: var(--mute); } /* 没有释义也占一行：同一排两项等高，分隔线对齐 */
+.sense-list { max-height: calc(120 * var(--u)); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.sense-row { display: flex; flex-wrap: wrap; align-items: baseline; padding: calc(3 * var(--u)) 0; border-bottom: 1px solid var(--line); font-size: calc(12 * var(--u) + var(--fs)); }
+.sense-row:last-child { border-bottom: 0; }
+.sense-row .pos { min-width: calc(34 * var(--u)); padding-right: calc(6 * var(--u)); box-sizing: border-box; flex: none; margin: 0; font-style: italic; font-size: inherit; color: var(--mute); }
+.sense { min-height: calc(24 * var(--u)); margin-right: calc(12 * var(--u)); padding: 0; border: 0; background: none; font-size: inherit; color: var(--ink); cursor: pointer; }
+.sense[aria-pressed="true"] { color: var(--red); font-weight: 700; }
+.kbd .cand button:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+
+/* 卡下字母栏：字母依次排开，当前格朱红 + 下划线，未填的灰；右侧页码 */
+.pager {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: calc(16 * var(--u) - 4px) var(--m) 0; /* 字母按钮上下各留 4px 点按区，字形仍落在母版的位置 */
+}
+.pager .ls { display: flex; flex-wrap: wrap; margin-left: calc(-6.5 * var(--u)); }
+.pl {
+  padding: 4px calc(6.5 * var(--u));
+  border: 0;
+  background: none;
+  font-size: calc(20 * var(--u));
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ink);
+  cursor: pointer;
+}
+.pager .ls.tight { flex-wrap: nowrap; margin-left: 0; width: 100%; }
+/* T42：超过 10 格按分图分两行，行末是起止格（如 01–10 / 11–14） */
+.pager .ls.rows { display: block; }
+.pl-row { display: flex; flex-wrap: nowrap; align-items: baseline; }
+.pl-range { margin-left: auto; padding-left: 6px; font-size: calc(10 * var(--u) + var(--fs)); color: var(--mute); white-space: nowrap; }
+/* T42：列阵分图页签（≥ 44px 高） */
+.sheet-tabs { display: flex; margin: calc(10 * var(--u)) var(--m) 0; border-bottom: 1px solid var(--line); }
+.sheet-tab { flex: 1; min-height: 44px; padding: 0 4px; border: 0; border-bottom: 2px solid transparent; background: none; font-size: calc(11 * var(--u) + var(--fs)); color: var(--mute); cursor: pointer; }
+.sheet-tab[aria-selected="true"] { border-bottom-color: var(--ink); color: var(--ink); font-weight: 700; }
+.kbd .sheet-tab:focus { outline: 2px solid var(--red); outline-offset: -2px; }
+.pager .ls.tight .pl { flex: 0 0 auto; min-width: 24px; padding-left: 1px; padding-right: 1px; font-size: calc(18 * var(--u)); }
+.pager .ls.tight .pl span { display: inline-block; }
+.pl span { display: block; padding-bottom: 1px; border-bottom: calc(2.5 * var(--u)) solid transparent; }
+.pl.todo { color: var(--ph); }
+.pl.todo span { border-bottom-style: dotted; border-bottom-color: currentColor; } /* 未填：虚下划线，不只靠颜色区分（当前格仍是朱色，虚线保留） */
+.pl.on { color: var(--red); }
+.pl.on span { border-bottom-color: var(--red); }
+/* 提示行 + 右侧「改单词 / 填表人」入口（闸口 A 第 2 节 ⑥）：入口是去入场界面的按钮，点按区 ≥ 24px（WCAG 2.5.8） */
+.hint-row { display: flex; justify-content: space-between; align-items: flex-start; margin: calc(6 * var(--u)) var(--m) 0; }
+.foot-hint { flex: 1; min-width: 0; margin: 0; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; color: var(--mute); white-space: pre-line; }
+.to-entry { flex: none; margin: -8px 0 0 calc(8 * var(--u)); padding: 8px 0; border: 0; background: none; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; color: var(--ink); font-weight: 700; text-decoration: underline; white-space: nowrap; cursor: pointer; }
+.kbd .to-entry:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+
+.link {
+  min-height: 36px;
+  padding: 6px 8px 6px 0;
+  border: 0;
+  background: none;
+  font-size: calc(14px + var(--fs));
+  color: var(--ink);
+  cursor: pointer;
+}
+/* 主操作：描边直角按钮，安静但明确 */
+.btn {
+  display: inline-block;
+  height: 46px;
+  line-height: 44px;
+  padding: 0 22px;
+  border-radius: 0;
+  font-size: calc(15px + var(--fs));
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+}
+.btn:active { opacity: 0.7; }
+.btn[disabled] { opacity: 0.45; cursor: default; }
+.outline { border: 1.5px solid var(--ink); background: none; }
+.solid { border: 1.5px solid var(--ink); background: var(--ink); color: var(--paper); }
+
+/* 底部弹层与平直面板（配图 / 取景 / 完成，.flat：透明遮罩、不遮卡，点外面关闭） */
+.sheet {
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background: var(--sheet-veil);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  z-index: 10;
+}
+.sheet-panel {
+  background: var(--panel);
+  border-top: 2px solid var(--ink);
+  padding: 16px 24px 0;
+  height: 78%;
+  display: flex;
+  flex-direction: column;
+  max-width: 560px;
+  width: 100%;
+  margin: 0 auto;
+}
+.sheet-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.sheet-head h2 { font-size: calc(17px + var(--fs)); font-weight: 700; }
+.sheet-head .link { padding-right: 0; }
+.img-panel .sheet-head h2, .crop-panel .sheet-head h2 { font-size: calc(11 * var(--u) + var(--fs)); }
+
+.sheet.flat { background: none; }
+.img-panel, .crop-panel, .fin-panel {
+  height: auto;
+  max-width: 480px;
+  padding: calc(12 * var(--u)) var(--m) calc(22 * var(--u));
+  /* 安全区单独写：Chrome < 69 不认 env()，整条声明在计算期失效，只丢这一边，不连累上 / 左右内边距 */
+  padding-bottom: calc(22 * var(--u) + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)));
+}
+/* 配图面板（§3-③）：行式按钮，细线分隔；下半是所有格共用的默认图 */
+.plist .prow { display: block; width: 100%; min-height: 40px; padding: 6px 0; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; font-size: calc(12.5 * var(--u) + var(--fs)); color: var(--ink); cursor: pointer; }
+.plist.inline { display: flex; }
+.plist.inline .prow { width: auto; padding-right: calc(16 * var(--u)); border-bottom: 0; }
+.plab { display: flex; justify-content: space-between; align-items: baseline; margin-top: calc(8 * var(--u)); font-size: calc(11 * var(--u) + var(--fs)); color: var(--mute); }
+.plab b { color: var(--ink); }
+.kbd .prow:focus { outline: 2px solid var(--red); outline-offset: -2px; }
+/* 取景内框比例 920:600；外围压暗。固定深色面板在浅色主题下也保持按钮对比度。 */
+.crop-panel { --ink: #e7e5e0; --mute: #a09d97; --paper: #0b0b0a; --panel: #0b0b0a; --line: #77756f; --red: #e5674f; background: var(--paper); color: var(--ink); }
+.crop-moves, .crop-zoom { display: flex; align-items: center; margin-bottom: 12px; }
+.crop-moves button, .crop-zoom button { min-width: 36px; min-height: 36px; padding: 4px 8px; border: 1px solid var(--line); background: transparent; color: var(--ink); font-size: calc(16px + var(--fs)); cursor: pointer; }
+.crop-moves button { flex: 1; }
+.crop-moves button + button { margin-left: 6px; }
+.crop-zoom input { flex: 1; min-width: 0; margin: 0 10px; height: 36px; accent-color: var(--ink); } /* 老内核使用滑条默认色 */
+.crop-arrow { display: inline-block; }
+[data-move="ArrowLeft"] .crop-arrow { transform: rotate(180deg); }
+[data-move="ArrowUp"] .crop-arrow { transform: rotate(-90deg); }
+[data-move="ArrowDown"] .crop-arrow { transform: rotate(90deg); }
+.kbd .crop-panel button:focus, .kbd .crop-panel input:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+.crop-panel .btns { display: flex; }
+.crop-panel .btn { flex: 1; height: 44px; line-height: 42px; font-size: calc(13px + var(--fs)); } /* T44：取消｜还原｜应用，应用在最右、实心（U18）；44px 高 */
+.crop-scope { margin: -4px 0 10px; color: var(--mute); font-size: calc(12px + var(--fs)); } /* 默认图取景时写明影响范围 */
+.crop-panel .btn + .btn { margin-left: 8px; }
+.crop-canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 40vh;
+  margin: 6px auto 12px;
+  background: var(--plate);
+  touch-action: none; /* 拖动取景时不滚动页面 */
+  cursor: move;
+}
+
+/* 完成面板（§2-⑦、§3-⑪）：标签行 + 进度条 + 两个按钮 + 消息行 + 底行（借物与版权 · 版本号） */
+.fin-lab { display: flex; justify-content: space-between; align-items: baseline; font-size: calc(11 * var(--u) + var(--fs)); color: var(--mute); }
+.fin-lab b { color: var(--ink); }
+.fin-prog { height: calc(3 * var(--u)); min-height: 2px; margin: calc(10 * var(--u)) 0 calc(14 * var(--u)); background: var(--line); }
+.fin-prog i { display: block; width: 0; height: 100%; background: var(--ink); }
+/* T43：缩略图条——一排按顺序的小图（3:4），每张点按区 58×77；放不下时这一排自己横向滚动（滚动容器，页面不横滚，WCAG 1.4.10） */
+.fin-thumbs { display: flex; margin: 0 0 calc(12 * var(--u)); padding: 2px 0 4px; list-style: none; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.fin-thumbs li { flex: none; }
+.fin-thumbs li + li { margin-left: 8px; }
+.thumb { display: block; width: 58px; padding: 0; border: 0; background: none; color: var(--mute); text-align: left; cursor: pointer; }
+.thumb img { display: block; width: 58px; height: 77px; object-fit: cover; border: 1px solid var(--line); }
+.thumb span { display: block; margin-top: 2px; font-size: calc(10px + var(--fs)); line-height: 1.3; }
+.thumb.seen img { outline: 2px solid var(--ink); outline-offset: 1px; } /* 刚看过的那张 */
+.kbd .thumb:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+/* T43：大图查看 */
+.viewer .page-in { display: flex; flex-direction: column; min-height: 100%; }
+.view-img { display: block; max-width: 100%; max-height: 68vh; margin: 8px auto 12px; border: 1px solid var(--line); touch-action: pan-y; -webkit-user-select: none; user-select: none; -webkit-user-drag: none; } /* 不让浏览器把图拖走（拖图会取消横滑） */
+.view-nav { display: flex; }
+.view-nav .btn { flex: 1; height: 44px; line-height: 41px; padding: 0; font-size: calc(14px + var(--fs)); }
+.view-nav .btn + .btn { margin-left: 8px; }
+.kbd .view-nav .btn:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+.fin-btns { display: flex; margin-left: -8px; } /* 按钮各带 8px 左边距，整排左移 8px：藏起来的按钮不留空档 */
+.fin-btns .btn { flex: 1; margin-left: 8px; height: 44px; line-height: 42px; padding: 0; font-size: calc(14px + var(--fs)); }
+.fin-msg { min-height: 1.5em; margin-top: calc(10 * var(--u)); font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; color: var(--mute); }
+.fin-foot { display: flex; justify-content: space-between; align-items: center; margin-top: calc(6 * var(--u)); font-size: calc(10 * var(--u) + var(--fs)); color: var(--mute); }
+.fin-credit { min-height: 36px; padding: 6px 0; border: 0; background: none; font-size: inherit; color: var(--mute); text-decoration: underline; cursor: pointer; }
+.kbd .fin-credit:focus { outline: 2px solid var(--red); outline-offset: 0; }
+
+/* 全屏页（借物与版权、浏览器导出结果）：顶部「标题 / 关闭」，下面一条粗墨线开始正文；内容宽度与卡一致（max 480），页自己滚动 */
+.page { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 20; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--paper); }
+#credits { z-index: 21; } /* 借物页可以从设置页（也是全屏页）里打开，要盖在它上面 */
+.page-in {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 var(--m);
+  /* 安全区单独写：Chrome < 69 不认 env()，整条声明在计算期失效，只丢这一边，不连累左右内边距 */
+  padding-bottom: calc(40px + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)));
+}
+/* T29：全屏页的「标题 / 关闭」栏同样钉在页顶（.page 自己滚动），关闭是右上 44×44 的图标 */
+.page-top { position: -webkit-sticky; position: sticky; top: 0; z-index: 1; display: flex; justify-content: space-between; align-items: center; height: var(--bar); background: var(--paper); font-size: calc(11 * var(--u) + var(--fs)); color: var(--mute); }
+.page-top { height: calc(var(--bar) + var(--safe-area-inset-top, env(safe-area-inset-top, 0px))); padding-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px)); }
+.page-top h2 { font-size: inherit; font-weight: 700; color: var(--ink); line-height: 1.4; }
+.page-top h2 span { font-weight: 400; color: var(--mute); white-space: pre; }
+.page-note { border-top: 3px solid var(--ink); padding-top: calc(6 * var(--u)); font-size: calc(10 * var(--u) + var(--fs)); color: var(--mute); }
+.res-item { margin-top: calc(10 * var(--u)); }
+.res-item img { display: block; width: 100%; border: 1px solid var(--line); }
+.res-item figcaption { margin-top: 6px; font-size: calc(10 * var(--u) + var(--fs)); color: var(--mute); }
+
+/* 借物与版权（全屏页的正文） */
+.credits-body { border-top: 3px solid var(--ink); padding-top: 4px; font-size: calc(14px + var(--fs)); line-height: 1.75; color: var(--soft); }
+.credits-body h3 { font-size: calc(15px + var(--fs)); margin: 16px 0 6px; color: var(--ink); }
+.credits-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: calc(12px + var(--fs)); line-height: 1.6; }
+.credits-table th, .credits-table td { padding: 10px 5px; vertical-align: top; text-align: left; border-bottom: 1px solid var(--line); overflow-wrap: break-word; }
+.credits-table th:first-child { width: 20%; padding-left: 0; }
+.credits-table th:last-child, .credits-table td:last-child { width: 24%; padding-right: 0; }
+.credits-table th { color: var(--ink); font-weight: 700; }
+.toast { position: fixed; z-index: 30; padding: 12px 16px; background: var(--ink); color: var(--paper); font-size: calc(14px + var(--fs)); line-height: 1.5; pointer-events: none; } /* 统一提示（T33）：left / width / top 由 app-model.js 的 placeToast 按标题位置写入 */
+.toast:empty { display: none; }
+.credits-body details { margin-top: 8px; border-top: 1px solid var(--line); padding: 8px 0; }
+.credits-body summary { min-height: 32px; cursor: pointer; color: var(--ink); }
+.credits-body pre { margin-top: 8px; white-space: pre-wrap; word-break: break-word; font-size: calc(11px + var(--fs)); line-height: 1.5; color: var(--mute); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+
+/* 草稿规则和真实保存状态留在页面底部，不盖住卡面。 */
+.draft-note { margin: 24px var(--m); color: var(--mute); font-size: calc(12px + var(--fs)); line-height: 1.6; }
+.draft-note p { margin: 6px 0; }
+
+/* ---------- 入场界面（T18，闸口 A 第 1 节） ----------
+   版式沿用编辑界面：左边距 --m（= 卡的页边距），单位 --u（母版 300 宽稿面上的 1px）；只用墨 / 灰 / 朱三色，朱只标焦点与错误。
+   进入入场界面时 #app 加 .entering：顶部栏只留品牌名或返回、保存与设置，卡、字母栏、提示行都不显示 */
+.app.entering .views, .app.entering .finish, .app.entering #card, .app.entering #pager, .app.entering #hintRow { display: none; }
+.top .brand { padding-top: 0; line-height: 1.4; color: var(--ink); font-weight: 700; }
+.entry { padding: calc(28 * var(--u)) var(--m) 0; }
+.ent-h { margin: 0; font-size: calc(22 * var(--u) + var(--fs)); font-weight: 700; line-height: 1.25; color: var(--ink); }
+.ent-note { margin: calc(6 * var(--u)) 0 0; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; color: var(--mute); }
+.ent-note:empty, .ent-save-msg:empty { display: none; }
+.ent-save-msg { margin: calc(6 * var(--u)) 0 0; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; color: var(--red); font-weight: 700; } /* T30：保存失败 / 原稿保护阻塞，文字写明原因与下一步（WCAG 3.3.1） */
+.ent-field { margin-top: calc(22 * var(--u)); }
+.ent-lab { display: flex; justify-content: space-between; align-items: baseline; margin: 0; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; color: var(--mute); }
+.ent-lab label { color: var(--ink); font-weight: 700; }
+.ent-count { white-space: nowrap; }
+.ent-input {
+  display: block;
+  width: 100%;
+  margin: calc(4 * var(--u)) 0 0;
+  padding: 8px 0; /* 文字与下划线之间至少 8px */
+  border: 0;
+  border-bottom: 2px solid var(--ink);
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  caret-color: var(--ink);
+  font-size: calc(14 * var(--u) + 2px); /* T27：320 宽也 ≥ 16px，iOS 聚焦不自动放大 */
+  line-height: 1.3;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.ent-input.word { font-size: calc(28 * var(--u)); font-weight: 700; letter-spacing: calc(1 * var(--u)); text-transform: uppercase; }
+.ent-input::placeholder { color: var(--ph); opacity: 1; font-weight: 400; letter-spacing: 0; text-transform: none; }
+/* 读草稿期间短暂禁用（最多约 1.5s）：外观保持不变，免得 iOS 默认的灰化一闪 */
+.ent-input:disabled { opacity: 1; color: var(--ink); -webkit-text-fill-color: var(--ink); }
+.ent-input:disabled::placeholder { -webkit-text-fill-color: var(--ph); }
+.ent-input[aria-invalid="true"] { border-bottom-color: var(--red); }
+.kbd .ent-input:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+.ent-help { margin: calc(4 * var(--u)) 0 0; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; color: var(--mute); }
+.ent-help:empty { display: none; }
+/* T36：单词框下的义项行与错误说明共用一行（U10：出错时义项让位），空着也占一行 */
+.ent-line { min-height: calc((10 * var(--u) + var(--fs)) * 1.5); margin: calc(4 * var(--u)) 0 0; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; }
+.ent-sense { margin: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--soft); }
+.ent-line .ent-err { min-height: 0; margin: 0; }
+.ent-line .ent-err:empty { display: none; }
+/* T39：预设词标题旁的「换一组」（语言栏的「更多语言……」同款）：文字按钮，点按区 ≥ 24px 高 */
+.ent-more { min-height: 32px; margin: -8px 0; padding: 0 0 0 12px; border: 0; background: none; font-size: inherit; color: var(--ink); font-weight: 700; text-decoration: underline; cursor: pointer; }
+.kbd .ent-more:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+.ent-err { min-height: 1.5em; margin: calc(4 * var(--u)) 0 0; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; color: var(--red); font-weight: 700; } /* 文字本身写明原因，不只靠颜色（WCAG 1.4.1 / 3.3.1）；T28：空着也占一行，出现 / 清除不推动下方字段 */
+/* 将得到的格：虚下划线 = 未填，实下划线 = 会保留已填的词（与编辑界面字母栏一致，不只靠颜色） */
+.ent-preview { display: flex; flex-wrap: wrap; min-height: calc((18 * var(--u) + var(--fs)) * 1.2 + 1px + 2.5 * var(--u)); margin-top: calc(8 * var(--u)); } /* T28：空着也占一行，打第一个字母时下面不往下推 */
+.pv { margin-right: calc(9 * var(--u)); padding-bottom: 1px; border-bottom: calc(2.5 * var(--u)) dotted var(--ph); font-size: calc(18 * var(--u) + var(--fs)); font-weight: 700; line-height: 1.2; color: var(--ph); }
+.pv.kept { border-bottom-style: solid; border-bottom-color: var(--ink); color: var(--ink); }
+.pv.cut { margin-left: calc(4 * var(--u)); padding-left: calc(9 * var(--u)); border-left: 2px solid var(--ink); } /* T42：分图切点的竖线 */
+/* T42：「调整分图」折叠区 */
+.ent-split { margin-top: calc(4 * var(--u)); font-size: calc(10 * var(--u) + var(--fs)); color: var(--mute); }
+.ent-split summary { min-height: 32px; line-height: 32px; color: var(--ink); font-weight: 700; cursor: pointer; }
+.split-btns { display: flex; flex-wrap: wrap; margin: 4px -3px 0; }
+.split-btn { min-height: 36px; margin: 0 3px 6px; padding: 0 10px; border: 1.5px solid var(--ink); border-radius: 0; background: none; color: var(--ink); font-size: inherit; cursor: pointer; }
+.split-btn[disabled] { opacity: 0.45; cursor: default; }
+.kbd .split-btn:focus, .kbd .ent-split summary:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+/* 预设单词：两列直角按钮，「原词 - 释义」，点按区 ≥ 44px 高；与单词一致的那个实心并带 aria-pressed */
+.ent-presets { display: flex; flex-wrap: wrap; margin: calc(6 * var(--u)) calc(-3 * var(--u)) 0; }
+/* 预设词按钮固定两行：上原词、下释义，各自不换行（2026-11-12 用户定，方案 A）。同一屏按钮一样高，换一组时整栏不跳。 */
+.preset { width: calc(50% - 6 * var(--u)); min-width: 0; min-height: 44px; margin: 0 calc(3 * var(--u)) calc(6 * var(--u)); padding: 5px 10px; border: 1.5px solid var(--ink); border-radius: 0; background: none; color: var(--ink); font-size: calc(12 * var(--u) + var(--fs)); text-align: left; overflow: hidden; cursor: pointer; }
+.preset b, .preset span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.35; }
+.preset b { font-weight: 700; letter-spacing: calc(0.5 * var(--u)); }
+.preset span { font-size: calc(10 * var(--u) + var(--fs)); }
+.preset[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+/* 语言栏（T20）：一行摘要 + 「更多语言……」，展开是六个单选；状态用文字写明（WCAG 1.4.1） */
+.ent-lang { margin-top: calc(8 * var(--u)); border-top: 1px solid var(--line); }
+.lang-sum { display: flex; align-items: center; min-height: 44px; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; color: var(--mute); }
+.lang-k { flex: none; margin-right: calc(8 * var(--u)); }
+.lang-now { flex: 1; min-width: 0; color: var(--ink); font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lang-now .lang-st { font-weight: 400; }
+.lang-sum .ent-more { flex: none; min-height: 44px; margin: 0; }
+.lang-row { display: flex; align-items: center; border-top: 1px solid var(--line); }
+.lang-opt { flex: 1; min-width: 0; display: flex; align-items: center; min-height: 44px; font-size: calc(12 * var(--u) + var(--fs)); color: var(--ink); cursor: pointer; }
+.lang-opt input, .set-opt input { position: absolute; width: 1px; height: 1px; opacity: 0; } /* 原生单选（键盘与读屏照常），外观自己画 */
+.lang-opt .rd { position: relative; flex: none; width: 16px; height: 16px; margin-right: 10px; border: 1.5px solid var(--ink); border-radius: 50%; }
+.lang-opt input:checked + .rd::after { content: ""; position: absolute; top: 3px; right: 3px; bottom: 3px; left: 3px; border-radius: 50%; background: var(--ink); }
+/* 语言多选（2026-11-12）：方框，选中填实；只剩一门时它的框停用 */
+.lang-opt .ck { position: relative; flex: none; width: 16px; height: 16px; margin-right: 10px; border: 1.5px solid var(--ink); }
+.lang-opt input:checked + .ck::after { content: ""; position: absolute; top: 3px; right: 3px; bottom: 3px; left: 3px; background: var(--ink); }
+.lang-opt input:disabled + .ck { opacity: 0.45; }
+.kbd .lang-opt input:focus + .ck { outline: 2px solid var(--red); outline-offset: 2px; }
+.lang-opt input:checked ~ .lang-name { font-weight: 700; }
+.kbd .lang-opt input:focus + .rd { outline: 2px solid var(--red); outline-offset: 2px; }
+.lang-st { flex: none; margin-left: 8px; font-size: calc(10 * var(--u) + var(--fs)); color: var(--mute); white-space: nowrap; }
+.lang-retry { flex: none; min-height: 44px; padding: 0 0 0 10px; border: 0; background: none; font-size: calc(10 * var(--u) + var(--fs)); font-weight: 700; color: var(--ink); text-decoration: underline; cursor: pointer; }
+.kbd .lang-retry:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+.ent-wait { margin-top: calc(18 * var(--u)); color: var(--ink); font-weight: 700; }
+.ent-wait + .ent-start { margin-top: calc(6 * var(--u)); }
+.ent-wait:empty + .ent-start { margin-top: calc(22 * var(--u)); }
+.ent-start { display: block; width: 100%; height: 44px; line-height: 42px; margin-top: calc(22 * var(--u)); padding: 0; font-size: calc(15px + var(--fs)); }
+.ent-start[hidden] { display: none; }
+/* 设置页（v00.03.00）：深浅三档是一排分段单选，选中的墨底 + 粗体（不只靠颜色）；底行借物与版权、版本号 */
+.set-body { border-top: 3px solid var(--ink); padding-top: 14px; }
+.set-lab { margin: 0 0 8px; font-size: calc(10 * var(--u) + var(--fs)); font-weight: 400; line-height: 1.5; color: var(--mute); }
+.set-seg { display: flex; }
+.set-opt { position: relative; flex: 1; min-width: 0; }
+.set-opt span { display: block; min-height: 44px; line-height: 41px; border: 1.5px solid var(--ink); text-align: center; font-size: calc(13px + var(--fs)); color: var(--ink); white-space: nowrap; cursor: pointer; }
+.set-opt + .set-opt span { border-left: 0; }
+.set-opt input:checked + span { background: var(--ink); color: var(--paper); font-weight: 700; }
+.kbd .set-opt input:focus + span { outline: 2px solid var(--red); outline-offset: -5px; }
+/* 主题四选一（2026-11-12）：上面色样（底色 + 强调色的一条），下面名字；选中 = 2px 墨框 + 粗体，不只靠颜色。色样的颜色是各主题浅色的 paper 与 red，写死在这里（它展示的是别的主题，不能用当前主题的变量） */
+.set-ths { display: flex; margin: 0 calc(-2 * var(--u)); }
+.set-th { position: relative; display: flex; flex: 1; min-width: 0; margin: 0 calc(2 * var(--u)); cursor: pointer; }
+.set-th input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.set-th-in { display: block; flex: 1; min-width: 0; min-height: 88px; padding: 5px; border: 1px solid var(--line); font-size: calc(9.5 * var(--u) + var(--fs)); line-height: 1.35; color: var(--soft); }
+.set-th input:checked + .set-th-in { border: 2px solid var(--ink); padding: 4px; color: var(--ink); font-weight: 700; }
+.kbd .set-th input:focus + .set-th-in { outline: 2px solid var(--red); outline-offset: 2px; }
+.set-sw { display: block; height: 40px; margin-bottom: 5px; border-top: 3px solid var(--mute); border-bottom: 1px solid var(--line); }
+.set-sw.sk-fandom { background: #ffffff; border-top-color: #990000; }
+.set-sw.sk-dansaekhwa { background: #e9e6df; border-top-color: #7a4f2a; }
+.set-sw.sk-impressionism { background: #eef0ea; border-top-color: #a34732; }
+.set-sw.sk-secession { background: #f3efe2; border-top-color: #8f1d1d; }
+.set-th-n { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.set-th-x { display: block; font-weight: 400; color: var(--mute); }
+.set-lab2 { margin-top: 22px; }
+/* 只有浅色的主题选着时，深浅这一组停用：虚线框、灰字（另有 aria-disabled 和下面一句说明） */
+.set-seg.off .set-opt span, .set-seg.off .set-opt input:checked + span { border-style: dashed; border-color: var(--mute); background: none; color: var(--mute); font-weight: 400; cursor: default; }
+.set-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 6px; border-top: 1px solid var(--line); font-size: calc(10 * var(--u) + var(--fs)); color: var(--mute); }
+/* 改单词清空确认（闸口 A 第 1 节 ⑤）：平直面板，列出要清空的格；两个按钮写明后果，安全选项「保留」是实心主按钮 */
+.conf-panel { height: auto; max-width: 480px; padding-bottom: calc(16px + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px))); }
+.conf-title { margin: 0; font-size: calc(16px + var(--fs)); font-weight: 700; color: var(--ink); }
+.conf-list { margin: 10px 0 0; padding: 0; list-style: none; font-size: calc(13px + var(--fs)); line-height: 1.6; color: var(--ink); }
+.conf-list b { display: inline-block; min-width: 1.4em; color: var(--red); }
+.conf-list .conf-keep { margin-top: 4px; color: var(--mute); } /* 换语言：写明哪些会留着 */
+.conf-btns { display: flex; flex-direction: column; margin-top: 14px; }
+.conf-btns .btn { width: 100%; height: 44px; line-height: 42px; padding: 0; font-size: calc(14px + var(--fs)); }
+.conf-btns .btn + .btn { margin-top: 8px; }
+
+/* 批次8：容器全屏按钮左右让位；48px 初值须真机复测。 */
+html[data-container-full] { --container-gutter: 48px; }
+html[data-container-full] .top { padding-left: var(--container-gutter); padding-right: var(--container-gutter); } /* 320 宽下编辑页一行放不下：「单图 / 列阵」落到第二行（见 .top） */
+html[data-container-full] .top .brand { display: flex; align-items: center; font-size: calc(10 * var(--u)); }
+html[data-container-full] .page-top { padding-left: var(--container-gutter); padding-right: var(--container-gutter); }
+/* 大图页的底是 paper 的颜色加透明度，后面的界面隐约可见；模糊不可用时沿用不透明的 paper（透着清晰的界面会干扰看图）。 */
+@supports ((backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px))) {
+  .viewer { background: var(--paper-veil); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+}
+button:not(:disabled):not([aria-disabled="true"]):active { filter: brightness(0.75); }
+button { transition: background-color 120ms ease, color 120ms ease, filter 120ms ease; }
+@media (prefers-reduced-motion: reduce) { button { transition: none; } }
