@@ -1,7 +1,7 @@
 Copyright (c) 2025 Linwei (ECDICT)
 Copyright (c) 2023 Phosphor Icons
 Copyright (C) 1994-2002 Daniel Flipo, Bernard Gaulle, 2016 Arthur Reutenauer (hyph-fr)
-Copyright (c) 2013-2024 Deutschsprachige Trennmustermannschaft (hyph-de-1996)
+Copyright (c) 2013-2024 Stephan Hennig, Werner Lemberg, Günter Milde, Sander van Geloven, Georg Pfeiffer, Gisbert W. Selke, Tobias Wendorf, Keno Wehr (hyph-de-1996)
 Copyright (C) 1993, 1997 Javier Bezos, 2001-2019 Javier Bezos, CervanTeX (hyph-es)
 Copyright (C) 2008-2011 Claudio Beccari (hyph-it)
 Copyright (C) 1999-2016 Claudio Beccari (hyph-la)

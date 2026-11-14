@@ -256,5 +256,96 @@ try {
     await type(page, "uv"); assert.ok((await cands(page)).some(c => c.w === "Uva" && c.art === "la"));
     assert.deepEqual(errors, []); await context.close();
   }
+  { // V003-B4-R11：语言多选的草稿——一格记着的语言词库还没到时，不被别的语言的同形词顶替（冠词不丢、没选冠词仍被拦）；重试成功后「还没加载好」的提示清掉
+    const M = (langs, word, pick, over) => ({ ...D(langs[0], word, [pick]), langs, pickLangs: ["es"], ...over });
+    const open = async (draft, setup) => {
+      const context = await browser.newContext({ viewport: { width: 375, height: 812 } });
+      await context.addInitScript(({ draft, KEY }) => { if (!sessionStorage.getItem("seeded")) { localStorage.setItem(KEY, JSON.stringify({ ...draft, t: Date.now() - 5000 })); localStorage.setItem("backronym-tip-seen", "1"); sessionStorage.setItem("seeded", "1"); } }, { draft, KEY });
+      // 只读钩子：把应用对象另存一份到 window.__B，测试据此读每格记着的语言（界面上看不出「没认」和「认成了没有冠词的语言」的区别）
+      await context.addInitScript(() => { let v; Object.defineProperty(window, "Backronym", { configurable: true, get() { return v; }, set(x) { v = x; window.__B = x; } }); });
+      if (setup) await setup(context);
+      const page = await context.newPage(), errors = [];
+      page.on("pageerror", e => errors.push(e.message));
+      // 默认的 goto 要等页面 load，而动态插入的词库脚本会把它推迟到最慢的一门到达之后；这里只等文档就绪，才能在「某门语言还没到」的时间窗里检查
+      await page.goto(url, { waitUntil: "domcontentloaded" }); await page.waitForFunction(() => !document.getElementById("wordInput").disabled);
+      return { page, context, errors };
+    };
+    const has = (page, code) => page.evaluate(c => window.LANGPACK.has(c, "words"), code);
+    const langOf = (page, i) => page.evaluate(i => window.__B.model.state.pickLangs[i], i);
+    const ready = (page, codes) => page.waitForFunction(cs => cs.every(c => window.LANGPACK.has(c, "words") && window.LANGPACK.has(c, "block")), codes, { timeout: 15000 });
+    const slow = (code, ms) => c => c.route("**/lang/" + code + "/words.js", async r => { await new Promise(x => setTimeout(x, ms)); r.continue(); });
+    const article = (page) => page.evaluate(() => { const n = document.querySelector('#mirror [data-role="article"]'); return n ? n.innerText : ""; });
+    const finish = async (page) => { await page.locator("#finish").click(); await page.waitForTimeout(300); return { hint: await page.locator("#hint").innerText(), panel: await page.locator("#finishPanel").isVisible() }; };
+    { // 英语 + 西语：西语的 idea（la）不变成英语的 idea。英语随页面加载，不用人为延迟
+      const { page, context, errors } = await open(M(["en", "es"], "I", ["idea", "n.主意", "la"]));
+      await ready(page, ["es"]); await page.waitForTimeout(300);
+      assert.equal(await article(page), "la", "西语词库到后冠词仍是 la");
+      assert.deepEqual(errors, []); await context.close();
+    }
+    { // 西语 + 意语，西语晚到：已选的 el 留着，能完成
+      const { page, context, errors } = await open(M(["es", "it"], "M", ["mar", "n.海", "el / la"], { arts: ["el"], poss: ["n."] }), slow("es", 4000));
+      await ready(page, ["it"]); await page.waitForTimeout(200);
+      assert.equal(await has(page, "es"), false, "此刻西语确实还没到");
+      assert.equal(await article(page), "el", "意语先到：这一格不被意语的同形词顶替");
+      await ready(page, ["es"]); await page.waitForTimeout(300);
+      assert.equal(await article(page), "el", "西语到后已选的冠词仍在");
+      assert.equal((await finish(page)).panel, true, "选过冠词：可以完成");
+      assert.deepEqual(errors, []); await context.close();
+    }
+    { // 同上但没选冠词：点「完成」被拦下
+      const { page, context, errors } = await open(M(["es", "it"], "M", ["mar", "n.海", "el / la"], { poss: ["n."] }), slow("es", 1500));
+      await ready(page, ["es", "it"]); await page.waitForTimeout(300);
+      const r = await finish(page);
+      assert.equal(r.panel, false, "两性名词没选冠词：不放行"); assert.match(r.hint, /冠词还没选/);
+      assert.deepEqual(errors, []); await context.close();
+    }
+    { // 西语 + 法语，法语词库先失败：提示写明法语；重试成功后提示清掉
+      let fail = true;
+      const { page, context } = await open(M(["es", "fr"], "M", ["mar", "n.海", "el / la"], { arts: ["el"], poss: ["n."] }), c => c.route("**/lang/fr/words.js", r => fail ? r.abort() : r.continue()));
+      await ready(page, ["es"]); await page.waitForTimeout(500);
+      assert.match((await finish(page)).hint, /法语的词库还没加载好/);
+      fail = false; await finish(page); // 再点一次触发重试
+      await ready(page, ["fr"]); await page.waitForTimeout(300);
+      assert.doesNotMatch(await page.locator("#hint").innerText(), /还没加载好/, "词库到了，过时的提示清掉");
+      assert.equal((await finish(page)).panel, true);
+      await context.close();
+    }
+    { // V003-B4-R12：没记语言的自定义词（英语里没有 mar；西、意都有）——意语先到不认走，到齐后按语言栏的先后认成西语
+      const { page, context, errors } = await open(M(["en", "es", "it"], "M", ["mar", ""], { pickLangs: [""], glosses: ["我的海"], glossAuto: [false] }), slow("es", 4000));
+      await ready(page, ["it"]); await page.waitForTimeout(200);
+      assert.equal(await has(page, "es"), false, "此刻西语确实还没到");
+      assert.equal(await article(page), "", "意语先到：先不认");
+      assert.equal(await langOf(page, 0), "", "这一格还没记成任何语言（意语没有冠词，只看冠词分不出来）");
+      await ready(page, ["es"]); await page.waitForTimeout(300);
+      assert.equal(await article(page), "el / la", "到齐后认成西语（两性，待选）");
+      assert.equal(await langOf(page, 0), "es");
+      assert.equal(await gloss(page), "我的海", "用户自己写的释义不动");
+      const r = await finish(page); assert.equal(r.panel, false); assert.match(r.hint, /冠词还没选/);
+      assert.deepEqual(errors, []); await context.close();
+    }
+    { // R12 复审退回：等着的那门语言被去掉（这里意语一直加载失败）——剩下的语言已到齐，这一格要立刻重新核对，不能留到下次载入
+      const { page, context, errors } = await open(M(["en", "es", "it"], "M", ["mar", ""], { pickLangs: [""], glosses: ["我的海"], glossAuto: [false] }), c => c.route("**/lang/it/words.js", r => r.abort()));
+      await ready(page, ["es"]); await page.waitForTimeout(600);
+      assert.equal(await langOf(page, 0), "", "意语没到：先不认");
+      await page.evaluate(() => window.__B.entry.openEntry("edit")); await page.waitForTimeout(200);
+      if (await page.locator("#langList").isHidden()) await page.locator("#langMore").click();
+      await page.locator('#langList label:has(input[value="it"])').click(); await page.waitForTimeout(300);
+      await page.evaluate(() => document.getElementById("entryStart").click()); await page.waitForTimeout(300);
+      assert.deepEqual([await langOf(page, 0), await article(page), await gloss(page)], ["es", "el / la", "我的海"], "去掉意语后认成西语，释义不动");
+      const r = await finish(page); assert.equal(r.panel, false, "两性名词没选冠词：不放行"); assert.match(r.hint, /冠词还没选/);
+      assert.deepEqual(errors, []); await context.close();
+    }
+    { // 「还没加载好」之后换了别的拦截原因：那门语言到了也不能把新的提示清掉
+      const { page, context, errors } = await open({ ...D("es", "MA", [["mar", "n.海", "el / la"], ["amor", "n.爱", "el"]]), langs: ["es", "it"], pickLangs: ["es", "es"], arts: ["el", ""], poss: ["n.", "n."] }, slow("es", 6000));
+      await ready(page, ["it"]);
+      assert.match((await finish(page)).hint, /西班牙语的词库还没加载好/);
+      await cell(page, 1); await page.locator("#wordCtl").click(); await page.locator("#wordCtl").fill("");
+      assert.match((await finish(page)).hint, /第 2 格还没有词/);
+      assert.equal(await has(page, "es"), false, "此刻西语确实还没到");
+      await ready(page, ["es"]); await page.waitForTimeout(300);
+      assert.match(await page.locator("#hint").innerText(), /第 2 格还没有词/, "西语到了：别的原因的提示留着");
+      assert.deepEqual(errors, []); await context.close();
+    }
+  }
   console.log("T19 主编辑器接入浏览器检查通过（英德法拉丁四语，西语、意语各一组）：词包加载、入场义项行、候选只含可推荐词、专业词与词组手动可查、词形与变形提示、同形不串义、防误借、人名数词与孤例只供查询、无候选字母、随机、草稿补齐、语言多选（英 + 意）。");
 } finally { if (browser) await browser.close(); server.close(); }

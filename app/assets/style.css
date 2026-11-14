@@ -8,7 +8,7 @@
 @font-face { font-family: "Noto Sans SC"; src: url("./fonts/NotoSansSC-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "Noto Sans SC"; src: url("./fonts/NotoSansSC-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
 /* 四个主题的字体（2026-11-12，同样是 build-fonts.mjs 生成的子集，SIL OFL 1.1；用到哪个主题才下载哪个）。
-   "BK …" 是 Libre Baskerville 与 Federo 裁剪后的名字（原名是保留字体名）。只有一个字重的 Federo、没有 Bold 的霞鹜文楷：
+   "BK …" 是 Libre Baskerville、Federo、霞鹜文楷裁剪后的名字（原名是保留字体名）。只有一个字重的 Federo、没有 Bold 的霞鹜文楷：
    两个字重都指到已有的文件，浏览器就不会自己描粗（Chrome 61 没有 font-synthesis） */
 @font-face { font-family: "BK Fandom Serif"; src: url("./fonts/ThemeFandom-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "BK Fandom Serif"; src: url("./fonts/ThemeFandom-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
@@ -20,8 +20,8 @@
 @font-face { font-family: "BK Secession Display"; src: url("./fonts/ThemeSecession-Regular.woff2") format("woff2"); font-weight: 700; font-display: swap; }
 @font-face { font-family: "Noto Serif SC"; src: url("./fonts/NotoSerifSC-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "Noto Serif SC"; src: url("./fonts/NotoSerifSC-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
-@font-face { font-family: "LXGW WenKai"; src: url("./fonts/LXGWWenKai-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
-@font-face { font-family: "LXGW WenKai"; src: url("./fonts/LXGWWenKai-Medium.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "BK Dansaekhwa Kai"; src: url("./fonts/ThemeDansaekhwa-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "BK Dansaekhwa Kai"; src: url("./fonts/ThemeDansaekhwa-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
 
 /* 颜色：浅 = 石白，深 = 墨黑，--red = 朱。DOM 卡直接用这些变量（D19），与 core.js 的 PALETTE 同值（npm test 核对）。
    <html data-theme> 由 theme.js 设：没有 = 跟随系统，light / dark = 手动。--k 由 app.js 按屏宽写在 <html> 上（卡显示宽 / 1080） */
@@ -110,7 +110,7 @@
 }
 :root[data-skin="dansaekhwa"] {
   --font-latin: "Gowun Batang";
-  --font-cjk: "LXGW WenKai";
+  --font-cjk: "BK Dansaekhwa Kai";
   --paper: #e9e6df;
   --ink: #2b2b2b;
   --soft: #44423e;
@@ -692,7 +692,7 @@ button { font-size: inherit; }
 .res-item figcaption { margin-top: 6px; font-size: calc(10 * var(--u) + var(--fs)); color: var(--mute); }
 
 /* 借物与版权（全屏页的正文） */
-.credits-body { border-top: 3px solid var(--ink); padding-top: 4px; font-size: calc(14px + var(--fs)); line-height: 1.75; color: var(--soft); }
+.credits-body { border-top: 3px solid var(--ink); padding-top: 4px; font-size: calc(14px + var(--fs)); line-height: 1.75; color: var(--soft); overflow-wrap: break-word; } /* 纯文本网址很长，窄屏要能在词中断开 */
 .credits-body h3 { font-size: calc(15px + var(--fs)); margin: 16px 0 6px; color: var(--ink); }
 /* 借物页开头的本项目许可段与省流（T07）：字号随正文，省流三行各自起头加粗 */
 .credits-own p, .credits-parts { margin: 6px 0; }
@@ -701,8 +701,8 @@ button { font-size: inherit; }
 .credits-tldr li { margin: 4px 0; }
 .credits-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: calc(12px + var(--fs)); line-height: 1.6; }
 .credits-table th, .credits-table td { padding: 10px 5px; vertical-align: top; text-align: left; border-bottom: 1px solid var(--line); overflow-wrap: break-word; }
-.credits-table th:first-child { width: 20%; padding-left: 0; }
-.credits-table th:last-child, .credits-table td:last-child { width: 24%; padding-right: 0; }
+.credits-table th:first-child { width: 18%; padding-left: 0; }
+.credits-table th:last-child, .credits-table td:last-child { width: 27%; padding-right: 0; }
 .credits-table th { color: var(--ink); font-weight: 700; }
 .toast { position: fixed; z-index: 30; padding: 12px 16px; background: var(--ink); color: var(--paper); font-size: calc(14px + var(--fs)); line-height: 1.5; pointer-events: none; } /* 统一提示（T33）：left / width / top 由 app-model.js 的 placeToast 按标题位置写入 */
 .toast:empty { display: none; }

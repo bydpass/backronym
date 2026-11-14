@@ -68,8 +68,8 @@ for (const [src, out, sel] of jobs) {
 //   LXGWWenKai-{Regular,Medium}.ttf ← github.com/lxgw/LxgwWenKai  fonts/TTF/
 // 三处要注意：
 //   ① 容器基线 Chrome 61 不支持可变字体：带 [wght] 的先用 fontTools 拆成固定的 400 / 700 两个字重再裁；
-//   ② Libre Baskerville 与 Federo 声明了保留字体名（Reserved Font Name），裁剪后的版本不能沿用原名：改内部名称（rename），借物页照常写明出处；
-//      霞鹜文楷也有保留名，但作者另许可了「仅为网页字体投递而裁剪或转格式」的情形，名称保留；
+//   ② Libre Baskerville、Federo、霞鹜文楷都声明了保留字体名（Reserved Font Name），裁剪后的版本不能沿用原名：改内部名称（rename），借物页照常写明出处。
+//      霞鹜文楷的作者另许可了「仅为网页字体投递而裁剪或转格式」时沿用原名，但离线包、公开仓库里的文件算不算没有向作者确认过，所以一样改名（2026-11-13 用户定）；
 //   ③ 霞鹜文楷没有 Bold，用 Medium 当粗的一档。
 // 缺原始文件时跳过主题字体（只重出 Noto），不报错：换一台没有下载这些文件的机器也能跑。
 const PY = path.join(path.dirname(PYFTSUBSET), "python");
@@ -84,8 +84,8 @@ const themeJobs = [
   ["Federo-Regular.ttf", null, "ThemeSecession-Regular.woff2", `--unicodes=${LATIN}`, "BK Secession Display"],
   ["NotoSerifSC-Regular.otf", null, "NotoSerifSC-Regular.woff2", `--text-file=${textFile}`, null],
   ["NotoSerifSC-Bold.otf", null, "NotoSerifSC-Bold.woff2", `--text-file=${textFile}`, null],
-  ["LXGWWenKai-Regular.ttf", null, "LXGWWenKai-Regular.woff2", `--text-file=${textFile}`, null],
-  ["LXGWWenKai-Medium.ttf", null, "LXGWWenKai-Medium.woff2", `--text-file=${textFile}`, null],
+  ["LXGWWenKai-Regular.ttf", null, "ThemeDansaekhwa-Regular.woff2", `--text-file=${textFile}`, "BK Dansaekhwa Kai"],
+  ["LXGWWenKai-Medium.ttf", null, "ThemeDansaekhwa-Bold.woff2", `--text-file=${textFile}`, "BK Dansaekhwa Kai"], // 没有 Bold，Medium 当粗的一档；改名后内部的字重名写作 Bold
 ];
 const RENAME = "import sys\nfrom fontTools.ttLib import TTFont\nf=TTFont(sys.argv[1]);fam=sys.argv[2];sub=sys.argv[3]\nfor r in f['name'].names:\n    if r.nameID in (1,16): r.string=fam\n    elif r.nameID in (4,3): r.string=fam+' '+sub\n    elif r.nameID==6: r.string=fam.replace(' ','')+'-'+sub\n    elif r.nameID in (2,17): r.string=sub\nf.save(sys.argv[1])";
 if (themeJobs.every(j => fs.existsSync(path.join(SRC, j[0])))) {

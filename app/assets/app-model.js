@@ -281,6 +281,7 @@ window.Backronym = {};
     return loaderOf(code).load(code).then(function (r) {
       if (!r.stale && state.langs.indexOf(r.code) >= 0) {
         if (r.ok) app.draft.quietly(refreshPicks); // V003-B4-R8：词库到了，各格的词条按词库补齐（冠词等），不算编辑
+        if (r.ok && app.publish.finishLag === r.code) app.publish.finishNote = app.publish.finishLag = ""; // V003-B4-R11：点「完成」时说过这门语言还没加载好，现在到了，提示清掉
         app.view.renderShell();
         if (app.editor.focusKind) app.editor.renderCand();
         if (app.entry.entryFrom) app.entry.renderEntry();
@@ -303,7 +304,16 @@ window.Backronym = {};
   // 卡上打的（或草稿里的）一个词 → picks 条目：词库里有就带上它的义项，大小写照用户打的；新建且未命中时为无释义自定义词；恢复时保留原条目
   // i（可选）= 第几格：先在这一格记着的语言里查，查到了把语言记回这一格
   function itemFor(text, previous, i) {
-    var known = typeof i === "number", h = lookupHit(text, known ? state.pickLangs[i] : ""), hit = h ? h.entry : null;
+    var known = typeof i === "number", own = known && state.langs.indexOf(state.pickLangs[i]) >= 0 ? state.pickLangs[i] : "", h = null;
+    // 核对已有的词条（恢复草稿、词库迟到后重对）：不能让「谁的词库先到」决定这个词算哪门语言的——认定以后不再改，冠词也跟着变
+    // V003-B4-R11：这一格记着的语言词库还没到，不去别的语言里找（同形词会顶替它），原样留着，等它到了由 refreshPicks 再核
+    // V003-B4-R12：没记语言（自定义词）或记着的语言里查不到，要到别的语言里认——等选中的语言全部到齐，再按语言栏的先后找
+    if (previous && known && window.LANGPACK) {
+      var here = function (c) { return window.LANGPACK.has(c, "words"); };
+      h = lookupHit(text, own);
+      if (h && h.lang !== own && !state.langs.every(here)) h = null; // 记着的语言没到时它查不到，查到的必是别的语言，这里一并挡下
+    } else h = lookupHit(text, own);
+    var hit = h ? h.entry : null;
     if (known && h) state.pickLangs[i] = h.lang;
     else if (hit) tagLang(hit, h.lang);
     if (previous) {
@@ -456,6 +466,7 @@ window.Backronym = {};
     changed: changed,
     setLetters: setLetters,
     itemFor: itemFor,
+    refreshPicks: refreshPicks,
     autoCut: autoCut,
     cutOf: cutOf,
     sheets: sheets,

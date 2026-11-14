@@ -339,6 +339,39 @@ const fr = { letters: (t) => String(t || "").toUpperCase().replace(/[^A-ZÀ-ÖØ
     state.arts[0] = ""; assert.deepEqual([0, 1, 2].map((i) => e.cellState(i)), ["art", "ok", "ok"], "补齐后：两性名词没选会被拦；单一冠词、形容词义项不用选");
     state.letters = ["A"]; state.picks = [["ap", ""]]; state.arts = [""]; state.poss = [""]; state.glossAuto = [true]; e.lookup = () => null;
   }
+  // V003-B4-R11 / R12：语言多选——核对已有词条时不让「谁的词库先到」决定这个词算哪门语言的
+  // R11：这一格记着的语言词库还没到，不退到别的语言里找（同形词会顶替它、冠词被清），原样留着，等它到了再核
+  // R12：没记语言的格（自定义词）、记着的语言里查不到的格，要等选中的语言全部到齐，再按语言栏的先后找
+  {
+    const loaded = { en: true, es: false, it: false }; let cur = "en";
+    const dict = { en: { idea: ["idea", "n.想法", "", ""] }, es: { idea: ["idea", "n.主意", "la", ""], mar: ["mar", "n.海", "el / la", ""] }, it: { mar: ["mar", "n.海（诗）", "", ""] } };
+    // 五格：0、1 记着西语；2 没记语言、英语里有；3 没记语言、英语里没有（西、意都有）；4 记着英语但英语里没有
+    const st = { lang: "es", langs: ["en", "es", "it"], pickLangs: ["es", "es", "", "", "en"], letters: ["I", "M", "I", "M", "M"], glossAuto: [false, true, true, false, false], poss: ["", "n.", "", "", ""],
+      picks: [["Idea", "n.主意", "la"], ["mar", "n.海", "el / la"], ["idea", ""], ["mar", ""], ["Mar", ""]], arts: ["", "el", "", "", ""] };
+    const m = loadAppFunctions(["itemFor", "lookupHit", "refreshPicks"], {
+      CORE, state: st, defaultSense: CORE.defaultSense, tagLang: (x) => x,
+      window: { LANGPACK: { has: (c, part) => part === "words" && !!loaded[c] } },
+      inLang: (code, fn) => { const keep = cur; cur = code; try { return fn(); } finally { cur = keep; } },
+      lookupIn: (w) => (loaded[cur] && dict[cur][String(w).toLowerCase()]) || null,
+    });
+    const start = plain(st.picks);
+    m.refreshPicks(); // 只有英语在
+    assert.deepEqual(plain(st.picks), start, "西语、意语没到：五格都原样留着（记着西语的不换成英语的同形词；没记语言的也先不认）");
+    assert.deepEqual([plain(st.pickLangs), plain(st.arts)], [["es", "es", "", "", "en"], ["", "el", "", "", ""]], "各格记着的语言与已选的冠词不动");
+    loaded.it = true; m.refreshPicks(); // 意语先到（西语慢）
+    assert.deepEqual(plain(st.picks), start, "意语先到：仍然都不动——没记语言的 mar 不被先到的意语认走");
+    assert.deepEqual(plain(st.pickLangs), ["es", "es", "", "", "en"]);
+    loaded.es = true; m.refreshPicks(); // 西语到了，选中的三门到齐
+    assert.deepEqual(plain(st.picks.slice(0, 2)), [["Idea", "n.主意", "la", ""], ["mar", "n.海", "el / la", ""]], "记着的语言到了：按它的词库核对");
+    assert.deepEqual([plain(st.pickLangs.slice(0, 2)), st.arts[1]], [["es", "es"], "el"]);
+    assert.deepEqual([plain(st.picks[2]), st.pickLangs[2]], [["idea", "n.想法", "", ""], "en"], "到齐后没记语言的格按语言栏的先后找：英语在前");
+    assert.deepEqual([plain(st.picks[3]), st.pickLangs[3]], [["mar", "n.海", "el / la", ""], "es"], "西语排在意语前：认成西语，与谁先到无关");
+    assert.deepEqual([plain(st.picks[4]), st.pickLangs[4]], [["Mar", "n.海", "el / la", ""], "es"], "记着的语言里查不到：到齐后同样按先后找，拼写照用户的");
+    st.picks[1] = ["xyzzy", ""]; m.refreshPicks();
+    assert.deepEqual(plain(st.picks[1]), ["xyzzy", ""], "哪门都查不到（自定义词）：保留原条目");
+    loaded.it = false; assert.deepEqual(plain(m.itemFor("mar")), ["mar", "n.海", "el / la", ""], "新打的词不受影响：没到齐也照旧按选中语言的先后找");
+    assert.deepEqual(plain(m.itemFor("idea", ["idea", "n.想法", "", ""], 2)), ["idea", "n.想法", "", ""], "在自己记着的语言里查得到：不用等别的语言");
+  }
   assert.equal(e.rankOf("apple"), 0, "排名按新词库重建");
   e.autoCut("abcdefghijkl");
   assert.notEqual(e.cutMemo, emptyCut, "自动切点按新词库重算"); assert.equal(e.cutMemo.W, LANGPACK.get("eo", "words"));

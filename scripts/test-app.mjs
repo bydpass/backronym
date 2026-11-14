@@ -1229,8 +1229,50 @@ assert.equal((html.match(/scope="row"/g) || []).length, 15); // 主题字体两�
 assert.match(html, /Phosphor Icons/); assert.match(html, /Copyright \(c\) 2023 Phosphor Icons/);
 // 2026-11-12 借物页修订：许可逐个对过来源原文。屏蔽词表的外部词表要署名（CC BY 4.0）；断词模式写明 MIT 与各语言的版权人；没写版本号的不替来源补
 assert.match(html, /LDNOOBW[\s\S]*Shutterstock, Inc\.[\s\S]*CC BY 4\.0/); assert.match(html, /creativecommons\.org\/licenses\/by\/4\.0/);
-for (const who of ["Daniel Flipo", "Deutschsprachige Trennmustermannschaft", "Javier Bezos", "Claudio Beccari"]) assert.ok(html.split(who).length >= 3, who + "：表格与 MIT 许可全文里都署名");
-assert.match(html, /CFDICT：CC BY-SA（来源页未写版本号）/); assert.match(html, /HanDeDict：CC BY-SA 3\.0/); assert.match(html, /核心词表 CC BY-SA（来源页未写版本号）/);
+for (const who of ["Daniel Flipo", "Stephan Hennig, Werner Lemberg, Günter Milde, Sander van Geloven, Georg Pfeiffer, Gisbert W. Selke, Tobias Wendorf, Keno Wehr", "Javier Bezos", "Claudio Beccari"]) assert.ok(html.split(who).length >= 3, who + "：表格与 MIT 许可全文里都署名");
+assert.match(html, /CFDICT：CC BY-SA 3\.0；/); assert.match(html, /HanDeDict：CC BY-SA 3\.0/); assert.match(html, /核心词表 <span lang="en">CC BY-SA 3\.0 Unported<\/span>/);
+assert.doesNotMatch(html, /未写版本号/, "T07-R1：CFDICT 与 DCC 的版本号写在来源原文里（3.0），不再写「未写版本号」");
+// T07-R1（2026-11-13 复审退回后）：每个外来源按它自己的许可标注
+assert.match(html, /David Houstin 创办/, "CFDICT 写明作者");
+assert.match(html, /Permission is hereby freely given for any and all use of program and data\. You can sell it as your own, but at least tell me\./, "Whitaker 保留许可原句（Q14）");
+assert.match(html, /Whitaker's Words<\/span> 仅用于筛选，未随包分发其内容/);
+assert.match(html, /意语 MIT 或 LPPL 1\.3 及更高版本，拉丁语 MIT 或 LPPL 1 及更高版本/);
+assert.doesNotMatch(html + fs.readFileSync(new URL("../app/LICENSES/MIT.txt", import.meta.url), "utf8"), /Copyright \(c\) 2013-2024 Deutschsprachige Trennmustermannschaft/, "德语断词模式的版权行照抄原文（那个名字是作者署名，不是版权人）");
+assert.match(html, /<td>词频数据 CC BY-SA 4\.0；/, "FrequencyWords 的数据按 CC BY-SA 4.0");
+assert.match(html, /霞鹜、霞鶩、落霞孤鹜、落霞孤鶩、LXGW 是保留字体名，裁剪后的文件已改名为 BK Dansaekhwa Kai/, "霞鹜文楷裁剪后改名（2026-11-13 用户定），不靠附加许可沿用原名");
+{
+  // 样式和 app/assets 下的全部脚本（语言包除外）：去掉注释后不得再出现保留字样（不分大小写——CSS 的字体名不分大小写）
+  const dirA = new URL("../app/assets/", import.meta.url);
+  const srcs = [["style.css", fs.readFileSync(new URL("style.css", dirA), "utf8").replace(/\/\*[\s\S]*?\*\//g, "")]]
+    .concat(fs.readdirSync(dirA).filter(f => f.endsWith(".js") && f !== "licenses.js").map(f => [f, fs.readFileSync(new URL(f, dirA), "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "")]));
+  assert.ok(srcs.length >= 10);
+  for (const [name, text] of srcs) assert.doesNotMatch(text, /LXGW|WenKai|霞鹜|霞鶩|落霞/i, name + " 里不再用保留字体名当字体名");
+  assert.deepEqual(fs.readdirSync(new URL("../app/assets/fonts/", import.meta.url)).filter(f => /lxgw|wenkai/i.test(f)), [], "包里没有以保留字体名命名的字体文件");
+}
+assert.match(html, /人名中文译写取自 ECDICT/);
+assert.match(html, /署名可写「版式：藏头 - Backronym，CC BY 4\.0，creativecommons\.org\/licenses\/by\/4\.0」/, "署名样板带许可名与许可网址（CC BY 4.0 第 3(a)(1)(C) 条两项都要）");
+{
+  const ofl = fs.readFileSync(new URL("../app/LICENSES/OFL-1.1.txt", import.meta.url), "utf8");
+  assert.match(ofl, /LXGW WenKai: Copyright 2021-2026 LXGW[^\n]*\[ADDITIONAL PERMISSION\][^\n]*solely for web font delivery[^\n]*Copyright 2020 The Klee Project Authors/, "霞鹜文楷的版权声明带着附加许可原文");
+  // 各门 words.js 文件头：来源都在借物页出现；西文五门写明已改编与改编后的许可
+  const SRC = { "维基词典": /维基词典/, "kaikki.org": /kaikki\.org/, "FrequencyWords": /FrequencyWords/, "CFDICT": /CFDICT/, "HanDeDict": /HanDeDict/, "Dickinson College Commentaries": /Dickinson College Commentaries/, "Whitaker's Words": /Whitaker's Words/, "ECDICT": /ECDICT/, "TeX hyph-utf8": /TeX hyph-utf8/ };
+  for (const lang of ["en", "fr", "de", "es", "it", "la"]) {
+    const text = fs.readFileSync(new URL("../app/assets/lang/" + lang + "/words.js", import.meta.url), "utf8"), head = text.slice(0, text.indexOf("*/"));
+    const named = head.split("\n").filter(l => l.startsWith("- "));
+    assert.ok(named.length >= 1, lang + " 文件头列了来源");
+    for (const line of named) { const hit = Object.keys(SRC).filter(k => line.includes(k)); assert.ok(hit.length, lang + " 文件头有认不出的来源：" + line.slice(0, 30)); for (const k of hit) assert.match(html, SRC[k], lang + " 文件头的来源没在借物页出现：" + k); }
+    assert.doesNotMatch(head, /未写版本号|随来源许可。/, lang + " 文件头不再有没核对的写法");
+    assert.match(head, /改编说明：已改编/);
+    if (lang !== "en") assert.match(head, /改编后的本文件整体按 CC BY-SA 4\.0 发布/, lang);
+    if (["fr", "de", "es", "it"].includes(lang)) assert.match(head, /ECDICT（人名的中文译写），MIT/, lang);
+    // 文件头里写的许可也要对（只比来源名的话，模板写错版本号测不出来）
+    const want = { fr: [/© Daniel Flipo、Bernard Gaulle、Arthur Reutenauer/, /CFDICT（[^）]*），CC BY-SA 3\.0，David Houstin/, /FrequencyWords（[^）]*仅用于筛选[^）]*），数据 CC BY-SA 4\.0/], es: [/© Javier Bezos、CervanTeX/], de: [/HanDeDict（[^）]*），CC BY-SA 3\.0，Gábor L Ugray 与原始团队/, /© 2013-2024 Stephan Hennig, Werner Lemberg/],
+      it: [/MIT（来源是 MIT 或 LPPL 1\.3 及更高版本双许可，这里取 MIT）/], la: [/CC BY-SA 3\.0 Unported/, /Permission is hereby freely given for any and all use of program and data\. You can sell it as your own, but at least tell me\./, /MIT（来源是 MIT 或 LPPL 1 及更高版本双许可，这里取 MIT）/],
+      en: [/ECDICT，MIT，© 2025 Linwei/, /本文件随来源按 MIT 许可/] }[lang] || [];
+    for (const re of want) assert.match(head, re, lang + " 文件头的许可写法");
+    if (lang === "en") assert.doesNotMatch(head, /翻译为中文|冠词/, "英语文件头不写不适用的说法");
+  }
+}
 assert.doesNotMatch(html, /见来源项目/, "不再有「见来源项目」这种没核对的写法");
 // T07 协议与证书更新（2026-11-12）：代码 GPL-3.0-or-later；借物页开头四项齐全（版权声明、「第 3 版或任一更新版本」、不提供担保、全文入口）
 {
@@ -1246,6 +1288,8 @@ assert.doesNotMatch(html, /见来源项目/, "不再有「见来源项目」这�
   assert.equal(lis.length, 3);
   const readme = plain(fs.readFileSync(new URL("../README.md", import.meta.url), "utf8"));
   for (const li of lis) assert.ok(readme.includes(li), "README 第 07 节缺这一行：" + li.slice(0, 12));
+  const mdLis = fs.readFileSync(new URL("../README.md", import.meta.url), "utf8").split("\n").filter(l => /^- \*\*(可以|不可以|注意)\*\*/.test(l)).map(l => plain(l.slice(2)));
+  assert.deepEqual(mdLis, lis, "README 的省流与借物页逐行相同，不多不少");
   // 许可全文随包：六份独立文件都在；借物页里直接写的 MIT、OFL 与文件同文；展开才读的四份与 licenses.js 一致
   const { ALL, LAZY, render } = await import("./build-licenses.mjs");
   const dir = new URL("../app/LICENSES/", import.meta.url);

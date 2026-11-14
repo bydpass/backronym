@@ -48,3 +48,17 @@ PLAYWRIGHT_MODULE=/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node
 - `scripts/check-dom-layout.js`：比对 DOM 卡每个框与版式数值（左端、宽、基线、字号）的偏差，全部通过打印 `dom layout ok`。
 
 `scripts/test-t19-app-browser.mjs`（T19 接入）用包内真实新词包测主编辑器：候选、查词、词形、冠词、只供查询的词、无候选字母、随机、草稿恢复。`test-entry-browser` 与 `test-lang-browser` 测界面行为，词包请求由旧词包应答（`scripts/legacy-packs.mjs` 按固定提交从 git 取到系统临时目录，仓库里不留副本）。
+
+## 设计系统预览的重做（2026-11-12）
+
+设计系统里入场页、编辑面、顶部栏、语言栏、义项栏的预览是从运行中的产品截取的，脚本在 `scripts/design-system/`，不在 `npm test` 里：
+
+```bash
+# 先开预览服务器（npm run dev），再设好 PLAYWRIGHT_MODULE、CHROMIUM_PATH
+node scripts/design-system/capture.mjs <临时目录>/shots.json            # 把产品走到各状态，截取页面结构
+python3 scripts/design-system/build-previews.py <临时目录> <设计系统本地副本的 project 目录>   # 生成各 preview.html
+python3 scripts/design-system/audit-previews.py <project 目录>           # 逐张对照预览与 app/index.html 的同名块，列出结构不同处
+node scripts/design-system/render.mjs <project 目录> <输出目录> EntryScreen …   # 本地渲染成图片检查
+```
+
+生成后按 `docs/agent/design.md` 的方法把改过的 `preview.html` 发布到设计系统。对照脚本报的「结构不同」里，运行时才填内容的容器（预设词、字母栏、缩略图等）属于正常。

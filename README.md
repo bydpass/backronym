@@ -105,8 +105,8 @@ plans/v00.02.01/     待执行的真机清单（上一版的任务表与交付�
 
 **省流**（与应用里「借物与版权」页是同一段文字）
 
-- **可以**：用本工具做的图，署名即可商用（署名可写「版式：藏头 - Backronym」）；代码可以改，可以商用。
-- **不可以**：改了代码再分发却不公开源码；删掉署名或许可声明；把设计稿与文档拿去商用。
+- **可以**：用本工具做的图，署名即可商用（署名可写「版式：藏头 - Backronym，CC BY 4.0，creativecommons.org/licenses/by/4.0」）；代码可以改，可以商用。
+- **不可以**：把改过的程序分发给别人，却不向对方提供源码；删掉署名或许可声明；把设计稿与文档拿去商用。
 - **注意**：第三方资源各守原许可；一切以许可原文为准，这段中文说明不具法律效力；本工具不提供担保。
 
 **各部分的许可**
@@ -117,7 +117,7 @@ plans/v00.02.01/     待执行的真机清单（上一版的任务表与交付�
 | 五门西文词库（`app/assets/lang/{fr,de,es,it,la}/words.js` 及其在 `review/` 下的来源数据） | CC BY-SA 4.0 | [`app/LICENSES/CC-BY-SA-4.0.txt`](app/LICENSES/CC-BY-SA-4.0.txt) |
 | 英语词库 | 派生自 [ECDICT](https://github.com/skywind3000/ECDICT)，MIT，© 2025 Linwei | [`app/LICENSES/MIT.txt`](app/LICENSES/MIT.txt) |
 | 设计稿与文档（`design/`、`docs/`） | CC BY-NC-SA 4.0 | <https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode> |
-| 用本工具做出的图 | 属于本工具的版式部分 CC BY 4.0；图中的文字与照片归制作者 | [`app/LICENSES/CC-BY-4.0.txt`](app/LICENSES/CC-BY-4.0.txt) |
+| 用本工具做出的图 | 属于本工具的版式部分 CC BY 4.0；制作者自己写的文字、放的照片归制作者，直接取自词库的释义仍按词库的许可 | [`app/LICENSES/CC-BY-4.0.txt`](app/LICENSES/CC-BY-4.0.txt) |
 | 字体 | SIL Open Font License 1.1，各版权人见全文开头 | [`app/LICENSES/OFL-1.1.txt`](app/LICENSES/OFL-1.1.txt) |
 
 本程序不提供任何担保，详见 GPL 第 15、16 条。

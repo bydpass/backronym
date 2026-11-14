@@ -231,7 +231,9 @@
     return why ? why + "，所以至少要留一门别的语言" : "";
   }
 
-  // 勾上 / 取消一门语言。都不清空已填的内容：词和释义是已经写下的文字，只是候选里多了或少了这门语言的词。
+  // 勾上 / 取消一门语言。用户写下的文字（词的拼写、自己写的释义、配文）和配图都不清空，候选里多了或少了这门语言的词。
+  // 取消时各格按剩下的语言重对一遍（V003-B4-R12）：记着这门语言的格，剩下的语言里有同形词就改认成那门语言的词，
+  // 词库带出的释义、冠词跟着换，已选的冠词不在新选项里就清掉；再把这门语言加回来也不恢复（与重新载入后的结果一致）
   // 唯一拦下的情况：取消后只剩英语，而单词或某一格的词英语规则放不下
   function toggleOne(code, on) {
     if (!app.entry.entryFrom || !app.draft.draftLoaded || app.draft.checkDraftExpiry()) return;
@@ -245,7 +247,11 @@
     if (!app.model.setLangs(next)) { renderEntry(); return; }
     if (on && !app.model.langReady(code)) loadLang(code);
     else if (!on) app.model.cancelLang(code);
-    app.draft.quietly(function () { state.picks.forEach(function (p, i) { if (!on && state.pickLangs[i] === code) state.pickLangs[i] = ""; }); });
+    app.draft.quietly(function () {
+      if (on) return;
+      state.picks.forEach(function (p, i) { if (state.pickLangs[i] === code) state.pickLangs[i] = ""; });
+      app.model.refreshPicks(); // V003-B4-R12：等着这门语言才没认的格，现在不用等了——按剩下的语言重对一遍（与重新载入后的结果一致）
+    });
     pickEntryPresets();
     setEntryErr("word", "");
     app.model.changed();

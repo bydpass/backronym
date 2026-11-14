@@ -9,11 +9,11 @@
   var FONT_BASE = '"Noto Sans","Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif';
   var FONT = FONT_BASE;
   // 四个主题的字体（2026-11-12）：西文用在卡上的词、冠词、标题、图版大字母，候选栏里的词，作品页的单词和预设词；中文用在卡上的标题、释义、配文和页面大标题。
-  // 字体文件在 app/assets/fonts/（scripts/build-fonts.mjs 生成的子集，全部 SIL OFL 1.1）。"BK …" 是 Libre Baskerville 与 Federo 裁剪后的名字（原名是保留字体名，裁剪版不能沿用）。
+  // 字体文件在 app/assets/fonts/（scripts/build-fonts.mjs 生成的子集，全部 SIL OFL 1.1）。"BK …" 是 Libre Baskerville、Federo、霞鹜文楷裁剪后的名字（原名是保留字体名，裁剪版不能沿用）。
   // 印象派的中文沿用 Noto Sans SC。卡和导出图用同一个字体串：主题西文 → 主题中文 → Noto 兜底
   var SKIN_FONTS = {
     fandom: { latin: "BK Fandom Serif", cjk: "Noto Serif SC" },
-    dansaekhwa: { latin: "Gowun Batang", cjk: "LXGW WenKai" },
+    dansaekhwa: { latin: "Gowun Batang", cjk: "BK Dansaekhwa Kai" },
     impressionism: { latin: "Cormorant Garamond", cjk: "" },
     secession: { latin: "BK Secession Display", cjk: "Noto Serif SC" }
   };

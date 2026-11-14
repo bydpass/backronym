@@ -209,24 +209,41 @@
   });
   el.creditsClose.addEventListener("click", closeCredits);
   // 许可全文（T07）：GPL 与三份 CC 许可共约 96 KB，不写进 index.html；展开某一项时才插一个 <script> 读 assets/licenses.js（与语言包同一种读法，离线容器里可用）。
-  // 读不到时保留原来的提示（指向包内 LICENSES/ 下的同名文件）。
-  var licenseWait = null;
+  // 读不到（出错，或 15 秒没到）时明说，并给出许可的纯文本网址——容器里的用户打不开包内文件；收起再展开会再读一次。
+  // ponytail: 请求一直挂着时，浏览器可能把再读的那次并到同一个卡住的请求上，所以提示不承诺重试能成；没给地址加参数去绕，容器的本地地址带不带得了查询串没验证过
+  var LICENSE_URL = { "GPL-3.0": "gnu.org/licenses/gpl-3.0.txt", "CC-BY-SA-4.0": "creativecommons.org/licenses/by-sa/4.0/legalcode", "CC-BY-SA-3.0": "creativecommons.org/licenses/by-sa/3.0/legalcode", "CC-BY-4.0": "creativecommons.org/licenses/by/4.0/legalcode" };
+  var licenseWait = null, licenseTimer = 0;
+  var eachLicense = function (fn) { Array.prototype.forEach.call(el.credits.querySelectorAll("details[data-license]"), fn); };
   var fillLicenses = function () {
-    Array.prototype.forEach.call(el.credits.querySelectorAll("details[data-license]"), function (d) {
-      var text = window.LICENSES && window.LICENSES[d.getAttribute("data-license")];
-      if (text && d.open) d.querySelector("pre").textContent = text;
+    eachLicense(function (d) {
+      var text = window.LICENSES && window.LICENSES[d.getAttribute("data-license")], pre = d.querySelector("pre");
+      if (text && d.open) { pre.lang = "en"; pre.textContent = text; }
     });
   };
-  Array.prototype.forEach.call(el.credits.querySelectorAll("details[data-license]"), function (d) {
+  var endLicenseLoad = function () {
+    clearTimeout(licenseTimer);
+    if (licenseWait && licenseWait.parentNode) licenseWait.parentNode.removeChild(licenseWait);
+    licenseWait = null;
+    if (window.LICENSES) return fillLicenses(); // 超时那一刻全文其实已经到了也算读到
+    eachLicense(function (d) {
+      if (!d.open) return;
+      var pre = d.querySelector("pre");
+      pre.lang = "zh-CN";
+      pre.textContent = "全文读取失败。请在浏览器里打开 " + LICENSE_URL[d.getAttribute("data-license")] + " 查看；收起再展开会再读一次，不一定成功。";
+    });
+  };
+  eachLicense(function (d) {
     d.addEventListener("toggle", function () {
       if (!d.open) return;
       if (window.LICENSES) return fillLicenses();
       if (licenseWait) return;
-      licenseWait = document.createElement("script");
-      licenseWait.src = "assets/licenses.js";
-      licenseWait.onload = fillLicenses;
-      licenseWait.onerror = function () { licenseWait = null; };
-      document.head.appendChild(licenseWait);
+      eachLicense(function (o) { if (o.open) { var pre = o.querySelector("pre"); pre.lang = "zh-CN"; pre.textContent = "读取中……"; } });
+      var s = licenseWait = document.createElement("script");
+      s.src = "assets/licenses.js";
+      s.onload = function () { if (licenseWait === s) endLicenseLoad(); else fillLicenses(); }; // 超时之后才到：已经报过失败，这里把全文补上
+      s.onerror = function () { if (licenseWait === s) endLicenseLoad(); };
+      licenseTimer = setTimeout(function () { if (licenseWait === s) endLicenseLoad(); }, 15000);
+      document.head.appendChild(s);
     });
   });
   app.model.trapKeys(el.credits, closeCredits);

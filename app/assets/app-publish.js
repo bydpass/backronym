@@ -83,6 +83,7 @@
   // （浏览器里没有端能力，换成「导出图片」→ 全屏导出结果页）。导出的色板在点「完成」那一刻取一次（D19）；面板盖住整个页面（透明遮罩），
   // 导出 / 保存中不接受任何编辑，所以图和卡一致。导出、保存、发布共用一个 busy：顶部栏「完成」禁用并显示「保存中…」，面板按钮禁用，面板不可关，不会重入
   app.publish.busy = false;
+  app.publish.finishLag = ""; // finishNote 说的是哪门语言还没加载好（别的原因为空）；那门语言到了，prepareLang 据此清掉提示（V003-B4-R11）
   app.publish.finishNote = ""; // 点「完成」被拦下的原因，写在卡下提示行；任何一次编辑（changed）清掉
 
   // 给读屏播报 + 显示在面板消息行
@@ -143,6 +144,7 @@
         why = CORE.BLOCKED_MSG; // T40 / U14：焦点已跳到出问题的框，提示不复述内容、不点名字段
       }
     }
+    app.publish.finishLag = why && lag ? lag : ""; // 提示说的是哪门语言还没加载好（其余原因为空）：它到了由 prepareLang 清掉这句提示
     if (why) {
       app.publish.finishNote = why;
       el.live.textContent = why;

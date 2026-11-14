@@ -21,19 +21,21 @@ const exact=s=>String(s).normalize('NFC').toLowerCase();
 const read=async file=>{const bytes=fs.readFileSync(file);return {value:JSON.parse(bytes),sha256:crypto.createHash('sha256').update(bytes).digest('hex')};};
 // 文件头：这门语言的数据来源与许可（与借物页一致；许可逐个对过本地缓存里的原文，2026-11-12）。
 const KAIKKI=l=>`- 维基词典（经 kaikki.org 抽取），CC BY-SA 4.0（来源是双许可，这里按 CC BY-SA 4.0 使用）：kaikki.org/dictionary/${NAMES[l]}/ —— 词头、词性、变格变位与英文释义的依据`;
-const HYPH={fr:'Daniel Flipo、Bernard Gaulle、Arthur Reutenauer',de:'Deutschsprachige Trennmustermannschaft',es:'Javier Bezos、CervanTeX',it:'Claudio Beccari',la:'Claudio Beccari'};
+const FREQ='- FrequencyWords（选词用的词频，仅用于筛选，未随包分发其内容），数据 CC BY-SA 4.0，Hermit Dave：github.com/hermitdave/FrequencyWords';
+const NAMES_SRC='- ECDICT（人名的中文译写），MIT，© 2025 Linwei：github.com/skywind3000/ECDICT';
+const HYPH={fr:'Daniel Flipo、Bernard Gaulle、Arthur Reutenauer',de:'2013-2024 Stephan Hennig, Werner Lemberg, Günter Milde, Sander van Geloven, Georg Pfeiffer, Gisbert W. Selke, Tobias Wendorf, Keno Wehr（作者署名：Deutschsprachige Trennmustermannschaft）',es:'Javier Bezos、CervanTeX',it:'Claudio Beccari',la:'Claudio Beccari'};
 const SOURCES={
  en:['- ECDICT，MIT，© 2025 Linwei：github.com/skywind3000/ECDICT —— 选词、词形与释义的依据'],
- fr:['- FrequencyWords（选词用的词频），数据 CC BY-SA 4.0，Hermit Dave：github.com/hermitdave/FrequencyWords','- CFDICT（早期选词与释义的参考），CC BY-SA（来源页未写版本号）：chine.in'],
- de:['- FrequencyWords（选词用的词频），数据 CC BY-SA 4.0，Hermit Dave：github.com/hermitdave/FrequencyWords','- HanDeDict（早期选词与释义的参考），CC BY-SA 3.0，Gábor L Ugray 与原始团队：handedict.zydeo.net'],
- es:['- FrequencyWords（选词用的词频），数据 CC BY-SA 4.0，Hermit Dave：github.com/hermitdave/FrequencyWords'],
- it:['- FrequencyWords（选词用的词频），数据 CC BY-SA 4.0，Hermit Dave：github.com/hermitdave/FrequencyWords'],
- la:['- Dickinson College Commentaries 拉丁语核心词表（选词用的频序），CC BY-SA（来源页未写版本号）：dcc.dickinson.edu','- Whitaker\'s Words（早期选词的参考），William A. Whitaker，作者声明可自由用于任何用途：github.com/mk270/whitakers-words'],
+ fr:[NAMES_SRC,FREQ,'- CFDICT（早期选词与释义的参考），CC BY-SA 3.0，David Houstin 创办、Chine Informations：chine.in'],
+ de:[NAMES_SRC,FREQ,'- HanDeDict（早期选词与释义的参考），CC BY-SA 3.0，Gábor L Ugray 与原始团队：handedict.zydeo.net'],
+ es:[NAMES_SRC,FREQ],
+ it:[NAMES_SRC,FREQ],
+ la:['- Dickinson College Commentaries 拉丁语核心词表（选词用的频序，仅用于筛选），CC BY-SA 3.0 Unported，Dickinson College（Christopher Francese 主持）：dcc.dickinson.edu','- Whitaker\'s Words（早期选词的参考，仅用于筛选，未随包分发其内容），William A. Whitaker，作者的许可原句「Permission is hereby freely given for any and all use of program and data. You can sell it as your own, but at least tell me.」：github.com/mk270/whitakers-words'],
 };
 function header(file,lang,source){
  const lines=(lang==='en'?[]:[KAIKKI(lang)]).concat(SOURCES[lang]);
- if(HYPH[lang])lines.push(`- 断词点：TeX hyph-utf8 的 hyph-${lang==='de'?'de-1996':lang} 连字符模式，MIT，© ${HYPH[lang]}：github.com/hyphenation/tex-hyphen`);
- return `/* 词库由 scripts/t19/build-packs.mjs 从 ${source} 生成（T19 新范围），勿手改。语种：${NAMES[lang]}\n数据来源与许可（与借物页一致；来源地址为纯文本）：\n${lines.join('\n')}\n改编说明：据上述数据选词、合并词形、去掉不属于本词的词形；中文释义、冠词与用法说明逐条核写${lang==='en'?'':'（核对时查阅过别的词典，未收录其文字）'}。改编部分随来源许可。\n*/\n`;
+ if(HYPH[lang])lines.push(`- 断词点：TeX hyph-utf8 的 hyph-${lang==='de'?'de-1996':lang} 连字符模式，MIT${lang==='it'?'（来源是 MIT 或 LPPL 1.3 及更高版本双许可，这里取 MIT）':lang==='la'?'（来源是 MIT 或 LPPL 1 及更高版本双许可，这里取 MIT）':''}，© ${HYPH[lang]}：github.com/hyphenation/tex-hyphen`);
+ return `/* 词库由 scripts/t19/build-packs.mjs 从 ${source} 生成（T19 新范围），勿手改。语种：${NAMES[lang]}\n数据来源与许可（与借物页一致；来源地址为纯文本）：\n${lines.join('\n')}\n改编说明：已改编——据上述数据选词、合并词形、去掉不属于本词的词形${lang==='en'?'；中文释义与用法说明逐条核写':'，翻译为中文并人工审核；中文释义、冠词与用法说明逐条核写'}${lang==='en'?'。本文件随来源按 MIT 许可':'（核对时查阅过别的词典，未收录其文字）。改编后的本文件整体按 CC BY-SA 4.0 发布，许可原文：creativecommons.org/licenses/by-sa/4.0/legalcode'}。\n*/\n`;
 }
 function oldPack(file){const w={LANGPACK:{put(l,p,v){this[p]=v;}}};new Function('window',fs.readFileSync(file,'utf8'))(w);return {hyph:w.HYPH||w.LANGPACK.hyph||{}};}
 export async function buildPack(compiled,lang,ranks){
