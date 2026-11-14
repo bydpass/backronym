@@ -116,15 +116,20 @@ for(const [query,word,pos] of [['children','child','noun'],['stories','story','n
  assert.ok(store.select(english,{...opts,mode:'query',query}).some(m=>m.tier===1&&m.record.display===word&&m.record.pos===pos));
 }
 for(const query of ['dreaming','lit','ones','libertys','symmetrys','echos'])assert.equal(store.select(english,{...opts,mode:'query',query}).length,0);
-const englishMap=await englishForms([daily,name,num,pending,make('good','daily',{pos:'adj'}),make('dream','daily')],'scripts/.cache/ecdict.csv');
-assert.ok(englishMap.get(daily.sense_id).includes('days'));
-assert.deepEqual(englishMap.get(name.sense_id),[]);assert.deepEqual(englishMap.get(num.sense_id),[]);assert.ok(!englishMap.has(pending.sense_id));
-assert.ok(englishMap.get(make('good','daily',{pos:'adj'}).sense_id).includes('better'));
-assert.ok(!englishMap.get(make('dream','daily').sense_id).includes('dreaming'));
-console.log('T19 English morphology passed: ECDICT typed relations, untrusted reverse hints, irregular forms and POS/query-only isolation');
-const reviewedForm={sense_id:daily.sense_id,lemma:'day',pos:'noun',form:'days',source:'fixture',evidence:'fixture',reviewer:'fixture'};
-await assert.rejects(englishForms([daily],'scripts/.cache/ecdict.csv',[{...reviewedForm,lemma:'different'}]),/identity mismatch/);
-await assert.rejects(englishForms([name],'scripts/.cache/ecdict.csv',[{...reviewedForm,sense_id:name.sense_id,lemma:name.display,pos:name.pos}]),/identity mismatch/);
+// 下面这段测「从 ECDICT 原始表推英语词形」的生成逻辑，要读 scripts/.cache/ecdict.csv（63 MB 的来源缓存，不进 git）。
+// 没有这个文件时跳过（公开快照、新检出的目录）：产品用的词形已经编进词包，由 test-t19-packs 等核对，不靠这一段。
+const ECDICT='scripts/.cache/ecdict.csv';
+if(fs.existsSync(ECDICT)){
+ const englishMap=await englishForms([daily,name,num,pending,make('good','daily',{pos:'adj'}),make('dream','daily')],ECDICT);
+ assert.ok(englishMap.get(daily.sense_id).includes('days'));
+ assert.deepEqual(englishMap.get(name.sense_id),[]);assert.deepEqual(englishMap.get(num.sense_id),[]);assert.ok(!englishMap.has(pending.sense_id));
+ assert.ok(englishMap.get(make('good','daily',{pos:'adj'}).sense_id).includes('better'));
+ assert.ok(!englishMap.get(make('dream','daily').sense_id).includes('dreaming'));
+ console.log('T19 English morphology passed: ECDICT typed relations, untrusted reverse hints, irregular forms and POS/query-only isolation');
+ const reviewedForm={sense_id:daily.sense_id,lemma:'day',pos:'noun',form:'days',source:'fixture',evidence:'fixture',reviewer:'fixture'};
+ await assert.rejects(englishForms([daily],ECDICT,[{...reviewedForm,lemma:'different'}]),/identity mismatch/);
+ await assert.rejects(englishForms([name],ECDICT,[{...reviewedForm,sense_id:name.sense_id,lemma:name.display,pos:name.pos}]),/identity mismatch/);
+}else console.log('T19 English morphology skipped: 没有 '+ECDICT+'（来源缓存不随仓库分发；生成英语词形时才需要）');
 
 // Latin length marks require explicit same-POS source canon, not broad folding.
 const aquatic=make('aquātilis','professional-natural',{language:'la',pos:'adj',latin_use:{state:'binomial',evidence:'fixture'}});

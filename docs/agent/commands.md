@@ -62,3 +62,16 @@ node scripts/design-system/render.mjs <project 目录> <输出目录> EntryScree
 ```
 
 生成后按 `docs/agent/design.md` 的方法把改过的 `preview.html` 发布到设计系统。对照脚本报的「结构不同」里，运行时才填内容的容器（预设词、字母栏、缩略图等）属于正常。
+
+## 公开快照怎么重做（2026-11-14 记）
+
+公开仓库只放本地 `public` 分支（不带项目历史，每次更新在它上面加一个提交），推送用 `git push public public:main`，要用户明确授权。没有专门的脚本，取舍规则如下（2026-11-14 验证过：按它从 `04538f1` 取文件，能逐个重现上一版快照的清单）：
+
+- 取当前提交的全部文件，去掉：根目录的 `ROADMAP.md`、`HANDOFF.md`、`AUDIT.MD`；`plans/` 下除 `plans/v00.03.00/T19_CORE.md`、`plans/v00.03.00/picker.js` 以外的全部；`review/` 下除下面这些以外的全部。
+- `review/` 里保留（都是 `npm test` 要读的）：`review/lexicon/README.md`、`review/lexicon/block-review.tsv`、`review/lexicon/de/selection-baseline.tsv`、`review/lexicon/de/supplement.tsv`、`review/presets-20261112b/`、`review/presets-approved.txt`，以及 `review/t19-batches/` 下交付 5、10、11、20、21、50、63 的 `compiled/` 和交付 61 的 `lexicon/`。
+- 另外保留 `public` 分支上已有的 `scripts/fixtures/legacy-packs/` 七个文件（旧管线词包，快照里没有提交历史可取，测试靠它们）。
+
+做法：`git worktree add <临时目录> public`，在里面 `git rm -rq -- . ':!scripts/fixtures/legacy-packs'`，再 `git --literal-pathspecs checkout v00.03.00 --pathspec-from-file=<清单>`；核对文件清单，跑 `npm test`、`npm run audit`、`node scripts/build-web.mjs`，扫一遍个人信息与密钥，然后提交、推送、`git worktree remove`。
+
+关于来源缓存：`scripts/.cache/`（约 629 MB，不进 git）放的是词库与字体的原始来源数据，只有重新生成时才需要。`npm test` 里读它的两处（`test-lexicon-scope` 的英语源重建对照、`test-t19-store` 的「从 ECDICT 推英语词形」）在缺 `scripts/.cache/ecdict.csv` 时都会跳过并打印一句说明（后者 2026-11-14 改的），所以干净检出的目录里 `npm test` 直接能过，不必链接缓存。`c084a7f` 那一版公开快照里 `test-t19-store` 还是旧的，克隆后直接跑会在这一项失败；下一版快照带上这次改动后才解决。
+
