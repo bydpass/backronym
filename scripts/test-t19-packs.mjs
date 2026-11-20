@@ -9,7 +9,7 @@ import store from '../app/assets/lexicon-store.js';
 import {sourceSubset} from './t19/source-lookup-fixture.mjs';
 import policy from '../app/assets/lexicon-policy.js';
 import {loadAppFunctions} from './app-source.mjs';
-import {buildAll, DEFAULT_COMPILED} from './t19/build-packs.mjs';
+import {buildAll, shortIds, assignShortIds, ID_WIDTH, SPLIT_MIN, DEFAULT_COMPILED} from './t19/build-packs.mjs';
 const LANGS = ['en', 'fr', 'de', 'es', 'it', 'la'];
 // 1. 重新生成的结果与包内文件逐字节相同（生成产物没有被手改，也没有落后于编译包）。
 {
@@ -29,12 +29,56 @@ const {CORE: C, LANGPACK: P} = env.window;
 assert.equal(Object.keys(env.window.PHRASES).length, 0, '旧短语补充表不再使用');
 const read = async file => { const bytes = fs.readFileSync(file); return {value: JSON.parse(bytes), sha256: crypto.createHash('sha256').update(bytes).digest('hex')}; };
 let senses = 0, formChecks = 0, rowCount = 0, compared = 0, moreCount = 0; const nameRows = [];
+// 短 ID（批 S1）：包里的义项 ID 是原哈希在六语全部义项里统一排序后的名次（定宽 base36）。下面的逐条对照把编译包的哈希换成同一套短 ID 再比
+const shortOf = await shortIds(DEFAULT_COMPILED), allPacked = new Map();
+function shorten(records) {
+  const out = records.map(r => ({...r, sense_id: shortOf.get(r.sense_id)}));
+  for (const r of out) assert.ok(r.sense_id, r.display + ' 没有短 ID');
+  Object.defineProperty(out, 'formsBySense', {value: Object.fromEntries(Object.entries(records.formsBySense).map(([id, forms]) => [shortOf.get(id), forms]))});
+  Object.defineProperty(out, 'guards', {value: records.guards});
+  return out;
+}
+{
+  const pairs = [...shortOf].sort((a, b) => a[0] < b[0] ? -1 : 1), re = new RegExp('^[0-9a-z]{' + ID_WIDTH + '}$');
+  assert.ok(pairs.length <= 36 ** ID_WIDTH, '义项总数在短 ID 容量内');
+  assert.equal(new Set(pairs.map(p => p[1])).size, pairs.length, '短 ID 全局唯一（含跨语言）');
+  for (let i = 0; i < pairs.length; i++) {
+    assert.match(pairs[i][1], re);
+    if (!i) continue;
+    assert.ok(pairs[i - 1][1] < pairs[i][1] && pairs[i - 1][1].localeCompare(pairs[i][1]) < 0, '短 ID 的先后（码位序与 localeCompare）与原哈希一致：' + pairs[i][0]);
+    assert.equal(pairs[i - 1][0].localeCompare(pairs[i][0]) < 0, true, '原哈希 localeCompare 与码位序一致：' + pairs[i][0]);
+  }
+}
 for (const lang of LANGS) {
   assert.ok(C.useLang(lang));
   const words = P.get(lang, 'words'), pack = P.get(lang, 'lexicon');
   assert.ok(words && pack && P.ready(lang).words, lang + ' 词包就绪');
   assert.match(fs.readFileSync(`app/assets/lang/${lang}/words.js`, 'utf8').slice(0, 900), /build-packs\.mjs[\s\S]*(CC BY-SA|MIT)/, lang + ' 文件头写明生成脚本与许可');
-  const compiled = await store.load(DEFAULT_COMPILED, lang, read), byId = new Map(compiled.map(r => [r.sense_id, r]));
+  const compiled = shorten(await store.load(DEFAULT_COMPILED, lang, read)), byId = new Map(compiled.map(r => [r.sense_id, r]));
+  allPacked.set(lang, pack);
+  { // 批 S3：反查表不进包，第一次中文反查时由中文栏现建并记在词包对象上（不可枚举）
+    assert.equal(pack.v, 4); assert.ok(!Object.keys(pack).includes('reverse'), lang + ' 词包不该再带 reverse');
+    assert.ok(!fs.readFileSync(`app/assets/lang/${lang}/words.js`, 'utf8').includes('"reverse":'), lang + ' words.js 里还有 reverse');
+    const probe = pack.senses.find(s => s[8] === 0 && policy.CATEGORIES[s[6]].visibility === 'default' && /^[\u4e00-\u9fff]{2,}$/.test(s[3]));
+    const letter = C.LANG.fold(probe[1]).charAt(0).toUpperCase();
+    const got = C.candidates(words, letter, probe[3], () => false, pack);
+    assert.ok(got.some(it => it[0] === probe[1]), lang + ' 中文反查「' + probe[3] + '」找不回 ' + probe[1]);
+    assert.ok(pack.reverse && !Object.keys(pack).includes('reverse'), '现建后记在词包上且不可枚举');
+    const keys = Object.keys(pack.reverse), want = []; const seenKey = new Set();
+    for (const s of pack.senses) { const k = pack.aliases[s[3]] || s[3]; if (!seenKey.has(k)) { seenKey.add(k); want.push(k); } }
+    assert.deepEqual(keys, want, lang + ' 反查表的键按义项先后出现');
+    assert.equal(keys.reduce((n, k) => n + pack.reverse[k].length, 0), pack.senses.length, lang + ' 每个义项恰好归到一个键下');
+  }
+  { // 批 S2：词形拆干。拆的行不少于 SPLIT_MIN 个词形、词干非空；词尾串表没有重复、每条都被用到。解码后与编译包逐条相同由下面的 lx.forms 全量对照保证
+    const side = P.get(lang, 'inflections'), used = new Set();
+    assert.equal(side.v, 3); assert.equal(new Set(side.tails).size, side.tails.length, lang + ' 词尾串表有重复');
+    for (const row of side.entries) {
+      const n = store.rowForms(side, row).list.length;
+      if (typeof row[2] === 'number') { assert.ok(n >= SPLIT_MIN && row[1], lang + ' 不该拆的行'); used.add(row[2]); }
+      else assert.ok(n < SPLIT_MIN || (() => { const f = row[1].split(' '); return f.some(x => x[0] !== f[0][0]); })(), lang + ' 有公共前缀却没拆：' + row[1].slice(0, 40));
+    }
+    assert.equal(used.size, side.tails.length, lang + ' 词尾串表有没用到的条目');
+  }
   const opts = {exact: C.LANG.exactKey, fold: C.LANG.fold, blocked: () => false};
   const subset = sourceSubset(compiled, opts.fold);
   const lx = store.attachForms(store.fromPack(pack, lang, C.LANG.fold), P.get(lang,"inflections"));
@@ -150,6 +194,46 @@ for (const lang of LANGS) {
 }
 // 人名来源语言随名字，不随当前词包。
 assert.equal(nameRows.length, 21, '人名记录数');
+// 复审 S-A1：短 ID 的容量与重复检查。超过容量必须报错停止，不截断、不回绕
+{
+  const ids = n => Array.from({length: n}, (_, i) => 's-' + String(i).padStart(4, '0'));
+  assert.deepEqual([...assignShortIds(ids(36), 1).values()].slice(-2), ['y', 'z'], '正好装满 1 位');
+  assert.throws(() => assignShortIds(ids(37), 1), /容量 36.*ID_WIDTH 改成 2/, '超过容量报错并提示加宽');
+  assert.throws(() => assignShortIds(['s-a', 's-a']), /重复/, '重复的义项 ID 报错');
+  assert.deepEqual([...assignShortIds(['s-b', 's-a'], 2)], [['s-a', '00'], ['s-b', '01']], '按哈希先后给名次');
+}
+// 复审 S-A2：中文反查表现建时的同义别名。真实词包里没有哪条别名与义项中文相同，这一支用合成词包测
+{
+  C.useLang('en');
+  const row = (id, w, pos, zh) => [id, w, pos, zh, '', '', 'daily', 1, 0, ''];
+  const pack = {senses: [row('a', 'glad', 'adj', '高兴'), row('b', 'sun', 'noun', '太阳'), row('c', 'merry', 'adj', '开心')], aliases: {'高兴': '开心'}};
+  const list = {g: [['glad', 'adj.高兴', '', '']], m: [['merry', 'adj.开心', '', '']], s: [['sun', 'n.太阳', '', '']]};
+  const find = (letter, q) => Array.from(C.candidates(list, letter, q, () => false, pack), it => it[0]); // 结果数组来自 vm 沙箱，转成本域数组再比
+  assert.deepEqual(find('G', '开心'), ['glad'], '别名指向的规范说法能找回原词');
+  assert.deepEqual(find('G', '高兴'), ['glad'], '按别名本身查也归到同一个键');
+  assert.deepEqual(find('M', '高兴'), ['merry'], '别名与规范说法共用一个键');
+  assert.deepEqual(Object.keys(pack.reverse), ['开心', '太阳'], '键是「别名 || 中文」，按义项先后');
+  assert.deepEqual(JSON.parse(JSON.stringify([pack.reverse['开心'], pack.reverse['太阳']])), [[0, 2], [1]]);
+  assert.deepEqual(Array.from(C.candidates(list, 'S', '太阳', () => false, {senses: pack.senses}), it => it[0]), ['sun'], '词包没有 aliases 也能建');
+}
+// 批 S1：语言多选时候选池混着几门语言，sample 按 sense_id 去重、平局也按它比。短 ID 下的抽样结果须与原哈希下逐项相同
+{
+  const hashOf = new Map([...shortOf].map(([hash, short]) => [short, hash]));
+  const mixed = ['fr', 'es', 'it', 'en'].flatMap(lang => store.fromPack(allPacked.get(lang), lang, C.LANG.fold).records.map(record => ({record, lang})));
+  assert.equal(new Set(mixed.map(m => m.record.sense_id)).size, mixed.length, '多语混合后短 ID 不撞');
+  assert.equal(new Set(mixed.map(m => m.lang + m.record.sense_id)).size, mixed.length);
+  // 复审 S-A3：池里放进重复的义项，去重那一支才测得到
+  for (const m of mixed.filter((_, i) => i % 53 === 0)) mixed.push({...m});
+  assert.ok(new Set(mixed.map(m => m.record.sense_id)).size < mixed.length, '抽样池里确有重复义项');
+  const asHash = mixed.map(m => ({...m, record: {...m.record, sense_id: hashOf.get(m.record.sense_id)}}));
+  const seeded = () => { let x = 20261120; return () => { x = (x * 1103515245 + 12345) % 2147483648; return x / 2147483648; }; };
+  const tie = () => 0.5; // 全部平局：先后只由 sense_id 决定
+  for (const random of [seeded, () => tie]) {
+    const a = store.sample(mixed, 400, {random: random()}), b = store.sample(asHash, 400, {random: random()});
+    assert.equal(a.length, 400); assert.equal(new Set(a.map(m => m.record.sense_id)).size, 400, '抽样结果里没有重复义项');
+    assert.deepEqual(a.map(m => m.lang + ':' + m.record.display + ':' + m.record.zh), b.map(m => m.lang + ':' + m.record.display + ':' + m.record.zh), '短 ID 不改变多语抽样与去重');
+  }
+}
 for (const row of ['en:Francesca/弗朗西斯卡/f/it', 'it:Francesca/弗朗西斯卡/f/it', 'en:Antoine/安托万/m/fr', 'fr:Antoine/安托万/m/fr', 'en:Juan/胡安/m/es', 'es:Juan/胡安/m/es']) assert.ok(nameRows.includes(row), row);
 assert.deepEqual([...new Set(nameRows.map(r => r.split(':')[1].split('/')[0]))].sort(), ['Antoine', 'Francesca', 'Francesco', 'Friedrich', 'Giovanni', 'Heinrich', 'Heinz', 'Johnny', 'Juan', 'Juana', 'Luigi', 'Paco', 'Pierre']);
 { // 缺负载、多余负载、非法性别的词包应被拒绝。

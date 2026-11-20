@@ -2,6 +2,8 @@
 // 代词进默认候选（words 部分）、类别 pronouns。以后改词库都要过这条。读的是随包分发的 app/assets/lang/*/words.js，不读编译包。
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+const packStore=createRequire(import.meta.url)('../app/assets/lexicon-store.js');
 
 const window = globalThis; globalThis.window = globalThis; // 词包脚本按浏览器写法引用全局 window
 window.LANGPACK = { packs: {}, put(lang, part, value) { (this.packs[lang] = this.packs[lang] || {})[part] = value; } };
@@ -59,9 +61,10 @@ for(const [word,gloss] of [['māgnus','大的'],['sīgnum','记号'],['āgmen','
 const french=window.LANGPACK.packs.fr;
 new Function(fs.readFileSync('app/assets/lang/fr/inflections.js','utf8'))();
 const ami=french.lexicon.senses.find(row=>row[1]==='ami'&&row[2]==='noun');
-const inflected=french.inflections.entries.find(row=>row[0]===ami[0]);
-assert.deepEqual(inflected[1].split(' ').sort(),['amie','amies','amis']);
-assert.deepEqual(inflected[2].amie,{gender:'f',number:'sg',article:'l’'});
+const inflected=french.inflections.entries.find(row=>row[0]===french.lexicon.senses.indexOf(ami)); // 词形行引用义项下标（批 S1）
+{ const got=packStore.rowForms(french.inflections,inflected); // 行可能拆成词干加词尾串（批 S2），经解码再比
+  assert.deepEqual(got.list.slice().sort(),['amie','amies','amis']);
+  assert.deepEqual(got.morphology.amie,{gender:'f',number:'sg',article:'l’'}); }
 console.log('六语 Q5/Q6、拉丁长短音同形与法语 ami 词形通过');
 
 // 频率排名只属于相同规范拼写和词性的原形，大小写、长短音同形词各自归属。

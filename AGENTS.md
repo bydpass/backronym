@@ -15,7 +15,7 @@
 
 ### 1. 读文件：按需、按进度
 
-- 开工只读三样：本文件、`HANDOFF.md` 最上面一条、它指向的当前任务文件（现在是 [plans/v00.03.00/T19.md](plans/v00.03.00/T19.md)）。
+- 开工只读三样：本文件、`HANDOFF.md` 最上面一条、它指向的当前任务文件（现在是 [plans/v00.03.02/PLAN.md](plans/v00.03.02/PLAN.md)）。
 - 「按需读的文档」表里的文件，做到那件事时才打开。
 - 其余不主动打开：`HANDOFF.md` 里更早的记录、`review/`、旧版本的 `plans/`、`design/` 里的旧稿。用户点名或当前任务明确指向时才读。
 
@@ -23,10 +23,12 @@
 
 - 不创建 `_recovery`、`.bak`、`.old` 或任何恢复副本，改文件前不备份。
 - 改为频繁提交：**实现方初次完工提交一次，审核方审完改完再提交一次**。两边都自行提交，不必等用户点头。推送仍需用户明确授权。
-- 提交后更新 `ROADMAP.md` 文件头（基线提交、本轮状态）。
+- 提交后在 `HISTORY.md`「最近记录」最上面加一条（基线提交、本轮状态）。
 - 两个远端：`legacy`（私有，完整历史，只在版本更新时推一次，平时不推；2026-11-12 用户定）与 `public`（公开，只放不带历史的快照分支 `public`）。带历史的分支不得推到 `public`。
+- 命名（2026-11-19 用户定）：开发分支叫 `dev/vxx.xx.xx`（如 `dev/v00.03.02`），公开快照提交打 tag `vxx.xx.xx`，带历史的 `release-v*` tag 只推 `legacy`。分支与 tag 不得同名；`v00.03.00` 及更早的旧分支保持原名。
 - 遗留的 `_recovery`：所属批次一验收就直接删除；存在超过 7 日的直接删除。不进废纸篓。
 - 被 `.gitignore` 忽略的文件（`scripts/.cache/`、候选表、分片等）没有恢复途径，用户已知并接受。
+- 例外（2026-11-20 用户定）：AOCI 工具自己在 `.aoci/` 下生成的 `.bak` 是工具产物，近期创建的豁免；存在超过 7 日的照上一条删除。
 
 ### 3. 不产出校验清单与复现证据（2026-11-11 用户定）
 
@@ -39,6 +41,7 @@
 | 文件 | 上限 | 超出怎么办 |
 |---|---|---|
 | `HANDOFF.md` | 9 条记录，新的写在最上面 | 删掉最旧的 |
+| `HISTORY.md` | 「最近记录」9 条，新的写在最上面 | 最旧的整条搬进 `docs/roadmap-archive.md`，不删 |
 | `plans/<版本>/REPAIR.md` | 「已关闭」只留最近 3 轮 | 删掉更早的轮次 |
 | `AUDIT.MD` | 同 REPAIR：历史摘要只留最近 3 轮 | 删掉更早的 |
 
@@ -69,6 +72,13 @@
 - 每次工作都要顾到 AOCI 索引，检索与更新两头都算：开工先靠它建立或恢复对仓库的认知，找对象、查关系时先检索索引；改了受管理的对象，收尾时更新对应条目。
 - 具体怎么调用、什么情况可以不调，按下文「AOCI 仓库认知」。
 
+### 9. 进度写 HISTORY.md，README 只做介绍与入门（2026-11-20 用户定）
+
+- 项目进度写入 `HISTORY.md`：每次提交后的近况、版本状态、包体这类随开发变化的内容，新的写在最上面。`ROADMAP.md` 只留版本路线、各版本要点与验收标准。
+- `README.md` 只放项目介绍与入门，以人工修订为主、代理辅助。代理不主动往里写进度、状态或实测数字；发现 README 有错，报给用户，不自行改写。
+- `README.md` 进公开快照：只链快照里有的文件，不链 `plans/`、`review/`、`HISTORY.md`。`HISTORY.md` 是内部记录，不进公开快照。
+- 空目录不留：发现就删（2026-11-20 用户定）；不进仓库的缓存目录内部不管。
+
 ## 常用命令
 
 ```bash
@@ -90,15 +100,15 @@ npm run pack:web   # 外链网页版 → dist/web/
 | 打包、端能力、容器限制、上架 | [docs/agent/container.md](docs/agent/container.md)、`.claude/skills/minitool-zip-builder/`、[RELEASE.md](RELEASE.md) |
 | 交付、审核、派子代理 | [docs/agent/workflow.md](docs/agent/workflow.md) |
 | 改界面、颜色、文案 | [docs/agent/design.md](docs/agent/design.md)、`design/TASK_BRIEF.md` |
-| 词库重整当前任务 | [plans/v00.03.00/T19.md](plans/v00.03.00/T19.md) |
-| 版本计划与已定决定 | [plans/v00.03.00/PLAN.md](plans/v00.03.00/PLAN.md) |
-| 返工说明与状态 | [plans/v00.03.00/REPAIR.md](plans/v00.03.00/REPAIR.md) |
+| 当前版本计划与任务 | [plans/v00.03.02/PLAN.md](plans/v00.03.02/PLAN.md) |
+| 返工说明与状态 | [plans/v00.03.01/REPAIR.md](plans/v00.03.01/REPAIR.md) |
 | 审核发现的未解决问题 | [AUDIT.MD](AUDIT.MD) |
 | 词库第三次重建：数据结构、必需字段、选词规则（草案） | [docs/lexicon-spec.md](docs/lexicon-spec.md) |
 | 词库审核文件的格式与流程 | [review/lexicon/README.md](review/lexicon/README.md) |
 | 草稿 18h 到期的设计依据 | [docs/draft-expiry-assessment.md](docs/draft-expiry-assessment.md) |
 | 体积 hook 怎么装、怎么判 | [docs/size-hook.md](docs/size-hook.md) |
-| 迭代路线与发布标准 | [ROADMAP.md](ROADMAP.md) |
+| 版本路线与发布标准 | [ROADMAP.md](ROADMAP.md) |
+| 项目进度（每次提交后的近况） | [HISTORY.md](HISTORY.md) |
 
 <!-- aoci:begin -->
 ## AOCI 仓库认知

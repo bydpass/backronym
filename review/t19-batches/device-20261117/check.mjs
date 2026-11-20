@@ -26,7 +26,7 @@ for (const lang of ['en', 'fr', 'de', 'es', 'it']) {
   const current = LANGPACK.get(lang, 'lexicon');
   const rows = proposals.filter(p => p.language === lang);
   const index = store.fromPack(current, lang, CORE.LANG.fold);
-  if (current.v === 2) {
+  if (current.v >= 2) { // v2 起词形在 inflections.js（v3 = 短 ID，批 S1）
     load('lang/' + lang + '/inflections.js');
     store.attachForms(index, LANGPACK.get(lang, 'inflections'));
   }

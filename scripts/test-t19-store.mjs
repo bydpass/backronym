@@ -56,7 +56,7 @@ let seed=17,wins=0;
 const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/2**32;};
 for(let i=0;i<20000;i++)if(store.sample([{record:daily},{record:natural}],1,{random})[0].record===daily)wins++;
 assert.ok(Math.abs(wins/20000-100/155)<0.02,`weighted first-draw probability: ${wins}/20000`);
-const current=await store.load('review/t19-batches/t19-batch11-20261111/compiled','en',read);
+const current=await store.load('review/t19-batches/rebuild-20261119/compiled','en',read);
 const actualPool=store.select(current,{...opts,mode:'expanded',expanded:['professional-humanities','professional-natural','historical-cultural']});
 const actualSample=store.sample(actualPool,24,{random});
 assert.equal(actualSample.length,24);
@@ -99,13 +99,31 @@ Object.defineProperty(scopedRows,'formsBySense',{value:Object.fromEntries(morpho
 assert.equal(store.select(scopedRows,{...opts,mode:'query',query:'bist',forms:{Sein:'bist'}}).length,0,'new bundles must not fall back to old display-key forms');
 assert.deepEqual(store.select(scopedRows,{...opts,mode:'query',query:'träumtest'}).map(m=>m.record.pos),['verb']);
 assert.equal(store.select(scopedRows,{...opts,mode:'query',query:'Träume'}).length,2,'genuine noun/verb ambiguity retains both admitted targets');
+// 以下内容断言 11-19 起对着正式词包的编译源跑（原读交付 20、21、50 的旧数据，通过不代表正式包满足）。
 for(const [language,query,display] of [['de','Träume','Traum'],['fr','histoires','histoire']]){
- const rows=await store.load('review/t19-batches/t19-batch20-20261111/compiled',language,read);
+ const rows=await store.load('review/t19-batches/rebuild-20261119/compiled',language,read);
  const found=store.select(rows,{...opts,mode:'query',query});
  assert.ok(found.some(m=>m.record.display===display&&m.record.pos==='noun'&&m.tier===1));
  assert.ok(!store.select(rows,opts).some(m=>m.record.display===query),'pure plural stays out of recommendation');
 }
-await assert.rejects(store.load('review/t19-batches/t19-batch20-20261111/compiled','de',async f=>{
+// 11-19 查出议会语料把这些复数还原成了原形、进了推荐；scripts/lexicon3/fixes/ 已改记给单数。复数仍能经词形查到原形。
+// 复审 R3-20-T：复数清单与各自的单数都从更正表读（类别「复数当原形」），表里新增的行自动受检；行数写死防止读空。德语名词按首字母大写去查
+for(const [language,count] of [['de',8],['es',10],['it',12]]){
+ const rows=await store.load('review/t19-batches/rebuild-20261119/compiled',language,read);
+ const heads=new Set(rows.map(r=>opts.exact(r.display)));
+ const fixes=fs.readFileSync('scripts/lexicon3/fixes/'+language+'.tsv','utf8').split('\n').slice(1).map(l=>l.split('\t')).filter(c=>c[3]==='复数当原形');
+ assert.equal(fixes.length,count,language+' 更正表「复数当原形」行数变了，核对后改这里');
+ for(const fix of fixes){
+  const p=language==='de'?fix[0][0].toUpperCase()+fix[0].slice(1):fix[0];
+  assert.ok(!heads.has(fix[0]),language+'/'+p+' 不应再是词头');
+  const found=store.select(rows,{...opts,mode:'query',query:p});
+  assert.ok(found.some(m=>m.tier===1&&m.record.pos==='noun'&&m.record.display===fix[2]),language+'/'+p+' 应经词形查到单数 '+fix[2]);
+  // 复数兼作动词变位的（arrivi、träume）更正行须写「原形/NOUN」，写 * 会把动词那份频次一并借走；拆分逻辑本身由 test-lexicon3-split 测。
+  // vueltas 是 volver 过去分词的阴性复数，议会语料里它只有名词份额（复审逐份追踪过），例外
+  if(p!=='vueltas'&&found.some(m=>m.tier===1&&m.record.pos==='verb'))assert.equal(fix[1],fix[2]+'/NOUN',language+'/'+p+' 兼作动词变位，更正行只能并名词份额');
+ }
+}
+await assert.rejects(store.load('review/t19-batches/rebuild-20261119/compiled','de',async f=>{
  const r=await read(f);if(f.endsWith('/creative.json'))r.value.records[0].forms=null;return r;
 }),/invalid sense forms/);
 console.log('T19 sense morphology passed: POS separation, recursion, guards, query-only tables and real plural lookup');
@@ -118,7 +136,7 @@ assert.deepEqual(exchangePairs('better','0:good/1:r'),[],'reverse hints require 
 assert.deepEqual(exchangePairs('went','0:go'),[],'untyped lemma reference must not infer POS');
 assert.deepEqual(exchangePairs('gone','0:go/1:dp'),[]);
 assert.deepEqual(exchangePairs('test','x:bad/s:two words/p:a,b/0:root/1:x'),[],'unknown and compound encodings are not guessed');
-const english=await store.load('review/t19-batches/t19-batch21-20261111/compiled','en',read);
+const english=await store.load('review/t19-batches/rebuild-20261119/compiled','en',read);
 for(const [query,word,pos] of [['children','child','noun'],['stories','story','noun'],['chose','choose','verb'],['chosen','choose','verb'],['sought','seek','verb'],['people','person','noun']]){
  assert.ok(store.select(english,{...opts,mode:'query',query}).some(m=>m.tier===1&&m.record.display===word&&m.record.pos===pos));
 }
@@ -239,7 +257,7 @@ console.log('T19 scoped form evidence passed: exact sense binding and source rel
  for(const part of ['age','âge','or',"d'or"])assert.deepEqual(ask(part),[],'a word of a phrase does not match the phrase');
  const unguarded=[fair];Object.defineProperty(unguarded,'formsBySense',{value:Object.fromEntries(formsOf)});
  assert.equal(store.queryEntries(unguarded,'schon',opts)[0].tier,2,'schema 2 bundles without guards keep the old fallback');
- await assert.rejects(store.load('review/t19-batches/t19-batch50-20261111/compiled','de',async f=>{const r=await read(f);if(f.endsWith('/index.json'))delete r.value.guards;return r;}),/invalid lookup guards/);
+ await assert.rejects(store.load('review/t19-batches/rebuild-20261119/compiled','de',async f=>{const r=await read(f);if(f.endsWith('/index.json'))delete r.value.guards;return r;}),/invalid lookup guards/);
  console.log('T19 lookup guards passed: no borrowing by folding, folded forms, apostrophes and phrase isolation');
 }
 

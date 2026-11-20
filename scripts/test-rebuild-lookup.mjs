@@ -38,11 +38,25 @@ const pack=LANGPACK.get('fr','lexicon'), sidecar=LANGPACK.get('fr','inflections'
 const lx=LEXICON_STORE.fromPack(pack,'fr',CORE.LANG.fold);
 assert.equal(CORE.savedSense(['livre','n.磅','la'],['livre','n.书|n.磅','le|la'],'n.'),'n.#2');
 const original=lx.index;
-assert.throws(()=>LEXICON_STORE.attachForms(lx,{v:1,entries:[sidecar.entries[0],['unknown','xxx']]}));
+// 词形包 v2（批 S1）：行首是义项在主包 senses 里的下标。越界、非整数、重复引用同一义项都整表拒收，索引不动
+assert.equal(sidecar.v,3);assert.equal(pack.v,4);
+for(const bad of [pack.senses.length,-1,1.5,'0',pack.senses[0][0]])assert.throws(()=>LEXICON_STORE.attachForms(lx,{v:3,tails:sidecar.tails,entries:[sidecar.entries[0],[bad,'xxx']]}),/invalid inflected sense/,String(bad));
+assert.throws(()=>LEXICON_STORE.attachForms(lx,{v:3,tails:sidecar.tails,entries:[sidecar.entries[0],[sidecar.entries[0][0],'xxx']]}),/invalid inflected sense/,'同一义项两行');
 assert.equal(lx.index,original);
+// 词形拆干（批 S2）：词尾串下标越界或不是整数、词干为空或带空白、缺 tails、行长不对，都整表拒收
+{ const split=sidecar.entries.find(r=>typeof r[2]==='number'),plain=sidecar.entries.find(r=>typeof r[2]!=='number');
+  assert.ok(split&&plain,'法语词形包里拆了的行和没拆的行都有');
+  const other=pack.senses.findIndex((s,i)=>i!==split[0]&&i!==plain[0]);
+  for(const row of [[other,split[1],sidecar.tails.length],[other,split[1],-1],[other,split[1],0.5],[other,'',0],[other,'a b',0],[other,split[1],0,{},1],[other]])
+    assert.throws(()=>LEXICON_STORE.attachForms(lx,{v:3,tails:sidecar.tails,entries:[row]}),/invalid inflect/,JSON.stringify(row));
+  assert.throws(()=>LEXICON_STORE.attachForms(lx,{v:3,entries:[split]}),/invalid inflections pack/,'v3 必须带 tails');
+  assert.throws(()=>LEXICON_STORE.attachForms(lx,{v:3,tails:[1],entries:[]}),/invalid inflections pack/);
+  const got=LEXICON_STORE.rowForms(sidecar,split);
+  assert.ok(got.list.length>=4&&got.list.every(f=>f.startsWith(split[1])),'拆了的行解回词干加词尾');
+  assert.equal(lx.index,original,'被拒收的表不改索引'); }
 LEXICON_STORE.attachForms(lx,sidecar);
-LEXICON_STORE.attachForms(lx,{v:1,entries:[]});
-assert.equal(lx.forms[sidecar.entries[0][0]].length,0);
+LEXICON_STORE.attachForms(lx,{v:2,entries:[]});
+assert.equal(lx.forms[pack.senses[sidecar.entries[0][0]][0]].length,0);
 const exactRow=['test:merde','merde','noun','烦人','','','daily',25,3,''];
 const exactPack={v:2,senses:[exactRow],names:[],guards:[]};
 const exactLx=LEXICON_STORE.fromPack(exactPack,'fr',CORE.LANG.fold);

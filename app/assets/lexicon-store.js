@@ -200,6 +200,7 @@
   // evidence stays in the source lexicon. fromPack restores records the policy layer
   // accepts; the constant review fields only say "this row came from a compiled pack".
   // [sense_id, display, pos, zh, article, note, category, rank, flag, excludedForms]。v1 的 rank 栏为词形串。
+  // v3（v00.03.02 批 S1）结构同 v2，sense_id 是 3 位 base36 短 ID（六语统一名次，先后同原哈希）；配套的词形包 v2 每行引用义项下标。v4（批 S3）不再带 reverse，中文反查表由 core.js 现建。
   // flag 0 普通、1 只供查询、2 降权、3 只供精确查询。v2 词形在 sidecar。
   // names: [sense_id, m/f, source language] for every sense in the names category; with display and zh
   // it restores the four-field name payload. The source language belongs to the name, not to the pack.
@@ -222,17 +223,35 @@
   function mayHaveForm(gate,key){
     return !!gate&&formBits(key,gate.length*6).every(bit=>(alphabet.indexOf(gate[Math.floor(bit/6)])&(1<<(bit%6)))!==0);
   }
+  // 词形包一行里的词形表（v00.03.02 批 S2）。v3 把词形多的行拆成「词干 + 词尾串」，相同的词尾串在 sidecar.tails 里只存一份：
+  // [义项下标, 词干, 词尾串下标, 名词性数?]；没拆的行仍是 [义项下标, "词形 词形 …", 名词性数?]。先后与拆前相同
+  function rowForms(sidecar,row){
+    if(sidecar.v===3&&typeof row[2]==='number'){
+      const tail=sidecar.tails[row[2]];
+      check(typeof row[1]==='string'&&row[1]&&!/\s/.test(row[1])&&Number.isSafeInteger(row[2])&&typeof tail==='string','invalid inflected sense');
+      const list=tail.split(' ').map(t=>row[1]+t);
+      check(list.every(f=>!/\s/.test(f)),'invalid inflected sense');
+      return {list,morphology:row[3],extra:row.length===4};
+    }
+    check(typeof row[1]==='string'&&/^\S+( \S+)*$/.test(row[1]),'invalid inflected sense');
+    return {list:row[1].split(' '),morphology:row[2],extra:row.length===3};
+  }
   function attachForms(lx,sidecar){
-    check(sidecar&&sidecar.v===1&&Array.isArray(sidecar.entries),'invalid inflections pack');
+    check(sidecar&&(sidecar.v===1||sidecar.v===2||sidecar.v===3)&&Array.isArray(sidecar.entries),'invalid inflections pack');
+    check(sidecar.v!==3||(Array.isArray(sidecar.tails)&&sidecar.tails.every(t=>typeof t==='string')),'invalid inflections pack');
+    const byIndex=sidecar.v>=2; // v2：行首是义项在词包 senses 里的下标；v1：行首是义项 ID
     const ids=new Map(),index=Object.create(null),forms=Object.create(null),meta=new Map();
     function note(k,i){const bucket=index[k]||(index[k]=[]);if(bucket.indexOf(i)<0)bucket.push(i);}
     lx.records.forEach((r,i)=>{ids.set(r.sense_id,i);note(lx.key(r.display),i);});
     for(const row of sidecar.entries){
-      check(Array.isArray(row)&&(row.length===2||row.length===3),'invalid inflection row');
-      const [id,text,morphology]=row;
-      check(ids.has(id)&&!forms[id]&&typeof text==='string'&&/^\S+( \S+)*$/.test(text),'invalid inflected sense');
-      const i=ids.get(id),list=forms[id]=text.split(' ');
-      if(row.length===3){
+      check(Array.isArray(row)&&row.length>=2&&row.length<=4,'invalid inflection row');
+      const ref=row[0],{list,morphology,extra}=rowForms(sidecar,row);
+      check(row.length===(typeof row[2]==='number'&&sidecar.v===3?3:2)+(extra?1:0),'invalid inflection row');
+      check(byIndex?Number.isSafeInteger(ref)&&ref>=0&&ref<lx.records.length:ids.has(ref),'invalid inflected sense');
+      const i=byIndex?ref:ids.get(ref),id=lx.records[i].sense_id;
+      check(!forms[id],'invalid inflected sense');
+      forms[id]=list;
+      if(extra){
         check(lx.records[i].pos==='noun'&&morphology&&typeof morphology==='object'&&!Array.isArray(morphology),'invalid noun forms');
         for(const f of Object.keys(morphology)){
           const m=morphology[f];
@@ -252,7 +271,7 @@
   }
   function fromPack(pack,language,fold){
     check(/^(en|fr|de|es|it|la)$/.test(language),'unknown language');
-    check(pack&&(pack.v===1||pack.v===2)&&Array.isArray(pack.senses)&&Array.isArray(pack.names)&&Array.isArray(pack.guards)&&typeof fold==='function','invalid lexicon pack');
+    check(pack&&(pack.v===1||pack.v===2||pack.v===3||pack.v===4)&&Array.isArray(pack.senses)&&Array.isArray(pack.names)&&Array.isArray(pack.guards)&&typeof fold==='function','invalid lexicon pack');
     const named=Object.create(null),order=Object.create(null);
     for(const n of pack.names){check(Array.isArray(n)&&n.length===3&&typeof n[0]==='string'&&(n[1]==='m'||n[1]==='f')&&/^[a-z]{2,3}$/.test(n[2])&&!named[n[0]],'invalid pack name');named[n[0]]=n;}
     // 可选的义项阴阳性（11-19，法西意）：与 senses 逐行对齐，m 阳 / f 阴 / b 两性同形 / - 不标；只给候选栏、义项栏的词性缩写用
@@ -261,11 +280,11 @@
     const key=s=>fold(apostrophes(s)),records=[],forms=Object.create(null),index=Object.create(null),compact=Object.create(null),guards=Object.create(null),seen=new Set();
     const note=(k,i)=>{const a=index[k]||(index[k]=[]);if(a[a.length-1]!==i)a.push(i);};
     pack.senses.forEach((s,i)=>{
-      check(Array.isArray(s)&&s.length===10&&s.slice(0,pack.v===2?7:8).every(v=>typeof v==='string')&&s[0]&&s[1]&&P.CATEGORIES[s[6]],'invalid pack sense');
+      check(Array.isArray(s)&&s.length===10&&s.slice(0,pack.v>=2?7:8).every(v=>typeof v==='string')&&s[0]&&s[1]&&P.CATEGORIES[s[6]],'invalid pack sense');
       check(!seen.has(s[0]),'duplicate pack sense');seen.add(s[0]);
       const evidence={};
-      check(s[8]===0||s[8]===1||s[8]===2||(pack.v===2&&s[8]===3),'invalid pack flag');
-      if(pack.v===2){check(Number.isSafeInteger(s[7])&&s[7]>=0,'invalid frequency rank');if(s[7])evidence.frequency_rank=s[7];}
+      check(s[8]===0||s[8]===1||s[8]===2||(pack.v>=2&&s[8]===3),'invalid pack flag');
+      if(pack.v>=2){check(Number.isSafeInteger(s[7])&&s[7]>=0,'invalid frequency rank');if(s[7])evidence.frequency_rank=s[7];}
       if(s[8]===1||s[8]===3)evidence.query_only=QUERY_ONLY;
       if(s[8]===3)evidence.exact_query=true;
       evidence.sense_order=order[s[1]]=(order[s[1]]||0)+1; // 词包按「显示词、义项先后」排行：同一显示词内第几行即先后（2026-11-19 返工）
@@ -308,5 +327,5 @@
   function packLookup(lx,text,options){
     return packLookups(lx,text,options)[0]||null;
   }
-  const api={load,browserReader,createLoader,select,sample,queryEntries,buildFormGate,mayHaveForm,attachForms,fromPack,packLookup,packLookups};if(typeof module==='object'&&module.exports)module.exports=api;else root.LEXICON_STORE=api;
+  const api={load,browserReader,createLoader,select,sample,queryEntries,buildFormGate,mayHaveForm,attachForms,rowForms,fromPack,packLookup,packLookups};if(typeof module==='object'&&module.exports)module.exports=api;else root.LEXICON_STORE=api;
 })(typeof window!=='undefined'?window:this);

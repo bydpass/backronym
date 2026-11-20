@@ -201,21 +201,37 @@ window.Backronym = {};
     la: { "n.": "subst.", "v.": "verb.", "adj.": "adi." }
   };
   var GENDER_NAME = { m: "阳性", f: "阴性", b: "两性" };
-  // 一组义项（CORE.senseGroups 的一组）的阴阳性：按词和这组的中文释义找词库里的名词义项；几个义项不一致或查不到就不标（""）
-  function senseGender(word, code, g) {
-    if (!g || g.pos !== "n." || !POS_ABBR[code] || !Array.isArray(POS_ABBR[code]["n."])) return "";
+  // 一组义项（CORE.senseGroups 的一组）的阴阳性。item = 候选或已选的词条（[显示词, 释义, 冠词, 备注]）。
+  // 沿用查词命中的义项身份（复审 R3-17）：按 item 的写法重查，取释义串相同的那组命中，再看这组释义对应的名词义项；
+  // 打的是词形（livres、médica）时按词形的性别资料定，见 formGender。几个义项不一致或查不到就不标（""）。
+  // 直接调 packLookups，不走 lexiconGroups 的单条缓存：渲染候选时逐条调用会冲掉卡面查词的结果对象（lastTyping 靠对象同一认字）
+  function senseGender(item, code, g) {
+    if (!item || !g || g.pos !== "n." || !POS_ABBR[code] || !Array.isArray(POS_ABBR[code]["n."])) return "";
     return inLang(code, function () {
       var c = lexicon(), lx = c && c.lx;
       if (!lx) return "";
-      var k = lx.key(word), found = {};
-      (lx.index[k] || []).forEach(function (n) {
-        var r = lx.records[n];
-        if (r.pos !== "noun" || !r.gender || lx.key(r.display) !== k) return;
-        if (r.zh.split(/[，,]/).some(function (z) { return g.senses.indexOf(z) >= 0; })) found[r.gender] = 1;
+      var groups = window.LEXICON_STORE.packLookups(lx, String(item[0] || ""), { exact: CORE.LANG.exactKey, fold: CORE.LANG.fold, blocked: function () { return false; } });
+      var same = groups.filter(function (h) { return h.entry[1] === item[1]; }), found = {};
+      (same.length ? same : groups).forEach(function (h) {
+        var inflected = h.tier === 1 || h.tier === 3;
+        h.matches.forEach(function (m) {
+          var r = m.record;
+          if (r.pos !== "noun" || !r.zh.split(/[，,]/).some(function (z) { return g.senses.indexOf(z) >= 0; })) return;
+          found[inflected ? formGender(r, m.matchedForm) : r.gender || ""] = 1;
+        });
       });
       var keys = Object.keys(found);
       return keys.length === 1 ? keys[0] : "";
     });
+  }
+  // 词形的阴阳性：单数词形按它自己的标注（médica 阴性）；复数通常同原形，只有原形另有同性的单数词形时才信复数的标注
+  // （médicas 跟 médica 走阴性；comandantes 的来源只标了阴性，但 comandante 两性同形，复数也是两性）。没有资料就用原形的
+  function formGender(r, form) {
+    var forms = r.evidence && r.evidence.noun_forms, key = CORE.LANG.exactKey(String(form || "")); // 与 noun_forms 的键同一口径（NFC 小写）；大小写规则只写在语言规则里
+    var m = forms && Object.prototype.hasOwnProperty.call(forms, key) ? forms[key] : null, base = r.gender || "";
+    if (!m || (m.gender !== "m" && m.gender !== "f")) return base;
+    if (m.number === "sg" || m.gender === base) return m.gender;
+    return Object.keys(forms).some(function (f) { return forms[f].number === "sg" && forms[f].gender === m.gender; }) ? m.gender : base;
   }
   // 显示用的缩写与读屏名：posAbbr("fr", "n.", "f") → "n. f."；posSpoken 同参数 → "阴性名词"
   function posAbbr(code, pos, gender) {
@@ -320,7 +336,7 @@ window.Backronym = {};
     state.langs.forEach(function (code) {
       inLang(code, function () {
         var c = lexicon();
-        if (!c || c.pack.v !== 2 || c.sidecar) return;
+        if (!c || !(c.pack.v >= 2) || c.sidecar) return; // v1 的词形在主包里，不另读
         var key = c.lx.key(String(word || "").trim());
         if (!window.LEXICON_STORE.mayHaveForm(c.pack.formGate, key)) return;
         if (c.failed) { failed = true; return; }

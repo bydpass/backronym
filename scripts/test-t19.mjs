@@ -4,17 +4,12 @@ import os from 'node:os';
 import path from 'node:path';
 import { id, encode, decode, admission, eligible, rankMatches, partition, LANGS, CATEGORIES } from './t19/schema.mjs';
 import { glossTerms, searchTerms } from './t19/search.mjs';
-import { conceptsFrom } from './t19/map-core.mjs';
 import { summarize } from './t19/progress.mjs';
 import { applyReviews, recordHash } from './t19/review.mjs';
 import { appendProposals } from './t19/append.mjs';
 import { compileRecords, compile, readShards } from './t19/compile.mjs';
 import { fingerprint } from './lexicon/baseline.mjs';
-const ROOT = new URL('../', import.meta.url);
-const concepts = conceptsFrom(fs.readFileSync(new URL('plans/v00.03.00/T19_CORE.md', ROOT), 'utf8'));
-assert.equal(concepts.length, 250);
-assert.equal(concepts.filter(c => c.languages.length === 6).length, 240);
-assert.deepEqual(concepts.at(-1).languages, ['la']);
+// 原先开头核对 T19_CORE.md 的 250 个概念（map-core.mjs 的 conceptsFrom）；该清单随 plans/v00.03.00/ 删除（11-19 用户定），这三条断言一并去掉。
 function record(label = 'light', overrides = {}) {
   return { entry_id: id('e', ['en', label, 'noun']), sense_id: id('s', ['en', label, 'noun', 0]),
     language: 'en', display: label, pos: 'noun', zh: '光', article: '', note: '', category: 'creative', theme: 'C03',
@@ -134,7 +129,7 @@ try {
   index.shards[0].path = '../outside.tsv'; fs.writeFileSync(path.join(lexicon, 'en/index.json'), JSON.stringify(index));
   await assert.rejects(readShards(lexicon), /invalid shard path/);
 } finally { fs.rmSync(temp, { recursive: true, force: true }); }
-console.log('T19 contract passed: 250 concepts, sense-level scope, default/expanded/query gates, names/numerals, adverbs, Latin evidence, ranking, 300-row shards, author metadata, hashes and overwrite protection');
+console.log('T19 contract passed: sense-level scope, default/expanded/query gates, names/numerals, adverbs, Latin evidence, ranking, 300-row shards, author metadata, hashes and overwrite protection');
 
 assert.deepEqual(glossTerms('新的', 'adj'), ['新的', '新']);
 assert.deepEqual(glossTerms('目的', 'noun'), ['目的']);

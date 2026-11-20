@@ -618,21 +618,32 @@
   var ART = { drop: 10, ref: ["der", "die", "das"], gap: 0.22, lines: 3, left: /^(?:der|die|das)(?:\s|$)/ }; // right：冠词在块内右对齐（贴着词）的语言；德语左对齐（2026-11-12）
   // 冠词列按名词组的顺序用 | 对齐：["livre", "n.书|n.磅", "le|la"]；只有一个冠词时所有名词组共用。
   // 给了义项 id 取那一组的选项；不给 = 这个词所有可能的冠词（核对旧选择还在不在用）
+  // 「el (la)」（复审 R3-19）：通用语推荐 el、不用选，括号里的 la 在同一义项上也合规（la mar），可选，旧稿选过的保留
+  function artGroup(s) {
+    var m = /^(.+?) \((.+)\)$/.exec(s || "");
+    return m ? { options: [m[1]].concat(m[2].split(" / ")), recommended: m[1] } : { options: s ? s.split(" / ") : [], recommended: "" };
+  }
+  function articleGroup(item, id) {
+    var a = item && item[2], parts = a ? String(a).split("|") : [];
+    var k = /#(\d+)$/.test(id) ? +id.slice(id.lastIndexOf("#") + 1) - 1 : 0;
+    return artGroup(parts.length > 1 ? parts[k] : parts[0]);
+  }
   function articleOptions(item, id) {
-    var a = item && item[2], parts = a ? String(a).split("|") : [], out = [];
-    if (id !== undefined) {
-      var k = /#(\d+)$/.test(id) ? +id.slice(id.lastIndexOf("#") + 1) - 1 : 0, one = parts.length > 1 ? parts[k] : parts[0];
-      return one ? one.split(" / ") : [];
-    }
-    parts.forEach(function (p) { p.split(" / ").forEach(function (x) { if (x && out.indexOf(x) < 0) out.push(x); }); });
+    if (id !== undefined) return articleGroup(item, id).options;
+    var a = item && item[2], out = [];
+    (a ? String(a).split("|") : []).forEach(function (p) { artGroup(p).options.forEach(function (x) { if (x && out.indexOf(x) < 0) out.push(x); }); });
     return out;
   }
-  // 卡上冠词位写什么：单一冠词原样；二选一选了写选中的，没选写全（pending，点「完成」会被拦下）
+  // 卡上冠词位写什么：单一冠词原样；二选一选了写选中的，没选写全（pending，点「完成」会被拦下）；有推荐冠词的没选就写推荐的，不拦
   // pos = 这一格选中的义项的词性（state.poss）：冠词只属于名词义项——选的是形容词、动词义项就没有冠词，也不用选（V003-B4-R7）
   function articleOf(item, choice, pos) {
-    var sp = sensePos(item, pos), opts = sp === "" || /^n\./.test(sp || "") ? articleOptions(item, sp) : [], ok = opts.indexOf(choice) >= 0; // "" = 词条的释义没标词性（只有一组）：带着冠词的就按名词
+    var sp = sensePos(item, pos), noun = sp === "" || /^n\./.test(sp || ""), grp = noun ? articleGroup(item, sp) : { options: [], recommended: "" }; // "" = 词条的释义没标词性（只有一组）：带着冠词的就按名词
+    var opts = grp.options, ok = opts.indexOf(choice) >= 0;
     if (opts.length < 2) return { text: opts[0] || "", pending: false, options: opts };
-    return { text: ok ? choice : opts.join(" / "), pending: !ok, options: opts };
+    if (!ok && grp.recommended) return { text: grp.recommended, pending: false, options: opts, recommended: grp.recommended };
+    var out = { text: ok ? choice : opts.join(" / "), pending: !ok, options: opts };
+    if (grp.recommended) out.recommended = grp.recommended;
+    return out;
   }
   // 选中的义项属于哪个词性：pos 在词条的词性组里就是它；没记（旧稿、自己写的释义）时，词条只有一种词性就是那一种，
   // 有几种就不确定（null）——不确定时不套整词的冠词，不靠释义文字猜
@@ -1113,16 +1124,26 @@
   // 首屏先剔除被屏蔽的词、按档从高到低填（spreadFirstScreen），首屏之后保持原顺序。skip 缺省 = 屏蔽器（app.js 取页时也用同一个）。
   // 空 query 返回空（D6：关键词框为空不出候选）。首屏之后的屏蔽词不在这里全量过（单字母查询两千多条），取页时边取边过滤（pageOf）
   // 反查表的数字是当前语言包内的义项行号。先按释义取词，再按当前候选池的可见义项和原有顺序输出。
+  // 反查表不随包分发（v00.03.02 批 S3）：第一次中文反查时由义项的中文栏现建，记在词包对象上（不可枚举，不进序列化）。
+  // 建法与原来生成脚本里的相同：按义项先后，把行号归到「同义别名 || 中文」这个键下；键的先后决定同分时的遍历顺序，不能改
+  function reverseOf(pack) {
+    if (!pack.reverse) {
+      var table = Object.create(null), alias = pack.aliases || {};
+      pack.senses.forEach(function (sense, i) { var key = alias[sense[3]] || sense[3]; (table[key] || (table[key] = [])).push(i); });
+      Object.defineProperty(pack, "reverse", { value: table });
+    }
+    return pack.reverse;
+  }
   function reverseTiers(list, query, pack) {
-    var canonical = pack.aliases[query] || query, han = uniqueHan(query), matched = new Map();
-    Object.keys(pack.reverse).forEach(function (gloss) {
+    var reverse = reverseOf(pack), canonical = (pack.aliases || {})[query] || query, han = uniqueHan(query), matched = new Map();
+    Object.keys(reverse).forEach(function (gloss) {
       var score = gloss === canonical ? 1000 : gloss.indexOf(query) >= 0 ? 900 : 0;
       if (!score && han.length > 1) {
         var count = han.filter(function (c) { return gloss.indexOf(c) >= 0; }).length;
         if (count * 2 >= han.length) score = count;
       }
       if (!score) return;
-      pack.reverse[gloss].forEach(function (i) {
+      reverse[gloss].forEach(function (i) {
         var sense = pack.senses[i];
         if (sense[8] === 1 || sense[8] === 3) return;
         var key = sense[1], byGloss = matched.get(key);
@@ -1144,7 +1165,7 @@
     var q = String(query || "").trim();
     if (!q) return [];
     var list = letterTiers(words, letter).head;
-    var tiers = pack && pack.reverse && uniqueHan(q).length ? reverseTiers(list, q, pack) : filterTiers(list, q).filter(function (t) { return t.length; });
+    var tiers = pack && (pack.reverse || pack.senses) && uniqueHan(q).length ? reverseTiers(list, q, pack) : filterTiers(list, q).filter(function (t) { return t.length; });
     return tiers.length ? spreadFirstScreen(tiers, q, skip || function (it) { return blocked(it[0]); }) : [];
   }
 

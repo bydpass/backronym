@@ -1542,6 +1542,14 @@ for (const p of [C.PALETTE.light, C.PALETTE.dark]) {
   assert.equal(C.articleOf(POLI, "", "n.").text, "la");
   assert.deepEqual(plainOf(C.articleOf(POLI, "", "n.#2")), { text: "le / la", pending: true, options: ["le", "la"] }, "第二组名词是两性通用：仍要二选一");
   assert.equal(C.articleOf(["jeune", "adj.年轻的|n.年轻人", "le / la"], "", "n.").pending, true, "只有一个冠词时名词组共用它（原有数据不变）");
+  // 复审 R3-19：「el (la)」= 通用语推荐 el、不用选；la 在同一义项上也合规（la mar），可选，旧稿选过的保留
+  const MAR = ["mar", "n.海", "el (la)", ""];
+  assert.deepEqual(plainOf(C.articleOf(MAR, "", "n.")), { text: "el", pending: false, options: ["el", "la"], recommended: "el" }, "有推荐冠词：没选就用推荐的，不拦");
+  assert.deepEqual(plainOf(C.articleOf(MAR, "la", "n.")), { text: "la", pending: false, options: ["el", "la"], recommended: "el" }, "选过 la：保留");
+  assert.equal(C.articleOf(MAR, "le", "n.").text, "el", "不在选项里的选择：回到推荐的");
+  assert.deepEqual(plainOf(C.articleOptions(MAR)), ["el", "la"], "旧稿的 la 仍在这个词的可用冠词里，恢复时不丢");
+  assert.deepEqual(plainOf(C.articleOptions(["médico", "n.医生", "el", ""])), ["el"], "裁定单性又没列另一冠词的：la 不在可用冠词里（la médico 照旧拦）");
+  assert.deepEqual(plainOf(C.articleOf(["x", "adj.甲|n.乙|n.丙", "el (la)|le"], "", "n.#2")), { text: "le", pending: false, options: ["le"] }, "推荐写法与 | 分组共存：第二组取自己的冠词");
   // V003-B4-R9：西文把「字母 + 组合变音符」合成一个字再过滤、计数；v00.03.01 R07 起英语同样
   C.addLang("zz", { wordMax: 28, wordChar: /[A-Za-z\u00c0-\u024f0-9' \-]/ }); C.useLang("zz");
   assert.deepEqual(plainOf(C.rewriteWord("e\u0301cole")), { value: "\u00c9cole", start: 5, end: 5 }, "分解编码的 école 不丢重音");

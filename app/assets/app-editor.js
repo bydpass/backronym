@@ -367,7 +367,7 @@
     var parts = [], left = 2;
     senseGroups(item).forEach(function (g) {
       if (left <= 0) return;
-      var take = g.senses.slice(0, left), plain = !g.pos || g.pos.charAt(0) === "[", gen = plain ? "" : app.model.senseGender(item[0], from, g);
+      var take = g.senses.slice(0, left), plain = !g.pos || g.pos.charAt(0) === "[", gen = plain ? "" : app.model.senseGender(item, from, g);
       var abbr = plain ? "" : app.model.posAbbr(from, g.pos, gen), last = parts[parts.length - 1];
       left -= take.length;
       if (last && last.abbr === abbr) last.senses = last.senses.concat(take);
@@ -558,7 +558,7 @@
       var owners = groups.filter(function (h) { return h.senses.indexOf(sn) >= 0; }), mine = owners.filter(function (h) { return state.poss && CORE.senseId(h) === state.poss[i]; });
       return owners.length < 2 || !mine.length || mine[0] === g;
     };
-    if (pickArt) { // 两性名词：冠词由用户二选一，不预选（T22）；没选时卡上写全，点「完成」会被拦下
+    if (pickArt) { // 两性名词：冠词由用户二选一，不预选（T22）；没选时卡上写全，点「完成」会被拦下。有推荐冠词的（el (la)，R3-19）没选就按推荐的亮
       var arow = app.model.make("div", "sense-row art-row");
       arow.setAttribute("role", "group");
       arow.setAttribute("aria-label", "冠词" + (art.pending ? "（还没选）" : ""));
@@ -568,7 +568,7 @@
       art.options.forEach(function (a) {
         var ab = app.model.make("button", "sense", a);
         ab.type = "button"; ab.lang = state.pickLangs[i] || state.lang;
-        ab.setAttribute("aria-pressed", String(state.arts[i] === a));
+        ab.setAttribute("aria-pressed", String(!art.pending && art.text === a));
         ab.addEventListener("click", function () { state.arts[i] = a; app.model.changed(); });
         arow.appendChild(ab);
       });
@@ -582,7 +582,7 @@
       row.setAttribute("role", "group");
       if (g.pos) {
         // 行首词性按这门语言的缩写（用户 11-19 定，同候选栏）；名词知道阴阳性就写进缩写（n. m. / n. f.），不知道时几组名词义项仍写冠词好分辨（Subst. der / Subst. die）
-        var code = state.pickLangs[i] || app.model.itemLang(p) || state.lang, gen = g.pos.charAt(0) === "[" ? "" : app.model.senseGender(p[0], code, g);
+        var code = state.pickLangs[i] || app.model.itemLang(p) || state.lang, gen = g.pos.charAt(0) === "[" ? "" : app.model.senseGender(p, code, g);
         var own = multiNoun && g.pos === "n." && !gen ? CORE.articleOptions(p, CORE.senseId(g)).join(" / ") : "";
         row.setAttribute("aria-label", (langFull ? langFull + "，" : "") + app.model.posSpoken(g.pos, gen) + (own ? "，" + own : ""));
         var tag = app.model.make("span", "pos", langMark + app.model.posAbbr(code, g.pos, gen) + (own ? " " + own : ""));

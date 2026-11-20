@@ -156,7 +156,7 @@ for (const lang of languages) {
       state.picks[0] = previous;
       app.model.refreshPicks();
       assert.equal(state.glosses[0], shown, context);
-      assert.equal(app.model.articleText(0), article, context);
+      assert.equal(app.model.articleText(0), /^(.+?) \(.+\)$/.exec(article)?.[1] ?? article, context); // 「el (la)」没选时卡面写推荐的 el（复审 R3-19）
       assert.deepEqual(plain(state.picks[0]), previous, context);
       checked++;
     }

@@ -6,6 +6,12 @@
 //   node scripts/lexicon3/forms.mjs --write    写入
 import fs from 'node:fs';
 import path from 'node:path';
+import {createRequire} from 'node:module';
+import {shortIds} from '../t19/build-packs.mjs';
+const store = createRequire(import.meta.url)('../../app/assets/lexicon-store.js');
+
+// 词包里的义项 ID 是短 ID（批 S1）；补登记文件是生成侧的，仍记原哈希，这里换回去
+const hashOf = new Map([...await shortIds()].map(([hash, short]) => [short, hash]));
 
 const LANGS = ['fr', 'de', 'es', 'it'];
 const SKIP = new Set(['专名或外语', '功能词当名词', '形容词当名词', '动词当名词']);   // 这几类改的是排名归属，不是词形关系
@@ -30,7 +36,7 @@ for (const lang of LANGS) {
   const cols = head.split('\t');
   const rows = lines.map(l => Object.fromEntries(l.split('\t').map((v, i) => [cols[i], v])));
   const {lexicon, inflections} = pack(lang);
-  const formsOf = new Map(inflections.entries.map(([id, f]) => [id, new Set(String(f).split(' '))]));
+  const formsOf = new Map(inflections.entries.map(row => [lexicon.senses[row[0]][0], new Set(store.rowForms(inflections, row).list)])); // 词形行引用义项下标（批 S1），换回义项 ID 当键
   const stage = JSON.parse(fs.readFileSync(path.resolve('scripts/.cache/v003/stage', lang + '.json'), 'utf8'));
   const edges = stage.form2pos;
   const outFile = path.resolve('review/lexicon', lang, 'form-additions.json');
@@ -51,9 +57,11 @@ for (const lang of LANGS) {
     const accented = Object.keys(edges).filter(g => g !== form && strip(g) === form && edges[g].map(key).includes(pair));
     if (!accented.length) { skipped.push(`${form}→${target}：${direct ? '来源词形图里已有，被审核白名单过滤，不推翻' : '不是去重音写法'}`); continue; }
     for (const s of senses.filter(s => s[2] === pos)) {
-      if (formsOf.get(s[0])?.has(form) || have.has(s[0] + '|' + form)) continue;
+      const hash = hashOf.get(s[0]);
+      if (!hash) throw new Error(`${lang} ${s[1]}：词包的短 ID ${s[0]} 对不上编译包，先重跑 npm run packs`);
+      if (formsOf.get(s[0])?.has(form) || have.has(hash + '|' + form)) continue;
       added.push({
-        sense_id: s[0], lemma: target, pos, form,
+        sense_id: hash, lemma: target, pos, form,
         relation: 'unaccented',
         source: 'scripts/lexicon3/fixes/' + lang + '.tsv',
         evidence: `字幕漏写重音：${accented.join('、')} 去掉重音即 ${form}；第三次重建更正表（D5，用户 11-19 定）：${r['说明']}`,

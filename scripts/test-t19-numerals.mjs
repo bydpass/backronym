@@ -2,7 +2,8 @@ import fs from 'node:fs';
 import crypto from 'node:crypto';
 import assert from 'node:assert/strict';
 import store from '../app/assets/lexicon-store.js';
-const root='review/t19-batches/t19-batch10-20261111/compiled';
+// 对着正式词包的编译源跑（11-19 起由第三次重建生成）；拉丁语没有数词表，不在检查范围。
+const root='review/t19-batches/rebuild-20261119/compiled';
 const read=async file=>{const bytes=fs.readFileSync(file);return {value:JSON.parse(bytes),sha256:crypto.createHash('sha256').update(bytes).digest('hex')};};
 const options={exact:s=>s.normalize('NFC').toLowerCase(),fold:s=>s.normalize('NFD').replace(/\p{M}/gu,'').toLowerCase(),blocked:()=>false};
 let count=0;

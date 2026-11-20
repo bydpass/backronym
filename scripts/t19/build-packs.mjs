@@ -3,7 +3,7 @@
 // 每个词包两部分：
 //   words   旧四列格式 [显示词, 释义组, 冠词, 说明]，按首字母分组；只含可默认推荐的义项（日用、创作，且未标只供查询）。候选与随机用它。
 //   more    同样的四列词条再加第五列类别标注（专业 / 历史文化）：默认不进候选、用户在候选栏打开开关后才出的词；显示词已在 words 里的不重复收。
-//   lexicon 全部准入义项、中文反查、防误借与人名元数据；词形和名词性数另存 inflections.js。手动查词用它（app-model.js 经 LEXICON_STORE 查）。
+//   lexicon 全部准入义项（义项 ID 是 3 位短 ID，见 shortIds）、中文同义别名、防误借与人名元数据（中文反查表不进包，运行时由 core.js 从中文栏现建，批 S3）；词形和名词性数另存 inflections.js，每行引用义项下标，词形多的行拆成「词干 + 词尾串下标」（批 S2）。手动查词用它（app-model.js 经 LEXICON_STORE 查）。
 // 排序：同一首字母内先按类别权重，再按混合频率，旧语料快照仅作回退，最后按显示词。
 import fs from 'node:fs';
 import path from 'node:path';
@@ -51,7 +51,26 @@ function byDisplay(records) {
  }
  return groups;
 }
-export async function buildPack(compiled,lang,ranks){
+// 短 ID（v00.03.02 批 S1）：包里不放 24 位哈希，改用 3 位 base36 = 原哈希在六语全部义项里统一排序后的名次。
+// 必须六语统一排：语言多选时候选池混着几门语言，抽样按 sense_id 去重、平局也按它比，各排各的会撞 ID。
+// 定宽小写 base36 的先后与原哈希一致（数字在字母前），所以按 ID 比出的顺序不变。哈希只留在生成侧
+export const ID_WIDTH=3;
+export const SPLIT_MIN=4;   // 批 S2：词形不足这个数的行不拆
+// 纯函数，便于测容量与重复（复审 S-A1）：ids = 全部义项的原哈希；返回 哈希 → 定宽短 ID
+export function assignShortIds(ids,width=ID_WIDTH){
+ const all=[...ids].sort();
+ for(let i=1;i<all.length;i++)assert.notEqual(all[i],all[i-1],'义项 ID 重复（含跨语言）：'+all[i]);
+ const capacity=36**width;
+ if(all.length>capacity)throw new Error(`义项 ${all.length} 个，超过 ${width} 位 base36 短 ID 的容量 ${capacity}：把 scripts/t19/build-packs.mjs 的 ID_WIDTH 改成 ${width+1}，并同步测试`);
+ return new Map(all.map((id,i)=>[id,i.toString(36).padStart(width,'0')]));
+}
+export async function shortIds(compiled=DEFAULT_COMPILED){
+ const all=[];
+ for(const lang of LANGS)for(const r of await store.load(compiled,lang,read))all.push(r.sense_id);
+ return assignShortIds(all);
+}
+export async function buildPack(compiled,lang,ranks,shortOf){
+ assert.ok(shortOf instanceof Map,'buildPack 要传 shortIds() 的结果（六语统一的短 ID）');
  const records=await store.load(compiled,lang,read),opts={exact,fold,blocked:()=>false};
  const weight=r=>policy.weightOf(r),rank=d=>ranks[d]||0;
  // 可默认推荐的义项 → 旧四列词条（同一显示词合成一条，义项与冠词对齐由 queryEntries 负责）
@@ -93,16 +112,24 @@ export async function buildPack(compiled,lang,ranks){
  }).sort((a,b)=>a[0]<b[0]?-1:1);
  // 词形按义项 ID 分开存；在原形包里只留判定是否要加载它的小型过滤表。
  const aliases=JSON.parse(fs.readFileSync(new URL('../../review/lexicon-rebuild-20261118/zh-aliases.json',import.meta.url),'utf8'));
- const reverse=Object.create(null), entries=[], formKeys=new Set(),byId=new Map(records.map(r=>[r.sense_id,r]));
+ const entries=[], formKeys=new Set(),byId=new Map(records.map(r=>[r.sense_id,r]));
+ // 词形拆干（批 S2）：词形不少于 SPLIT_MIN 个的行写成「词干 + 词尾串下标」，词干 = 全部词形的最长公共前缀；相同词尾串只在 tails 里存一份。
+ // 没有公共前缀的行不拆（西、意因重音移位常见）。先后不变，解码后与拆前逐项相同
+ const tails=new Map();
  for(const [i,row] of senses.entries()){
-  const [id,display,,zh]=row;
-  const key=aliases[zh]||zh;
-  (reverse[key]||(reverse[key]=[])).push(i);
+  const [id,display]=row;
   const source=byId.get(id),list=row[7],morphology=source.evidence.noun_forms;
   if(list){
    const allowed=new Set(list.split(' '));
    const details=morphology&&Object.fromEntries(Object.entries(morphology).filter(([form])=>allowed.has(form)));
-   entries.push(details&&Object.keys(details).length?[id,list,details]:[id,list]);
+   const extra=details&&Object.keys(details).length?[details]:[],each=list.split(' ');
+   let stem=each.length>=SPLIT_MIN?each[0]:'';
+   for(const f of each){let n=0;while(n<stem.length&&n<f.length&&stem[n]===f[n])n++;stem=stem.slice(0,n);}
+   if(stem){
+    const tail=each.map(f=>f.slice(stem.length)).join(' ');
+    if(!tails.has(tail))tails.set(tail,tails.size);
+    entries.push([i,stem,tails.get(tail),...extra]);
+   }else entries.push([i,list,...extra]);   // 行首是义项在 senses 里的下标（S1）
    for(const form of list.split(' '))if(exact(form)!==exact(display))formKeys.add(fold(form.replace(/[’ʼ‘`´]/g,"'")));
   }
   row[7]=source.evidence.frequency_rank||0;
@@ -110,15 +137,19 @@ export async function buildPack(compiled,lang,ranks){
  const formGate=store.buildFormGate(formKeys);
  // 义项阴阳性（11-19，候选栏与义项栏的词性缩写用）：与 senses 逐行对齐的字符串，m 阳 / f 阴 / b 两性同形 / - 不标。只有法西意带
  const G={m:'m',f:'f',mf:'b'},genders=['fr','es','it'].includes(lang)?senses.map(row=>G[byId.get(row[0]).evidence.gender?.g]||'-').join(''):undefined;
- return {words:sorted,more:sortedMore,inflections:{v:1,entries},lexicon:Object.assign({v:2,senses,names,guards:Object.keys(records.guards||{}).sort(),formGate,reverse,aliases},genders?{genders}:{}),count:{words:rows.size,more:extra.size,senses:senses.length}};
+ // 全部按哈希排好、对齐之后才换成短 ID
+ for(const row of senses){const id=shortOf.get(row[0]);assert.ok(id,row[1]+' 没有短 ID');row[0]=id;}
+ for(const row of names)row[0]=shortOf.get(row[0]);
+ return {words:sorted,more:sortedMore,inflections:{v:3,entries,tails:[...tails.keys()]},lexicon:Object.assign({v:4,senses,names,guards:Object.keys(records.guards||{}).sort(),formGate,aliases},genders?{genders}:{}),count:{words:rows.size,more:extra.size,senses:senses.length}};
 }
 export async function buildAll(compiled=DEFAULT_COMPILED,out='app/assets/lang'){
  const batchPoints=path.join(path.dirname(compiled),'pack-hyphenation.json');
  const points=JSON.parse(fs.readFileSync(fs.existsSync(batchPoints)?batchPoints:new URL('./pack-hyphenation.json',import.meta.url),'utf8'));
  const customRanks=path.join(path.dirname(compiled),'pack-ranks.json');
  const ranks=JSON.parse(fs.readFileSync(fs.existsSync(customRanks)?customRanks:path.join(path.dirname(fileURLToPath(import.meta.url)),'pack-ranks.json'),'utf8')),source=path.relative('.',compiled),report={};
+ const shortOf=await shortIds(compiled);
  for(const lang of LANGS){
-  const file=path.join(out,lang,'words.js'),pack=await buildPack(compiled,lang,ranks[lang]||{});
+  const file=path.join(out,lang,'words.js'),pack=await buildPack(compiled,lang,ranks[lang]||{},shortOf);
   fs.mkdirSync(path.dirname(file),{recursive:true});
   const shown=new Set(pack.lexicon.senses.map(s=>s[1].toLowerCase())),hyph=Object.fromEntries(Object.entries(points[lang]).filter(([w])=>shown.has(w.toLowerCase())).sort());
   const J=JSON.stringify,L=J(lang);

@@ -22,8 +22,11 @@ for(const lang of ['en','fr','de','es','it','la']){
   assert.ok(slot,record.sense_id+' keeps stable identity');
   const sense=C.senseGroups(group.entry).find(g=>C.senseId(g)===slot);
   assert.equal(sense.senses.join('，'),record.zh,record.display);
-  const expected=record.pos==='noun'?(record.article||''):'';
+  // 「el (la)」（复审 R3-19）：卡面没选时写推荐的 el，la 仍在可选冠词里
+  const recommended=/^(.+?) \((.+)\)$/.exec(record.article||'');
+  const expected=record.pos==='noun'?(recommended?recommended[1]:record.article||''):'';
   assert.equal(C.articleOf(group.entry,'',slot).text,expected,record.display+' article alignment');
+  if(record.pos==='noun'&&recommended)assert.ok(C.articleOf(group.entry,recommended[2],slot).text===recommended[2],record.display+' 括号里的冠词可选');
   checked++;
  }
  if(lang==='fr'){

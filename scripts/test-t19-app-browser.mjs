@@ -118,6 +118,71 @@ try {
     { const { context, errors, c } = await look(D("it", "AMICO"), "amico", "Amico", "l’"); assert.equal(c.line, "s. m. 朋友；agg. 友好", "意语形容词写 agg."); assert.deepEqual(errors, []); await context.close(); }
     { const { context, errors, c } = await look(D("de", "BAND"), "band", "Band", "das"); assert.match(c.line, /^Subst\. /, "德语名词写 Subst.，性由冠词表示"); assert.deepEqual(errors, []); await context.close(); }
     { const { context, errors, c } = await look({ ...D("fr", "LIVRE"), langs: ["en", "fr"] }, "livre", "Livre", "le"); assert.equal(c.line, "[法] n. m. 书；n. f. 磅", "多选时语言标记在前"); assert.deepEqual(errors, []); await context.close(); }
+    // 复审 R3-17：打词形时沿用查词命中的义项，按词形的性别资料标。复数没有单数冠词，也要分得出 livre 书（阳）/ 磅（阴）
+    { const { page, context, errors, c } = await look(D("fr", "LIVRE"), "livres", "Livres", "");
+      assert.equal(c.line, "n. m. 书；n. f. 磅", "复数词形沿用两个义项各自的阴阳性");
+      await page.locator("#candList .cand-it").filter({ hasText: "n. m. 书" }).first().click(); await page.locator("#glossCtl").focus();
+      assert.deepEqual(await page.locator("#senseList .sense-row .pos").allInnerTexts(), ["n. m.", "n. f."], "选中复数后义项栏也分阴阳");
+      assert.deepEqual(errors, []); await context.close(); }
+    { const { context, errors, c } = await look(D("es", "MEDICA"), "médica", "Médica", "la"); assert.match(c.line, /^s\. f\. 医生/, "阴性单数词形按词形标阴性"); assert.deepEqual(errors, []); await context.close(); }
+    { const { context, errors, c } = await look(D("es", "AGUAS"), "aguas", "Aguas", ""); assert.equal(c.line, "s. f. 水", "复数没有冠词也保留原形的阴性"); assert.deepEqual(errors, []); await context.close(); }
+    { const { context, errors, c } = await look(D("es", "COMANDANTES"), "comandantes", "Comandantes", ""); assert.equal(c.line, "s. m. y f. 司令官", "两性同形名词的复数仍是两性（来源只标了阴性复数，不采信）"); assert.deepEqual(errors, []); await context.close(); }
+    // 复审 R3-18：两个冠词不直接算两性，按词典逐义裁定。médico 阴性是 médica（不写 el / la médico）；azúcar、arte、vodka 两性都规范；通性人称仍两性
+    { const { context, errors, c } = await look(D("es", "MEDICO"), "médico", "Médico", "el"); assert.match(c.line, /^s\. m\. 医生/, "médico 是阳性，冠词只有 el"); assert.deepEqual(errors, []); await context.close(); }
+    { const { context, errors, c } = await look(D("es", "AZUCAR"), "azúcar", "Azúcar", "el"); assert.equal(c.line, "s. m. y f. 糖", "azúcar 两性都用"); assert.deepEqual(errors, []); await context.close(); }
+    { const { context, errors, c } = await look(D("es", "ARTE"), "arte", "Arte", "el"); assert.match(c.line, /^s\. m\. y f\. 艺术/, "arte 两性都用"); assert.deepEqual(errors, []); await context.close(); }
+    { const { context, errors, c } = await look(D("es", "VODKA"), "vodka", "Vodka", "el / la"); assert.equal(c.line, "s. m. y f. 伏特加酒", "vodka 保留两性"); assert.deepEqual(errors, []); await context.close(); }
+    { const { context, errors, c } = await look(D("es", "ESTUDIANTE"), "estudiante", "Estudiante", "el / la"); assert.equal(c.line, "s. m. y f. 学生", "通性人称名词仍两性"); assert.deepEqual(errors, []); await context.close(); }
+    { const { context, errors, c } = await look(D("fr", "POISON"), "poison", "Poison", "le"); assert.match(c.line, /^n\. m\. 毒药/, "poison 阳性，冠词只有 le"); assert.deepEqual(errors, []); await context.close(); }
+    { const { context, errors, c } = await look(D("es", "MAR"), "mar", "Mar", "el"); assert.match(c.line, /^s\. m\. 海/, "mar 推荐 el（复审 R3-19）"); assert.deepEqual(errors, []); await context.close(); }
+  }
+  { // 复审 R3-19：mar 裁定阳性但 la mar 也合规（词包写 el (la)）。旧稿选过的 la：恢复、只改释义后保存、刷新都保留；新选的 mar 用 el、不拦；旧稿的 la médico 不沿用
+    const article = page => page.evaluate(() => { const n = document.querySelector('#mirror [data-role="article"]'); return n ? n.innerText : ""; });
+    const saved = (page, test) => page.waitForFunction(([k, src]) => { const d = JSON.parse(localStorage.getItem(k) || "null"); return !!d && new Function("d", "return " + src)(d); }, [KEY, test]);
+    const artRow = page => page.locator("#senseList .art-row button").evaluateAll(ns => ns.map(n => n.innerText + (n.getAttribute("aria-pressed") === "true" ? "*" : "")));
+    const finished = async page => { await page.locator("#finish").click(); await page.waitForTimeout(300); return page.locator("#finishPanel").isVisible(); };
+    {
+      const { page, context, errors } = await pageFor({ ...D("es", "M", [["mar", "n.海", "el / la"]]), arts: ["la"], poss: ["n."], glosses: ["我的海"], glossAuto: [false] });
+      assert.equal(await article(page), "la", "上一版草稿里明确选的 la 恢复后仍是 la");
+      await cell(page, 0); await page.locator("#glossCtl").focus();
+      assert.deepEqual(await artRow(page), ["el", "la*"], "义项栏两个冠词都在，亮的是已选的 la");
+      await page.locator("#glossCtl").fill("我的大海");
+      await saved(page, "d.glosses[0] === '我的大海' && d.arts && d.arts[0] === 'la'");
+      assert.equal(await article(page), "la", "只改释义：冠词不变");
+      await page.reload(); await page.waitForFunction(() => !document.getElementById("wordInput").disabled && window.LANGPACK.has("es", "words") && !!window.LANGPACK.get("es", "lexicon"));
+      await page.waitForTimeout(300);
+      assert.deepEqual([await article(page), await gloss(page)], ["la", "我的大海"], "刷新后仍是 la mar 与手填释义");
+      assert.equal(await finished(page), true, "选过 la：可以完成");
+      assert.deepEqual(errors, []); await context.close();
+    }
+    // 复审 R3-21：calor（地区阴性）、apocalipsis（DLE U. t. c. f.）同样有词典依据，旧稿的 la 走同一流程也要保留
+    for (const [word, zh] of [["calor", "热"], ["apocalipsis", "天启"]]) {
+      const { page, context, errors } = await pageFor({ ...D("es", word[0].toUpperCase(), [[word, "n." + zh, "el / la"]]), arts: ["la"], poss: ["n."], glosses: ["旧释义"], glossAuto: [false] });
+      assert.equal(await article(page), "la", "旧稿 la " + word + " 恢复后仍是 la");
+      await cell(page, 0); await page.locator("#glossCtl").focus();
+      assert.deepEqual(await artRow(page), ["el", "la*"], word + "：两个冠词都在，亮的是已选的 la");
+      await page.locator("#glossCtl").fill("新释义");
+      await saved(page, "d.glosses[0] === '新释义' && d.arts && d.arts[0] === 'la'");
+      await page.reload(); await page.waitForFunction(() => !document.getElementById("wordInput").disabled && window.LANGPACK.has("es", "words") && !!window.LANGPACK.get("es", "lexicon"));
+      await page.waitForTimeout(300);
+      assert.deepEqual([await article(page), await gloss(page)], ["la", "新释义"], "刷新后仍是 la " + word + " 与手填释义");
+      assert.deepEqual(errors, []); await context.close();
+    }
+    {
+      const { page, context, errors } = await pageFor(D("es", "M"));
+      await type(page, "mar");
+      assert.equal(await article(page), "el", "新选的 mar：用通用语推荐的 el");
+      await page.locator("#glossCtl").focus();
+      assert.deepEqual(await artRow(page), ["el*", "la"], "没选时亮推荐的 el，la 可选");
+      await page.locator("#glossCtl").blur();
+      assert.equal(await finished(page), true, "有推荐冠词：不用选也能完成");
+      assert.deepEqual(errors, []); await context.close();
+    }
+    {
+      const { page, context, errors } = await pageFor({ ...D("es", "M", [["médico", "n.医生", "el / la"]]), arts: ["la"], poss: ["n."] });
+      assert.equal(await article(page), "el", "旧稿里的 la médico 不沿用（阴性是 médica）");
+      assert.deepEqual(errors, []); await context.close();
+    }
   }
   { // 用原生 Delete / Backspace 在词中及词首删改，再从草稿重开。
     const { page, context, errors } = await pageFor(D("de", "ES"));
@@ -479,8 +544,19 @@ try {
       assert.equal((await finish(page)).panel, true, "选过冠词：可以完成");
       assert.deepEqual(errors, []); await context.close();
     }
-    { // 同上但没选冠词：点「完成」被拦下
-      const { page, context, errors } = await open(M(["es", "it"], "M", ["mar", "n.海", "el / la"], { poss: ["n."] }), slow("es", 1500));
+    for (const auto of [false, true]) { // 复审 R3-21-T：旧稿 la calor（词包写 el (la)，la 是备用冠词）遇上西语晚到：到之前、到之后都保留 la；手填与自动释义的旧稿各一遍
+      const { page, context, errors } = await open(M(["es", "it"], "C", ["calor", "n.热", "el / la"], { arts: ["la"], poss: ["n."], glosses: [auto ? "热" : "旧释义"], glossAuto: [auto] }), slow("es", 4000));
+      await ready(page, ["it"]); await page.waitForTimeout(200);
+      assert.equal(await has(page, "es"), false, "此刻西语确实还没到");
+      assert.equal(await article(page), "la", "西语没到：旧稿的 la calor 先照旧稿显示");
+      await ready(page, ["es"]); await page.waitForTimeout(300);
+      assert.equal(await article(page), "la", "西语到后复核：备用冠词 la 仍保留，不改成推荐的 el");
+      assert.equal((await finish(page)).panel, true, "选过 la：可以完成");
+      assert.equal(await page.evaluate(k => (JSON.parse(localStorage.getItem(k)).arts || [])[0], KEY), "la", "落盘的冠词仍是 la");
+      assert.deepEqual(errors, []); await context.close();
+    }
+    { // 同上但没选冠词：点「完成」被拦下。用仍是两性的 mártir（mar 经复审 R3-18 裁定为阳性，R3-19 起推荐 el、la 可选，不拦）
+      const { page, context, errors } = await open(M(["es", "it"], "M", ["mártir", "n.烈士", "el / la"], { poss: ["n."] }), slow("es", 1500));
       await ready(page, ["es", "it"]); await page.waitForTimeout(300);
       const r = await finish(page);
       assert.equal(r.panel, false, "两性名词没选冠词：不放行"); assert.match(r.hint, /冠词还没选/);
@@ -504,10 +580,9 @@ try {
       assert.equal(await article(page), "", "意语先到：先不认");
       assert.equal(await langOf(page, 0), "", "这一格还没记成任何语言（意语没有冠词，只看冠词分不出来）");
       await ready(page, ["es"]); await page.waitForTimeout(300);
-      assert.equal(await article(page), "el / la", "到齐后认成西语（两性，待选）");
+      assert.equal(await article(page), "el", "到齐后认成西语（mar 推荐 el，见复审 R3-18、R3-19；两性待选的拦截由上面 mártir 一例覆盖）");
       assert.equal(await langOf(page, 0), "es");
       assert.equal(await gloss(page), "我的海", "用户自己写的释义不动");
-      const r = await finish(page); assert.equal(r.panel, false); assert.match(r.hint, /冠词还没选/);
       assert.deepEqual(errors, []); await context.close();
     }
     { // R12 复审退回：等着的那门语言被去掉（这里意语一直加载失败）——剩下的语言已到齐，这一格要立刻重新核对，不能留到下次载入
@@ -518,8 +593,7 @@ try {
       if (await page.locator("#langList").isHidden()) await page.locator("#langMore").click();
       await page.locator('#langList label:has(input[value="it"])').click(); await page.waitForTimeout(300);
       await page.evaluate(() => document.getElementById("entryStart").click()); await page.waitForTimeout(300);
-      assert.deepEqual([await langOf(page, 0), await article(page), await gloss(page)], ["es", "el / la", "我的海"], "去掉意语后认成西语，释义不动");
-      const r = await finish(page); assert.equal(r.panel, false, "两性名词没选冠词：不放行"); assert.match(r.hint, /冠词还没选/);
+      assert.deepEqual([await langOf(page, 0), await article(page), await gloss(page)], ["es", "el", "我的海"], "去掉意语后认成西语，释义不动");
       assert.deepEqual(errors, []); await context.close();
     }
     { // 「还没加载好」之后换了别的拦截原因：那门语言到了也不能把新的提示清掉

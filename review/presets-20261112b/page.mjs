@@ -6,7 +6,7 @@ import os from "node:os";
 import path from "node:path";
 import vm from "node:vm";
 import { build, readTable } from "../../scripts/build-presets.mjs";
-const DIR = "review/presets-20261112b", OUT = "plans/v00.03.00/presets-review.html";
+const DIR = "review/presets-20261112b", OUT = "review/presets-20261112b/presets-review.html";
 const LANGS = ["en", "fr", "de", "es", "it", "la"], NAME = { en: "英语", fr: "法语", de: "德语", es: "西班牙语", it: "意大利语", la: "拉丁语" };
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "presets-page-")), js = path.join(tmp, "presets.js");
 build(DIR, js);

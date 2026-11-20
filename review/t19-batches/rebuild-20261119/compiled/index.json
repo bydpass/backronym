@@ -98,9 +98,9 @@
       "category": "daily",
       "weight": 100,
       "visibility": "default",
-      "rows": 2800,
-      "bytes": 3999590,
-      "sha256": "73d2d1a3efcc5cfe7d0d9cc07523fd8c1848895440078c35a7a620dfda1021c5"
+      "rows": 2799,
+      "bytes": 3999475,
+      "sha256": "5a4808bc43b80e56d5d2192bfefa6caf2dfb803d879a996d850af0752358f6e5"
     },
     {
       "path": "fr/daily-002.json",
@@ -108,9 +108,9 @@
       "category": "daily",
       "weight": 100,
       "visibility": "default",
-      "rows": 2793,
-      "bytes": 3999578,
-      "sha256": "8a71e9d015960147be2e54170530f9e2530c5f85f05a93071a05166eb072f730"
+      "rows": 2792,
+      "bytes": 3999836,
+      "sha256": "d74470aa3b40670d86cc8fe5f03126f9311b56bac4700fdbef629a8791d8a082"
     },
     {
       "path": "fr/daily-003.json",
@@ -118,9 +118,9 @@
       "category": "daily",
       "weight": 100,
       "visibility": "default",
-      "rows": 57,
-      "bytes": 79766,
-      "sha256": "e4053ad727ba1cc96a72ac85ff085907cea6df55ca76085d46f61e6dc87245fd"
+      "rows": 59,
+      "bytes": 82335,
+      "sha256": "75b173269659a9bd3d2d227babd5c7a8512c2cb3e738f4ba1658252e5729f67c"
     },
     {
       "path": "fr/creative.json",
@@ -129,8 +129,8 @@
       "weight": 90,
       "visibility": "default",
       "rows": 271,
-      "bytes": 589775,
-      "sha256": "265c10ddeef7360d4111729e1b8b1ecb0df64927f4629a4cf457d0d787ec609c"
+      "bytes": 589826,
+      "sha256": "a8b7f28223e6bafebfb66248d17734907da529a4330b5995d3e8c60f15ef01aa"
     },
     {
       "path": "fr/professional-humanities.json",
@@ -198,9 +198,9 @@
       "category": "daily",
       "weight": 100,
       "visibility": "default",
-      "rows": 2816,
-      "bytes": 3999497,
-      "sha256": "1601fd5dcb04a8b6a4d28937ad048b5a06eb155f8cf2fccd1b29037373889f27"
+      "rows": 2815,
+      "bytes": 3998707,
+      "sha256": "d139a094ee2bdbbfb0ba084f831f3f6a40dc10af8ed8a90044b6253d1359fbf0"
     },
     {
       "path": "de/daily-002.json",
@@ -209,8 +209,8 @@
       "weight": 100,
       "visibility": "default",
       "rows": 2338,
-      "bytes": 3271279,
-      "sha256": "a5e7b1f0fa3ee843c2235b8db487a82477cc1b07a439a36eef99f255d8e9aad8"
+      "bytes": 3271350,
+      "sha256": "7b0b2f05b19b460098a4125a05b51b373610ce703a7c764ad0510491d8962c7c"
     },
     {
       "path": "de/creative.json",
@@ -220,7 +220,7 @@
       "visibility": "default",
       "rows": 290,
       "bytes": 628241,
-      "sha256": "b8c58db48fd50977e04abcd2523fec39be47858d2e99b2516fe67450e68d80d6"
+      "sha256": "9f33138c1dc6e6f5296977f1ebc141c37fb6c71217a4e642d53a2458cc687fb0"
     },
     {
       "path": "de/professional-humanities.json",
@@ -230,7 +230,7 @@
       "visibility": "expanded",
       "rows": 66,
       "bytes": 129968,
-      "sha256": "c634c02cb8ddec69b7db5d1b9c91907c4edba8a90dc1e5fc5c4226b7f3c4fbd0"
+      "sha256": "c9d9a3222896c4c4b39f850496e346c5a76e454b1e7c49c14aa8a21e5adbc991"
     },
     {
       "path": "de/professional-natural.json",
@@ -240,7 +240,7 @@
       "visibility": "expanded",
       "rows": 53,
       "bytes": 108261,
-      "sha256": "a8868ef8d04ffdb99b3d967b4f1ba80efea0a48f57c6c104133262edf07b1a91"
+      "sha256": "b89591333d5914e903de893eb247d89a8481e477c106a73f75f0117ecace323e"
     },
     {
       "path": "de/historical-cultural.json",
@@ -250,7 +250,7 @@
       "visibility": "expanded",
       "rows": 48,
       "bytes": 90748,
-      "sha256": "024638bfc913953b990fb4be2fc106aaff5a753d7ab30420db415c1d6315456a"
+      "sha256": "e8ab1d6d178deb54618960a13b84ceb27ebab0f4950d98edc8a7d510fca978ad"
     },
     {
       "path": "de/pronouns.json",
@@ -260,7 +260,7 @@
       "visibility": "default",
       "rows": 12,
       "bytes": 13569,
-      "sha256": "7a9cabfdd23d4912fbf0636c6228fe9289f18114ee663f6b00750a869159a873"
+      "sha256": "c58d83fa5d20b603b2ec0c06c9ea38885fa3d20684393907bda98fbfe03b36b3"
     },
     {
       "path": "de/names.json",
@@ -288,9 +288,9 @@
       "category": "daily",
       "weight": 100,
       "visibility": "default",
-      "rows": 2404,
-      "bytes": 3999413,
-      "sha256": "48f64c84faee56290bdbb01cbd6192a93cbdf371ceab86fe24b3465c9e2aace4"
+      "rows": 2401,
+      "bytes": 3999470,
+      "sha256": "f0f1d38784da97e7bf3265d2ba986d8119b374c51debc254900eaedcc8862d4f"
     },
     {
       "path": "es/daily-002.json",
@@ -298,9 +298,9 @@
       "category": "daily",
       "weight": 100,
       "visibility": "default",
-      "rows": 2382,
-      "bytes": 3999403,
-      "sha256": "81c86ee727e9f462fb64390a622e4608297c0e64133798bd12fa100116c4e2e9"
+      "rows": 2380,
+      "bytes": 3999810,
+      "sha256": "41c1eac88d00c5ab1f714217b113ef53eb1948ad0804394e7e77b6984df64d88"
     },
     {
       "path": "es/daily-003.json",
@@ -308,9 +308,9 @@
       "category": "daily",
       "weight": 100,
       "visibility": "default",
-      "rows": 957,
-      "bytes": 1613906,
-      "sha256": "eb4c889d1bfbf3b45ee12683cddd596c73af7fc1d64286f8e19bb3d81baae470"
+      "rows": 961,
+      "bytes": 1623744,
+      "sha256": "8647b9be3a32cf207ca03a32fb457eb30fa81374e586ee40515eff06457e91c0"
     },
     {
       "path": "es/creative.json",
@@ -319,8 +319,8 @@
       "weight": 90,
       "visibility": "default",
       "rows": 332,
-      "bytes": 800823,
-      "sha256": "f073773d3b13821b8ea4dccb3d5f000d562ea1c404d65343f3190970709cc0b0"
+      "bytes": 800845,
+      "sha256": "fdf8d492fd1f3b0ac58ba619394caa45e64838dca9d3b15f0df2200517f47956"
     },
     {
       "path": "es/professional-humanities.json",
@@ -329,8 +329,8 @@
       "weight": 60,
       "visibility": "expanded",
       "rows": 84,
-      "bytes": 180962,
-      "sha256": "f058e14fdff6f5054c2463c2f7663564f9ef2d0cf4be3ba03617d09142eb1651"
+      "bytes": 181016,
+      "sha256": "dbb4d15d4dcc77ce579569917602ed829ac0555e89ddcdb175367cf71608d059"
     },
     {
       "path": "es/professional-natural.json",
@@ -340,7 +340,7 @@
       "visibility": "expanded",
       "rows": 64,
       "bytes": 143552,
-      "sha256": "18d9c2c14448d9df6b91aca936429b25e7a1f7ff1fba6f33fb265b81707b35a4"
+      "sha256": "14a4e382d093adf54e102babeb0e3a542be2b79a4a4911ef5faab1bdb6a8275c"
     },
     {
       "path": "es/historical-cultural.json",
@@ -349,8 +349,8 @@
       "weight": 60,
       "visibility": "expanded",
       "rows": 69,
-      "bytes": 142049,
-      "sha256": "c73e808ad8a6b9cac533c826bc47ad4a1a0aec4204822e175a7908a2bfad47e1"
+      "bytes": 142181,
+      "sha256": "3c76e3b81e8b58665159d09e203bd15ca303ac707aa9e14e2a5f9cfddc9f8c45"
     },
     {
       "path": "es/pronouns.json",
@@ -360,7 +360,7 @@
       "visibility": "default",
       "rows": 15,
       "bytes": 17070,
-      "sha256": "dcc8179d13e474e59af4b8097f8d7672939f9401d6e516d5444a3579251229e0"
+      "sha256": "9e9f11093abdbc59cc4fd4064c6f67bc73f7b867d1972db503a126dc72acb3b7"
     },
     {
       "path": "es/names.json",
@@ -388,9 +388,9 @@
       "category": "daily",
       "weight": 100,
       "visibility": "default",
-      "rows": 2613,
-      "bytes": 3999833,
-      "sha256": "8c831006123635fb2975088ee15b38b51c944e3b8e73b893ef4b02ecc31f21d2"
+      "rows": 2612,
+      "bytes": 3999514,
+      "sha256": "e58b8bb07fc6442bed28a8bd2ef95ed4abd535bfc732320087f8b750596fa784"
     },
     {
       "path": "it/daily-002.json",
@@ -398,9 +398,9 @@
       "category": "daily",
       "weight": 100,
       "visibility": "default",
-      "rows": 2633,
-      "bytes": 3999987,
-      "sha256": "8ce294685a7687d229b895d95b658e11256c32e113dad34b7790f7e4d351749c"
+      "rows": 2628,
+      "bytes": 3999357,
+      "sha256": "67547c33c575cc8911988f659384777f9411c0e673925ef90071c92e8c518ccc"
     },
     {
       "path": "it/daily-003.json",
@@ -408,9 +408,9 @@
       "category": "daily",
       "weight": 100,
       "visibility": "default",
-      "rows": 552,
-      "bytes": 832928,
-      "sha256": "4cb2a1abe75e99e0e49eb37a27dc339d131afb5f79919a52304a843004fc47ab"
+      "rows": 560,
+      "bytes": 843089,
+      "sha256": "a3ae702828a2b28ab75364f226441c5d6e52e6650a2fe0ea73976c238688b4f0"
     },
     {
       "path": "it/creative.json",
@@ -420,7 +420,7 @@
       "visibility": "default",
       "rows": 429,
       "bytes": 984341,
-      "sha256": "1e1e1eae690f78abaafc4d0e81e185d2a463a10cb52864e90c49b249d7bacbae"
+      "sha256": "0053f8d1e3efed5b08faa94b97735c9870075ef4265c599bfeec2640e1dad7b3"
     },
     {
       "path": "it/professional-humanities.json",
@@ -430,7 +430,7 @@
       "visibility": "expanded",
       "rows": 87,
       "bytes": 189204,
-      "sha256": "52eed49b39989fb55552aa52190155739b6cd42a95655f113c78d5f9c0c75dda"
+      "sha256": "e582d7ea9b13732960323e552a0cddb793eee42a5cc3a954a43cc18436f80ffb"
     },
     {
       "path": "it/professional-natural.json",
@@ -440,7 +440,7 @@
       "visibility": "expanded",
       "rows": 64,
       "bytes": 136702,
-      "sha256": "679d1c92770d8aa2b3ed1ff2e1d241af6bae36a12b775618cfa3456a6104dfbd"
+      "sha256": "baf2481dd5099929e5fda780f8a926291721e9f29deec27a5fea104ed9129272"
     },
     {
       "path": "it/historical-cultural.json",
@@ -450,7 +450,7 @@
       "visibility": "expanded",
       "rows": 62,
       "bytes": 135220,
-      "sha256": "29d8331b4b22d975020f3c0731b3aec19667f27d25ea01b3520333ebe70b24ba"
+      "sha256": "967dd497629d71964ccb92d0db6a4d0b24ca75db7cffd3554beb35f9ac9714fa"
     },
     {
       "path": "it/pronouns.json",
@@ -460,7 +460,7 @@
       "visibility": "default",
       "rows": 17,
       "bytes": 19711,
-      "sha256": "db833e930c57215d8f3622d9c1f703c5e3f2c8d9ecc6dd7693897a0ee82450ee"
+      "sha256": "226c4dfdce1b2f15fc5aa1a924249f0ccbabfdb1bfb6231a69ae04935be656be"
     },
     {
       "path": "it/names.json",
@@ -489,8 +489,8 @@
       "weight": 100,
       "visibility": "default",
       "rows": 954,
-      "bytes": 2934347,
-      "sha256": "f4eb752246360a5cab20df25ae5056b254ebec6fad90d8be62f3e105e0692c2c"
+      "bytes": 2934420,
+      "sha256": "80c023790c991e4cae00402d6a749da079b6db51e57c34bc1e25ec0b1fc8c8ce"
     },
     {
       "path": "la/creative.json",
@@ -529,8 +529,8 @@
       "weight": 60,
       "visibility": "expanded",
       "rows": 50,
-      "bytes": 141928,
-      "sha256": "a0ce0bb7859d59960c184144eb12d2ece11984f1d2ef294e57b6478f35575fa0"
+      "bytes": 142074,
+      "sha256": "7ee1bec5f111f76940b749f8a63ddb774683938af2ee9c1185491a9240526c89"
     },
     {
       "path": "la/pronouns.json",
@@ -3478,6 +3478,7 @@
       "zufallen",
       "zugabe",
       "zugeständen",
+      "zunahme",
       "zund",
       "zurückgabe",
       "zusammenhalt",
@@ -5100,6 +5101,8 @@
       "parasitá",
       "parasitás",
       "parasitó",
+      "parché",
+      "parchés",
       "paria",
       "parian",
       "parias",
@@ -5420,7 +5423,6 @@
       "revolucionaría",
       "revolucionarías",
       "revolucionés",
-      "revolver",
       "riales",
       "riela",
       "rielas",
@@ -7356,7 +7358,11 @@
       "indìco",
       "indìzi",
       "indìzio",
+      "infettò",
       "infinità",
+      "infètta",
+      "infètti",
+      "infètto",
       "infìlati",
       "infórmati",
       "infùriati",
@@ -8050,6 +8056,7 @@
       "preoccuparti",
       "preparandosi",
       "prepararti",
+      "prepotènte",
       "presentandosi",
       "presentarti",
       "presentì",
@@ -8479,6 +8486,7 @@
       "schiàvo",
       "schièna",
       "schiéna",
+      "schiùma",
       "schèda",
       "schèrmi",
       "schèrmo",

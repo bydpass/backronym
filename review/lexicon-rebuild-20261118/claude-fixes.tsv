@@ -529,3 +529,12 @@ la	ferō	verb	携带	first		复审 11-19（前 1000 名以内仍排错）：fer�
 en	nephew	noun	侄子	first		复审 R3-10：手工新增同词性多义项按 ID 排首义不确定，明确「侄子」在前
 en	succession	noun	继承	first		复审 R3-10：同上，单用 succession 多指继承、继位
 fr	avoir	verb	有	zh	拥有	用户 11-19 第六轮真机（二-3）：动词义写「拥有」
+it	prepotente	adj	有力	zh	霸道	用户 11-20 定：常用义是「霸道、盛气凌人」，原写「有力」是旧审核数据（复数误收修正补位时查出）
+fr	évidence	noun	明显	zh	显见性	此义表示 obviousness，即不证自明的性质。（原 gloss-corrections.tsv，11-20 并入）
+de	idiotisch	adj	白痴	zh	愚蠢	形容判断和行为，区别于指人的名词。（原 gloss-corrections.tsv，11-20 并入）
+es	vikingo	adj	维京人	zh	维京相关	区别与维京人有关的形容词和维京人本人。（原 gloss-corrections.tsv，11-20 并入）
+it	ebreo	adj	希伯来人	zh	犹太文化相关	此处取与犹太人或犹太文化有关的形容词义。（原 gloss-corrections.tsv，11-20 并入）
+la	abbātiālis	adj	修道院长	zh	修道院长相关	词典定义 pertaining to an abbot or abbess。（原 gloss-corrections.tsv，11-20 并入）
+la	anīlis	adj	老妇	zh	老妇相关	拉丁语 anīlis 是老妇的、与老年妇女有关。（原 gloss-corrections.tsv，11-20 并入）
+la	Alexandrīnus	adj	亚历山大城	zh	亚历山大城相关	形容源于或属于亚历山大城的人或事物。（原 gloss-corrections.tsv，11-20 并入）
+it	nipote	noun	孙子	zh	孙辈	il / la 对应两性同形，孙辈同时涵盖孙子、孙女及外孙辈；见 Treccani 的 nipote 条。（原 gloss-corrections.tsv，11-20 并入）
