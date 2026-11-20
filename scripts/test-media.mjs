@@ -149,6 +149,52 @@ function ctl(over = {}) {
   e.saves = saves; e.status = status;
   return e;
 }
+{
+  const def = { bkName: MEDIA.nameFor(B64("default"), "jpg") };
+  const cell = { bkName: MEDIA.nameFor(B64("cell"), "jpg") };
+  const original = { z: 2, x: 0.3, y: 0.4 }, own = { z: 3, x: 0.6, y: 0.5 };
+  const state = { letters: ["L"], images: [null], crops: [null], defaultCrops: [], imgIndex: 0 };
+  const e = loadAppFunctions(["applyCrop", "copyCrop", "removeCellPhoto"], {
+    state, draftEpoch: 0, checkDraftExpiry: () => false, leaveCropper() {}, changed() {},
+    releaseHeld() {}, bumpImg() {}, renderImgPanel() {}, el: { imgPick: { focus() {} } }
+  });
+  function apply(kind, image, crop) {
+    e.work = { i: 0, epoch: 0, kind, img: image, crop };
+    e.applyCrop();
+  }
+  apply("def", def, original);
+  apply("cell", cell, own);
+  const saved = ctl({state}).draftMedia();
+  const restored = CORE.migrateDraft({v: 2, word: "L", ...saved});
+  assert.deepEqual(plain(restored.media.defaultCrops[0]), original, "默认图的取景能随草稿保留");
+  assert.deepEqual(plain(restored.crops[0]), own);
+  e.removeCellPhoto();
+  assert.deepEqual(plain(state.crops[0]), original, "移除本格图恢复原取景");
+  apply("cell", cell, own);
+  const replacement = { z: 1.5, x: 0.5, y: 0.6 };
+  apply("def", def, replacement);
+  assert.deepEqual(plain(state.crops[0]), own, "更换默认图时独立图取景仍在");
+  e.removeCellPhoto();
+  assert.deepEqual(plain(state.crops[0]), replacement);
+}
+// D3 复审（2026-11-17）：默认图暂未读回、独立图读回了。只改文字保存时，默认图在那一格的取景不能被独立图的取景顶掉；
+// 移除独立图后，草稿里那一格配的是默认图原来的取景
+{
+  const def = MEDIA.nameFor(B64("heldDefCrop"), "png"), cell = MEDIA.nameFor(B64("heldDefCell"), "jpg");
+  const dc = { z: 2, x: 0.3, y: 0.4 }, oc = { z: 3, x: 0.6, y: 0.5 };
+  const b = memBackend(); b.files.set(cell, B64("heldDefCell"));
+  const st = MEDIA.create(b, 50), load = st.load;
+  st.load = async (n, l) => (n === def ? { error: true } : load(n, l)); // 默认图这次读失败（判断不了在不在）
+  const e = ctl({ mediaStores: [st] });
+  const r = await e.loadMedia(CORE.migrateDraft({ v: 2, t: now, word: "LI", media: { def, cells: [cell, null], defaultCrops: [dc, null] }, crops: [oc, null] }));
+  assert.equal(r.held.def, def);
+  e.mediaHeld = r.held;
+  Object.assign(e.state, { letters: ["L", "I"], images: [r.cells[0], null], image: null, crops: [oc, null], defaultCrops: [dc, null] });
+  e.prevMedia = e.snapMedia(Object.assign({ word: "LI" }, e.draftMedia()));
+  assert.deepEqual(plain(e.draftMedia().media.defaultCrops[0]), dc, "只改文字：默认图的取景照旧");
+  e.state.images[0] = null; e.state.crops[0] = null; // 移除独立图（默认图没读回，界面上这格空着）
+  assert.deepEqual(plain(e.draftMedia().crops[0]), dc, "移除独立图：草稿里这一格配默认图原来的取景");
+}
 const img = (seed, ext) => ({ b64: B64(seed), ext });
 {
   // 默认图与独立图：草稿只引用确认过的；没确认的那一格沿用上次落盘的「文件名 + 取景」（配对）

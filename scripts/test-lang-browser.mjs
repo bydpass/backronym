@@ -3,7 +3,7 @@
 // PLAYWRIGHT_MODULE=/absolute/path/to/playwright CHROMIUM_PATH=/path/to/chromium node scripts/test-lang-browser.mjs
 // 覆盖：语言栏默认折叠、六个单选「中文 + 原文」带 lang；选中才加载、行内状态、失败可重试、没就绪不能开始；
 // 没填内容直接换、填过先确认（保留 / 清空）、清的是词 / 释义 / 配文与标题，配图与填表人留着；标题占位字；
-// 西文单词保留变音字母、格首提示「É 或 E」「Z（zéro）或 0」；候选项两行、冠词、省略号截断、读屏名完整、点按区 ≥ 44px；刷新后按草稿语言恢复。
+// 西文单词保留变音字母、格首提示「É 或 E」「Z」；候选项两行、冠词、省略号截断、读屏名完整、点按区 ≥ 44px；刷新后按草稿语言恢复。
 // 真机上的加载耗时、软键盘与读屏只能真机看。
 import { createRequire } from "node:module";
 import { createServer } from "node:http";
@@ -89,7 +89,10 @@ try {
     await pick(page, "fr"); await ready(page, "fr");
     assert.equal(await page.locator("#wordConfirm").isVisible(), false, "勾语言不弹确认");
     assert.deepEqual(await langsOf(page), ["en", "fr"], "勾上法语：两门都选中");
-    assert.equal(await page.locator("#langNow").innerText(), "英语 English、法语 Français · 已就绪", "摘要并列写出选中的语言");
+    assert.equal(await page.locator("#langNow [aria-hidden=true]").innerText(), "英 法", "选了多门：摘要只写首字（2026-11-17）");
+    assert.match(await page.locator("#langNow .lang-st").innerText(), /^\s*· 已就绪$/);
+    assert.equal(await page.locator("#langNow .sr-only").textContent(), "英语、法语", "全名交给读屏（隐藏文字，不用 span 上的 aria-label）");
+    assert.equal(await page.locator("#langNow").getAttribute("aria-label"), null);
     assert.equal(await page.locator("#wordInput").getAttribute("placeholder"), "输入一个单词");
     assert.equal(await page.locator('#langList input[value="en"]').isDisabled(), false);
     { // 预设词从两门语言里轮流取，各带自己的 lang
@@ -118,10 +121,10 @@ try {
     await page.locator("#wordInput").fill("été0");
     assert.equal(await page.locator("#wordInput").inputValue(), "ÉTÉ0");
     await page.locator("#entryStart").click();
-    assert.equal(await page.locator("#wordCtl").getAttribute("aria-label"), "第 1 格 É 的词（要以 É 或 E 开头）");
-    assert.equal(await page.locator("#wordCtl").getAttribute("maxlength"), "112", "西文的原生 maxlength 放宽到 4 倍：上限 28 按合成后的字数由 rewriteWord 管（R9）");
+    assert.equal(await page.locator("#wordCtl").getAttribute("aria-label"), "第 1 格 É 的词（要以 É 或 E 开头）", "读屏名用「或」，不念「斜线」（用户 11-19 定）");
+    assert.equal(await page.locator("#wordCtl").getAttribute("maxlength"), null, "按合成后的非空格字符计数");
     await page.locator("#wordCtl").click(); await page.keyboard.type("ef");
-    assert.match(await page.locator("#candLab").innerText(), /^以 É 或 E 开头 · 1 \/ \d+ 批$/);
+    assert.match(await page.locator("#candLab").innerText(), /^É\/E 开头 · 1 \/ \d+ 批$/);
     const items = await page.locator("#candList .cand-it").evaluateAll(ns => ns.map(n => ({ w: n.querySelector(".cand-w").innerText, art: (n.querySelector(".cand-art") || {}).innerText || "", g: n.querySelector(".cand-g").innerText, label: n.getAttribute("aria-label"), h: n.getBoundingClientRect().height,
       oneLine: [".cand-w", ".cand-g"].every(s => { const e = n.querySelector(s), cs = getComputedStyle(e); return cs.whiteSpace === "nowrap" && cs.textOverflow === "ellipsis" && e.getBoundingClientRect().height < parseFloat(cs.fontSize) * 1.8; }), wlang: n.querySelector("b").lang })));
     assert.equal(items.length, 8, "每批 8 个");
@@ -141,9 +144,9 @@ try {
     // 数字格
     await page.evaluate(() => document.getElementById("pl-3").click());
     await page.locator("#wordCtl").click();
-    assert.equal(await page.locator("#candLab").innerText(), "以 Z（zéro）或 0 开头");
+    assert.equal(await page.locator("#candLab").innerText(), "Z 开头");
     await page.keyboard.type("li"); // 首字母不对：说明里把算对的写法写全
-    assert.equal(await page.locator("#candMsg").innerText(), "Li 不是以 Z（zéro）或 0 开头");
+    assert.equal(await page.locator("#candMsg").innerText(), "Li 不是以 Z 开头");
     assert.deepEqual(errors, []); await context.close();
   }
 
@@ -162,12 +165,12 @@ try {
     await page.waitForFunction(k => { const d = JSON.parse(localStorage.getItem(k) || "null"); return d && d.langs && d.langs.length === 2; }, KEY);
     let d = await stored(page);
     assert.deepEqual([d.lang, d.langs, d.pickLangs, d.word, d.filler, d.titleRuns.map(r => r.t).join(""), d.picks.map(p => p && p[0]), d.glosses, d.captions],
-      ["de", ["en", "de"], ["en", "", "en", "en"], "LIFE", "小满", "我的标题", ["love", null, "fire", "echo"], ["爱", "", "火", "回声"], ["配文一", "", "", ""]], "词、释义、配文、标题、填表人都留着；lang 写定字母规则的那一门");
+      ["de", ["en", "de"], ["en", "", "en", "en"], "LIFE", "小满", "我的标题", ["Love", null, "Fire", "Echo"], ["爱", "", "火", "回声"], ["配文一", "", "", ""]], "词、释义、配文、标题、填表人都留着；lang 写定字母规则的那一门");
     // 取消英语、只留德语：同样不清空（词和释义是已经写下的文字）
     await pick(page, "en");
     await page.waitForFunction(k => { const x = JSON.parse(localStorage.getItem(k) || "null"); return x && !x.langs && x.lang === "de"; }, KEY);
     d = await stored(page);
-    assert.deepEqual([d.picks.map(p => p && p[0]), d.glosses, d.titleRuns.map(r => r.t).join(""), "pickLangs" in d], [["love", null, "fire", "echo"], ["爱", "", "火", "回声"], "我的标题", false], "去掉一门语言也不清空；只剩一门时草稿不写 langs / pickLangs");
+    assert.deepEqual([d.picks.map(p => p && p[0]), d.glosses, d.titleRuns.map(r => r.t).join(""), "pickLangs" in d], [["Love", null, "Fire", "Echo"], ["爱", "", "火", "回声"], "我的标题", false], "去掉一门语言也不清空；只剩一门时草稿不写 langs / pickLangs");
     assert.equal(await page.locator('#langList input[value="de"]').isDisabled(), true, "只剩一门：不能再取消");
     await page.locator("#entryBack").click();
     if (await page.locator("#leavePop").isVisible()) await page.locator("#leaveSave").click();
@@ -217,7 +220,8 @@ try {
     assert.equal(await page.locator("#langWait").innerText(), "");
     assert.deepEqual(errors, []); await context.close();
   }
-  // 3b 只剩英语的拦截：法语作品单词里有 É，勾上英语后想取消法语 → 不让，并写明原因；内容不动
+  // 3b 只剩英语（v00.03.01 R07，用户 11-18 定：输入框兼容重音符、照原样保留拼写）：法语作品单词里有 É、格里有 école，取消法语只剩英语也照常，拼写不变；
+  //    v00.03.01 E2（用户 11-19 定）：英语上限也是 28，格里有 21～28 字的词时取消法语也不再拦
   {
     const E = { v: 2, lang: "fr", word: "ÉTÉ", filler: "", view: "single", titleRuns: null, picks: [["école", ""], null, null], glosses: ["学校", "", ""], glossAuto: [false, true, true], captions: ["", "", ""], keys: [0, 0, 0] };
     const { page, context, errors } = await pageFor({ draft: E });
@@ -225,13 +229,22 @@ try {
     await page.locator("#toEntry").click(); await page.locator("#langMore").click();
     await pick(page, "en"); await page.waitForFunction(() => window.CORE.activeLangs().join() === "en,fr");
     assert.equal(await lang(page), "fr", "选了英语和法语：字母规则按西文");
+    await pick(page, "fr"); await page.waitForFunction(() => window.CORE.activeLangs().join() === "en");
+    assert.equal(await page.locator("#langRule").innerText(), "", "带重音的单词与格里的词不拦");
+    assert.equal(await page.locator("#wordInput").inputValue(), "ÉTÉ", "单词照原样");
+    assert.deepEqual(errors, []); await context.close();
+  }
+  {
+    const long = "d".repeat(28); // 第四轮真机问题 27：28 个 d，原先英语上限 20 放不下而被拦
+    const E = { v: 2, lang: "fr", word: "ÉTÉ", filler: "", view: "single", titleRuns: null, picks: [[long, ""], null, null], glosses: ["", "", ""], glossAuto: [false, true, true], captions: ["", "", ""], keys: [0, 0, 0] };
+    const { page, context, errors } = await pageFor({ draft: E });
+    await loaded(page, "fr");
+    await page.locator("#toEntry").click(); await page.locator("#langMore").click();
+    await pick(page, "en"); await page.waitForFunction(() => window.CORE.activeLangs().join() === "en,fr");
     await pick(page, "fr");
-    assert.equal(await page.locator("#langRule").innerText(), "单词里有英语没有的字母，所以至少要留一门别的语言");
-    assert.deepEqual(await langsOf(page), ["en", "fr"], "没有取消");
-    assert.equal(await page.locator('#langList input[value="fr"]').isChecked(), true);
-    assert.equal(await page.locator("#wordInput").inputValue(), "ÉTÉ");
-    await pick(page, "en"); await page.waitForFunction(() => window.CORE.activeLangs().join() === "fr"); // 取消英语没有问题
-    assert.equal(await page.locator("#langRule").innerText(), "", "换了操作，上次的说明收起");
+    await page.waitForFunction(() => window.CORE.activeLangs().join() === "en");
+    assert.equal(await page.locator("#langRule").innerText(), "", "不拦、不写说明");
+    assert.equal((await stored(page)).picks[0][0], long, "格里的词 28 个字照原样");
     assert.deepEqual(errors, []); await context.close();
   }
 
@@ -262,7 +275,7 @@ try {
     assert.deepEqual(errors, []); await context.close();
   }
   // 5 语言多选（2026-11-12）取代了 V003-B4-R5 的「换语言重排格」：加减语言都不动格，配图、取景、单词原样。
-  //   想只留英语而单词里有英语没有的字母时不让去掉（见 3b），所以不再有「É → E」「Þ 格去掉」这类重排，也就没有图跟着格走的问题
+  //   v00.03.01 R07 起英语也收带变音符的字母，只留英语时单词照原样（见 3b），所以不再有「É → E」「Þ 格去掉」这类重排，也就没有图跟着格走的问题
   {
     const addPhoto = async (page, input) => {
       await page.evaluate(async (id) => {
@@ -289,10 +302,12 @@ try {
     await page.waitForFunction(k => { const d = JSON.parse(localStorage.getItem(k) || "null"); return d && d.langs && d.langs.join() === "en,fr"; }, KEY);
     let after = await stored(page);
     assert.deepEqual([after.word, after.media, after.crops], ["ÉTÉ", before.media, before.crops], "加一门语言：单词、独立图、默认图、各格取景原样");
-    await pick(page, "fr"); // 想只留英语：单词里有 É，不让
-    assert.match(await page.locator("#langRule").innerText(), /单词里有英语没有的字母/);
+    await pick(page, "fr"); // 只留英语（v00.03.01 R07 起允许）：单词带 É 照原样，格、配图、取景都不动
+    await page.waitForFunction(k => { const d = JSON.parse(localStorage.getItem(k) || "null"); return d && !d.langs && d.lang === "en"; }, KEY);
+    assert.equal(await page.locator("#langRule").innerText(), "");
     after = await stored(page);
-    assert.deepEqual([after.word, after.langs, after.media, after.crops], ["ÉTÉ", ["en", "fr"], before.media, before.crops], "没去掉：什么都没变");
+    assert.deepEqual([after.word, after.media, after.crops], ["ÉTÉ", before.media, before.crops], "只剩英语：单词、配图、取景原样");
+    await pick(page, "fr"); await page.waitForFunction(k => { const d = JSON.parse(localStorage.getItem(k) || "null"); return d && d.langs && d.langs.join() === "en,fr"; }, KEY);
     await pick(page, "en"); // 去掉英语、回到只有法语
     await page.waitForFunction(k => { const d = JSON.parse(localStorage.getItem(k) || "null"); return d && !d.langs && d.lang === "fr"; }, KEY);
     await page.reload(); await page.waitForFunction(() => !document.getElementById("wordInput").disabled);
@@ -360,7 +375,7 @@ try {
       assert.ok(lines.length >= 2 && lines.length <= 3, "折成两到三行");
       assert.ok(lines.every(l => l[1] === lines[0][1]), "各行和第一行的词对齐");
       assert.ok(lines.slice(0, -1).every(l => /-$/.test(l[0])), "折行处行尾加连字符");
-      assert.equal(lines.map(l => l[0].replace(/-$/, "")).join(""), "M" + long.slice(1), "连字符只是显示，词不变");
+      assert.equal(lines.map(l => l[0].replace(/-$/, "")).join(""), long, "连字符只是显示，词不变（德语保留用户打的大小写）");
       const dy = (lines.length - 1) * 64;
       assert.deepEqual([+(await boxes(page, "bar").getAttribute("data-y")), +(await boxes(page, "gloss").getAttribute("data-baseline"))], [1068 + dy, 1158 + dy], "墨条与释义下移");
       assert.equal(+(await boxes(page, "plate").getAttribute("data-y")), 290, "图版不动");
@@ -379,6 +394,16 @@ try {
       await page.locator("#viewGrid").click();
       assert.ok(await boxes(page, "word").count() >= 3 && await boxes(page, "article").count() === 2, "列阵：冠词与折行");
       assert.equal(await domOk(page), "", "DOM 卡与版式一致（列阵）");
+      assert.deepEqual(errors, []); await context.close();
+    }
+    {
+      // 英语 28 个字（v00.03.01 E2）：和德语一样折行、DOM 卡与版式一致、不出卡
+      const { page, context, errors } = await pageFor({ draft: D("en", "MH", [["m".repeat(28), "很长的词"], ["house", "房子"]]) });
+      const lines = await boxes(page, "word").evaluateAll(ns => ns.map(n => n.textContent));
+      assert.ok(lines.length >= 2 && lines.length <= 3, "英语 28 字折成两到三行");
+      assert.equal(lines.map(l => l.replace(/-$/, "")).join(""), "M" + "m".repeat(27), "折行不丢字（卡面首字母大写）");
+      assert.equal(await domOk(page), "", "DOM 卡与版式一致（英语 28 字）");
+      assert.ok(await page.evaluate(() => { const c = document.getElementById("card").getBoundingClientRect(); return [...document.querySelectorAll("#mirror .b")].every(n => n.getBoundingClientRect().right <= c.right + 1 && n.getBoundingClientRect().bottom <= c.bottom + 1); }), "英语 28 字不出卡");
       assert.deepEqual(errors, []); await context.close();
     }
     {
@@ -401,7 +426,7 @@ try {
       const { page, context, errors } = await pageFor({ draft: D("fr", "J", [["jeune", "", ""]]) });
       await page.waitForFunction(() => window.LANGPACK.has("fr", "words") && window.LANGPACK.has("fr", "block"));
       await page.locator("#wordCtl").click(); await page.locator("#wordCtl").fill("Jeune"); await page.keyboard.press("Enter");
-      assert.equal(await page.locator("#glossCtl").inputValue(), "年轻的", "夹具：自动带出形容词义项");
+      assert.equal(await page.locator("#glossCtl").inputValue(), "年轻的", "自动带出旧词包夹具里的形容词义项");
       assert.deepEqual(await art(page), [], "形容词义项：没有冠词");
       await page.locator("#glossCtl").click();
       assert.equal(await page.locator("#senseList .art-row").count(), 0, "形容词义项：不出冠词一行");
@@ -413,7 +438,7 @@ try {
       assert.match(await page.locator("#hint").innerText(), /第 1 格的冠词还没选/, "名词义项没选冠词：拦下");
       await page.locator("#senseList .art-row button", { hasText: "la" }).click();
       assert.deepEqual(await art(page), ["la"]);
-      await page.locator("#senseList button", { hasText: "年少的" }).click();
+      await page.locator("#senseList button", { hasText: "年少" }).click();
       assert.deepEqual(await art(page), [], "换回形容词义项：冠词不显示");
       await page.locator("#senseList button", { hasText: "青年" }).click();
       assert.deepEqual(await art(page), ["la"], "再回名词义项：原来的选择还在");
@@ -572,11 +597,11 @@ try {
       await page.reload(); await page.waitForFunction(() => !document.getElementById("wordInput").disabled);
       assert.equal((await stored(page)).picks[0][0], "Éx" + "é".repeat(26), "保存的是合成后的写法");
       assert.deepEqual(errors, []); await context.close();
-      // 英语上限仍是 20（原生 maxlength）
+      // 英语上限也是 28（v00.03.01 E2；不用原生 maxlength）
       const en = await pageFor({ draft: E("en", "A") });
-      assert.equal(await en.page.locator("#wordCtl").getAttribute("maxlength"), "20");
-      await type(en.page, 0, "a".repeat(25));
-      assert.equal((await en.page.locator("#wordCtl").inputValue()).length, 20);
+      assert.equal(await en.page.locator("#wordCtl").getAttribute("maxlength"), null);
+      await type(en.page, 0, "a".repeat(30));
+      assert.equal((await en.page.locator("#wordCtl").inputValue()).length, 28);
       assert.deepEqual(en.errors, []); await en.context.close();
     }
     {

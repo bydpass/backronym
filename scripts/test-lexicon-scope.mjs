@@ -10,6 +10,10 @@ assert.equal(formOnly(['gerund of kriechen']), true);
 assert.equal(formOnly(['ablative/dative gerund of illābor']), true, '拉丁带格的动名词仍是变形');
 assert.equal(formOnly(['genitive gerund of amō']), true);
 assert.equal(formOnly(['only used in se ... quejando, syntactic variant of quejándose, gerund of quejarse']), true);
+assert.equal(scopeRow(['ihr', 'pron.她的|pron.你们'], 'de')[1], 'pron.你们');
+assert.equal(scopeRow(['you', 'Pron.你'], 'en')[1], 'Pron.你');
+assert.equal(scopeRow(['hélas', 'intj.唉'], 'fr'), null);
+assert.equal(scopeRow(['they', 'pron.他们'], 'en'), null);
 assert.equal(scopeRow(['le', 'art.定冠词'], 'fr'), null);
 assert.deepEqual(scopeRow(['will', 'aux.将会|n.意志|v.决意', '', '正式', { source: 1 }], 'en'),
   ['will', 'n.意志|v.决意', '', '正式', { source: 1 }]);
@@ -42,7 +46,8 @@ for (const lang of ['en', 'fr', 'de', 'es', 'it', 'la']) {
     if (lang === 'en' || lang === 'la' || !/(^|\|)n\./.test(row[1])) assert.equal(row[2], '');
   }
   for (const target of Object.keys(parts.forms || {})) assert.ok(targets.has(target), `${lang} 变形索引悬空 ${target}`);
-  assert.equal(JSON.stringify(scopeWords(words, lang)), JSON.stringify(words), '重复过滤稳定');
+  const filtered = scopeWords(words, lang); // v3 会从 v2 历史词包剔除感叹义。
+  assert.equal(JSON.stringify(scopeWords(filtered, lang)), JSON.stringify(filtered), '重复过滤稳定');
   console.log(lang, rows.length, '词条范围与数据结构通过');
 }
 // Q4-R1：非独立形式（全部原始义项都只是变形 / 组合说明）不作独立候选；有一个真释义就保留

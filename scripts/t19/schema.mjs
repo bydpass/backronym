@@ -41,6 +41,7 @@ export function decode(text) {
     validate(record); return record;
   }) };
 }
+const NOUN_ARTICLES={de:{m:['der'],f:['die'],n:['das']},fr:{m:['le','l’'],f:['la','l’']},es:{m:['el'],f:['la','el']},it:{m:['il','lo','l’'],f:['la','l’']}};
 export function validate(r) {
   assert.ok(/^e-[a-f0-9]{24}$/.test(r.entry_id) && /^s-[a-f0-9]{24}$/.test(r.sense_id), 'invalid identity');
   assert.ok(LANGS.includes(r.language) && CATEGORIES[r.category], 'unknown language/category');
@@ -66,6 +67,19 @@ export function validate(r) {
     assert.ok(restriction.allowed.every(f => typeof f === 'string' && /^\p{L}+$/u.test(f) && f === f.normalize('NFC').toLowerCase()), 'invalid restricted form');
     assert.equal(new Set(restriction.allowed).size, restriction.allowed.length, 'duplicate restricted form');
     for (const field of ['source', 'evidence', 'reviewer']) assert.ok(typeof restriction[field] === 'string' && restriction[field].trim(), 'form restriction evidence required');
+  }
+  if (r.evidence.noun_forms !== undefined) {
+    assert.equal(r.pos,'noun','名词词形元数据仅用于名词');
+    for (const [form, meta] of Object.entries(r.evidence.noun_forms)) {
+      assert.ok(/^\p{L}+$/u.test(form) && form===form.normalize('NFC').toLowerCase(), '名词词形拼写不规范');
+      assert.ok(['m','f','n'].includes(meta.gender) && ['sg','pl'].includes(meta.number), '未知名词性数');
+      assert.ok(typeof meta.article === 'string' && (meta.number==='sg'||meta.article===''), '仅单数词形显示冠词');
+      assert.ok(!meta.article || NOUN_ARTICLES[r.language]?.[meta.gender]?.includes(meta.article),'词形冠词与语种或性别不符');
+    }
+  }
+  if (r.evidence.gender !== undefined) { // 词性缩写用的义项阴阳性（11-19）：法西意名词，m / f / mf（两性同形）
+    assert.ok(r.pos === 'noun' && ['fr', 'es', 'it'].includes(r.language), '阴阳性仅用于法西意名词');
+    assert.ok(['m', 'f', 'mf'].includes(r.evidence.gender.g) && typeof r.evidence.gender.via === 'string' && r.evidence.gender.via, '阴阳性取值或来源不对');
   }
   if (r.conjugation !== undefined) {
     const c = r.conjugation;

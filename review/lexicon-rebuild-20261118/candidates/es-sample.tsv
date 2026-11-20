@@ -1,0 +1,151 @@
+group	lemma	pos	rank	subtitle_row	source	t19	legacy	category	source_rank	encyclopedia_rank	literature_rank	subtitle_rank	reason
+前100	tener	verb	1	51	mixed	yes	yes	daily		2	3	3	
+前100	hacer	noun,verb	2	68	mixed	yes	no	daily		8	10	8	
+前100	estar	verb	3	21	mixed	yes	yes	daily		21	5	2	
+前100	haber	noun,verb	4	44	mixed	yes	yes	daily		24	1	4	
+前100	año	noun	5	129	mixed	yes	no	daily		1	43	38	
+前100	ser	noun,verb	6	63	mixed	yes	yes	daily		30	6	6	
+前100	poder	noun,verb	7	65	mixed	yes	yes	creative		30	12	9	
+前100	también	adv	8	112	mixed	no	yes	daily		5	49	46	
+前100	dar	verb	9	352	mixed	yes	yes	daily		30	9	20	
+前100	día	noun	10	134	mixed	yes	yes	daily		24	15	29	
+前100	no	adv,noun	11	3	mixed	no	yes	daily		3		1	
+前100	vez	noun	12	71	mixed	yes	yes	daily		10	78	25	
+前100	después	adv	13	161	mixed	yes	no	daily		15	27	71	
+前100	decir	noun,verb	14	111	mixed	yes	yes	daily		81	4	11	
+前100	nuevo	adj	15	185	mixed	yes	no	daily		8	123	78	
+前100	lugar	noun	16	177	mixed	yes	no	daily		13	102	76	
+前100	vida	noun	17	122	mixed	yes	yes	creative		41	28	49	
+前100	llegar	verb	18	400	mixed	yes	yes	daily		30	52	61	
+前100	grande	adj,noun	19	193	mixed	yes	yes	daily		65	12	54	
+前100	ciudad	noun	20	336	mixed	yes	no	daily		7	206	162	
+前100	tierra	noun	21	421	mixed	yes	no	daily		17	65	201	
+前100	conocer	verb	22	485	mixed	no	yes	daily		30	86	55	
+前100	ver	verb	23	120	mixed	yes	yes	daily		128	11	17	
+前100	ir	verb	24	80	mixed	yes	yes	daily		128	18	12	
+前100	tomar	verb	25	387	mixed	yes	yes	daily		41	46	68	
+前100	dejar	verb	26	347	mixed	yes	yes	daily		81	38	26	
+前100	guerra	noun	27	422	mixed	yes	no	creative		4	936	212	
+前100	poner	verb	28	606	mixed	yes	yes	daily		81	22	51	
+前100	tiempo	noun	29	95	mixed	yes	yes	daily		81	36	34	
+前100	primero	adj,noun	30	407	mixed	no	yes	daily		15	195	186	
+前100	pasar	verb	31	290	mixed	yes	yes	creative		81	34	42	
+前100	bueno	adj	32	50	mixed	yes	no	daily		182	19	15	
+前100	siglo	noun	33	2287	mixed	no	yes	daily		10	176	868	
+前100	deber	noun,verb	34	220	mixed	yes	yes	daily		128	50	18	
+前100	manera	noun	35	308	mixed	yes	yes	daily		41	67	146	
+前100	llevar	verb	36	595	mixed	yes	yes	daily		128	34	36	
+前100	me	pron	37	14	mixed	no	yes	pronouns			2	5	
+前100	hombre	noun	38	121	mixed	yes	yes	daily		182	23	30	
+前100	empezar	verb	39	619	mixed	no	yes	daily		41	115	112	
+前100	encontrar	verb	40	372	mixed	no	yes	daily		65	105	48	
+前100	llamar	verb	41	581	mixed	yes	yes	daily		81	67	53	
+前100	parte	noun	42		mixed	no	yes	daily		6			
+前100	mi	noun	43	22	mixed	no	yes	daily			8	7	
+前100	parecer	noun,verb	44	144	mixed	no	yes	daily		266	16	40	
+前100	sur	noun	45	750	mixed	yes	no	daily		17		270	
+前100	usar	verb	46	666	mixed	yes	no	daily		41	240	111	
+前100	quedar	verb	47	816	mixed	yes	yes	daily		128	43	59	
+前100	último	adj	48	419	mixed	yes	no	daily		52	147	105	
+前100	yo	noun,pron	49	30	mixed	yes	yes	creative			7	13	
+前100	estado	noun	50		mixed	no	yes	daily		10			
+前100	venir	verb	51	339	mixed	yes	yes	daily		266	25	35	
+前100	querer	noun,verb	52	67	mixed	yes	yes	creative			14	10	
+前100	vivir	noun,verb	53	454	mixed	yes	yes	daily		81	61	131	
+前100	mar	noun	54	10314	mixed	yes	yes	daily		13		4142	
+前100	agua	noun	55	358	mixed	yes	yes	daily		52	123	192	
+前100	establecer	verb	56	5436	mixed	no	yes	daily		19	777	1507	
+前100	región	noun	57	4853	mixed	no	yes	daily		19	936	2082	
+前100	entonces	adv	58	87	mixed	yes	yes	daily		128	137	31	
+前100	volver	verb	59	301	mixed	yes	no	creative		182	56	43	
+前100	convertir	verb	60	2484	mixed	no	yes	daily		30	936	250	
+前100	seguir	verb	61	395	mixed	no	yes	daily		101	128	57	
+前100	casi	adv	62	320	mixed	yes	no	daily		65	115	163	
+前100	isla	noun	63	1353	mixed	no	yes	daily		21		669	
+前100	pequeño	adj	64	414	mixed	yes	no	daily		65	195	103	
+前100	momento	noun	65	167	mixed	yes	yes	creative		101	110	72	
+前100	norte	adj,noun	66	1118	mixed	yes	yes	daily		24		441	
+前100	ejército	noun	67	934	mixed	yes	no	daily		30	512	501	
+前100	incluir	verb	68	3610	mixed	no	yes	daily		21		991	
+前100	película	noun	69	641	mixed	yes	yes	daily		30		251	
+前100	mundo	noun	70	165	mixed	yes	yes	daily		182	46	75	
+前100	aquí	adv	71	33	mixed	yes	no	daily			28	14	
+前100	permitir	verb	72	1645	mixed	no	yes	daily		52	240	215	
+前100	comenzar	verb	73	1816	mixed	no	no	daily		65	140	214	
+前100	británico	adj,noun	74	4784	mixed	no	yes	daily		24		1215	
+前100	saber	noun,verb	75	181	mixed	yes	no	daily			24	19	
+前100	escribir	verb	76	1178	mixed	yes	yes	daily		65	147	209	
+前100	persona	noun	77	310	mixed	yes	yes	daily		81	115	156	
+前100	historia	noun	78	314	mixed	yes	no	creative		52	412	160	
+前100	segundo	adj,noun	79	480	mixed	yes	no	daily		52	352	178	
+前100	trabajar	verb	80	431	mixed	yes	yes	daily		65	1171	79	
+前100	nombre	noun	81	216	mixed	no	yes	daily		52		104	
+前100	antiguo	adj	82	2013	mixed	yes	yes	daily		30	1471	907	
+前100	usted	pron	83	86	mixed	no	yes	pronouns			21	27	
+前100	luego	adv	84		mixed	yes	no	daily		24			
+前100	ya	adv	85		mixed	yes	yes	daily		24			
+前100	señor	adj,noun	86	107	mixed	no	yes	daily			30	21	
+前100	área	noun	87	1680	mixed	no	no	daily		30		819	
+前100	mantener	verb	88	933	mixed	no	no	daily		65	412	139	
+前100	aparecer	verb	89	2365	mixed	no	yes	daily		65	165	337	
+前100	niño	noun	90	375	mixed	yes	no	daily		101	89	203	
+前100	país	noun	91	583	mixed	yes	yes	daily		52	454	282	
+前100	rey	noun	92	585	mixed	yes	yes	daily		65	206	303	
+前100	gobierno	noun	93	12367	mixed	no	no	daily		30		4747	
+前100	mes	noun	94	822	mixed	yes	no	daily		52	325	457	
+前100	sistema	noun	95	754	mixed	yes	yes	daily		41		348	
+前100	crear	verb	96	1981	mixed	yes	no	creative		41	936	648	
+前100	dios	noun	97	114	mixed	yes	yes	creative			17	50	
+前100	hijo	noun	98	188	mixed	yes	no	daily		182	85	87	
+前100	general	adj,noun	99	664	mixed	no	yes	daily		52	588	338	
+前100	emperador	noun	100	3281	mixed	no	no	daily		41	670	1635	
+随机50	respetable	adj	3941	8237	mixed	no	no	daily				3130	
+随机50	anochecer	noun,verb	4232	10015	mixed	no	yes	daily				3484	
+随机50	salio	adj,noun	4999	12378	mixed	no	yes	daily				4378	
+随机50	virtud	noun	1776	8193	mixed	no	yes	daily			1171	2760	
+随机50	ojo	noun	170	370	mixed	yes	yes	daily			39	155	
+随机50	variedad	noun	2081	9924	mixed	no	yes	daily			1471	3374	
+随机50	diagnosticar	verb	4635	24747	mixed	no	no	daily				3955	
+随机50	vínculo	noun	3635	7465	mixed	no	yes	daily				2745	
+随机50	gerente	noun	2966	3698	mixed	no	yes	daily				1811	
+随机50	tormenta	noun	452	2151	mixed	no	no	daily		266		1027	
+随机50	carro	noun	2252	2412	mixed	no	yes	daily				1129	
+随机50	difundir	verb	4983	20250	mixed	no	yes	daily				4362	
+随机50	tipo	adj,noun	413	994	mixed	no	yes	daily		266		574	
+随机50	ahorrar	verb	1494	7279	mixed	no	yes	daily			1471	1230	
+随机50	desventurado	adj	2319		mixed	no	no	daily			1171		
+随机50	miembro	noun	225	1960	mixed	no	yes	daily		128	1471	620	
+随机50	póliza	noun	4968	12326	mixed	no	yes	daily				4345	
+随机50	eco	noun	3986	8207	mixed	yes	no	creative				3187	
+随机50	interpretación	noun	4156	8792	mixed	no	yes	daily				3385	
+随机50	pandero	noun	2707		mixed	no	no	daily			1471		
+随机50	enterrar	verb	2455	7094	mixed	no	no	daily				1246	
+随机50	atento	adj	4599	9619	mixed	no	yes	daily				3915	
+随机50	irresponsable	adj	4520	10419	mixed	no	no	daily				3826	
+随机50	furia	noun	1775	6401	mixed	no	yes	daily			1171	2758	
+随机50	septiembre	noun	480	4215	mixed	no	no	daily		266		1948	
+随机50	venir	verb	51	339	mixed	yes	yes	daily		266	25	35	
+随机50	despreciar	verb	1899	22812	mixed	no	no	daily			1171	3726	
+随机50	satisfacción	noun	1850	7671	mixed	no	no	daily			1171	3283	
+随机50	inapropiado	adj	3918	9532	mixed	no	no	daily				3100	
+随机50	liderar	verb	503	16143	mixed	no	yes	daily		266		2869	
+随机50	pálido	adj	1368	10021	mixed	no	yes	daily			670	3795	
+随机50	bloquear	verb	2590	8707	mixed	no	yes	daily				1406	
+随机50	estatal	adj	3175	5114	mixed	no	yes	daily				2135	
+随机50	dejar	verb	26	347	mixed	yes	yes	daily		81	38	26	
+随机50	entrenamiento	noun	460	2463	mixed	no	yes	daily		266		1256	
+随机50	acertar	verb	1143	24771	mixed	no	yes	daily			512	3804	
+随机50	interferencia	noun	4384	11612	mixed	no	yes	daily				3668	
+随机50	gobernador	adj,noun	2573	2712	mixed	no	yes	daily				1383	
+随机50	osar	verb	1735		mixed	no	no	daily			777		
+随机50	temporal	adj,noun	1695	3644	mixed	no	yes	daily			1471	1692	
+随机50	aspirar	verb	4706	16847	mixed	yes	no	creative				4036	
+随机50	mapa	noun	2163	2241	mixed	no	no	daily				1060	
+随机50	señal	noun	723	1008	mixed	no	yes	daily			412	584	
+随机50	honorable	adj	3510	6284	mixed	no	yes	daily				2589	
+随机50	brutal	adj	3605	6836	mixed	no	yes	daily				2708	
+随机50	cora	noun	4996	11112	mixed	no	yes	daily				4378	
+随机50	casero	adj,noun	1830	8815	mixed	yes	yes	daily			1171	3110	
+随机50	exhausto	adj	4293	13978	mixed	no	no	daily				3558	
+随机50	sepulturero	noun	2477	34572	mixed	no	yes	daily			1471	9837	
+随机50	frontera	noun	354	2677	mixed	yes	yes	creative		182		1399	

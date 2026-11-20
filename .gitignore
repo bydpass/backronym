@@ -2,6 +2,7 @@ scripts/.cache/
 dist/
 .DS_Store
 review/lexicon/*/candidates.tsv
+review/lexicon/*/gender-senses.candidates.tsv
 review/lexicon/*/merged.tsv
 review/lexicon/*/shard-*.tsv
 review/lexicon/*/_recovery/
@@ -45,3 +46,14 @@ review/t19-batches/t19-*/final-scan/
 review/t19-batches/t19-*/latin-final/
 review/t19-batches/t19-*/edges-*.json
 review/t19-batches/t19-*/rebuild/
+
+# AOCI agent host integration (machine-bound; do not commit)
+.mcp.json
+.mcp.json.backup.*
+
+# 正式词库重建批次，区别于各轮丢弃的临时 rebuild 目录。
+!review/t19-batches/rebuild-20261119/
+!review/t19-batches/rebuild-20261119/**
+
+# 子代理的独立 git 工作树（Claude Code），不入库
+.claude/worktrees/

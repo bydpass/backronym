@@ -16,12 +16,13 @@ await new Promise(r=>server.listen(0,'127.0.0.1',r));
 let browser;
 try{
  browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});
+ // 这个历史页面固定读取 device-20261117；L05 加入代词后，按可见义项重新核过固定计数。
  const page=await browser.newPage({viewport:{width:375,height:800}}),errors=[];
  const oldWordRequests=[];page.on('request',r=>{if(/\/lang\/[^/]+\/words\.js/.test(r.url()))oldWordRequests.push(r.url());});
  page.on('pageerror',e=>errors.push(e.message));
  await page.goto(`http://127.0.0.1:${server.address().port}/plans/v00.03.00/scope-picker.html`);
  await page.waitForFunction(()=>!document.getElementById('lookup').disabled);
- assert.equal(await page.locator('#results article').count(),783);
+ assert.equal(await page.locator('#results article').count(),992);
  for(const [language,word,gloss,note] of [['en','off','离开','主要用于祈使'],['fr','absenter','暂离（反身）','s’absenter'],['de','entfernen','离开（反身）','sich entfernen'],['es','ausentar','离开（反身）','ausentarse'],['it','sentirci','能听见','听力能力']]){
   await page.selectOption('#language',language);await page.waitForFunction(()=>!document.getElementById('lookup').disabled);
   await page.fill('#query',word);await page.click('#lookup');
@@ -45,20 +46,20 @@ try{
  assert.equal(await page.locator('#results article').count(),1);
  assert.ok((await page.locator('#results').innerText()).includes('安托万'));
  assert.ok((await page.locator('#results').innerText()).includes('性别：m · 来源语言：fr'));
- await page.click('#browse');assert.equal(await page.locator('#results article').count(),783);
+ await page.click('#browse');assert.equal(await page.locator('#results article').count(),992);
 
  await page.fill('#query','one');await page.click('#lookup');
  assert.equal(await page.locator('#results article').count(),1);
  assert.ok((await page.locator('#results').innerText()).includes('numerals'));
- await page.click('#browse');assert.equal(await page.locator('#results article').count(),783);
+ await page.click('#browse');assert.equal(await page.locator('#results article').count(),992);
 
  assert.equal(await page.locator('#results h2').filter({hasText:/^metaphor$/}).count(),0);
  await page.check('[name=expanded][value=professional-humanities]');
- assert.equal(await page.locator('#results article').count(),856);
+ assert.equal(await page.locator('#results article').count(),1065);
  assert.equal(await page.locator('#results h2').filter({hasText:/^metaphor$/}).count(),1);
  await page.check('[name=expanded][value=professional-natural]');
- assert.equal(await page.locator('#results article').count(),919);
- await page.click('#browse');assert.equal(await page.locator('#results article').count(),783);
+ assert.equal(await page.locator('#results article').count(),1128);
+ await page.click('#browse');assert.equal(await page.locator('#results article').count(),992);
  await page.fill('#query','metaphor');await page.click('#lookup');
  assert.ok((await page.locator('#results').innerText()).includes('隐喻'));
  assert.ok((await page.locator('#results').innerText()).includes('professional-humanities'));
@@ -78,10 +79,10 @@ try{
  await page.selectOption('#language','de');await page.waitForFunction(()=>document.getElementById('status').textContent.includes('已停止展示'));
  assert.equal(await page.locator('#results article').count(),0);assert.ok(await page.locator('#lookup').isDisabled());
  await page.unroute('**/compiled/de/*.json');await page.click('#retry');await page.waitForFunction(()=>!document.getElementById('lookup').disabled);
- assert.equal(await page.locator('#results article').count(),560);
- await page.selectOption('#language','la');await page.waitForFunction(()=>!document.getElementById('lookup').disabled);assert.equal(await page.locator('#results article').count(),546);
+ assert.equal(await page.locator('#results article').count(),774);
+ await page.selectOption('#language','la');await page.waitForFunction(()=>!document.getElementById('lookup').disabled);assert.equal(await page.locator('#results article').count(),696);
  await page.selectOption('#language','es');await page.selectOption('#language','it');await page.waitForFunction(()=>!document.getElementById('lookup').disabled&&document.getElementById('status').textContent.startsWith('it'));
- assert.equal(await page.locator('#results article').count(),626);
+ assert.equal(await page.locator('#results article').count(),818);
  await page.click('#random');assert.ok((await page.locator('#status').innerText()).includes('随机样本'));
  assert.ok(!(await page.locator('#results').innerText()).includes('numerals'),'random must exclude real numerals');
  assert.ok(!(await page.locator('#results').innerText()).includes('names'),'random must exclude names');
@@ -118,7 +119,14 @@ try{
   await page.fill('#query',word);await page.click('#lookup');const result=await page.locator('#results').innerText();
   assert.ok(result.includes(gloss),word+' 交付50');assert.ok(result.includes(note),word+' 说明');
  }
- for(const [language,word] of [['de','Hüte'],['de','Hutes'],['de','Hütchen'],['de','schon'],['de','Sees'],['fr','morte'],['fr','age'],['it','dramme'],['la','legavi'],['la','edulio']]){
+ // 交付61起德语副词 schon「已经」准入（检查器11-17改读交付63），不再列为交付50的负例
+ await page.selectOption('#language','de');await page.waitForFunction(()=>!document.getElementById('lookup').disabled);
+ await page.fill('#query','schon');await page.click('#lookup');assert.ok((await page.locator('#results').innerText()).includes('已经'),'schon 交付61准入');
+ // 交付61起法语 morte 是 mourir 的词形，是合理命中；交付50要防的是 morte 借到名词 mort「死亡」
+ await page.selectOption('#language','fr');await page.waitForFunction(()=>!document.getElementById('lookup').disabled);
+ await page.fill('#query','morte');await page.click('#lookup');
+ {const t=await page.locator('#results').innerText();assert.ok(t.includes('mourir')&&!t.includes('死亡'),'morte 指向 mourir，不借到 mort');}
+ for(const [language,word] of [['de','Hüte'],['de','Hutes'],['de','Hütchen'],['de','Sees'],['fr','age'],['it','dramme'],['la','legavi'],['la','edulio']]){
   await page.selectOption('#language',language);await page.waitForFunction(()=>!document.getElementById('lookup').disabled);
   await page.fill('#query',word);await page.click('#lookup');assert.equal(await page.locator('#results article').count(),0,word+' 交付50不应可查');
  }
@@ -326,10 +334,10 @@ try{
  }
  await page.selectOption('#language','la');await page.waitForFunction(()=>!document.getElementById('lookup').disabled);
  // 交付46起拉丁语有日用与创作类准入词，默认列表不再为空；命名用的专业词仍须主动展开。
- assert.equal(await page.locator('#results article').count(),546,'拉丁默认只含日用与创作类');
+ assert.equal(await page.locator('#results article').count(),696,'拉丁默认含日用、创作与获准的代词');
  assert.equal(await page.locator('#results h2').filter({hasText:/^albus$/}).count(),0,'命名专业词默认不展示');
  await page.check('[name=expanded][value=professional-natural]');
- assert.equal(await page.locator('#results article').count(),579,'拉丁命名词主动展开');
+ assert.equal(await page.locator('#results article').count(),729,'拉丁命名词主动展开');
  assert.equal(await page.locator('#results h2').filter({hasText:/^albus$/}).count(),1,'展开后可见命名专业词');
  for(const [word,gloss] of [['albus','白色的'],['alba','白色的'],['niger','黑色的'],['nigra','黑色的'],['aureum','金色的'],['aquātilis','水生的'],['aquatilis','水生的'],['aquātile','水生的'],['aquatile','水生的'],['aquatilia','水生的'],['rubra','红色的'],['longifolia','长叶的'],['angustifolia','狭叶的'],['grandiflora','大花的'],['parviflora','小花的'],['montana','山地的']]){
   await page.fill('#query',word);await page.click('#lookup');
@@ -355,7 +363,7 @@ try{
   await missing.evaluate(()=>window.restoreCapability());
   await missing.click('#retry');
   await missing.waitForFunction(()=>!document.getElementById('lookup').disabled);
-  assert.equal(await missing.locator('#results article').count(),783);
+  assert.equal(await missing.locator('#results article').count(),992);
   assert.deepEqual(failures,[]);
   await missing.close();
  }
@@ -386,7 +394,7 @@ try{
  for(const [lang,word,forbidden] of [['es','comiendo','食物（古）'],['fr','nous','理智'],['it','doma','苍穹（书）'],['la','entem','存在者（教）'],['la','essentiāliter','本质的（教）']]){
   await page.selectOption('#language',lang);await page.waitForFunction(()=>!document.getElementById('lookup').disabled);
   await page.fill('#query',word);await page.click('#lookup');
-  assert.ok(!(await page.locator('#results article p').allTextContents()).some(t=>t.includes(forbidden)),word+' 不得串入续核义项');
+  assert.ok(!(await page.locator('#results article h2 + p').allTextContents()).some(t=>t.includes(forbidden)),word+' 不得串入续核义项');
  }
  // 批次51复审返工：本义正例、同形错借与待核隔离。
  for(const [language,word,gloss] of [['la','animatu','呼吸（罕）'],['la','cubitūs','卧榻（罕）'],['la','cursio','奔跑（罕）'],['la','lymphor','水（罕）'],['la','īr','手掌（罕）'],['la','papas','食物（罕）'],['la','albam','黎明（罕）'],['la','marcam','边境（教）']]){

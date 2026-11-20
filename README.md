@@ -17,20 +17,20 @@ E  Eternal    永恒的，永远的    ← 首字母标朱红
 
 ## 01　用法
 
-1. 在入场页选语言（可多选，选中的语言一律平等），输入单词（字母或数字，最多 14 个字符）和填表人，也可选一个预设词，再点“开始填充”。超过 10 格时列阵分两张导出。
+1. 在入场页选语言（可多选，选中的语言一律平等），输入单词（字母或数字，最多 14 个字符）和填表人，也可选一个预设词，再点“开始填充”。
 2. 每个字符一格。直接在卡上打一个以该字母开头的词（数字格以该数字或其读法的首字母开头都算对）；候选栏每次给 8 个灵感，可点「下一批」或「随机一个」。候选只来自该首字母。
 3. 首字母固定标朱红；要改单词或填表人，从编辑页返回入场页，有内容将被清空时先确认。
 4. 补释义（默认带出词库释义，可改）、配文、配图；标题留空时导出单词本身。
-5. 点「完成」：先检查每格合法和屏蔽词，再逐张导出——单图每个字母一张，列阵全部格子一张。
+5. 点「完成」后，工具检查每格是否合法、是否命中屏蔽词，再按当前视图导出。
 
 四个主题（fandom、单色画、印象派、分离派），各有自己的颜色和字体，卡和导出图跟着主题走。fandom 只有浅色；其余三个有深浅三档（跟随系统 / 浅 / 深）。
 
-候选词来自内置词库：六门语言共 5,535 条人工核过的义项，带中文释义；法、德、西、意、拉丁的名词带冠词，动词的常用变位也能查到。
+候选词来自内置词库：六门语言共 5,865 条人工核过的义项，带中文释义；法、德、西、意的名词按义项标注冠词，动词的常用变位也能查到。
 
 ## 02　产品边界
 
 - 路线「4 + 1」：**在图上编辑**，编辑时看到的就是导出的那张图；**词库是灵感，不是答案**，先打自己的词。
-- 单图与列阵都是产物，默认单图。
+- 单图与列阵都可以导出，默认单图。单图每个字符一张，按输入顺序排列；列阵把各格合排，10 格以内一张，11～14 格分两张。例如输入 LOVE，单图导出四张，列阵导出一张。
 - 不做：账号、社区、信息流；AI 生成；背单词 / 教学。
 
 ## 03　开发
@@ -44,7 +44,7 @@ npm run audit      # 审计 app/ 的文件与体积（不检查 ES2017 语法或
 npm run pack       # test → 审计 → dist/backronym.zip（小红书版，含屏蔽器）
 npm run pack:web   # dist/web/（外链网页版，同样含屏蔽器）
 npm run packs      # 从 review/t19-batches 里的当前批次重新生成六语词包
-npm run licenses   # 从 app/LICENSES/*.txt 重新生成借物页用的许可全文
+npm run licenses   # 从 LICENSES/*.txt 重新生成许可全文的两种载体（app/LICENSES/*.html 只进网页版；借物页展开时读的 licenses.js 两版都带）
 npm run dict       # 旧管线：重新生成英语词库（需 scripts/.cache/ecdict.csv）
 npm run fonts      # 重新生成字体子集（需原始字体 + pyftsubset）
 ```
@@ -56,7 +56,7 @@ npm run fonts      # 重新生成字体子集（需原始字体 + pyftsubset）
 ## 04　结构
 
 ```
-app/                 原样打成 zip 的离线 H5
+app/                 离线 H5（小红书 zip 打包时排除 LICENSES/ 与隐藏文件）
   index.html
   assets/
     lang/<语言>/      六个语言包（en fr de es it la）：words.js 词库（生成产物）、rules.js 字母规则、block.js 屏蔽词表
@@ -72,7 +72,7 @@ app/                 原样打成 zip 的离线 H5
     app.js           事件绑定与启动（模块加载顺序及共享状态见 docs/agent/architecture.md）
     style.css
     fonts/           界面字体与四套主题字体的子集
-  LICENSES/          许可全文（GPL-3.0、CC BY-SA 4.0 与 3.0、CC BY 4.0、MIT、OFL 1.1）
+  LICENSES/          许可全文的独立网页（生成产物，只进外链网页版；小红书包只许一个 html，不带它）
 scripts/             构建、测试、回归脚本
 design/              设计记录；第六稿母版 folio-swiss.html
 docs/                项目地图（file-map.html）、代理规则细则
@@ -105,7 +105,7 @@ plans/v00.02.01/     待执行的真机清单（上一版的任务表与交付�
 
 **省流**（与应用里「借物与版权」页是同一段文字）
 
-- **可以**：用本工具做的图，署名即可商用（署名可写「版式：藏头 - Backronym，CC BY 4.0，creativecommons.org/licenses/by/4.0」）；代码可以改，可以商用。
+- **可以**：用本工具做的图，署名即可商用（署名可写「版式：藏头 - Backronym（BeyondPassenger），CC BY 4.0，creativecommons.org/licenses/by/4.0」；图上直接取自词库的释义仍按词库的许可）；代码可以改，可以商用。
 - **不可以**：把改过的程序分发给别人，却不向对方提供源码；删掉署名或许可声明；把设计稿与文档拿去商用。
 - **注意**：第三方资源各守原许可；一切以许可原文为准，这段中文说明不具法律效力；本工具不提供担保。
 
@@ -113,12 +113,13 @@ plans/v00.02.01/     待执行的真机清单（上一版的任务表与交付�
 
 | 部分 | 许可 | 全文 |
 |---|---|---|
-| 代码（`app/`、`scripts/`，含写在代码里的界面文案） | GPL-3.0-or-later（GNU 通用公共许可证第 3 版，或由你选择的任一更新版本） | [`LICENSE`](LICENSE) |
-| 五门西文词库（`app/assets/lang/{fr,de,es,it,la}/words.js` 及其在 `review/` 下的来源数据） | CC BY-SA 4.0 | [`app/LICENSES/CC-BY-SA-4.0.txt`](app/LICENSES/CC-BY-SA-4.0.txt) |
-| 英语词库 | 派生自 [ECDICT](https://github.com/skywind3000/ECDICT)，MIT，© 2025 Linwei | [`app/LICENSES/MIT.txt`](app/LICENSES/MIT.txt) |
+| 代码（`app/`、`scripts/`，含写在代码里的界面文案；下面单列的数据文件除外） | GPL-3.0-or-later（GNU 通用公共许可证第 3 版，或由你选择的任一更新版本） | [`LICENSE`](LICENSE) |
+| 五门西文词库（`app/assets/lang/{fr,de,es,it,la}/words.js` 及其在 `review/` 下的来源数据） | CC BY-SA 4.0 | [`LICENSES/CC-BY-SA-4.0.txt`](LICENSES/CC-BY-SA-4.0.txt) |
+| 词频排名（`scripts/t19/pack-ranks.json`，以及 `review/lexicon/de/selection-baseline.tsv` 的得分列）：只用来给候选词排序，由下列来源的数据整理而成 | 法、德、西、意：FrequencyWords（Hermit Dave）的词频计数，经维基词典的词形归并到原形，CC BY-SA 4.0；拉丁语：先按 Whitaker's Words 的 FREQ 等级（作者的自由使用声明，原句见借物页），同级再按 Dickinson College Commentaries 核心词表的名次（CC BY-SA 3.0 Unported）；英语：ECDICT 的词频名次列（frq、bnc；功能词排在最后），MIT | `LICENSES/` 下的 CC-BY-SA-4.0、CC-BY-SA-3.0、MIT 全文；Whitaker 的声明见借物页 |
+| 英语词库 | 派生自 [ECDICT](https://github.com/skywind3000/ECDICT)，MIT，© 2025 Linwei | [`LICENSES/MIT.txt`](LICENSES/MIT.txt) |
 | 设计稿与文档（`design/`、`docs/`） | CC BY-NC-SA 4.0 | <https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode> |
-| 用本工具做出的图 | 属于本工具的版式部分 CC BY 4.0；制作者自己写的文字、放的照片归制作者，直接取自词库的释义仍按词库的许可 | [`app/LICENSES/CC-BY-4.0.txt`](app/LICENSES/CC-BY-4.0.txt) |
-| 字体 | SIL Open Font License 1.1，各版权人见全文开头 | [`app/LICENSES/OFL-1.1.txt`](app/LICENSES/OFL-1.1.txt) |
+| 用本工具做出的图 | 属于本工具的版式部分 CC BY 4.0；制作者自己写的文字、放的照片归制作者，直接取自词库的释义仍按词库的许可 | [`LICENSES/CC-BY-4.0.txt`](LICENSES/CC-BY-4.0.txt) |
+| 字体 | SIL Open Font License 1.1，各版权人见全文开头 | [`LICENSES/OFL-1.1.txt`](LICENSES/OFL-1.1.txt) |
 
 本程序不提供任何担保，详见 GPL 第 15、16 条。
 

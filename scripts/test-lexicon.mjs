@@ -302,7 +302,12 @@ for (const l of LANGS) {
 CORE.useLang("fr");
 assert.equal(CORE.containsLetter("école", "É"), true, "É 格：école 算对"); assert.equal(CORE.containsLetter("Ecole", "É"), true, "不带变音符的写法也算对"); assert.equal(CORE.containsLetter("ami", "É"), false);
 // v00.03.00 界面重构：格首提示列全写法（带变音符的格「É 或 E」、西文数字格写出读法）；候选按比较写法匹配（去变音符、不分大小写）
-assert.equal(["É", "E", "Ç", "0", "7"].map(l => CORE.startText(l)).join(" | "), "É 或 E | E | Ç 或 C | Z（zéro）或 0 | S（sept）或 7");
+assert.equal(["É", "E", "Ç", "0", "7"].map(l => CORE.startText(l)).join(" | "), "É/E | E | Ç/C | Z | S");
+// v00.03.01 R03（真机 2666 提示过长）：六门全选时首字母去重，deux / dos / due / duo 都只写一个 D；英语的 zero 因 Z 已在列里不再写
+CORE.useLangs(["en", "fr", "de", "es", "it", "la"]);
+assert.equal(["2", "6", "0"].map(l => CORE.startText(l)).join(" | "), "T/D/Z | S | O/Z/N/C", "多选时数字格只列去重后的首字母");
+assert.equal(CORE.containsLetter("zwei", "2") && CORE.containsLetter("dos", "2") && CORE.containsLetter("two", "2"), true, "提示变短，校验不变");
+CORE.useLang("fr");
 {
   const W = { e: [["été", "n.夏天", "l’"], ["effet", "n.效果", "l’"], ["mettre", "v.放"]], l: [["lieben", "v.爱"], ["Liebe", "n.爱", "die"]] };
   assert.equal(CORE.candidates(W, "É", "ete", () => false)[0][0], "été", "打 ete 找到 été");
@@ -311,13 +316,13 @@ assert.equal(["É", "E", "Ç", "0", "7"].map(l => CORE.startText(l)).join(" | ")
 }
 assert.equal(CORE.rewriteWord("école").value, "École", "格里的词保留原样、首字母大写"); assert.equal(CORE.containsLetter("œuvre", "O"), true, "œ 按 oe 比对");
 assert.equal(CORE.rewriteWord("pour un oui ou pour un non").value, "Pour un oui ou pour un non", "26 个字符的短语能打下");
-assert.equal(CORE.rewriteWord("pour le meilleur et pour le pire").value.length, 28, "32 个字符：只收到 28（超限提示在界面层，T20 / T28 的界面部分）");
+assert.equal(CORE.rewriteWord("pour le meilleur et pour le pire").value, "Pour le meilleur et pour le pire", "词间空格不占格内字数");
 CORE.useLang("de");
 assert.equal(CORE.containsLetter("straße", "S"), true); assert.equal(CORE.containsLetter("Über", "U"), true, "U 格：Über 算对"); assert.equal(CORE.containsLetter("über", "Ü"), true);
 for (const w of ["Verteidigungsministerium", "Wohltätigkeitsorganisationen", "Über Gott und die Welt reden"]) assert.equal(CORE.rewriteWord(w).value, w, w.length + " 个字符能打下：" + w);
 assert.equal(CORE.rewriteWord("x".repeat(29)).value.length, 28, "29 个字符超限");
-CORE.useLang("en"); assert.equal(CORE.normalizeWord("été"), "T", "英语规则不变");
-assert.equal(CORE.LANG.wordMax, 20); assert.equal(CORE.rewriteWord("x".repeat(29)).value.length, 20, "英文格内上限仍是 20");
+CORE.useLang("en"); assert.equal(CORE.normalizeWord("été"), "ÉTÉ", "英语也留带变音符的字母（v00.03.01 R07）");
+assert.equal(CORE.LANG.wordMax, 28); assert.equal(CORE.rewriteWord("x".repeat(29)).value.length, 28, "英文格内上限 28（v00.03.01 E2，同西文）");
 
 // ---------- T15：生成的词库结构 ----------
 const ARTS = { fr: /^(le|la|l’|les|le \/ la)$/, de: /^(der|die|das|der \/ die|der \/ das|die \/ das)$/, es: /^(el|la|el \/ la|los|las|los \/ las)$/, it: /^(il|lo|la|l’|il \/ la|lo \/ la|l’ \/ la|i|gli|le|i \/ le|gli \/ le)$/, la: /^$/ };

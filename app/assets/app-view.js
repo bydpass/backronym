@@ -2,42 +2,61 @@
 (function (app) {
   "use strict";
   app.view = {};
-  var CORE = app.model.CORE, state = app.model.state, el = app.model.el, capitalize = app.model.capitalize;
+  var CORE = app.model.CORE, state = app.model.state, el = app.model.el;
 
   // ---------- 画图 ----------
 
-  function newCanvas(W, H, palette) {
-    var canvas = document.createElement("canvas");
-    canvas.width = W;
-    canvas.height = H;
-    var ctx = canvas.getContext("2d");
-    ctx.fillStyle = palette.bg;
-    ctx.fillRect(0, 0, W, H);
-    ctx.textBaseline = "alphabetic";
-    return { canvas: canvas, ctx: ctx };
+  // scale：导出倍率（v00.03.01 R06：1.5，1080 → 1620）。画布按倍率放大、ctx 同比缩放，版式坐标仍是 1080 制，不重新排版
+  // 画到一半抛错（多半是大画布内存不够，getContext 返回 null 或画字失败）：先把画布归零再抛。调用方拿不到这张画布，没法自己释放；
+  // 导出会接着按 1 倍重画（app-publish.js exportAll），不归零的话 1.5 倍那张要等回收才放掉（v00.03.01 复审）
+  function paintCanvas(L, palette, scale) {
+    var s = scale || 1, canvas = document.createElement("canvas");
+    canvas.width = Math.round(L.W * s);
+    canvas.height = Math.round(L.H * s);
+    try {
+      var ctx = canvas.getContext("2d");
+      if (s !== 1) ctx.scale(s, s);
+      ctx.fillStyle = palette.bg;
+      ctx.fillRect(0, 0, L.W, L.H);
+      ctx.textBaseline = "alphabetic";
+      paintBoxes(ctx, L, palette);
+    } catch (e) {
+      canvas.width = canvas.height = 0;
+      throw e;
+    }
+    return canvas;
   }
 
   // 列阵视图：图版阵列；坐标全在 CORE.layoutGrid（D14），这里只按框画
-  function drawGrid(palette, sheet) { // T42：sheet = [起, 止)，超过 10 格时每张单独导出
-    var L = CORE.layoutGrid(layoutData(0), measure, sheet);
-    var cv = newCanvas(L.W, L.H, palette);
-    paintBoxes(cv.ctx, L, palette);
-    return cv.canvas;
+  function drawGrid(palette, sheet, scale) { // T42：sheet = [起, 止)，超过 10 格时每张单独导出
+    return paintCanvas(CORE.layoutGrid(layoutData(0), measure, sheet), palette, scale);
   }
 
   // 单图视图：1080×1440，信息栏 - 墨线 - 标题 - 图版 - 单词 - 墨条 - 释义 - 配文；坐标全在 CORE.layoutCard（D14）
-  function drawCard(i, palette) {
-    var L = CORE.layoutCard(layoutData(i), measure);
-    var cv = newCanvas(L.W, L.H, palette);
-    paintBoxes(cv.ctx, L, palette);
-    return cv.canvas;
+  function drawCard(i, palette, scale) {
+    return paintCanvas(CORE.layoutCard(layoutData(i), measure), palette, scale);
   }
 
   // 版式的输入：只放纯数据，版式函数不碰 state / DOM
   function layoutData(i, edit) {
+    // 编辑面上输入法正在组字：这一格先按框里正在组的字画（app-editor.js 的 composePreview），不动数据。导出不走这里
+    var picks = state.picks, glosses = state.glosses, captions = state.captions;
+    var pv = edit && app.editor && app.editor.composePreview ? app.editor.composePreview(i) : null;
+    if (pv) {
+      var v = pv.value.replace(/^\s+/, "");
+      if (pv.kind === "word") { picks = picks.slice(); picks[i] = v ? [v].concat(picks[i] ? picks[i].slice(1) : []) : null; }
+      else if (pv.kind === "gloss") { glosses = glosses.slice(); glosses[i] = v; }
+      else { captions = captions.slice(); captions[i] = v.replace(/[\r\n]+/g, " "); }
+    }
     return {
       edit: !!edit, // 编辑面：空释义 / 空配文画灰色占位（CORE.layoutCard）；导出不传
-      letters: state.letters, i: i, picks: state.picks, glosses: state.glosses, captions: state.captions,
+      letters: state.letters, i: i, picks: picks, glosses: glosses, captions: captions,
+      // 显示用的词（按格内命中的词条显示）。组字预览中的这一格按预览的词算，大小写规则同 displayWord
+      displayWords: state.letters.map(function (l, k) {
+        if (!(pv && pv.kind === "word" && k === i)) return app.model.displayWord(k);
+        var w = picks[k] ? picks[k][0] : "";
+        return app.model.previewWord(w);
+      }),
       // 标题框没字 = 留空，导出时用单词（D17）
       titleRuns: app.title.hasTitle() ? app.title.titleRuns() : [], word: state.letters.join(""),
       filler: state.filler, hasImage: function (k) { return !!app.model.cellImage(k); },
@@ -50,7 +69,7 @@
     var g = (state.glosses[i] || "").trim();
     var c = state.view === "single" ? (state.captions[i] || "").trim() : "";
     var a = app.model.articleText(i);
-    return (a ? a + (/[\u2019']$/.test(a) ? "" : " ") : "") + capitalize(state.picks[i][0]) + (g ? "（" + g + "）" : "") + (c ? "，配文：" + c : "");
+    return (a ? a + (/[\u2019']$/.test(a) ? "" : " ") : "") + app.model.displayWord(i) + (g ? "（" + g + "）" : "") + (c ? "，配文：" + c : "");
   }
 
   // canvas 不会等 @font-face 下载，画之前必须先把要用的字体加载好，否则第一次生成会用系统字体
@@ -343,7 +362,7 @@
       b.appendChild(app.model.make("span", null, letter));
       b.type = "button";
       b.id = "pl-" + i;
-      b.setAttribute("aria-label", "第 " + (i + 1) + " 格 " + letter + "，" + (st === "ok" ? "已选 " + capitalize(state.picks[i][0]) : st === "bad" ? "词不是以 " + CORE.startText(letter) + " 开头" : "还没选"));
+      b.setAttribute("aria-label", "第 " + (i + 1) + " 格 " + letter + "，" + (st === "ok" ? "已选 " + app.model.displayWord(i) : st === "bad" ? "词不是以 " + CORE.startSpoken(letter) + " 开头" : "还没选"));
       if (i === cur) b.setAttribute("aria-current", "step");
       b.addEventListener("click", function () { app.model.setFocus(i, "pl-" + i); });
       (row || el.pagerLetters).appendChild(b);

@@ -8,17 +8,21 @@ npm test           # 全部自检脚本（清单见 package.json）串行（v00.
 npm run audit      # 只审计 app/ 的文件与体积（语法和运行行为另测），不打包
 npm run pack       # test → 审计 app/ → 打 zip → 再审计 zip 体积
 npm run pack:web   # 外链网页版 → dist/web/
-npm run packs      # T19（2026-11-11）起的正式词包：从已复审的新范围词库（scripts/t19/build-packs.mjs 里的 DEFAULT_COMPILED）生成六语 app/assets/lang/<语种>/words.js 与 en/phrases.js；改完跑 npm run fonts
+npm run packs      # T19（2026-11-11）起的正式词包：从已复审的新范围词库（scripts/t19/build-packs.mjs 里的 DEFAULT_COMPILED）生成六语 app/assets/lang/<语种>/{words,inflections}.js 与 en/phrases.js；改完跑 npm run fonts
 npm run dict       # 旧管线（英语，ECDICT）。不再写入正式词包：必须设 BACKRONYM_DICT_OUT=<目录> 做隔离核对
 npm run block      # v00.03.00 T23：西文五语屏蔽词表 app/assets/lang/<语种>/block.js + 送审表 review/lexicon/block-review.tsv（读候选表与审核文件）
 npm run lexicon:extract  # v00.03.00 第 2 批：kaikki JSONL → scripts/.cache/v003/stage/<语种>.json（原始数据已于 11-11 删除，要重跑先按 scripts/.cache/v003/MANIFEST.md 重新下载，约 4.5 GB）
 npm run lexicon    # 旧管线（西文五语）。不再写入正式词包：必须设 BACKRONYM_LEXICON_OUT=<目录> 做隔离核对；可只跑几门：npm run lexicon -- fr de
+python3 scripts/lexicon3/rank.py [fr de ...]   # 第三次重建第 1 段：选词与排名（法 Lexique、西意德字幕 × ParlaMint 占比、更正表与降档表）→ review/lexicon-rebuild-3/candidates/；依赖 scripts/.cache/{v003,lexique410,parlamint}，见 docs/lexicon-spec.md 第 10 节
+node --max-old-space-size=8192 review/t19-batches/rebuild-20261119/build.mjs <空目录>   # 第三次重建合并后的正式构建：默认读 rank.py 的候选；把输出的 lexicon/、compiled/ 与 pack-ranks.json、pack-hyphenation.json、pending.tsv 换进该批次目录，再 npm run packs、npm run fonts；python3 scripts/lexicon3/clear.py <输出目录>/pending.tsv 报「新增 0」才算收敛
 npm run lexicon:check    # 只检查审核文件（dsh-NNN.tsv / codex-NNN.tsv）的格式，不生成词库；可只查几门：npm run lexicon:check -- fr de
 npm run lexicon:audit    # 主会话按规则独立核对普查与复审结果，写 review/lexicon/<语种>/audit.json；--samples 出抽样表，--after-build 核对 words.js 实际写入值（用法见 scripts/lexicon/audit-review.mjs 文件头）
-npm run licenses   # 许可全文（T07）：从 app/LICENSES/*.txt 生成借物页展开时读的 app/assets/licenses.js；改了哪份全文就重跑，test-app 会比对
+npm run licenses   # 许可全文（T07）：从仓库根目录 LICENSES/*.txt 生成 app/LICENSES/*.html（只进外链网页版，小红书 zip 排除）和借物页展开时读的 app/assets/licenses.js；改了哪份全文就重跑，test-app 会比对
 npm run fonts      # 重新生成字体子集（需 scripts/.cache/fonts/ 原始字体 + pyftsubset；本机用 PYFTSUBSET=$PWD/scripts/.cache/font-tools-venv/bin/pyftsubset npm run fonts）
 node scripts/test-core.mjs   # 全部自检脚本（清单见 package.json）都能单独跑（只改了 core.js 时只跑这个即可）
 ```
+
+正式词包生成器可以直接写到空目录。调整准入范围时，先运行 `node scripts/t19/pack-ranks.mjs <编译目录> <新排名文件> <新断词文件>`，核对后更新 `scripts/t19/pack-ranks.json` 与 `pack-hyphenation.json`。命令从固定旧管线词包提取已有记录；常规 `npm run packs` 无需读取旧成品。
 
 可选的浏览器草稿回归 `scripts/test-draft-browser.mjs` 不在 `npm test` 里：用已安装的 Playwright 起本地临时端口、新上下文，不碰预览页存储。需要指定模块与浏览器路径（见文件头），例如本机：
 
@@ -30,9 +34,11 @@ PLAYWRIGHT_MODULE=/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node
 
 同样用法的 `scripts/test-entry-browser.mjs`（v00.02.01 第 4 批）覆盖入场界面与编辑面：首次进入与纯键盘流程、读屏名、屏蔽词就地说明、改单词清空确认与 `keepSame`、慢读取期间点预设 / 进入无效、义项栏隐藏配文（T02）、只改文字不重画照片；第七批批次 2 起还覆盖 T49 精简后的提示行 / 候选标签，以及 T30 改词页保存（五态、返回三选一、Esc / 点外面 / 焦点归还、清空确认联动、回车、写入失败重试、保存中点返回、迟到确认）。
 
-同样用法的 `scripts/test-input-browser.mjs`（第七批批次 1）覆盖输入稳定：320 / 360 / 375 / 414 宽下可聚焦输入框计算字号 ≥ 16px 且缩放后与镜像对齐、DOM 卡与版式一致、滚到底逐字输入不跳、组字开始收候选不跳与组字中回车不提交、切格 / 切视图 / 进出入场页不留锁高、入场页预览与错误行占位、模拟 visualViewport 下只做必要避让。
+同样用法的 `scripts/test-input-browser.mjs`（第七批批次 1）覆盖输入稳定：320 / 360 / 375 / 414 宽下可聚焦输入框计算字号 ≥ 16px 且缩放后与镜像对齐、DOM 卡与版式一致、滚到底逐字输入不跳、组字开始收起候选列表（只留提示行）不跳与组字中回车不提交、切格 / 切视图 / 进出入场页不留锁高、入场页预览与错误行占位、模拟 visualViewport 下只做必要避让。
 
 同样用法的 `scripts/test-panels-browser.mjs`（第 5 批）覆盖面板：借物表语义与折叠键盘操作、320 / 360 / 375 宽十字母单行且点按区 ≥ 24px、取景按钮 / 方向键 / 拖动 / 双指与导出取景一致、自选色立即应用与 3 秒对比度提示（批次 1 起贴在标题下方）、取景标题「调整取景 · nL」与去掉「居中」（批次 2）。
+
+同样用法的 `scripts/test-caption-browser.mjs`（2026-11-17 真机反馈后的界面改动，320 / 393 宽）覆盖：配文字号 48、折行到 3 行、写满后不再接收（含行尾空格）且不丢字、折行时编辑由输入框自己显示；填表人上限 16、信息行字号 34 且不压页码；入场页全数字不写读法；深浅三档选中用墨框加勾、不反色；打开设置页时收起正在显示的提示。加 `SHOT_DIR=<目录>` 会存截图。
 
 同样用法的 `scripts/test-shell-browser.mjs`（第七批批次 2）覆盖外壳：固定顶栏（320 / 360 / 375 / 414 宽滚到底仍贴顶可点、全屏页关闭同理、无横向滚动）、22px 图标与 44×44 点按区、深浅读屏名随档位、获焦元素不被顶栏盖住、界面文字 +1.5px、触屏横滑区（字母栏 / 提示行，按钮上起手、有选区、放大时不切）。
 
@@ -68,10 +74,10 @@ node scripts/design-system/render.mjs <project 目录> <输出目录> EntryScree
 公开仓库只放本地 `public` 分支（不带项目历史，每次更新在它上面加一个提交），推送用 `git push public public:main`，要用户明确授权。没有专门的脚本，取舍规则如下（2026-11-14 验证过：按它从 `04538f1` 取文件，能逐个重现上一版快照的清单）：
 
 - 取当前提交的全部文件，去掉：根目录的 `ROADMAP.md`、`HANDOFF.md`、`AUDIT.MD`；`plans/` 下除 `plans/v00.03.00/T19_CORE.md`、`plans/v00.03.00/picker.js` 以外的全部；`review/` 下除下面这些以外的全部。
-- `review/` 里保留（都是 `npm test` 要读的）：`review/lexicon/README.md`、`review/lexicon/block-review.tsv`、`review/lexicon/de/selection-baseline.tsv`、`review/lexicon/de/supplement.tsv`、`review/presets-20261112b/`、`review/presets-approved.txt`，以及 `review/t19-batches/` 下交付 5、10、11、20、21、50、63 的 `compiled/` 和交付 61 的 `lexicon/`。
+- `review/` 里保留（都是 `npm test` 要读的）：`review/lexicon/README.md`、`review/lexicon/block-review.tsv`、`review/lexicon/de/selection-baseline.tsv`、`review/lexicon/de/supplement.tsv`、`review/presets-20261112b/`、`review/presets-approved.txt`，以及 `review/t19-batches/` 下交付 5、10、11、20、21、50、63 的 `compiled/` 和交付 61 的 `lexicon/`。当前自检还读取 `device-20261117/compiled/`、`device-20261117/check.mjs`、`device-20261117/test-editor.mjs`、`device-20261117/proposals.json`、`device-20261117/colors.json`、`device-20261117/common.json` 和 `device-20261117/proper.json`。词库重建（2026-11-19 起）还要读：`review/t19-batches/rebuild-20261119/compiled/`、`rebuild-20261119/pack-ranks.json`、`rebuild-20261119/pack-hyphenation.json`（后两个缺了会退回 `scripts/t19/` 下的旧快照，分发包对不上），以及 `review/lexicon-rebuild-20261118/` 下的 `candidates/`、`claude-fixes.tsv`、`zh-aliases.json`。2026-11-19 按这份清单从 `89a14d7` 取文件，在没有缓存的临时目录里实测 `npm test` 通过。
 - 另外保留 `public` 分支上已有的 `scripts/fixtures/legacy-packs/` 七个文件（旧管线词包，快照里没有提交历史可取，测试靠它们）。
 
-做法：`git worktree add <临时目录> public`，在里面 `git rm -rq -- . ':!scripts/fixtures/legacy-packs'`，再 `git --literal-pathspecs checkout v00.03.00 --pathspec-from-file=<清单>`；核对文件清单，跑 `npm test`、`npm run audit`、`node scripts/build-web.mjs`，扫一遍个人信息与密钥，然后提交、推送、`git worktree remove`。
+做法（每一步单独跑并看结果，别用 `&&` 和 `;` 混着串成一条：2026-11-14 有一次前面的命令出错，生成清单被跳过，而删除旧文件照样执行了，好在还没提交）：`git worktree add <临时目录> refs/heads/public`（本仓库同时有 `public` 分支和 `public` 远端，只写 `public` 会报引用有歧义），在里面 `git rm -rq -- . ':!scripts/fixtures/legacy-packs'`，再 `git --literal-pathspecs checkout v00.03.00 --pathspec-from-file=<清单>`；核对文件清单，跑 `npm test`、`npm run audit`、`node scripts/build-web.mjs`，扫一遍个人信息与密钥，然后提交、推送、`git worktree remove`。
 
-关于来源缓存：`scripts/.cache/`（约 629 MB，不进 git）放的是词库与字体的原始来源数据，只有重新生成时才需要。`npm test` 里读它的两处（`test-lexicon-scope` 的英语源重建对照、`test-t19-store` 的「从 ECDICT 推英语词形」）在缺 `scripts/.cache/ecdict.csv` 时都会跳过并打印一句说明（后者 2026-11-14 改的），所以干净检出的目录里 `npm test` 直接能过，不必链接缓存。`c084a7f` 那一版公开快照里 `test-t19-store` 还是旧的，克隆后直接跑会在这一项失败；下一版快照带上这次改动后才解决。
+关于来源缓存：`scripts/.cache/`（约 629 MB，不进 git）放的是词库与字体的原始来源数据，只有重新生成时才需要。`npm test` 里读它的两处（`test-lexicon-scope` 的英语源重建对照、`test-t19-store` 的「从 ECDICT 推英语词形」）在缺 `scripts/.cache/ecdict.csv` 时都会跳过并打印一句说明（后者 2026-11-14 改的），所以干净检出的目录里 `npm test` 直接能过，不必链接缓存。公开快照从 `4b3a68d`（2026-11-14）起带着这次改动，在没有缓存的快照目录里实测 `npm test` 通过；更早的 `c084a7f` 及以前克隆后直接跑会在这一项失败。
 

@@ -28,6 +28,11 @@ assert.equal(eligible(record('pending-evidence', { review: { state: 'approved', 
 for (const pos of ['prep', 'postp', 'pron', 'conj', 'det', 'article', 'aux', 'particle', 'contraction', 'intj'])
   assert.equal(admission(record('same', { pos })), 'excluded-use');
 assert.equal(eligible(record('same')), true, 'same spelling lexical noun survives');
+// v00.03.01 L05：代词只在 pronouns 类放行，pronouns 类只收代词；编译包四列兼容行写 pron.
+const pronoun = record('nothing', { pos: 'pron', category: 'pronouns', theme: 'P01', zh: '没有什么' });
+assert.equal(admission(pronoun), null); assert.equal(eligible(pronoun), true);
+assert.equal(admission(record('nothing', { category: 'pronouns', theme: 'P01' })), 'pronoun-category-mismatch');
+assert.equal(compileRecords([pronoun]).bundles['en/pronouns'].records[0].row[1], 'pron.没有什么');
 for (const state of ['unknown', 'has-adjective', 'not-applicable'])
   assert.ok(admission(record('quickly', { pos: 'adv', adverb_relation: { state, evidence: 'fixture' } })));
 assert.equal(admission(record('here', { pos: 'adv', adverb_relation: { state: 'no-adjective', evidence: 'fixture relationship review' } })), null);
@@ -51,8 +56,11 @@ assert.equal(eligible(cultural), false); assert.equal(eligible(cultural, { mode:
 assert.equal(admission(record('rosa', { language: 'la', latin_use: { state: 'pending' } })), 'Latin-use-unverified');
 assert.equal(admission(record('rosa', { language: 'la', latin_use: { state: 'literary', evidence: 'fixture usage evidence' } })), null);
 const daily = record('day', { category: 'daily' }), creative = record('glow');
+daily.evidence.frequency_rank = 20;
+creative.evidence.frequency_rank = 10;
+assert.equal(admission({ ...pronoun, display: 'they' }), 'pronoun-use-excluded');
 assert.equal(rankMatches([{ record: daily, tier: 2 }, { record: creative, tier: 0 }], {})[0].record.sense_id, creative.sense_id);
-assert.equal(rankMatches([{ record: daily, tier: 0 }, { record: creative, tier: 0 }], {})[0].record.sense_id, daily.sense_id);
+assert.equal(rankMatches([{ record: daily, tier: 0 }, { record: creative, tier: 0 }], {})[0].record.sense_id, creative.sense_id);
 assert.equal(rankMatches([{ record: creative, tier: 2 }, { record: creative, tier: 0 }], {}).length, 1);
 const human = record('metaphor', { category: 'professional-humanities' });
 assert.equal(rankMatches([{ record: professional, tier: 0 }, { record: human, tier: 0 }], { mode: 'expanded', expanded: [human.category, professional.category] })[0].record.sense_id, human.sense_id);

@@ -175,7 +175,7 @@
   function colorNotice(weak) {
     var msg = "这个颜色在导出图上容易看不清";
     if (weak) app.model.showToast(msg, 3000);
-    else if (el.toast.textContent === msg) app.model.showToast("", 0); // 只清自己的提醒，不吞掉别的消息
+    else app.model.dropToast(msg); // 只清自己的提醒（含设置页开着时暂存的那条），不吞掉别的消息
   }
 
   // 有选区用选区，没有就全选，再执行格式命令

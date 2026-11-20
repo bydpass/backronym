@@ -62,22 +62,22 @@
   // D14：单图版式（1080×1440 坐标；base = 文字基线，y = 块的上沿）
   var CARD = {
     W: 1080, H: 1440, M: 80, CW: 920,
-    INFO: { base: 96, size: 26 },                       // 左页码、右填表人（右对齐到 M + CW）
+    INFO: { base: 96, size: 50, minFiller: 26 },                       // 左页码、右填表人（右对齐到 M + CW）；2026-11-17 真机反馈后 26 → 34；v00.03.01 U01（用户 11-18 定）34 → 50
     RULE: { y: 120, h: 3 },
     TITLE: { base: 236, size: 76, track: -1, size2: 60, base2: [204, 274] }, // 76 → 60 单行 → 60 两行
     PLATE: { y: 290, h: 600 },
     GIANT: { dx: 48, base: 834, size: 620, track: -8 },  // 无配图时图版里的超大关键字母
     WORD: { base: 1036, size: 120, track: -2, min: 56, step: 4, lead: 64, artMin: 26 }, // lead = 折行后的行距；artMin = 冠词字号下限（v00.03.00）
     BAR: { y: 1068, w: 140, h: 10 },
-    GLOSS: { base: 1158, size: 48 },
-    CAPTION: { base: 1228, size: 38 },
+    GLOSS: { base: 1158, size: 40 }, // v00.03.01 U04（用户 11-18 定乙）：释义次要，48 粗体墨色 → 40 常规灰色；配文改粗体墨色
+    CAPTION: { base: 1228, size: 48, lead: 62, last: 1356 }, // 2026-11-17 真机反馈：38 → 48，可折行；末行基线不超过 last（词没折行时 3 行，词每多折一行少一行）
     EMPTY: { size: 72, firstSize: 44, lineY: 1062, lineW: 560 }, // 仅编辑面
   };
 
   // D14：列阵版式（n = 1..10；W / H 由 gridShape 算）
   var GRID = {
     M: 100, PW: 300, PH: 400, GAP: 48, ROW: 620, TOP: 300, FOOT: 40, PER_ROW: 5, MIN_W: 1080,
-    INFO: { base: 80, size: 26 }, RULE: { y: 104, h: 3 },
+    INFO: { base: 80, size: 34 }, RULE: { y: 104, h: 3 },
     TITLE: { base: 230, size: 96, track: -1.5, min: 20 },
     GIANT: { dx: 22, dbase: 370, size: 300 },
     WORD: { dbase: 490, size: 56, track: -1, min: 20, lead: 24, artMin: 16 },
@@ -94,15 +94,17 @@
   var RULES = {
     en: {
       code: "en",
-      fold: function (s) { return String(s || "").toLowerCase(); },                         // 比较、查询、查词库用的写法
+      // v00.03.01 R07（用户 11-18 定：输入框兼容重音符，不论选的语言用不用得上，照原样保留拼写）：英语也收带变音符的字母（être、émail、café），
+      // 字符范围、比对去变音符与西文五门一致；纯 A–Z 的输入结果不变
+      fold: function (s) { return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ß/g, "ss").replace(/œ/g, "oe").replace(/æ/g, "ae"); }, // 比较、查询、查词库用的写法
       exactKey: function (s) { return String(s || "").normalize("NFC").toLowerCase(); }, // 保留变音符的精确查词键；西文沿用
-      letters: function (text) { return String(text || "").toUpperCase().replace(/[^A-Z0-9]/g, ""); }, // T41（R4）：数字自成一格 // 单词 → 格字母（只收 A–Z、转大写）
-      bare: function (w) { return String(w || "").toLowerCase().replace(/[^a-z]/g, ""); },  // 只留字母（词族比词干用）
+      letters: function (text) { return String(text || "").normalize("NFC").replace(/[ßẞ]/g, "SS").toUpperCase().replace(/[^A-ZÀ-ÖØ-ÞĀ-ɏ0-9]/g, ""); }, // T41（R4）：数字自成一格；单词 → 格字母（转大写，带变音符的字母照留）
+      bare: function (w) { return RULES.en.fold(w).replace(/[^a-z]/g, ""); },  // 只留字母（词族比词干用）
       display: function (w) { return w.charAt(0).toUpperCase() + w.slice(1); },            // 卡上显示：首字母大写，其余照打
-      wordChar: /[A-Za-z0-9' \-一-鿿]/,  // 单词框允许的字符（汉字只用来检索；T41 起含数字：2nd、4ever）
-      customWord: /^[a-z0-9][a-z0-9' -]{0,19}$/i, // 词典外自定义词的写法
-      compose: false, // 西文为 true：格里的词先把「字母 + 组合变音符」合成一个字（NFC）再过滤、计数（V003-B4-R9）；英语照旧逐码元
-      wordMax: 20, // 格里的词最多几个字符（v00.03.00 T28：放进各语言规则，西文五门 28，英文不变）
+      wordChar: /[A-Za-zÀ-ÖØ-öø-ɏ0-9'’ \-一-鿿]/,  // 单词框允许的字符（汉字只用来检索；T41 起含数字：2nd、4ever；R07 起含带变音符的字母）
+      customWord: /^[a-zß-öø-ɏ0-9][a-zß-öø-ɏ0-9'’ -]{0,27}$/i, // 词典外自定义词的写法（上限同 wordMax）
+      compose: true, // 格里的词先把「字母 + 组合变音符」合成一个字（NFC）再过滤、计数（V003-B4-R9；R07 起英语同西文）
+      wordMax: 28, // 格里的词最多几个字符（v00.03.00 T28 放进各语言规则；v00.03.01 E2 起英语也是 28，六门一致，只剩英语时不会再有放不下的词）
       // 词库释义里的名字说明（T37 / B3-R2，只用于显示层）：别名「等于Arabella」、外文残片「Isabella」、义项上挂的别名括号「（等于Diana」、英文括号人名标签「(Sethe)人名」
       // T41 / U16 / U19：数字格按英文读法取首字母（0 读作 oh → O）；词以读法首字母或该数字本身开头都算对
       digitNames: ["oh", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"],
@@ -230,14 +232,34 @@
   }
 
   // 同上，但按命中档分开返回 [英文前缀, 义项完全命中, 部分命中, 模糊]（候选首屏要在档内整理、不跨档，T25）
+  // R3-12：输入里已有的音符要在候选的同一位置保留（打 farò 不列 faro，打 publicó 不列 público）；没打音符的输入照旧去音符比（ete → été）。
+  // markUnits 把文字拆成「字母 + 它的音符」；marksKept 看 word 从第 at 个字母起，输入里带音符的每个字母在 word 里是否带着同样的音符
+  function markUnits(text) {
+    var out = [];
+    LANG.exactKey(text).normalize("NFD").split("").forEach(function (ch) {
+      if (/[\u0300-\u036f]/.test(ch) && out.length) out[out.length - 1].m += ch; else out.push({ b: ch, m: "" });
+    });
+    return out;
+  }
+  function marksKept(typed, word, at) {
+    var a = markUnits(typed), b = markUnits(word);
+    for (var k = 0; k < a.length; k++) {
+      var u = b[at + k];
+      if (!u || u.b !== a[k].b || (a[k].m && a[k].m !== u.m)) return false;
+    }
+    return true;
+  }
   function filterTiers(list, query) {
     var q = LANG.fold(query);
     var han = uniqueHan(query);
+    var marked = /[\u0300-\u036f]/.test(String(query).normalize("NFD"));
     var head = [], exact = [], mid = [], fuzzy = [];
     list.forEach(function (it, idx) {
-      var at = LANG.fold(it[0]).indexOf(q); // T21：词也按比较写法比（去变音符、不分大小写）：打 ete 找到 été，打 lie 找到德语名词 Liebe；英语词库全小写，结果不变
+      var at = LANG.fold(it[0]).indexOf(q);
+      if (marked && at >= 0 && !marksKept(query, it[0], at)) at = -1;
+      // T21：词也按比较写法比（去变音符、不分大小写）：打 ete 找到 été，打 lie 找到德语名词 Liebe；英语词库全小写，结果不变
       // 只在查询含汉字时比中文，且去掉词性标记，免得搜 "ad" 命中所有 "adj."
-      var zh = han.length ? it[1].replace(/(^|\|)([a-z]+\.|\[[^\]]+\])/g, "$1") : "";
+      var zh = han.length ? senseList(it).join("|") : "";
       if (at === 0) head.push(it);
       else if (han.length && ("|" + zh.replace(/，/g, "|") + "|").indexOf("|" + query + "|") >= 0) exact.push(it);
       else if (at > 0 || (han.length && zh.indexOf(query) >= 0)) mid.push(it);
@@ -260,7 +282,7 @@
 
   // 词典外的自定义词：字母开头，可含空格 ' -；首字母等于该格字母才合法（T17，containsLetter）
   function customWord(query, letter) {
-    var ok = LANG.customWord.test(query) && containsLetter(query, letter);
+    var ok = LANG.customWord.test(String(query).replace(/ /g, "")) && containsLetter(query, letter);
     return ok ? [query, ""] : null;
   }
 
@@ -282,7 +304,7 @@
   // T37 / U11：显示层去掉人名 / 地名类括号标注（含带地点、身份信息的，如（美国城市）（英国作家）（喜剧演员））。词库原文、搜索与随机池的专名判断（properName）不动。
   // 规则按 words.js 全量括号内容核对过：去掉 …名 / 姓氏 / 名称、…城市 / 港市 / 首都 / 郡名 / 地名 / 公司、…作家 / 诗人 / …家 / 演员 / 先知 / 之子 等；
   // 「河、湖、海的」「德国货币」「国家代码」「家畜」「（手）」这类说明保留。词库有一处用「〔」开括号（lindsay「琳赛〔女子名）」），一并认
-  var NAME_LABEL = /^(?:.{0,6}(?:名|姓|姓氏|姓氏名|姓名|名称|名字)|.{0,6}(?:城市|成市|港市|港口|首都|郡名|邦名|地名|城市名|市名|州名|国名|公司)|.{0,6}(?:作家|诗人|剧作家|哲学家|化学家|数学家|神学家|政治家|工程师|先知|族长|修女|前总统|演员|之子)|位于.{1,6}|国家或地区)$/;
+  var NAME_LABEL = /^(?!音名$)(?:.{0,6}(?:名|姓|姓氏|姓氏名|姓名|名称|名字)|.{0,6}(?:城市|成市|港市|港口|首都|郡名|邦名|地名|城市名|市名|州名|国名|公司)|.{0,6}(?:作家|诗人|剧作家|哲学家|化学家|数学家|神学家|政治家|工程师|先知|族长|修女|前总统|演员|之子)|位于.{1,6}|国家或地区)$/;
   var LABEL_RE = /[（〔]([^（）〔〕]*)(?:[）〕]|$)/g;
   function stripNameLabel(s) {
     var raw = String(s || ""), out = raw.replace(LABEL_RE, function (m, t) { return NAME_LABEL.test(t) ? "" : m; });
@@ -305,12 +327,46 @@
   function displayGroups(item) {
     return senseGroups(item).map(function (g) {
       var named = g.senses.some(function (x) { return stripNameLabel(x) !== x.replace(/\s+$/, ""); });
-      var seen = {}, senses = g.senses.filter(function (x) { return !(named && nameFragment(x)); }).map(function (x) { var y = stripNameLabel(x); return named ? stripAlias(y) : y; })
+      var seen = {}, senses = g.senses.filter(function (x) { return !(named && nameFragment(x)); }).map(function (x) { var y = stripNameLabel(x); y = named ? stripAlias(y) : y; return y; })
         .filter(function (x) { if (!x || seen[x]) return false; seen[x] = 1; return true; });
       var o = { pos: g.pos, senses: senses };
       if (g.id) o.id = g.id;
       return o;
     }).filter(function (g) { return g.senses.length; });
+  }
+
+  // 只在还原旧稿时识别原形容词写法（含尾注）；卡面显示直接使用词库中文。
+  function sameSavedAdj(old, current) {
+    return old !== current && old.replace(/的((?:[（(][^（）()]*[）)])*)$/, "$1") === current;
+  }
+  // 旧稿按词性组序号储存选择。同词性的义项增删后，按保存的中文与冠词找回所属的新组。
+  function savedSense(previous, item, slot) {
+    if (!slot || !previous || !item || previous[1] === item[1] && previous[2] === item[2]) return slot;
+    var old = senseGroups(previous).find(function (g) { return senseId(g) === slot; });
+    if (!old) return slot;
+    var candidates = senseGroups(item).filter(function (g) {
+      return g.pos === old.pos && g.senses.some(function (sn) {
+        return old.senses.indexOf(sn) >= 0 || g.pos === "adj." && old.senses.some(function (text) { return sameSavedAdj(text, sn); });
+      });
+    });
+    if (candidates.length > 1 && old.pos === "n.") {
+      var article = articleOf(previous, "", slot).text;
+      var same = candidates.filter(function (g) { return articleOf(item, "", senseId(g)).text === article; });
+      if (same.length) candidates = same;
+    }
+    return candidates.length === 1 ? senseId(candidates[0]) : slot;
+  }
+
+  // 恢复自动释义时认回旧词库形容词。用户手填的释义保持原样。
+  function savedAutoGloss(item, old) {
+    if (!old) return defaultGloss(item);
+    var groups = displayGroups(item);
+    if (groups.some(function (g) { return g.senses.indexOf(old) >= 0; })) return old;
+    var matched = "";
+    groups.forEach(function (g) {
+      if (g.pos === "adj.") g.senses.forEach(function (sn) { if (sameSavedAdj(old, sn)) matched = sn; });
+    });
+    return matched || old;
   }
 
   function senseList(item) {
@@ -368,22 +424,25 @@
     ACTIVE.forEach(function (R) { var c = R.fold(R.digitNames[+letter]).charAt(0); if (out.indexOf(c) < 0) out.push(c); });
     return out;
   }
-  // 提示里「以 X 开头」的 X：把算对的写法全列出来（v00.03.00，2026-11-10 定），与 containsLetter 同一条规则：
-  // 字母格「I」；带变音符的字母格「É 或 E」；数字格「T 或 2」，有跨首字母的读音别名时「O、zero 或 0」；
-  // 没有读音别名表的语言（西文五门）在首字母后写出读法「Z（zéro）或 0」
+  // 提示里「X 开头」的 X：把算对的写法全列出来（v00.03.00，2026-11-10 定），与 containsLetter 同一条规则：
+  // 字母格「I」；带变音符的字母格「É/E」；数字格只列读法首字母「T」，多选「T/D/Z」，首字母另起的读音别名照写整词「O/zero」。
+  // v00.03.01 E3（用户 11-19 定）：斜线两边不留空格，占位只写「X 开头」，全选六门时数字 1 是「O/U/E/won 开头」
   function startText(letter) {
     var low = cellInitial(letter), init = LANG.display(low); // 大小写一律经 LANG（本文件 RULES 之外不直接转大小写）
-    if (!LANG.isDigit.test(letter)) return init && init !== letter ? letter + " 或 " + init : letter;
-    // 选了几门语言：各门的写法并列（英语「T」、法语「D（deux）」），重复的只写一次
-    var parts = [];
+    if (!LANG.isDigit.test(letter)) return init && init !== letter ? letter + "/" + init : letter;
+    // 选了几门语言：只列首字母，相同的只写一次（v00.03.01 R03：deux、dos 都是 D）。
+    // 不写括号读法与数字本身，免得多选时提示放不下；首字母另起的读音别名（英语 0 的 zero、8 的 ate）只认整个别名，照写整词
+    var heads = [], words = [];
     ACTIVE.forEach(function (R) {
-      var lo = R.fold(R.digitNames[+letter]).charAt(0), sounds = (R.digitSounds || [])[+letter] || [];
-      var head = R.display(lo) + (sounds.length ? "" : "（" + R.digitNames[+letter] + "）");
-      if (parts.indexOf(head) < 0) parts.push(head);
-      sounds.forEach(function (x) { if (R.fold(x).charAt(0) !== lo && parts.indexOf(x) < 0) parts.push(x); });
+      var lo = R.fold(R.digitNames[+letter]).charAt(0);
+      if (heads.indexOf(R.display(lo)) < 0) heads.push(R.display(lo));
+      ((R.digitSounds || [])[+letter] || []).forEach(function (x) { if (R.fold(x).charAt(0) !== lo && words.indexOf(x) < 0) words.push(x); });
     });
-    return (parts.join("、") + " 或 " + letter).replace("） 或", "）或");
+    words = words.filter(function (x) { return heads.indexOf(LANG.display(LANG.fold(x).charAt(0))) < 0; }); // 别名的首字母已在列里（选了法语时的 zero）就不重复写
+    return heads.concat(words).join("/");
   }
+  // 读屏用的写法（用户 11-19 定）：屏幕上的斜线读屏软件会念成「斜线」，读屏名改用「或」——「É 或 E」「O 或 U 或 E 或 won」
+  function startSpoken(letter) { return startText(letter).split("/").join(" 或 "); }
   // 一格的「首字母」：字母格就是它自己；数字格是读法的首字母（2 → t，0 → o）。候选、随机池按它取词
   function cellInitial(letter) {
     return LANG.fold(LANG.isDigit.test(letter) ? LANG.digitNames[+letter] : letter).charAt(0); // T21：É → e、Œ → o；数字格读法也去变音符
@@ -395,15 +454,28 @@
   }
 
   // 卡上单词控件的就地改写（D5.7 / D14）：只留 A–Z a–z 空格 ' - 与汉字（汉字只用来检索，T13）；去掉开头空白；
-  // 最多 LANG.wordMax 个字符（英文 20、西文 28，T28）；首字母大写，其余照打。只会删字、不会增字（大写不改长度），所以光标 / 选区按「被删掉的字数」平移就不会跳。
-  // start / end 缺省 = 末尾。返回 { value, start, end }
-  var WORD_MAX = 20;
+  // 最多 LANG.wordMax 个字符（六门都是 28，v00.03.01 E2）；首字母大写，其余照打。只会删字、不会增字（大写不改长度），所以光标 / 选区按「被删掉的字数」平移就不会跳。
+  // start / end 缺省 = 末尾。区分大小写的编辑入口传 preserveCase。返回 { value, start, end }
+  var WORD_MAX = 28;
+  // 格里的词算几个字（与 rewriteWord 计数同一口径：组合变音符并进前一个字、空格与单词框不收的字不算，不封顶）。
+  // v00.03.01 E6：单词框计数器用它，组字期间也按框里正在打的字算
+  function wordUnits(text) {
+    var n = 0, str = String(text || "");
+    if (LANG.compose) str = str.normalize("NFC");
+    for (var j = 0; j < str.length; j++) {
+      var ch = str.charAt(j);
+      if (ch === "\u2019") ch = "'";
+      if (ch !== " " && !COMBINING.test(ch) && LANG.wordChar.test(ch)) n++;
+    }
+    return n;
+  }
+  var FILLER_MAX = 16; // 填表人上限（index.html 的 maxlength 同值；计数按 textUnits）
   var COMBINING = /[\u0300-\u036f]/;
-  function rewriteWord(value, start, end) {
+  function rewriteWord(value, start, end, preserveCase) {
     var str = String(value || ""), out = "", s = null, e = null;
     if (start == null) start = str.length;
     if (end == null) end = start;
-    var max = LANG.wordMax || WORD_MAX, over = false;
+    var max = LANG.wordMax || WORD_MAX, over = false, counted = 0;
     for (var j = 0; ; ) {
       if (j === start) s = out.length;
       if (j === end) e = out.length;
@@ -416,8 +488,8 @@
       for (var q = 0; q < seg.length; q++) {
         var ch = seg.charAt(q);
         if (ch === "\u2019") ch = "'"; // iOS 智能标点的弯撇号
-        if (!LANG.wordChar.test(ch) || (!out && ch === " ")) continue;
-        if (out.length >= max) { over = true; continue; }
+        if (!LANG.wordChar.test(ch) || (ch === " " && (!out || out.endsWith(" ")))) continue;
+        if (ch !== " " && ++counted > max) { over = true; continue; }
         out += ch;
       }
       for (var m = j + 1; m < k; m++) { if (m === start) s = out.length; if (m === end) e = out.length; }
@@ -425,7 +497,7 @@
     }
     if (s === null) s = out.length;
     if (e === null) e = out.length;
-    var res = { value: LANG.display(out), start: s, end: e };
+    var res = { value: preserveCase ? out : LANG.display(out), start: s, end: e };
     if (over) res.over = true; // 有合规的字因为超过上限没进来
     return res;
   }
@@ -657,10 +729,51 @@
   function ellipsize(measure, font, text, maxW) {
     if (measure(font, text) <= maxW) return text;
     while (text && measure(font, text + "…") > maxW) text = textUnits(text).slice(0, -1).join("");
-    return text + "…";
+    return text.replace(/\s+$/, "") + "…"; // 截在词间空格上时不留「ut …」（v00.03.01 复审：配文截断补回空格后才会遇到）
+  }
+
+  // 配文折行（2026-11-17）：按字贪心排，西文单词尽量不拆（比一行还宽才拆）；超过 maxLines 时末行加「…」，cut = 真的截掉了字。
+  // 输入框据 cut 拒收再往后打的字，所以正常稿子不会被截；只有改了单词使可用行数变少的旧稿会看到「…」
+  function wrapText(measure, font, text, maxW, maxLines) {
+    var units = textUnits(text), toks = [], cur = "";
+    var wordy = function (u) { return /^[0-9A-Za-z\u00C0-\u024F'’\-]/.test(u); }; // 只看首个字符：textUnits 把 e + 组合变音符算一个字，它照样属于单词
+    units.forEach(function (u) {
+      if (wordy(u)) { cur += u; return; }
+      if (cur) { toks.push(cur); cur = ""; }
+      toks.push(u);
+    });
+    if (cur) toks.push(cur);
+    // gaps[k] = 第 k 行与下一行之间折掉的是不是空格：截断时把后面几行拼回一行要按它补回空格（v00.03.01，原来「ut labore」会拼成「utlabo…」）
+    var lines = [], gaps = [], line = "";
+    var brk = function (next) { gaps.push(/\s$/.test(line) || /^\s+$/.test(next) ? " " : ""); lines.push(line.replace(/\s+$/, "")); };
+    var push = function (t) {
+      if (measure(font, line + t) <= maxW) { line += t; return; }
+      if (line && measure(font, t) <= maxW) { brk(t); line = /^\s+$/.test(t) ? "" : t; return; }
+      textUnits(t).forEach(function (u) { // 一个词比一行还宽：逐字拆
+        if (line && measure(font, line + u) > maxW) { brk(u); line = ""; }
+        if (line || !/^\s+$/.test(u)) line += u;
+      });
+    };
+    toks.forEach(push);
+    if (line.replace(/\s+$/, "")) lines.push(line.replace(/\s+$/, ""));
+    if (lines.length <= maxLines) return { lines: lines, cut: false };
+    var rest = lines.slice(maxLines - 1).reduce(function (a, l, k) { return k ? a + gaps[maxLines - 2 + k] + l : l; }, ""), keep = lines.slice(0, maxLines - 1);
+    keep.push(ellipsize(measure, font, rest, maxW));
+    return { lines: keep, cut: true };
+  }
+  // dy = 词折行后下移的量。返回 { lines, cut }；编辑器用它判断还放不放得下
+  function wrapCaption(measure, text, dy) {
+    var S = CARD.CAPTION, max = Math.max(1, Math.floor((S.last - (S.base + (dy || 0))) / S.lead) + 1);
+    return wrapText(measure, fontOf(700, S.size), (text || "").trim(), CARD.CW, max); // U04：配文粗体，按粗体量宽折行
   }
 
   function pad2(n) { return (n < 10 ? "0" : "") + n; }
+
+  function wordForLayout(data, i) {
+    if (data.displayWords) return data.displayWords[i];
+    var pick = data.picks[i];
+    return pick && pick[0] ? capitalize(pick[0]) : "";
+  }
 
   function layoutCard(data, measure) {
     var C = CARD, i = data.i, n = data.letters.length, letter = data.letters[i];
@@ -672,13 +785,20 @@
       boxes.push({ role: "ul", x: C.M, y: C.EMPTY.lineY, w: C.EMPTY.lineW, h: 3, color: "ph" });
       return { W: C.W, H: C.H, boxes: boxes };
     }
-    var label = function (role, x, align, text) {
-      return { role: role, x: x, baseline: C.INFO.base, w: measure(fontOf(400, C.INFO.size), text), size: C.INFO.size, weight: 400, color: "mute", text: text, align: align };
+    var label = function (role, x, align, text, size) {
+      size = size || C.INFO.size;
+      return { role: role, x: x, baseline: C.INFO.base, w: measure(fontOf(400, size), text), size: size, weight: 400, color: "mute", text: text, align: align };
     };
     // 信息栏：左页码、右填表人（留空不画）；墨线
-    boxes.push(label("info-folio", C.M, "left", pad2(i + 1) + " / " + pad2(n)));
+    var folio = label("info-folio", C.M, "left", pad2(i + 1) + " / " + pad2(n));
+    boxes.push(folio);
     var filler = (data.filler || "").trim();
-    if (filler) boxes.push(label("info-filler", C.M + C.CW, "right", "填表人 " + filler));
+    if (filler) {
+      // v00.03.01（用户 11-18 定）：信息行 50 后长的填表人放不下时只给它缩字号（每次减 2，下限 INFO.minFiller），页码不变；到下限仍放不下才截断
+      var fw = C.CW - folio.w - C.INFO.size, fs = C.INFO.size, ft = "填表人 " + filler;
+      while (fs > C.INFO.minFiller && measure(fontOf(400, fs), ft) > fw) fs -= 2;
+      boxes.push(label("info-filler", C.M + C.CW, "right", ellipsize(measure, fontOf(400, fs), ft, fw), fs));
+    }
     boxes.push({ role: "rule", x: C.M, y: C.RULE.y, w: C.CW, h: C.RULE.h, color: "ink" });
 
     // 标题：留空用单词；放不下缩字号 / 折两行，图版位置不动
@@ -698,30 +818,32 @@
     if (data.hasImage(i)) boxes.push({ role: "image", i: i, x: C.M, y: P.y, w: C.CW, h: P.h });
     else boxes.push({ role: "giant", i: i, x: C.M + C.GIANT.dx, baseline: C.GIANT.base, size: C.GIANT.size, weight: 700, color: "ink", text: letter, track: C.GIANT.track, align: "left", clip: [C.M, P.y, C.CW, P.h] });
 
-    var pick = data.picks[i], word = pick && pick[0] ? capitalize(pick[0]) : "";
+    var word = wordForLayout(data, i);
     if (!word) { // 没打词：占位文字 + 灰线
-      boxes.push({ role: "empty", i: i, x: C.M, baseline: C.WORD.base, size: C.EMPTY.size, weight: 400, color: "ph", text: "打一个以 " + startText(letter) + " 开头的词", align: "left" });
+      boxes.push({ role: "empty", i: i, x: C.M, baseline: C.WORD.base, size: C.EMPTY.size, weight: 400, color: "ph", text: startText(letter) + " 开头", align: "left" }); // v00.03.01 E3：占位只写「X 开头」
       boxes.push({ role: "ul", x: C.M, y: C.EMPTY.lineY, w: C.EMPTY.lineW, h: 3, color: "ph" });
       return { W: C.W, H: C.H, boxes: boxes };
     }
     // 词里没有该字母（D6 不合法）：照样排出用户打的字，不高亮、带 invalid 标记（编辑面画波浪线；导出前会被拦下）
     // v00.03.00：词前可有冠词块；缩到下限仍放不下折行（最多三行），词下面的墨条、释义、配文跟着下移，图版不动
     var W = C.WORD, ok = containsLetter(word, letter), article = (data.articles && data.articles[i]) || "";
-    var blk = wordBlock(measure, word, article, W, C.CW, data.hyph ? data.hyph(word) : null), dy = (blk.lines.length - 1) * W.lead;
+    var blk = wordBlock(measure, word, article, W, C.CW, data.hyph ? data.hyph(word, i) : null), dy = (blk.lines.length - 1) * W.lead;
     wordBoxes(measure, blk, { i: i, x: C.M, base: W.base, lead: W.lead, track: W.track, ok: ok, article: article }).forEach(function (b) { boxes.push(b); });
     boxes.push({ role: "bar", x: C.M, y: C.BAR.y + dy, w: C.BAR.w, h: C.BAR.h, color: "ink" });
-    // 释义 / 配文单行；输入框限长后放得下，超长的旧草稿保险起见加「…」
+    // 释义单行；输入框限长后放得下，超长的旧草稿保险起见加「…」。配文可折行（wrapCaption）
     var gloss = (data.glosses[i] || "").trim();
     if (gloss) {
-      var gf = fontOf(700, C.GLOSS.size), gt = ellipsize(measure, gf, gloss, C.CW);
-      boxes.push({ role: "gloss", i: i, x: C.M, baseline: C.GLOSS.base + dy, w: measure(gf, gt), size: C.GLOSS.size, weight: 700, color: "ink", text: gt, align: "left" });
+      var gf = fontOf(400, C.GLOSS.size), gt = ellipsize(measure, gf, gloss, C.CW);
+      boxes.push({ role: "gloss", i: i, x: C.M, baseline: C.GLOSS.base + dy, w: measure(gf, gt), size: C.GLOSS.size, weight: 400, color: "soft", text: gt, align: "left" });
     } else if (data.edit) { // 仅编辑面（data.edit）：空释义 / 空配文画灰色占位；导出不传 edit，不出这两个框
       boxes.push({ role: "gloss-ph", i: i, x: C.M, baseline: C.GLOSS.base + dy, w: measure(fontOf(400, C.GLOSS.size), "释义"), size: C.GLOSS.size, weight: 400, color: "ph", text: "释义", align: "left" });
     }
     var cap = (data.captions[i] || "").trim();
     if (cap) {
-      var cf = fontOf(400, C.CAPTION.size), ct = ellipsize(measure, cf, cap, C.CW);
-      boxes.push({ role: "caption", i: i, x: C.M, baseline: C.CAPTION.base + dy, w: measure(cf, ct), size: C.CAPTION.size, weight: 400, color: "soft", text: ct, align: "left" });
+      var cf = fontOf(700, C.CAPTION.size), cw = wrapCaption(measure, cap, dy);
+      cw.lines.forEach(function (ct, ln) {
+        boxes.push({ role: "caption", i: i, line: ln, x: C.M, baseline: C.CAPTION.base + dy + ln * C.CAPTION.lead, w: measure(cf, ct), size: C.CAPTION.size, weight: 700, color: "ink", text: ct, align: "left" });
+      });
     } else if (data.edit) {
       boxes.push({ role: "caption-ph", i: i, x: C.M, baseline: C.CAPTION.base + dy, w: measure(fontOf(400, C.CAPTION.size), "配文（选填）"), size: C.CAPTION.size, weight: 400, color: "ph", text: "配文（选填）", align: "left" });
     }
@@ -820,9 +942,10 @@
       return { role: role, x: x, baseline: G.INFO.base, w: measure(fontOf(400, G.INFO.size), text), size: G.INFO.size, weight: 400, color: "mute", text: text, align: align };
     };
     var two = function (k) { return (k < 10 ? "0" : "") + k; };
-    boxes.push(label("info-count", G.M, "left", n === total ? n + " 格" : two(from + 1) + "–" + two(to) + " / " + total));
+    var count = label("info-count", G.M, "left", n === total ? n + " 格" : two(from + 1) + "–" + two(to) + " / " + total);
+    boxes.push(count);
     var filler = (data.filler || "").trim();
-    if (filler) boxes.push(label("info-filler", sh.W - G.M, "right", "填表人 " + filler));
+    if (filler) boxes.push(label("info-filler", sh.W - G.M, "right", ellipsize(measure, fontOf(400, G.INFO.size), "填表人 " + filler, sh.W - 2 * G.M - count.w - G.INFO.size)));
     boxes.push({ role: "rule", x: G.M, y: G.RULE.y, w: sh.W - 2 * G.M, h: G.RULE.h, color: "ink" });
 
     // 标题：单行，放不下每次 −4、下限 20。ponytail: 母版没画列阵长标题，要两行再补
@@ -840,10 +963,10 @@
       boxes.push({ role: "plate", i: i, x: cx, y: cy, w: G.PW, h: G.PH, color: "plate" });
       if (data.hasImage(i)) boxes.push({ role: "image", i: i, x: cx, y: cy, w: G.PW, h: G.PH });
       else boxes.push({ role: "giant", i: i, x: cx + G.GIANT.dx, baseline: cy + G.GIANT.dbase, size: G.GIANT.size, weight: 700, color: "ink", text: letter, align: "left", clip: [cx, cy, G.PW, G.PH] });
-      var pick = data.picks[i], word = pick && pick[0] ? capitalize(pick[0]) : "";
+      var word = wordForLayout(data, i);
       if (!word) return;
       var W = G.WORD, ok = containsLetter(word, letter), article = (data.articles && data.articles[i]) || ""; // 同单图：不合法词照排、不高亮；冠词块与折行同一套
-      var blk = wordBlock(measure, word, article, W, G.PW, data.hyph ? data.hyph(word) : null), dy = (blk.lines.length - 1) * W.lead;
+      var blk = wordBlock(measure, word, article, W, G.PW, data.hyph ? data.hyph(word, i) : null), dy = (blk.lines.length - 1) * W.lead;
       wordBoxes(measure, blk, { i: i, x: cx, base: cy + W.dbase, lead: W.lead, track: W.track, ok: ok, article: article }).forEach(function (b) { boxes.push(b); });
       boxes.push({ role: "bar", x: cx, y: cy + G.BAR.dy + dy, w: G.BAR.w, h: G.BAR.h, color: "ink" });
       var gf = fontOf(400, G.GLOSS.size), gt = ellipsize(measure, gf, (data.glosses[i] || "").trim(), G.PW);
@@ -989,10 +1112,39 @@
   // 关键词 query 下的候选：词首档内按 filterTiers 的匹配档（英文前缀 > 中文义项完全命中 > 英文包含 / 中文释义包含 > 中文模糊）、再按词频，
   // 首屏先剔除被屏蔽的词、按档从高到低填（spreadFirstScreen），首屏之后保持原顺序。skip 缺省 = 屏蔽器（app.js 取页时也用同一个）。
   // 空 query 返回空（D6：关键词框为空不出候选）。首屏之后的屏蔽词不在这里全量过（单字母查询两千多条），取页时边取边过滤（pageOf）
-  function candidates(words, letter, query, skip) {
+  // 反查表的数字是当前语言包内的义项行号。先按释义取词，再按当前候选池的可见义项和原有顺序输出。
+  function reverseTiers(list, query, pack) {
+    var canonical = pack.aliases[query] || query, han = uniqueHan(query), matched = new Map();
+    Object.keys(pack.reverse).forEach(function (gloss) {
+      var score = gloss === canonical ? 1000 : gloss.indexOf(query) >= 0 ? 900 : 0;
+      if (!score && han.length > 1) {
+        var count = han.filter(function (c) { return gloss.indexOf(c) >= 0; }).length;
+        if (count * 2 >= han.length) score = count;
+      }
+      if (!score) return;
+      pack.reverse[gloss].forEach(function (i) {
+        var sense = pack.senses[i];
+        if (sense[8] === 1 || sense[8] === 3) return;
+        var key = sense[1], byGloss = matched.get(key);
+        if (!byGloss) matched.set(key, byGloss = new Map());
+        byGloss.set(sense[3], Math.max(byGloss.get(sense[3]) || 0, score));
+      });
+    });
+    var tiers = [];
+    list.forEach(function (item) {
+      var glosses = matched.get(item[0]);
+      if (!glosses) return;
+      var score = 0;
+      senseGroups(item).forEach(function (group) { group.senses.forEach(function (g) { score = Math.max(score, glosses.get(g) || 0); }); });
+      if (score) (tiers[score] || (tiers[score] = [])).push(item);
+    });
+    return tiers.reverse().filter(Boolean);
+  }
+  function candidates(words, letter, query, skip, pack) {
     var q = String(query || "").trim();
     if (!q) return [];
-    var tiers = filterTiers(letterTiers(words, letter).head, q).filter(function (t) { return t.length; });
+    var list = letterTiers(words, letter).head;
+    var tiers = pack && pack.reverse && uniqueHan(q).length ? reverseTiers(list, q, pack) : filterTiers(list, q).filter(function (t) { return t.length; });
     return tiers.length ? spreadFirstScreen(tiers, q, skip || function (it) { return blocked(it[0]); }) : [];
   }
 
@@ -1190,7 +1342,8 @@
     out.lang = lang;
     out.word = word;
     out.view = obj.view === "grid" ? "grid" : "single";
-    out.filler = String(obj.filler == null ? "" : obj.filler).slice(0, 12);
+    // 填表人：输入框 maxlength 16（2026-11-17 起），恢复时同样留 16 个 UTF-16 单元；原来截到 12，13～16 字的填表人一刷新就丢尾巴（v00.03.01 批 B 复审）。不从代理对中间切开
+    out.filler = String(obj.filler == null ? "" : obj.filler).slice(0, FILLER_MAX).replace(/[\ud800-\udbff]$/, "");
     out.picks = letters.map(function (l, i) {
       var p = arr(obj.picks)[i];
       return Array.isArray(p) && typeof p[0] === "string" && p[0] ? p.slice() : null; // 不合法词也留着，由 cellState 标出
@@ -1217,6 +1370,9 @@
     // T45：配图引用（默认图 + 每格独立图的文件名）与每格取景。没有这两个字段的旧稿照读（都为 null）；名字不合法的一格当没有配图
     var media = obj.media && typeof obj.media === "object" ? obj.media : {}, cells = arr(media.cells);
     out.media = { def: mediaName(media.def), cells: letters.map(function (l, i) { return mediaName(cells[i]); }) };
+    if (out.media.def && Array.isArray(media.defaultCrops)) {
+      out.media.defaultCrops = letters.map(function (l, i) { return out.media.cells[i] ? cropOf(media.defaultCrops[i]) : null; });
+    }
     if (!out.media.def && !out.media.cells.some(Boolean)) out.media = null;
     out.crops = out.media ? letters.map(function (l, i) { return cropOf(arr(obj.crops)[i]); }) : null;
     var runs = arr(obj.titleRuns).filter(function (r) { return r && typeof r === "object" && typeof r.t === "string" && r.t; }).map(function (r) {
@@ -1239,7 +1395,7 @@
   }
 
   // 入场页敲的单词 → 格字母用的字符串：只收 A–Z 与 0–9，自动转大写，最多 MAX_LETTERS 个（D18 / T41）
-  var MAX_LETTERS = 14; // T41（R3）：最多 14 格（字母或数字）；每格的词另算，最多 WORD_MAX = 20 个字符
+  var MAX_LETTERS = 14; // T41（R3）：最多 14 格（字母或数字）；每格的词另算，最多 WORD_MAX = 28 个字符
   function normalizeWord(text) {
     return LANG.letters(text).slice(0, MAX_LETTERS);
   }
@@ -1281,19 +1437,19 @@
     SKIN_FONTS: SKIN_FONTS, useSkinFont: useSkinFont, BLOCKED_MSG: BLOCKED_MSG, PALETTE: PALETTE, PALETTES: PALETTES, SKINS: SKINS, paletteOf: paletteOf, contrastRatio: contrastRatio, CARD: CARD, GRID: GRID, PAGE_SIZE: PAGE_SIZE, POOL_SIZE: POOL_SIZE,
     resolveEntry: resolveEntry,
     blocked: blocked,
-    filterWords: filterWords, filterTiers: filterTiers, uniqueHan: uniqueHan, customWord: customWord,
+    filterWords: filterWords, filterTiers: filterTiers, uniqueHan: uniqueHan, customWord: customWord, wordUnits: wordUnits,
     entryData: entryData, senseGroups: senseGroups, senseList: senseList, defaultGloss: defaultGloss, defaultPos: defaultPos, defaultSense: defaultSense, senseId: senseId, capitalize: capitalize,
     containsLetter: containsLetter, resolveKeyAt: resolveKeyAt, rewriteWord: rewriteWord, useLang: useLang, useLangs: useLangs, withLang: withLang, activeLangs: activeLangs, presetInfo: presetInfo, digitInitials: digitInitials, addLang: addLang, hasLang: hasLang, PRESETS: PRESETS, pickPresets: pickPresets, setPresets: setPresets,
-    swipeDir: swipeDir, swipeAllowed: swipeAllowed, swipeTarget: swipeTarget, SWIPE: SWIPE, WORD_MAX: WORD_MAX,
+    wrapCaption: wrapCaption, FILLER_MAX: FILLER_MAX, CAPTION_MAX: 160, swipeDir: swipeDir, swipeAllowed: swipeAllowed, swipeTarget: swipeTarget, SWIPE: SWIPE, WORD_MAX: WORD_MAX,
     domColor: domColor, domBox: domBox,
     textUnits: textUnits, fontOf: fontOf, trackedWidth: trackedWidth, charX: charX, fitTitle: fitTitle, fitWord: fitWord, exportTitleRuns: exportTitleRuns, runColor: runColor,
     layoutCard: layoutCard, gridShape: gridShape, layoutGrid: layoutGrid,
-    cellInitial: cellInitial, startText: startText, SPLIT: SPLIT, splitRange: splitRange, autoSplit: autoSplit, sheetsOf: sheetsOf,
+    cellInitial: cellInitial, startText: startText, startSpoken: startSpoken, SPLIT: SPLIT, splitRange: splitRange, autoSplit: autoSplit, sheetsOf: sheetsOf,
     letterTiers: letterTiers, candidates: candidates, pageOf: pageOf, randomPool: randomPool, familyOf: familyOf, properName: properName,
     displayGroups: displayGroups, stripNameLabel: stripNameLabel,
     phraseHit: phraseHit, lookupEntry: lookupEntry, formLemma: formLemma, formEntry: formEntry,
     articleOptions: articleOptions, articleOf: articleOf, sensePos: sensePos, wrapWord: wrapWord, wordBlock: wordBlock, wordBoxes: wordBoxes,
-    nextGloss: nextGloss, migrateDraft: migrateDraft, DRAFT_FIELDS: DRAFT_FIELDS, mediaName: mediaName, mediaNames: mediaNames, cropOf: cropOf, titleOrWord: titleOrWord, noteTitle: noteTitle, titleModeOf: titleModeOf, normalizeWord: normalizeWord, keepSame: keepSame, titleEditKept: titleEditKept, pasteFitLength: pasteFitLength, MAX_LETTERS: MAX_LETTERS,
+    nextGloss: nextGloss, savedAutoGloss: savedAutoGloss, savedSense: savedSense, migrateDraft: migrateDraft, DRAFT_FIELDS: DRAFT_FIELDS, mediaName: mediaName, mediaNames: mediaNames, cropOf: cropOf, titleOrWord: titleOrWord, noteTitle: noteTitle, titleModeOf: titleModeOf, normalizeWord: normalizeWord, keepSame: keepSame, titleEditKept: titleEditKept, pasteFitLength: pasteFitLength, MAX_LETTERS: MAX_LETTERS,
   };
   // CORE.LANG 读当前规则（useLang 之后跟着变；不能是加载时的快照）
   Object.defineProperty(root.CORE, "LANG", { get: function () { return LANG; }, enumerable: true });

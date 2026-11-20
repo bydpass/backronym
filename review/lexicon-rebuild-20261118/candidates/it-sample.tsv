@@ -1,0 +1,151 @@
+group	lemma	pos	rank	subtitle_row	source	t19	legacy	category	source_rank	encyclopedia_rank	literature_rank	subtitle_rank	reason
+前100	non	adv	1	2	mixed	no	no	daily		3	3	1	
+前100	avere	noun,verb	2	71	mixed	yes	yes	daily		1	13	3	
+前100	primo	adj,noun	3	28	mixed	yes	yes	daily		5	6	9	
+前100	fare	noun,verb	4	50	mixed	yes	yes	daily		17	10	7	
+前100	essere	noun,verb	5	10	mixed	yes	yes	creative		33	2	2	
+前100	anno	noun	6	143	mixed	yes	no	daily		2	165	35	
+前100	tempo	noun	7	132	mixed	yes	no	daily		13	64	44	
+前100	anche	adv	8	69	mixed	no	no	daily		6	459	22	
+前100	trovare	verb	9	351	mixed	no	yes	daily		17	62	52	
+前100	vita	noun	10	137	mixed	yes	yes	creative		17	72	48	
+前100	volere	noun,verb	11	79	mixed	yes	no	creative		80	18	5	
+前100	bene	adj,adv,noun	12	34	mixed	yes	yes	daily		80	16	13	
+前100	dare	noun,verb	13	520	mixed	yes	yes	daily		23	44	88	
+前100	nuovo	adj	14	199	mixed	yes	no	daily		13	139	72	
+前100	andare	verb	15	63	mixed	yes	yes	daily		108	15	10	
+前100	giorno	noun	16	178	mixed	yes	no	daily		17	128	67	
+前100	acqua	noun	17	482	mixed	yes	yes	daily		23	47	194	
+前100	volta	noun	18	155	mixed	yes	yes	daily		10		56	
+前100	ancora	adv,noun	19	100	mixed	yes	no	daily		80	26	30	
+前100	nome	noun	20	260	mixed	yes	no	daily		23	101	91	
+前100	già	adv	21	192	mixed	yes	yes	daily		60	21	78	
+前100	diventare	verb	22	680	mixed	no	yes	daily		23	97	114	
+前100	città	noun	23	639	mixed	yes	no	daily		8	230	279	
+前100	potere	noun,verb	24	87	mixed	yes	yes	creative		171	24	6	
+前100	guerra	noun	25	537	mixed	yes	no	creative		8	355	215	
+前100	lasciare	verb	26	458	mixed	yes	yes	daily		60	54	43	
+前100	maggiore	adj,noun	27	1255	mixed	no	yes	daily		12	150	342	
+前100	tornare	verb	28	365	mixed	yes	yes	daily		46	66	62	
+前100	dire	noun,verb	29	115	mixed	yes	yes	daily		254	7	14	
+前100	ci	noun,pron	30	44	mixed	no	yes	daily		33		17	
+前100	uomo	noun	31	159	mixed	yes	no	daily		80	62	37	
+前100	buono	adj,noun	32	307	mixed	yes	yes	daily		108	28	50	
+前100	parte	noun	33		mixed	no	yes	daily		4			
+前100	mi	noun,pron	34	13	mixed	no	yes	daily			5	4	
+前100	portare	verb	35	690	mixed	no	yes	daily		33	165	139	
+前100	secolo	noun	36	2763	mixed	no	yes	daily		10	856	896	
+前100	iniziare	verb	37	1038	mixed	yes	yes	daily		17	1335	209	
+前100	grande	adj,noun	38	10089	mixed	yes	yes	daily		7		2984	
+前100	mettere	verb	39	627	mixed	yes	yes	daily		60	114	80	
+前100	io	noun,pron	40	30	mixed	yes	yes	creative			4	12	
+前100	rimanere	verb	41	956	mixed	yes	yes	daily		46	132	129	
+前100	sud	noun	42	838	mixed	yes	no	daily		108	12	261	
+前100	luogo	noun	43	1081	mixed	yes	yes	daily		23	331	453	
+前100	fine	adj,noun	44	984	mixed	no	yes	daily		33	144	469	
+前100	prendere	verb	45	306	mixed	yes	yes	daily		108	116	36	
+前100	ultimo	adj,noun	46	598	mixed	yes	yes	daily		33	283	227	
+前100	regione	noun	47	6445	mixed	no	no	daily		13		2567	
+前100	stato	noun	48		mixed	yes	yes	daily		13			
+前100	terra	noun	49	412	mixed	yes	yes	creative		108	31	166	
+前100	piccolo	adj	50	446	mixed	yes	yes	daily		39	355	154	
+前100	tu	pron	51	38	mixed	yes	no	pronouns			11	16	
+前100	usare	verb	52	716	mixed	yes	yes	daily		31	972	177	
+前100	vedere	verb	53	182	mixed	yes	no	daily			8	21	
+前100	donna	noun	54	512	mixed	yes	no	daily		171	9	200	
+前100	amico	adj,noun	55	164	mixed	yes	no	daily		108	156	39	
+前100	popolazione	noun	56	5218	mixed	no	yes	daily		17		2291	
+前100	pensare	verb	57	187	mixed	yes	yes	daily		254	82	19	
+前100	forza	noun	58	254	mixed	no	yes	daily		46	1621	92	
+前100	persona	noun	59	223	mixed	yes	yes	daily		108	144	51	
+前100	periodo	noun	60	1344	mixed	no	yes	daily		23		633	
+前100	considerare	verb	61	4418	mixed	no	yes	daily		23		637	
+前100	mondo	adj,noun	62	266	mixed	yes	yes	daily		171	33	106	
+前100	qui	adv	63	35	mixed	yes	no	daily			23	15	
+前100	alto	adj	64	764	mixed	yes	no	daily		108	43	210	
+前100	modo	noun	65	180	mixed	yes	yes	daily		108	124	69	
+前100	paese	noun	66	666	mixed	yes	no	daily		60	128	271	
+前100	vivere	verb	67	541	mixed	yes	yes	daily		60	241	143	
+前100	ragazzo	noun	68	221	mixed	yes	no	daily		254	54	46	
+前100	venire	verb	69	247	mixed	yes	yes	daily			20	23	
+前100	isola	noun	70	8069	mixed	no	no	daily		23		3467	
+前100	storia	noun	71	312	mixed	yes	no	creative		60	489	112	
+前100	te	pron	72	45	mixed	no	no	pronouns			29	18	
+前100	esercito	adj,noun	73	1116	mixed	no	yes	daily		33	1335	531	
+前100	cominciare	verb	74	1484	mixed	no	no	daily		171	30	185	
+前100	nord	adj,noun	75	1312	mixed	yes	no	daily		108	40	474	
+前100	riguardare	verb	76	1056	mixed	no	yes	daily		46	315	424	
+前100	mai	adv	77	66	mixed	yes	no	daily			26	24	
+前100	stare	verb	78	76	mixed	yes	yes	daily			46	11	
+前100	permettere	verb	79	2546	mixed	no	no	daily		39	1335	348	
+前100	area	noun	80	1907	mixed	no	no	daily		31		831	
+前100	noi	pron	81	112	mixed	yes	no	pronouns			21	33	
+前100	scrivere	verb	82	1195	mixed	yes	yes	daily		60	283	242	
+前100	poi	adv	83	134	mixed	yes	no	daily			14	47	
+前100	fiume	noun	84	1764	mixed	no	no	daily		46	292	869	
+前100	sapere	noun,verb	85	209	mixed	yes	yes	daily			38	20	
+前100	raggiungere	verb	86	2305	mixed	no	yes	daily		46	489	454	
+前100	bello	adj,noun	87	309	mixed	yes	yes	daily			1	103	
+前100	lavorare	verb	88	556	mixed	yes	yes	daily		80	385	108	
+前100	credere	verb	89	583	mixed	yes	no	daily		171	97	76	
+前100	problema	noun	90	262	mixed	yes	yes	daily		80		70	
+前100	re	noun	91	618	mixed	no	yes	daily		60	402	260	
+前100	mese	noun	92	831	mixed	yes	no	daily		46	1335	383	
+前100	figlio	noun	93	243	mixed	yes	no	daily		108	213	100	
+前100	secondo	adj,noun	94	983	mixed	yes	yes	daily		46	1103	468	
+前100	scuola	noun	95	432	mixed	yes	yes	daily		108	124	174	
+前100	numero	noun	96	470	mixed	no	yes	daily		60	856	204	
+前100	imperatore	noun	97	4474	mixed	no	no	daily		39	1335	2085	
+前100	parlare	verb	98	189	mixed	yes	yes	daily			45	26	
+前100	bisogno	noun	99	162	mixed	yes	yes	daily		108	856	63	
+前100	pubblico	adj,noun	100	3105	mixed	no	no	daily		39		1023	
+随机50	scomparso	adj	3941	6233	mixed	no	yes	daily				2784	
+随机50	materasso	noun	4232	8656	mixed	no	no	daily				3149	
+随机50	esigere	verb	4999	13964	mixed	no	yes	daily				4046	
+随机50	consolare	adj,verb	1776	20472	mixed	no	no	daily			972	5636	
+随机50	evento	noun	170	2587	mixed	no	no	daily		80		777	
+随机50	prora	noun	2081	40189	mixed	no	yes	daily			1103	11768	
+随机50	rumoroso	adj	4635	14914	mixed	no	no	daily				3633	
+随机50	diffondere	verb	3635	10806	mixed	no	yes	daily				2401	
+随机50	gota	noun	2966		mixed	no	no	daily			1621		
+随机50	interesse	noun	452	2224	mixed	no	yes	daily		254		1080	
+随机50	frasca	noun	2252		mixed	no	no	daily			1103		
+随机50	carogna	noun	4983	11563	mixed	no	yes	daily				4026	
+随机50	lume	noun	413	19619	mixed	no	yes	daily			66	7039	
+随机50	maggio	noun	1494	5013	mixed	no	yes	daily			972	2181	
+随机50	scagliare	verb	2319	30525	mixed	no	yes	daily			1335	8147	
+随机50	conoscere	verb	225	539	mixed	no	yes	daily			137	68	
+随机50	radiografia	noun	4968	14422	mixed	no	yes	daily				4009	
+随机50	essenziale	adj,noun	3986	7912	mixed	no	no	daily				2842	
+随机50	tana	noun	4156	7489	mixed	no	yes	daily				3051	
+随机50	carceriere	noun	2707	33345	mixed	no	yes	daily			1621	10418	
+随机50	fattoria	noun	2455	2758	mixed	no	no	daily				1238	
+随机50	marmellata	noun	4599	8445	mixed	no	no	daily				3588	
+随机50	attratto	adj	4520	11376	mixed	no	yes	daily				3487	
+随机50	curiosità	noun	1775	7987	mixed	no	yes	daily			1103	3440	
+随机50	settembre	noun	480	4119	mixed	no	no	daily		254		1968	
+随机50	tu	pron	51	38	mixed	yes	no	pronouns			11	16	
+随机50	tempra	noun	1899	39616	mixed	no	yes	daily			972	11644	
+随机50	villaggio	noun	1850	1885	mixed	no	no	daily				859	
+随机50	distrarre	verb	3918	11699	mixed	no	yes	daily				2757	
+随机50	signora	noun	503	258	mixed	no	no	daily			1621	105	
+随机50	uva	noun	1368	7986	mixed	no	yes	daily			715	3440	
+随机50	giovanetto	noun	2590		mixed	no	no	daily			1335		
+随机50	pallottola	noun	3175	5168	mixed	no	yes	daily				1795	
+随机50	lasciare	verb	26	458	mixed	yes	yes	daily		60	54	43	
+随机50	limite	noun	460	2578	mixed	yes	no	creative		254		1257	
+随机50	fumare	verb	1143	3014	mixed	no	yes	daily			1103	852	
+随机50	app	noun	4384	7730	mixed	no	yes	daily				3336	
+随机50	cibare	verb	2573		mixed	no	yes	daily			1335		
+随机50	sazio	adj	1735	37426	mixed	no	yes	daily			856	11220	
+随机50	lama	noun	1695	4810	mixed	no	yes	daily			1335	1974	
+随机50	coinvolgimento	noun	4706	8869	mixed	no	no	daily				3718	
+随机50	protezione	noun	2163	2266	mixed	no	no	daily				1059	
+随机50	alzare	verb	723	3549	mixed	no	no	daily			385	618	
+随机50	finirla	verb	3510	7817	mixed	no	yes	daily				2239	
+随机50	certificato	noun	3605	5856	mixed	no	no	daily				2362	
+随机50	rifugiato	noun	4996	12798	mixed	no	no	daily				4042	
+随机50	avvivare	verb	1830		mixed	no	no	daily			856		
+随机50	premuroso	adj	4293	9921	mixed	no	yes	daily				3225	
+随机50	esterno	adj,noun	2477	2790	mixed	no	yes	daily				1256	
+随机50	speciale	adj,noun	354	783	mixed	no	yes	daily		254		286	

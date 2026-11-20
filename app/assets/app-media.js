@@ -16,6 +16,9 @@
     var file = input.files && input.files[0];
     input.value = ""; // 允许重复选同一张
     if (!file) return;
+    // 鸿蒙上放宽了可选类型（见 pickAccept），会选到视频：类型写明是视频的，解码前就拦下。
+    // 只认 video/：类型为空或是 application/octet-stream 的（部分 HEIC、文件管理器给不出类型）照常解码，解不出再提示
+    if (file.type && file.type.indexOf("video/") === 0) { app.model.showToast("只能选图片，换一张试试", 2500); return; } // v00.03.01 E1：容器把浏览器原生弹窗画成无字深色框，改用页内提示
     bumpImg(key);
     var epoch = app.draft.draftEpoch, seq = imgSeq[key], url = URL.createObjectURL(file);
     var img = new Image();
@@ -27,10 +30,24 @@
     img.onerror = function () {
       URL.revokeObjectURL(url);
       if (seq !== imgSeq[key] || epoch !== app.draft.draftEpoch || app.draft.checkDraftExpiry()) return;
-      alert("这张图片读不出来，换一张试试");
+      app.model.showToast("这张图片读不出来，换一张试试", 2500);
     };
     img.src = url;
   }
+
+  // 选图控件的 accept。安卓 / 鸿蒙的小红书容器里写 image/* 打开的是系统文件管理器，而且选不了图
+  // （Mate 60 Pro、HarmonyOS 4.2.0、小红书 9.53.3 实测七种写法：只有「图片加视频」和「不写类型」能用）。
+  // 容器没有选图接口，所以只能改这里；iOS 上 image/* 直达相册，保持不动。
+  // ponytail: 这样会让用户看得到视频，选了由 loadImage 拦下。到不了相册，只到文件管理器
+  function pickAccept(ua, inXhs) {
+    return /android|harmony/i.test(ua || "") && (inXhs || /xhs|xiaohongshu|discover/i.test(ua)) ? "image/*,video/*" : "image/*";
+  }
+  // window.xhs 可能晚于本脚本注入（同 theme.js 顶栏兜底），所以载入时设一次、每次点开选图前再设一次
+  function syncPickAccept() {
+    var a = pickAccept(window.navigator && window.navigator.userAgent, !!window.xhs);
+    [el.photo, el.cellPhoto].forEach(function (inp) { if (inp && inp.setAttribute) inp.setAttribute("accept", a); });
+  }
+  syncPickAccept();
 
   // 手机原图 12MP 解码后约 48MB，10 格全配原图低端机会被杀；画框最大 920×640，缩到长边 1200 足够
   // ponytail: 不处理 EXIF 旋转，靠 WebView 自带（Chrome 81+/iOS 13.4+）；更老内核上竖拍照可能横着
@@ -88,6 +105,7 @@
   function clearPhoto() {
     bumpImg("def"); // 作废进行中的解码
     state.image = null;
+    state.defaultCrops = [];
     resetDefaultCrops();
     renderImgPanel();
     app.model.changed();
@@ -214,9 +232,13 @@
     if (!w || !w.img || w.epoch !== app.draft.draftEpoch || app.draft.checkDraftExpiry()) { leaveCropper(); return; }
     if (w.kind === "cell") { state.images[w.i] = w.img; state.crops[w.i] = copyCrop(w.crop); app.draft.releaseHeld(w.i); }
     else if (w.kind === "def") {
+      state.defaultCrops = state.letters.map(function () { return copyCrop(w.crop); });
       state.image = w.img; app.draft.releaseHeld(-1);
       state.crops = state.letters.map(function (l, j) { return state.images[j] ? state.crops[j] || null : copyCrop(w.crop); });
-    } else state.crops[w.i] = copyCrop(w.crop);
+    } else {
+      state.crops[w.i] = copyCrop(w.crop);
+      if (!state.images[w.i]) state.defaultCrops[w.i] = copyCrop(w.crop);
+    }
     leaveCropper();
     app.model.changed();
   }
@@ -343,7 +365,7 @@
     var i = state.imgIndex;
     bumpImg("cell:" + i); // 作废进行中的解码
     state.images[i] = null;
-    state.crops[i] = null;
+    state.crops[i] = state.image && state.defaultCrops[i] || null;
     renderImgPanel();
     app.model.changed();
     el.imgPick.focus();
@@ -362,6 +384,7 @@
     onCellPhoto: onCellPhoto,
     clearPhoto: clearPhoto,
     onPhoto: onPhoto,
+    syncPickAccept: syncPickAccept,
     encodeImage: encodeImage,
     decodeImage: decodeImage,
     applyCrop: applyCrop,

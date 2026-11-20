@@ -90,7 +90,7 @@
   el.langMore.addEventListener("click", app.entry.toggleLang); // 语言栏（T20）：展开 / 收起六个单选
   // 设置页（v00.03.00）：顶栏「设置」进，关闭后焦点还给「设置」；深浅三档立刻生效并存到本设备，标题的色值跟着重建
   var modeRadios = Array.prototype.slice.call(el.modeGroup.querySelectorAll("input")), skinRadios = Array.prototype.slice.call(el.skinGroup.querySelectorAll("input"));
-  var closeSettings = function () { el.settings.hidden = true; el.settingsOpen.focus(); };
+  var closeSettings = function () { el.settings.hidden = true; el.settingsOpen.focus(); app.model.flushToast(); };
   // 主题四选一 + 深浅三档。只有浅色的主题（fandom）选着时深浅这一组停用并写明原因；换回别的主题恢复原来的档位
   var syncSettings = function () {
     var off = window.THEME.lightOnly();
@@ -103,6 +103,7 @@
   var reskin = function () { app.title.rethemeTitle(); app.view.renderShell(); app.view.applySkinFont(); };
   el.settingsOpen.addEventListener("click", function () {
     syncSettings();
+    app.model.showToast("", 0); // 正在显示的提示不带进设置页（2026-11-17）
     el.settings.hidden = false;
     el.settingsClose.focus();
   });
@@ -124,7 +125,7 @@
     window.visualViewport.addEventListener("resize", app.title.placeKbRow); window.visualViewport.addEventListener("scroll", app.title.placeKbRow);
     window.visualViewport.addEventListener("resize", app.model.followToast); window.visualViewport.addEventListener("scroll", app.model.followToast);
   }
-  window.addEventListener("scroll", app.model.followToast); // Toast 跟着标题走（T33）
+  window.addEventListener("scroll", app.model.followToast); // Toast 跟着顶栏走（T33；2026-11-17 起固定在顶栏下方）
   // 入场页两个输入框：输入期间页面同样只许变高（T28）
   [el.wordInput, el.fillerCtl].forEach(function (c) {
     c.addEventListener("focus", function () { app.model.holdHeight(true); });
@@ -136,7 +137,7 @@
   window.addEventListener("resize", function () {
     if (app.view.resizeRaf) return;
     // 只在宽度变了才重摆：软键盘弹出 / 收起也会触发 resize（高度变），那时不该重建卡
-    app.view.resizeRaf = requestAnimationFrame(function () { app.view.resizeRaf = 0; if (el.card.clientWidth !== app.view.cardW) app.view.renderShell(); });
+    app.view.resizeRaf = requestAnimationFrame(function () { app.view.resizeRaf = 0; if (el.card.clientWidth !== app.view.cardW) app.view.renderShell(); if (app.entry.entryFrom) app.entry.fitWordInput(); }); // U02：入场单词框按新宽度重算字号
   });
   app.editor.bindWordControl(el.wordCtl);
   app.editor.bindLineControl(el.glossCtl, "gloss");
@@ -158,11 +159,11 @@
   // 配图面板
   el.plateHit.addEventListener("click", function () { if (Date.now() - app.editor.lastSwipeAt > 500) app.media.openImagePanel(app.editor.curCell()); });
   el.imgClose.addEventListener("click", app.media.closeImagePanel);
-  el.imgPick.addEventListener("click", function () { el.cellPhoto.click(); });
+  el.imgPick.addEventListener("click", function () { app.media.syncPickAccept(); el.cellPhoto.click(); });
   el.imgAdjust.addEventListener("click", function () { app.media.openCropper(state.imgIndex); });
   el.imgRemove.addEventListener("click", app.media.removeCellPhoto);
   el.cellPhoto.addEventListener("change", app.media.onCellPhoto);
-  el.defPick.addEventListener("click", function () { el.photo.click(); });
+  el.defPick.addEventListener("click", function () { app.media.syncPickAccept(); el.photo.click(); });
   el.defRemove.addEventListener("click", app.media.clearPhoto);
   el.photo.addEventListener("change", app.media.onPhoto);
   app.model.trapKeys(el.imgPanel, app.media.closeImagePanel);
@@ -203,9 +204,9 @@
   app.media.bindPinch(el.cropCanvas, app.media.setZoom);
   app.model.trapKeys(el.cropper, app.media.cancelCrop); // T44：Esc / 点外面 = 取消
   var creditsFrom = el.creditsOpen; // 关掉借物页后焦点回到打开它的那个按钮（完成面板底行或设置页底行）
-  var closeCredits = function () { el.credits.hidden = true; creditsFrom.focus(); };
+  var closeCredits = function () { el.credits.hidden = true; creditsFrom.focus(); app.model.flushToast(); };
   [el.creditsOpen, el.setCredits].forEach(function (b) {
-    b.addEventListener("click", function () { creditsFrom = b; el.credits.hidden = false; el.creditsClose.focus(); });
+    b.addEventListener("click", function () { creditsFrom = b; app.model.showToast("", 0); el.credits.hidden = false; el.creditsClose.focus(); });
   });
   el.creditsClose.addEventListener("click", closeCredits);
   // 许可全文（T07）：GPL 与三份 CC 许可共约 96 KB，不写进 index.html；展开某一项时才插一个 <script> 读 assets/licenses.js（与语言包同一种读法，离线容器里可用）。

@@ -1,0 +1,1394 @@
+{
+  "en": {
+    "aggregation": [
+      2,
+      5,
+      7
+    ],
+    "allegorical": [
+      2,
+      4,
+      7,
+      8
+    ],
+    "celebratory": [
+      3,
+      4,
+      7
+    ],
+    "colloquialism": [
+      3,
+      5,
+      8,
+      10
+    ],
+    "commiserate": [
+      3,
+      6,
+      8
+    ],
+    "communicate": [
+      3,
+      5,
+      7
+    ],
+    "compassionate": [
+      3,
+      6,
+      10
+    ],
+    "composition": [
+      3,
+      5,
+      7
+    ],
+    "consciousness": [
+      3,
+      9
+    ],
+    "conversation": [
+      3,
+      6,
+      8
+    ],
+    "counterpoint": [
+      4,
+      7
+    ],
+    "crystalline": [
+      4
+    ],
+    "descriptive": [
+      2,
+      7
+    ],
+    "development": [
+      2,
+      5,
+      7
+    ],
+    "developmental": [
+      2,
+      5,
+      7,
+      10
+    ],
+    "everlasting": [
+      4,
+      8
+    ],
+    "evolutionary": [
+      3,
+      5,
+      9
+    ],
+    "experiential": [
+      2,
+      4,
+      6,
+      8
+    ],
+    "fragmentation": [
+      4,
+      7,
+      9
+    ],
+    "gratification": [
+      4,
+      5,
+      7,
+      9
+    ],
+    "gravitation": [
+      4,
+      5,
+      7
+    ],
+    "immunization": [
+      2,
+      4,
+      8
+    ],
+    "incandescent": [
+      2,
+      5,
+      8
+    ],
+    "inflammation": [
+      2,
+      6,
+      8
+    ],
+    "information": [
+      2,
+      5,
+      7
+    ],
+    "inheritance": [
+      2,
+      5,
+      6
+    ],
+    "instantaneous": [
+      2,
+      6,
+      8
+    ],
+    "insubstantial": [
+      2,
+      5,
+      9
+    ],
+    "international": [
+      2,
+      5,
+      7
+    ],
+    "lamentation": [
+      5,
+      7
+    ],
+    "perspective": [
+      3,
+      7
+    ],
+    "pleasurable": [
+      4,
+      7
+    ],
+    "probability": [
+      4,
+      5,
+      8
+    ],
+    "recollection": [
+      3,
+      5,
+      8
+    ],
+    "relationship": [
+      2,
+      4,
+      8
+    ],
+    "remembrance": [
+      2,
+      5
+    ],
+    "renaissance": [
+      2,
+      6
+    ],
+    "replication": [
+      5,
+      7
+    ],
+    "respiration": [
+      3,
+      5,
+      7
+    ],
+    "respiratory": [
+      3,
+      5,
+      7
+    ],
+    "resplendent": [
+      2,
+      7
+    ],
+    "subterranean": [
+      3,
+      6
+    ],
+    "surreptitious": [
+      3,
+      6,
+      8
+    ],
+    "symmetrical": [
+      3,
+      6,
+      8
+    ],
+    "tranquility": [
+      4,
+      8
+    ],
+    "transparency": [
+      5
+    ],
+    "transparent": [
+      5,
+      8
+    ],
+    "uncontrolled": [
+      2,
+      5
+    ],
+    "underground": [
+      2,
+      5
+    ],
+    "understanding": [
+      2,
+      5,
+      10
+    ],
+    "unsuspecting": [
+      2,
+      5,
+      9
+    ]
+  },
+  "fr": {
+    "alternative": [
+      2,
+      5,
+      7
+    ],
+    "anniversaire": [
+      2,
+      4,
+      7
+    ],
+    "apprentissage": [
+      2,
+      6,
+      9
+    ],
+    "asthmatique": [
+      4,
+      6
+    ],
+    "composition": [
+      3,
+      5,
+      7
+    ],
+    "contamination": [
+      5,
+      7,
+      9
+    ],
+    "contrapuntique": [
+      6,
+      9
+    ],
+    "contrepoint": [
+      6
+    ],
+    "corporation": [
+      3,
+      5,
+      7
+    ],
+    "disparaître": [
+      3,
+      5
+    ],
+    "embranchement": [
+      2,
+      6,
+      9
+    ],
+    "extravagance": [
+      2,
+      5,
+      7
+    ],
+    "extravagant": [
+      2,
+      5,
+      7
+    ],
+    "gravitationnel": [
+      3,
+      5,
+      7,
+      11
+    ],
+    "héréditaire": [
+      2,
+      4,
+      6
+    ],
+    "immunitaire": [
+      2,
+      4,
+      6
+    ],
+    "inflammation": [
+      2,
+      6,
+      8
+    ],
+    "institution": [
+      3,
+      5,
+      7
+    ],
+    "international": [
+      2,
+      5,
+      7,
+      10
+    ],
+    "lamentation": [
+      2,
+      5,
+      7
+    ],
+    "miséricorde": [
+      2,
+      4,
+      6
+    ],
+    "moléculaire": [
+      2,
+      4,
+      6
+    ],
+    "métaphorique": [
+      2,
+      4,
+      7
+    ],
+    "perspective": [
+      4,
+      7
+    ],
+    "probabilité": [
+      3,
+      5,
+      7,
+      9
+    ],
+    "reconstituer": [
+      2,
+      6,
+      8
+    ],
+    "reconstitution": [
+      2,
+      6,
+      8,
+      10
+    ],
+    "renaissance": [
+      2,
+      6
+    ],
+    "respiration": [
+      3,
+      5,
+      7
+    ],
+    "respiratoire": [
+      3,
+      5,
+      7
+    ],
+    "restitution": [
+      3,
+      5,
+      7
+    ],
+    "surréaliste": [
+      3,
+      6
+    ],
+    "sélectionner": [
+      2,
+      5,
+      9
+    ],
+    "transmission": [
+      5,
+      8
+    ],
+    "transparence": [
+      5,
+      7
+    ],
+    "transparent": [
+      5,
+      7
+    ],
+    "vieillissement": [
+      8,
+      10
+    ],
+    "énergétique": [
+      4,
+      6
+    ]
+  },
+  "de": {
+    "alternative": [
+      2,
+      5,
+      7,
+      9
+    ],
+    "assistieren": [
+      2,
+      5,
+      8
+    ],
+    "beantworten": [
+      2,
+      5,
+      8
+    ],
+    "bergsteigen": [
+      4,
+      8
+    ],
+    "bevorstehen": [
+      2,
+      5,
+      8
+    ],
+    "bewusstsein": [
+      2,
+      7
+    ],
+    "dahinsterben": [
+      2,
+      5,
+      9
+    ],
+    "durchbrennen": [
+      5,
+      9
+    ],
+    "durchdrehen": [
+      5,
+      8
+    ],
+    "durchleuchten": [
+      5,
+      10
+    ],
+    "durchschauen": [
+      5,
+      10
+    ],
+    "eifersüchtig": [
+      2,
+      5,
+      9
+    ],
+    "einschlagen": [
+      3,
+      8
+    ],
+    "entgegenbringen": [
+      3,
+      5,
+      8,
+      12
+    ],
+    "entscheiden": [
+      3,
+      8
+    ],
+    "entscheidung": [
+      3,
+      8
+    ],
+    "entschlafen": [
+      3,
+      8
+    ],
+    "entschlummern": [
+      3,
+      9
+    ],
+    "entzweigehen": [
+      3,
+      7,
+      9
+    ],
+    "gegenüberstehen": [
+      2,
+      5,
+      9,
+      12
+    ],
+    "geradestehen": [
+      2,
+      4,
+      6,
+      9
+    ],
+    "heraussuchen": [
+      3,
+      6,
+      8
+    ],
+    "herbeikommen": [
+      3,
+      6,
+      9
+    ],
+    "herumfahren": [
+      3,
+      5,
+      8
+    ],
+    "hydrolysieren": [
+      2,
+      5,
+      7,
+      10
+    ],
+    "identifizieren": [
+      4,
+      6,
+      8,
+      11
+    ],
+    "immunisieren": [
+      2,
+      4,
+      6,
+      9
+    ],
+    "information": [
+      2,
+      5,
+      7,
+      9
+    ],
+    "informieren": [
+      2,
+      5,
+      8
+    ],
+    "interessieren": [
+      2,
+      5,
+      7,
+      10
+    ],
+    "interviewen": [
+      2,
+      5,
+      9
+    ],
+    "investieren": [
+      2,
+      5,
+      8
+    ],
+    "ironisieren": [
+      3,
+      5,
+      8
+    ],
+    "katalysieren": [
+      2,
+      4,
+      6,
+      9
+    ],
+    "konsumieren": [
+      3,
+      5,
+      8
+    ],
+    "kontaminieren": [
+      3,
+      5,
+      7,
+      10
+    ],
+    "kontrapunkt": [
+      3,
+      6
+    ],
+    "krankenhaus": [
+      4,
+      7
+    ],
+    "kürzertreten": [
+      3,
+      6,
+      9
+    ],
+    "lebensmittel": [
+      2,
+      6,
+      9
+    ],
+    "mitbekommen": [
+      3,
+      5,
+      8
+    ],
+    "mitschwingen": [
+      3,
+      9
+    ],
+    "nachtrauern": [
+      4,
+      8
+    ],
+    "nachtwandeln": [
+      5,
+      8
+    ],
+    "neutralisieren": [
+      3,
+      6,
+      8,
+      11
+    ],
+    "niederknien": [
+      3,
+      6
+    ],
+    "offenstehen": [
+      2,
+      5,
+      8
+    ],
+    "organisieren": [
+      2,
+      4,
+      6,
+      9
+    ],
+    "patrouillieren": [
+      2,
+      8,
+      11
+    ],
+    "perspektive": [
+      3,
+      7,
+      9
+    ],
+    "polymerisieren": [
+      2,
+      4,
+      6,
+      8,
+      11
+    ],
+    "qualifizieren": [
+      3,
+      5,
+      7,
+      10
+    ],
+    "repräsentieren": [
+      2,
+      5,
+      8,
+      11
+    ],
+    "symbolisieren": [
+      3,
+      5,
+      7,
+      10
+    ],
+    "umherziehen": [
+      2,
+      5,
+      8
+    ],
+    "unterstützen": [
+      2,
+      5,
+      9
+    ],
+    "verabreichen": [
+      3,
+      5,
+      8
+    ],
+    "versprechen": [
+      3,
+      7
+    ],
+    "weiterhelfen": [
+      3,
+      6,
+      9
+    ],
+    "widerstehen": [
+      2,
+      5,
+      8
+    ],
+    "zuckerkrankheit": [
+      2,
+      6,
+      11
+    ],
+    "zurückkommen": [
+      2,
+      6,
+      9
+    ],
+    "zurücktreten": [
+      2,
+      6,
+      9
+    ],
+    "zurückziehen": [
+      2,
+      6,
+      9
+    ],
+    "zusammengehen": [
+      2,
+      5,
+      8,
+      10
+    ],
+    "zusammentreffen": [
+      2,
+      5,
+      8,
+      12
+    ],
+    "zärtlichkeit": [
+      4,
+      8
+    ]
+  },
+  "es": {
+    "agricultura": [
+      4,
+      7,
+      9
+    ],
+    "alejandrino": [
+      3,
+      6
+    ],
+    "alternativa": [
+      2,
+      5,
+      7,
+      9
+    ],
+    "aprendizaje": [
+      5,
+      7,
+      9
+    ],
+    "catalizador": [
+      2,
+      4,
+      6,
+      8
+    ],
+    "composición": [
+      3,
+      5,
+      7
+    ],
+    "confidencia": [
+      3,
+      5,
+      8
+    ],
+    "conocimiento": [
+      2,
+      4,
+      6,
+      10
+    ],
+    "consciencia": [
+      4,
+      8
+    ],
+    "contrapunto": [
+      3,
+      6,
+      9
+    ],
+    "emblemático": [
+      2,
+      5,
+      7,
+      9
+    ],
+    "envejecimiento": [
+      2,
+      4,
+      6,
+      8,
+      12
+    ],
+    "existencial": [
+      4,
+      7
+    ],
+    "experiencia": [
+      2,
+      4,
+      8
+    ],
+    "fallecimiento": [
+      2,
+      5,
+      7,
+      11
+    ],
+    "gravitatorio": [
+      3,
+      5,
+      7,
+      9
+    ],
+    "inconveniente": [
+      2,
+      5,
+      7,
+      11
+    ],
+    "inflamación": [
+      2,
+      5,
+      7
+    ],
+    "información": [
+      2,
+      5,
+      7
+    ],
+    "inmunológico": [
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "investigación": [
+      2,
+      5,
+      7,
+      9
+    ],
+    "misericordia": [
+      2,
+      4,
+      6,
+      9
+    ],
+    "obligatorio": [
+      4,
+      6,
+      8
+    ],
+    "oportunidad": [
+      4,
+      6,
+      8
+    ],
+    "perspectiva": [
+      4,
+      7,
+      9
+    ],
+    "probabilidad": [
+      3,
+      5,
+      7,
+      9
+    ],
+    "problemática": [
+      3,
+      6,
+      8,
+      10
+    ],
+    "renacentista": [
+      2,
+      4,
+      7,
+      10
+    ],
+    "representar": [
+      2,
+      5,
+      8
+    ],
+    "resistencia": [
+      2,
+      5,
+      8
+    ],
+    "respiración": [
+      3,
+      5,
+      7
+    ],
+    "respiratorio": [
+      3,
+      5,
+      7,
+      9
+    ],
+    "seleccionar": [
+      2,
+      5,
+      8
+    ],
+    "tranquilidad": [
+      4,
+      7,
+      9
+    ],
+    "transparencia": [
+      5,
+      7,
+      10
+    ],
+    "transparente": [
+      5,
+      7,
+      10
+    ],
+    "universidad": [
+      3,
+      6,
+      8
+    ],
+    "vagabundear": [
+      2,
+      4,
+      7
+    ]
+  },
+  "it": {
+    "abbandonare": [
+      2,
+      5,
+      7,
+      9
+    ],
+    "addolorarsi": [
+      2,
+      4,
+      6,
+      9
+    ],
+    "affidamento": [
+      2,
+      4,
+      6,
+      9
+    ],
+    "alessandrino": [
+      4,
+      7,
+      10
+    ],
+    "alimentarsi": [
+      3,
+      6,
+      9
+    ],
+    "allontanamento": [
+      2,
+      5,
+      7,
+      9,
+      12
+    ],
+    "allontanarsi": [
+      2,
+      5,
+      7,
+      10
+    ],
+    "alternativa": [
+      2,
+      5,
+      7,
+      9
+    ],
+    "ambientalista": [
+      2,
+      6,
+      8,
+      10
+    ],
+    "angolazione": [
+      2,
+      4,
+      6,
+      9
+    ],
+    "appartamento": [
+      2,
+      5,
+      7,
+      10
+    ],
+    "apprendimento": [
+      2,
+      6,
+      8,
+      11
+    ],
+    "apprendista": [
+      2,
+      6,
+      8
+    ],
+    "appuntamento": [
+      2,
+      5,
+      7,
+      10
+    ],
+    "aspirazione": [
+      4,
+      6,
+      9
+    ],
+    "catalizzatore": [
+      2,
+      4,
+      7,
+      9,
+      11
+    ],
+    "chiaroscuro": [
+      4,
+      6,
+      9
+    ],
+    "clandestino": [
+      4,
+      6,
+      9
+    ],
+    "compassione": [
+      3,
+      6,
+      9
+    ],
+    "compiangere": [
+      3,
+      7,
+      9
+    ],
+    "composizione": [
+      3,
+      5,
+      7,
+      10
+    ],
+    "consapevolezza": [
+      3,
+      5,
+      7,
+      9,
+      12
+    ],
+    "contrappuntistico": [
+      3,
+      7,
+      10,
+      12,
+      15
+    ],
+    "corporazione": [
+      3,
+      5,
+      7,
+      10
+    ],
+    "corteggiare": [
+      3,
+      6,
+      9
+    ],
+    "delicatezza": [
+      2,
+      4,
+      6,
+      9
+    ],
+    "dimenticare": [
+      2,
+      5,
+      7,
+      9
+    ],
+    "illuminazione": [
+      2,
+      4,
+      6,
+      8,
+      11
+    ],
+    "immunitario": [
+      2,
+      4,
+      6,
+      8
+    ],
+    "inconsistente": [
+      2,
+      5,
+      7,
+      11
+    ],
+    "incontrarsi": [
+      2,
+      5,
+      9
+    ],
+    "inconveniente": [
+      2,
+      5,
+      7,
+      11
+    ],
+    "incrociarsi": [
+      2,
+      5,
+      9
+    ],
+    "infiammazione": [
+      2,
+      6,
+      8,
+      11
+    ],
+    "inossidabile": [
+      4,
+      6,
+      8,
+      10
+    ],
+    "inquadratura": [
+      2,
+      5,
+      8,
+      10
+    ],
+    "intercedere": [
+      2,
+      5,
+      7,
+      9
+    ],
+    "interrogativo": [
+      2,
+      5,
+      7,
+      9,
+      11
+    ],
+    "misericordia": [
+      2,
+      4,
+      6,
+      9
+    ],
+    "occupazione": [
+      2,
+      4,
+      6,
+      9
+    ],
+    "peccaminoso": [
+      3,
+      5,
+      7,
+      9
+    ],
+    "pellegrinare": [
+      3,
+      5,
+      8,
+      10
+    ],
+    "prescegliere": [
+      3,
+      6,
+      10
+    ],
+    "probabilità": [
+      3,
+      5,
+      7,
+      9
+    ],
+    "problematica": [
+      3,
+      6,
+      8,
+      10
+    ],
+    "prospettiva": [
+      3,
+      7,
+      9
+    ],
+    "prospettivo": [
+      3,
+      7,
+      9
+    ],
+    "raggrupparsi": [
+      3,
+      7,
+      10
+    ],
+    "ragionevole": [
+      2,
+      5,
+      7,
+      9
+    ],
+    "rappresentare": [
+      3,
+      6,
+      9,
+      11
+    ],
+    "respiratorio": [
+      2,
+      5,
+      7,
+      9
+    ],
+    "respirazione": [
+      2,
+      5,
+      7,
+      10
+    ],
+    "rinascimentale": [
+      2,
+      4,
+      7,
+      10,
+      12
+    ],
+    "rinascimento": [
+      2,
+      4,
+      7,
+      10
+    ],
+    "risplendere": [
+      2,
+      7,
+      9
+    ],
+    "selezionare": [
+      2,
+      4,
+      7,
+      9
+    ],
+    "soccorritore": [
+      3,
+      6,
+      8,
+      10
+    ],
+    "spensierato": [
+      4,
+      7,
+      9
+    ],
+    "strampalato": [
+      5,
+      7,
+      9
+    ],
+    "tirocinante": [
+      2,
+      4,
+      6,
+      9
+    ],
+    "tranquillità": [
+      4,
+      8,
+      10
+    ],
+    "trascorrere": [
+      3,
+      7,
+      9
+    ],
+    "trasparente": [
+      3,
+      6,
+      9
+    ],
+    "trasparenza": [
+      3,
+      6,
+      9
+    ],
+    "vaccinazione": [
+      3,
+      5,
+      7,
+      10
+    ],
+    "vagabondaggio": [
+      2,
+      4,
+      7,
+      10
+    ]
+  },
+  "la": {
+    "absconditus": [
+      2,
+      6,
+      8
+    ],
+    "adminiculum": [
+      2,
+      4,
+      6,
+      8
+    ],
+    "crepusculum": [
+      3,
+      5,
+      8
+    ],
+    "crystallinus": [
+      3,
+      7,
+      9
+    ],
+    "magnificentia": [
+      2,
+      5,
+      7,
+      10
+    ],
+    "misericordia": [
+      2,
+      4,
+      6,
+      9
+    ],
+    "sempiternus": [
+      3,
+      5,
+      8
+    ]
+  }
+}

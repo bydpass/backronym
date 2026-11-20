@@ -12,7 +12,7 @@ window.LANGPACK = (function (root) {
   // ponytail: 英语的 words.js / phrases.js 是生成产物，仍写 window.WORDS / HYPH / PHRASES（不为改名重生成 2 MB 词库）；
   // 英语没 put 过的部分映射到这三个全局。西文语言包一律用 put，不碰全局
   var EN_GLOBAL = { words: "WORDS", phrases: "PHRASES", hyph: "HYPH", lexicon: "LEXICON_EN", more: "WORDS_MORE" }; // lexicon：T19 全部准入义项（查词用），与 words 同一个文件
-  var FILES = { rules: "rules.js", block: "block.js", words: "words.js", phrases: "phrases.js" };
+  var FILES = { rules: "rules.js", block: "block.js", words: "words.js", inflections: "inflections.js", phrases: "phrases.js" };
 
   function put(code, part, value) { (data[code] || (data[code] = {}))[part] = value; }
   function get(code, part) {

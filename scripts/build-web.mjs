@@ -13,6 +13,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const MARK = ".backronym-web-build";
+const MARK_TEXT = "由 scripts/build-web.mjs 生成；再次构建会整体替换本目录。\n";
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const src = path.join(root, "app");
 const at = process.argv.indexOf("--out");
@@ -29,8 +30,8 @@ function assertBlocker(dir, name) {
     if (!tagOf(f).test(html)) throw new Error(name + " 的 index.html 没加载 " + f);
   }
 }
-// 许可全文（T07）：两版包里都要有这六份独立文件，只在借物页写许可名称不算交付
-const LICENSE_FILES = ["GPL-3.0", "CC-BY-SA-4.0", "CC-BY-SA-3.0", "CC-BY-4.0", "MIT", "OFL-1.1"].map((k) => "LICENSES/" + k + ".txt");
+// 许可全文（T07）：app/ 与网页版里都要有这六份独立文件。小红书的 zip 不带（容器只许一个 html、不收 txt，打包时排除），全文在借物页里展开可读
+const LICENSE_FILES = ["GPL-3.0", "CC-BY-SA-4.0", "CC-BY-SA-3.0", "CC-BY-4.0", "MIT", "OFL-1.1"].map((k) => "LICENSES/" + k + ".html");
 function assertLicenses(dir, name) {
   for (const f of LICENSE_FILES) if (!fs.existsSync(path.join(dir, f)) || !fs.statSync(path.join(dir, f)).size) throw new Error(name + " 缺许可全文 " + f);
 }
@@ -56,7 +57,7 @@ const within = (a, b) => a === b || a.startsWith(b + path.sep); // a 在 b 里�
 
 function checkOut() {
   const realSrc = fs.realpathSync(src), realRoot = fs.realpathSync(root);
-  if (fs.existsSync(out) && fs.lstatSync(out).isSymbolicLink()) fail(out + " 是符号链接");
+  if (fs.lstatSync(out, {throwIfNoEntry: false})?.isSymbolicLink()) fail(out + " 是符号链接");
   const real = realOf(out);
   if (within(real, realSrc)) fail(out + " 是源码 app/ 或在它里面");
   if (within(realSrc, real)) fail(out + " 是源码 app/ 的上级（含项目根）");
@@ -64,7 +65,12 @@ function checkOut() {
   if (!fs.existsSync(out)) return;
   if (!fs.statSync(out).isDirectory()) fail(out + " 已存在且不是目录");
   const names = fs.readdirSync(out);
-  if (!names.length || names.includes(MARK)) return; // 空目录 / 上次由这里构建
+  if (!names.length) return;
+  if (names.includes(MARK)) {
+    const marker = path.join(out, MARK);
+    if (fs.lstatSync(marker).isFile() && fs.readFileSync(marker, "utf8") === MARK_TEXT) return;
+    fail(out + " 的构建标记无效，请检查目录内容");
+  }
   if (at > 0) fail(out + " 已存在、不是空目录，也不是本构建器生成的；不删除，请换一个空目录或新路径");
   // 默认的 dist/web：兼容加标记之前构建的旧产物。逐个检查整棵树（B4-R1 复审）：每个文件在 app/ 里都有同路径的文件才认作旧产物
   // （内容可以不同——那是旧版本的构建）；里面有符号链接、或任何一个 app/ 里没有的文件（如 assets/author.txt），就无法证明是产物，拒绝、不删
@@ -75,11 +81,11 @@ function checkOut() {
 }
 
 assertBlocker(src, "app/（小红书版）");
-assertLicenses(src, "app/（小红书版）");
+assertLicenses(src, "app/");
 checkOut();
 fs.rmSync(out, { recursive: true, force: true });
 fs.cpSync(src, out, { recursive: true, filter: (p) => !path.basename(p).startsWith(".") && path.basename(p) !== "_recovery" });
-fs.writeFileSync(path.join(out, MARK), "由 scripts/build-web.mjs 生成；再次构建会整体替换本目录。\n");
+fs.writeFileSync(path.join(out, MARK), MARK_TEXT);
 assertBlocker(out, "网页版");
 assertLicenses(out, "网页版");
 console.log("网页版 → " + path.relative(root, out) + "（含屏蔽器）");

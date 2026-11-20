@@ -151,7 +151,20 @@
       crops.push(CORE.cropOf(crop));
       if (name) any = true;
     }
-    return any ? { media: { def: def, cells: cells }, crops: crops } : null;
+    if (!any) return null;
+    var media = { def: def, cells: cells };
+    // 只有独立图遮住默认图时才额外存一份；按已落盘的默认图配对。
+    if (def) {
+      var previous = defHeld ? held : prev;
+      var covered = cells.map(function (name, i) {
+        if (!name || !(defOk || (defHeld ? sameH(i) : same(i)))) return null;
+        if (defOk) return CORE.cropOf(state.defaultCrops && state.defaultCrops[i]);
+        var previousCrop = previous.cells[i] ? (previous.defaultCrops || [])[i] : previous.crops[i];
+        return CORE.cropOf(previousCrop);
+      });
+      if (covered.some(Boolean)) media.defaultCrops = covered;
+    }
+    return { media: media, crops: crops };
   }
   function heldAny() { return !!mediaHeld.def || mediaHeld.cells.some(Boolean); }
   // 某格暂未读回、草稿仍引用着的配图与取景（V003-B4-R5 复审）：看得见的图是空的，不等于这一格没有作者内容。
@@ -177,11 +190,12 @@
         cells.push(ok ? m.cells[o] || null : null);
         crops.push(ok ? m.crops[o] || null : null);
       });
+      if (m.defaultCrops) m.defaultCrops = from.map(function (o, j) { return o >= 0 && m.word.charAt(o) === oldLetters[o] ? m.defaultCrops[o] || null : null; });
       m.word = word; m.cells = cells; m.crops = crops;
     });
   }
   function snapMedia(p) {
-    return p && p.media ? { word: p.word, def: p.media.def, cells: p.media.cells.slice(), crops: (p.crops || []).slice() } : emptyMedia();
+    return p && p.media ? { word: p.word, def: p.media.def, defaultCrops: p.media.defaultCrops, cells: p.media.cells.slice(), crops: (p.crops || []).slice() } : emptyMedia();
   }
 
   // 存图：每张还没确认的图排进队列，依次「编码 → 看空间 → 写入 → 读回核对」。确认后重新保存草稿（这时草稿才引用它：先写图片，再写草稿 JSON）
@@ -228,7 +242,7 @@
     if (!media) return out;
     await mediaReady;
     var stores = mediaStores, cache = {}, lostDef = false, lostCells = [], dark = mediaPartial || !stores.length, unknown = {};
-    out.held = { word: d.word, def: null, cells: [], crops: (d.crops || []).slice() };
+    out.held = { word: d.word, def: null, defaultCrops: media.defaultCrops, cells: [], crops: (d.crops || []).slice() };
     var lists = await Promise.all(stores.map(function (st) { return st.list(); }));
     if (lists.some(function (l) { return !l; })) out.unsure = true;
     var get = function (name) {
@@ -250,6 +264,9 @@
       out.cells[i] = media.cells[i] ? await get(media.cells[i]) : null;
       if (media.cells[i] && !out.cells[i]) { lostCells.push(i + 1); if (unknown[media.cells[i]]) out.held.cells[i] = media.cells[i]; }
     }
+    // D3：默认图暂未读回时，held.crops 是它在各格的取景。草稿 crops 在有独立图的格存的是独立图的取景，
+    // 这些格（独立图读回了或确实丢了）改用落盘时配对的默认图取景；旧稿没记的从居中开始
+    if (out.held.def) media.cells.forEach(function (n, i) { if (n && !out.held.cells[i]) out.held.crops[i] = (media.defaultCrops || [])[i] || null; });
     // B7-S1：有默认图时，缺图的格实际显示默认图，文案照实说；读失败（unsure）不说「找不回」，提示稍后重开再试
     var n = (lostDef ? 1 : 0) + lostCells.length, parts = [];
     if (lostDef) parts.push("默认图");
@@ -513,7 +530,7 @@
     sideGuard = null; sideKeep = ""; sideRead = false; sideMsg = "";
     prevMedia = emptyMedia(); mediaHeld = emptyMedia(); mediaMissing = ""; mediaUnsure = false;
     state.letters = []; state.picks = []; state.glosses = []; state.glossAuto = [];
-    state.captions = []; state.keys = []; state.arts = []; state.poss = []; state.pickLangs = []; state.images = []; state.crops = [];
+    state.captions = []; state.keys = []; state.arts = []; state.poss = []; state.pickLangs = []; state.images = []; state.crops = []; state.defaultCrops = [];
     app.model.setLang("en"); // 新作品回到默认语言
     state.image = null; state.outputs = []; state.filler = ""; state.focus = 0;
     state.view = "single"; state.imgIndex = state.cropIndex = -1; state.split = null; state.retitle = false;
@@ -668,13 +685,22 @@
     state.picks = d.picks.map(function (p, i) { return p ? app.model.itemFor(p[0], p, i) : null; });
     state.keys = d.keys.slice();
     var wordsHere = !window.LANGPACK || d.langs.every(function (c) { return window.LANGPACK.has(c, "words"); });
-    state.poss = state.letters.map(function (l, i) { var q = d.poss && d.poss[i]; return q || (d.glossAuto[i] && state.picks[i] ? CORE.defaultSense(state.picks[i]) : ""); }); // 没记：自动带出的释义按词条第一个词性，自己写的不猜
+    state.poss = state.letters.map(function (l, i) { var q = d.poss && d.poss[i]; return CORE.savedSense(d.picks[i], state.picks[i], q) || (d.glossAuto[i] && state.picks[i] ? CORE.defaultSense(state.picks[i]) : ""); }); // 没记：自动带出的释义按词条第一个词性，自己写的不猜
     state.arts = state.letters.map(function (l, i) { var a = d.arts && d.arts[i]; return a && (!wordsHere || CORE.articleOptions(state.picks[i]).indexOf(a) >= 0) ? a : ""; }); // 选项里已经没有的旧选择不沿用；词库还没到时先留着，到了由 refreshPicks 再核（R8）
-    state.glosses = d.glosses.slice();
+    state.glosses = d.glosses.map(function (g, i) {
+      return d.glossAuto[i] && state.picks[i] ? CORE.savedAutoGloss(state.picks[i],g) : g;
+    });
     state.glossAuto = d.glossAuto.slice();
     state.captions = d.captions.slice();
     state.images = state.letters.map(function (l, i) { return media.cells[i] || null; });
-    state.crops = state.letters.map(function (l, i) { return d.crops && (state.images[i] || state.image) ? d.crops[i] || null : null; }); // 缺图的格不带取景
+    state.defaultCrops = state.letters.map(function (l, i) {
+      if (!d.media || !d.media.def) return null;
+      return d.media.cells[i] ? (d.media.defaultCrops || [])[i] || null : (d.crops || [])[i] || null;
+    });
+    state.crops = state.letters.map(function (l, i) {
+      if (state.images[i]) return (d.crops || [])[i] || null;
+      return state.image ? state.defaultCrops[i] : null;
+    }); // 缺图的格不带取景
     state.focus = app.model.firstOpen(0); // 没选的格保持为空（D6）
     finishRestore();
   }

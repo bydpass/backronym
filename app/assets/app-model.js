@@ -21,6 +21,7 @@ window.Backronym = {};
     keys: [],      // 每个位置的关键字母下标，T17 起恒为 0（朱红词首字母）；字段留着只为草稿格式不变
     split: null,   // T42：超过 10 格时手动调过的分界（前一张的格数）；null = 自动（CORE.autoSplit）
     images: [],    // 每个位置单独的配图或 null
+    defaultCrops: [], // 每格默认图的取景，独立图覆盖期间也保留
     crops: [],     // 每个位置的取景 {z, x, y} 或 null（默认居中、不放大）
     image: null,   // 顶部上传的默认图，没单独配图的格子用它
     view: "single",  // single 单图视图（默认，1080×1440 竖图） / grid 列阵视图（5 个字母以内是横图）
@@ -36,7 +37,7 @@ window.Backronym = {};
   var el = {
     // 外壳（T10）：顶部栏、满宽卡、卡下字母栏 + 页码 + 提示行
     app: $("app"), card: $("card"), mirror: $("mirror"), wordCtl: $("wordCtl"), glossCtl: $("glossCtl"), capCtl: $("capCtl"), plateHit: $("plateHit"),
-    cand: $("cand"), candMsg: $("candMsg"), candLab: $("candLab"), candRow: $("candRow"), candMore: $("candMore"), candMoreN: $("candMoreN"), candRandom: $("candRandom"), candNext: $("candNext"), candList: $("candList"), senseList: $("senseList"),
+    cand: $("cand"), candMsg: $("candMsg"), candLab: $("candLab"), candCount: $("candCount"), candRow: $("candRow"), candMore: $("candMore"), candMoreN: $("candMoreN"), candRandom: $("candRandom"), candNext: $("candNext"), candList: $("candList"), senseList: $("senseList"),
     top: $("top"), hintRow: $("hintRow"), sheetTabs: $("sheetTabs"), pager: $("pager"), pagerLetters: $("pagerLetters"), hint: $("hint"), toEntry: $("toEntry"),
     viewSingle: $("viewSingle"), viewGrid: $("viewGrid"), finish: $("finish"),
     // 配图面板 / 取景面板（T15）
@@ -88,6 +89,7 @@ window.Backronym = {};
     state.pickLangs = keepSame(prev, state.pickLangs || [], "");
     state.poss = keepSame(prev, state.poss || [], "");
     state.images = keepSame(prev, state.images, null);
+    state.defaultCrops = keepSame(prev, state.defaultCrops || [], null);
     state.crops = keepSame(prev, state.crops, null);
     state.focus = firstOpen(0); // 格子初始为空（D6），不再随机填满
   }
@@ -156,6 +158,10 @@ window.Backronym = {};
   // 选中一个词：释义按 D7（用户写过的不覆盖）；关键字母恒为词首（T17）
   function setPick(i, item, lang) {
     var was = state.picks[i];
+    if (item && lang) {
+      var label = candidateWord(item, lang);
+      if (label !== item[0]) { item = item.slice(); item[0] = label; }
+    }
     if (state.pickLangs) state.pickLangs[i] = item ? lang || itemLang(item) || "" : "";
     // 冠词的选择跟着词走：换了词就清；同一个词（词库迟到后重查）且选项里还有它才留着
     if (!was || !item || was[0] !== item[0] || CORE.articleOptions(item).indexOf(state.arts[i]) < 0) state.arts[i] = "";
@@ -185,6 +191,39 @@ window.Backronym = {};
   // 给读屏的词性全称（“adj.” 会被逐个字母念出来）
   var POS_NAME = { "adj.": "形容词", "n.": "名词", "v.": "动词", "adv.": "副词", "prep.": "介词", "conj.": "连词",
     "pron.": "代词", "int.": "感叹词", "num.": "数词", "art.": "冠词", "aux.": "助动词", "abbr.": "缩写" };
+  // 词性缩写（v00.03.01 第六轮真机建议，用户 11-19 选定写法；设计系统 CandidateBar「词性缩写」）：候选栏、义项栏用各语言词典自己的写法，
+  // 名词在法西意按义项带阴阳性（词包 lexicon.genders：m / f / b 两性同形）；德语的性由 der/die/das 表示，拉丁语暂不标性。英语与没列的词性照原样
+  var POS_ABBR = {
+    fr: { "n.": ["n.", "n. m.", "n. f.", "n. m. ou f."] },
+    es: { "n.": ["s.", "s. m.", "s. f.", "s. m. y f."] },
+    it: { "n.": ["s.", "s. m.", "s. f.", "s. m. e f."], "adj.": "agg.", "adv.": "avv." },
+    de: { "n.": "Subst.", "v.": "V.", "adj.": "Adj.", "adv.": "Adv.", "pron.": "Pron.", "num.": "Num." },
+    la: { "n.": "subst.", "v.": "verb.", "adj.": "adi." }
+  };
+  var GENDER_NAME = { m: "阳性", f: "阴性", b: "两性" };
+  // 一组义项（CORE.senseGroups 的一组）的阴阳性：按词和这组的中文释义找词库里的名词义项；几个义项不一致或查不到就不标（""）
+  function senseGender(word, code, g) {
+    if (!g || g.pos !== "n." || !POS_ABBR[code] || !Array.isArray(POS_ABBR[code]["n."])) return "";
+    return inLang(code, function () {
+      var c = lexicon(), lx = c && c.lx;
+      if (!lx) return "";
+      var k = lx.key(word), found = {};
+      (lx.index[k] || []).forEach(function (n) {
+        var r = lx.records[n];
+        if (r.pos !== "noun" || !r.gender || lx.key(r.display) !== k) return;
+        if (r.zh.split(/[，,]/).some(function (z) { return g.senses.indexOf(z) >= 0; })) found[r.gender] = 1;
+      });
+      var keys = Object.keys(found);
+      return keys.length === 1 ? keys[0] : "";
+    });
+  }
+  // 显示用的缩写与读屏名：posAbbr("fr", "n.", "f") → "n. f."；posSpoken 同参数 → "阴性名词"
+  function posAbbr(code, pos, gender) {
+    var a = (POS_ABBR[code] || {})[pos];
+    if (!a) return pos;
+    return Array.isArray(a) ? a[{ m: 1, f: 2, b: 3 }[gender] || 0] : a;
+  }
+  function posSpoken(pos, gender) { return (pos === "n." && GENDER_NAME[gender] || "") + posName(pos); }
   function posName(pos) {
     if (!pos) return "";
     return POS_NAME[pos] || (pos.charAt(0) === "[" ? pos.slice(1, -1) + "领域" : pos);
@@ -192,30 +231,62 @@ window.Backronym = {};
 
   // 按单词从词库里找回最新条目（草稿里存的可能是旧格式；卡上打的词首字母大写，词库全小写，所以不分大小写）；找不到就是自定义词
   // 语言多选：先在指定的语言里找（这一格记着的那门），没有再按选中语言的先后找。lookupHit 还说明是在哪门语言里找到的
-  function lookupIn(word) {
-    if (lexicon()) { var g = lexiconHit(word); return g ? g.entry : null; }
+  function lookupIn(word, previous, exactOnly) {
+    if (lexicon()) { var g = lexiconHit(word, previous, exactOnly); return g ? g.entry : null; }
     var hit = CORE.resolveEntry(words(), langData("phrases"), langData("forms"), word, langData("formRanks"), langData("lookupGuards"));
     return hit ? hit.entry : null;
   }
-  function lookupHit(word, prefer) {
-    var order = (prefer && state.langs.indexOf(prefer) >= 0 ? [prefer] : []).concat(state.langs.filter(function (c) { return c !== prefer; }));
-    for (var k = 0; k < order.length; k++) {
-      var e = inLang(order[k], function () { return lookupIn(word); });
-      if (e) return { entry: e, lang: order[k] };
+  // 精确命中（原形、词形）排在漏音符候选前，多选语言时也是：这一格记着的语言先整门查；其余语言先逐门只看精确命中，再看漏音符候选
+  function lookupHit(word, prefer, previous) {
+    var own = prefer && state.langs.indexOf(prefer) >= 0 ? prefer : "";
+    var ask = function (c, exactOnly) {
+      var e = inLang(c, function () { return lookupIn(word, previous, exactOnly); });
+      return e ? { entry: e, lang: c } : null;
+    };
+    var rest = state.langs.filter(function (c) { return c !== own; }), order = own ? [own].concat(rest) : rest, h, k;
+    // 重核已选的词（恢复草稿、词库迟到）：先在这一格记着的语言里按已存释义找回，认定的语言与义项不改。
+    // 只存了拼写、没选义项的格（cafeteria 多语不唯一时留空）不算已选，按新输入的规则判断（复审 R3-16）
+    if (previous && previous[1]) {
+      h = own ? ask(own, false) : null;
+      if (h) return h;
+      for (var pass = 0; pass < 2; pass++) {
+        for (k = 0; k < rest.length; k++) { h = ask(rest[k], pass === 0); if (h) return h; }
+      }
+      return null;
     }
-    return null;
+    // 新输入（复审 R3-13）：先查全部选中语言的精确命中（记着的语言优先）；都没有时，汇总各语言的漏音符候选，
+    // 合起来只有一个才自动带出——法 cafétéria 与西 cafetería 同时可选时保留原输入，detail 取德语精确的 Detail 而非法语 détail
+    for (k = 0; k < order.length; k++) { h = ask(order[k], true); if (h) return h; }
+    var leaks = [];
+    order.forEach(function (c) {
+      inLang(c, function () {
+        if (!lexicon()) return;
+        lexiconGroups(word).forEach(function (g) { if (g.leak && !blocked(g.entry[0])) leaks.push({ entry: g.entry, lang: c }); });
+      });
+    });
+    return leaks.length === 1 ? leaks[0] : null;
   }
   function lookup(word, prefer) { var h = lookupHit(word, prefer); return h ? h.entry : null; }
-  // 选中的各门语言里查得到这个词的全部结果（候选栏用：每门各出一条）
+  // 选中的各门语言里查得到这个词的全部结果（候选栏用）：各语言的精确命中在前，漏音符候选（leak）在后，各自保持语言栏的先后
   function lookupAll(word) {
-    var out = [];
-    state.langs.forEach(function (c) { var e = inLang(c, function () { return lookupIn(word); }); if (e) out.push({ entry: e, lang: c }); });
-    return out;
+    var out = [], leaks = [];
+    state.langs.forEach(function (c) {
+      inLang(c, function () {
+        if (lexicon()) {
+          lexiconGroups(word).forEach(function (g) { (g.leak ? leaks : out).push({entry: g.entry, lang: c, leak: !!g.leak}); });
+        } else {
+          var entry = lookupIn(word);
+          if (entry) out.push({entry: entry, lang: c});
+        }
+      });
+    });
+    return out.concat(leaks);
   }
   // 打的是变形（suis、Träume）时返回它的原形，否则空串；候选栏用来写「X 是 Y 的变形」。lang = 在哪门语言里查
   function formOf(word, lang) {
     return inLang(lang || state.lang, function () {
-      if (lexicon()) { var g = lexiconHit(word); return g && (g.tier === 1 || g.tier === 3) ? g.lemma : ""; }
+      // 只认精确命中的词形（tier 1）。去变音符才撞上的（tier 3）不说「是…的变形」：é 去掉变音符撞上意大利语 è，会提示「é 是 essere 的变形」（v00.03.01 R02，真机 C5）
+      if (lexicon()) { var g = lexiconHit(word); return g && g.tier === 1 ? g.lemma : ""; }
       return CORE.lookupEntry(words(), langData("phrases"), word) ? "" : CORE.formLemma(langData("forms"), word, rankOf);
     });
   }
@@ -229,19 +300,152 @@ window.Backronym = {};
     var pack = langData("lexicon");
     if (!pack || !window.LEXICON_STORE) return null;
     var c = lexCaches[state.lang];
-    if (!c || c.pack !== pack) c = lexCaches[state.lang] = { pack: pack, lang: state.lang, lx: window.LEXICON_STORE.fromPack(pack, state.lang, CORE.LANG.fold), memo: Object.create(null) };
+    if (!c || c.pack !== pack) c = lexCaches[state.lang] = { pack: pack, lang: state.lang, lx: window.LEXICON_STORE.fromPack(pack, state.lang, CORE.LANG.fold), lastText: null, lastHit: null };
+    var sidecar = langData("inflections");
+    if (sidecar && c.sidecar !== sidecar) {
+      try {
+        window.LEXICON_STORE.attachForms(c.lx, sidecar);
+        c.sidecar = sidecar;
+        c.lastText = null;
+      } catch (error) {
+        window.LANGPACK.put(state.lang, "inflections", null);
+        c.failed = true;
+      }
+    }
     return c;
   }
-  function lexiconHit(word) {
+  // 只对可能的词形发起读取。每门语言独立于切换语言的 loader；异步结束只重画当前作品。
+  function formStatus(word) {
+    var loading = false, failed = false;
+    state.langs.forEach(function (code) {
+      inLang(code, function () {
+        var c = lexicon();
+        if (!c || c.pack.v !== 2 || c.sidecar) return;
+        var key = c.lx.key(String(word || "").trim());
+        if (!window.LEXICON_STORE.mayHaveForm(c.pack.formGate, key)) return;
+        if (c.failed) { failed = true; return; }
+        loading = true;
+        if (c.pending) return;
+        c.pending = window.LANGPACK.loader().load(code, ["inflections"]).then(function (result) {
+          c.pending = null;
+          c.failed = !result.ok;
+          if (state.langs.indexOf(code) < 0) return;
+          if (result.ok) app.draft.quietly(refreshPicks);
+          app.entry.renderEntry();
+          app.view.renderShell();
+        });
+      });
+    });
+    return loading ? "词形索引加载中" : failed ? "词形索引未能加载" : "";
+  }
+  // 每个写法用可推荐义项的最高权重。同形的查询专用义不参与抽样。
+  function randomWords(dictionary, letter) {
+    var c = lexicon();
+    if (!c) return CORE.randomPool(dictionary, letter).map(function (item) { return {item: item, weight: 1}; });
+    if (!c.randomWeights) {
+      c.randomWeights = Object.create(null);
+      c.lx.records.forEach(function (r) {
+        if (window.LEXICON_POLICY.queryOnly(r) || window.LEXICON_POLICY.CATEGORIES[r.category].visibility === "query") return;
+        c.randomWeights[r.display] = Math.max(c.randomWeights[r.display] || 0, window.LEXICON_POLICY.weightOf(r));
+      });
+    }
+    return CORE.letterTiers(dictionary, letter).head.filter(function (item) {
+      return item[0].length <= 10 && /^(adj|n|v|pron)\.$/.test(CORE.defaultPos(item)) &&
+        !CORE.properName(item) && c.randomWeights[item[0]] > 0;
+    }).slice(0, CORE.POOL_SIZE).map(function (item) { return {item: item, weight: c.randomWeights[item[0]]}; });
+  }
+  function retryForms() {
+    state.langs.forEach(function (code) { if (lexCaches[code]) lexCaches[code].failed = false; });
+  }
+  function lexiconGroups(word) {
     var c = lexicon(), text = String(word == null ? "" : word).trim().replace(/\s+/g, " ");
-    if (!text) return null;
-    if (!(text in c.memo)) c.memo[text] = window.LEXICON_STORE.packLookup(c.lx, text, { exact: CORE.LANG.exactKey, fold: CORE.LANG.fold, blocked: function () { return false; } });
-    return c.memo[text];
+    if (!text) return [];
+    // 同次输入的卡面、候选与变形提示会重复查同一词；不保留整场输入历史。
+    if (text !== c.lastText) {
+      c.lastHit = window.LEXICON_STORE.packLookups(c.lx, text, { exact: CORE.LANG.exactKey, fold: CORE.LANG.fold, blocked: function () { return false; } });
+      c.lastText = text;
+    }
+    return c.lastHit;
+  }
+
+  // 自动带出的结果：有精确命中取第一个；没有时，只有一个合格的漏音符候选才带出（多个由用户在候选栏点选，保留原输入）。
+  // 被屏蔽的候选拼写不带出。exactOnly = 只看精确命中（多选语言时先让各语言的精确命中排在前面）
+  function lexiconHit(word, previous, exactOnly) {
+    var groups = lexiconGroups(word);
+    if (exactOnly) groups = groups.filter(function (g) { return !g.leak; });
+    // 草稿已保存词条的释义组，可据此认回同形候选（含用户点选过的漏音符候选，词形索引迟到也不被别的义项顶替）；旧稿没有时沿用首选。
+    if (previous && groups.length > 1) {
+      var sameMeaning = groups.filter(function (g) { return g.entry[1] === previous[1]; });
+      var sameEntry = sameMeaning.find(function (g) {
+        return (g.entry[2] || "") === (previous[2] || "") && (g.entry[3] || "") === (previous[3] || "");
+      });
+      if (sameMeaning.length) return sameEntry || sameMeaning[0];
+    }
+    var exact = groups.filter(function (g) { return !g.leak; });
+    if (exact.length) return exact[0];
+    return groups.length === 1 && !blocked(groups[0].entry[0]) ? groups[0] : null; // 剩下的都是漏音符候选
   }
 
   // ---- T04 / T05：作品语言与语言包数据 ----
   // 当前语言的一部分数据（words / phrases / hyph），按语种隔离；没加载为 null
   function langData(part) { return window.LANGPACK.get(state.lang, part); }
+  var casePrefixes = Object.create(null);
+  // 保留首字母能区分正式原形的输入，包括打到一半的词。
+  function preserveWordCase(text, language, includePrefixes) {
+    var exact = CORE.LANG.exactKey, word = exact(String(text || "").trim());
+    return (language ? [language] : state.langs).some(function (code) {
+      var pack = window.LANGPACK.get(code, "lexicon");
+      if (!pack || !word) return false;
+      var cache = casePrefixes[code];
+      if (!cache || cache.pack !== pack) {
+        var exactWords = Object.create(null), prefixes = Object.create(null), spellings = Object.create(null);
+        pack.senses.forEach(function (sense) {
+          var display = sense[1].normalize("NFC"), key = exact(display);
+          if (code === "de" && display.charAt(0) === key.charAt(0)) {
+            for (var n = 1; n < key.length; n++) prefixes[key.slice(0, n)] = true;
+          }
+          if (spellings[key] && spellings[key] !== display) {
+            exactWords[key] = true;
+            for (var i = 1; i < key.length; i++) prefixes[key.slice(0, i)] = true;
+          }
+          spellings[key] = display;
+        });
+        cache = casePrefixes[code] = { pack: pack, exactWords: exactWords, prefixes: prefixes };
+      }
+      return !!(cache.exactWords[word] || (includePrefixes && cache.prefixes[word]));
+    });
+  }
+  // 只改大小写，保留用户输入的重音、词形、撇号和末尾仍在编辑的空格。
+  function spellingFor(text, hit) {
+    if (!text) return text;
+    if (hit && preserveWordCase(text, hit.lang, false)) return text;
+    if (!hit) return capitalize(text);
+    var spelling = hit.entry[0], bare = text.trim();
+    if (CORE.LANG.exactKey(spelling) === CORE.LANG.exactKey(bare)) return (hit.lang === "de" ? spelling : capitalize(spelling)) + text.slice(bare.length);
+    var lower = CORE.LANG.exactKey(text);
+    return hit.lang === "de" && CORE.LANG.exactKey(spelling.charAt(0)) === spelling.charAt(0) ? lower : capitalize(lower);
+  }
+  function candidateWord(item, lang) {
+    return spellingFor(item[0], {entry: item, lang: lang});
+  }
+  // 逐键输入时框里先照作者打的：德语词按德语判断；其他语言命中的短词（法西混选时 pierre 打到 pie）若仍可能接着打成
+  // 任一选中语言里靠大小写区分词义的词或德语小写词，也照打的，免得框里大小写来回跳。离开时再换成卡面写法
+  function typingWord(text, item) {
+    var lang = itemLang(item);
+    if (lang === "de" && item[1] && item[0].charAt(0) === CORE.LANG.exactKey(item[0].charAt(0))) return item[0]; // 完整命中的德语词采用该义项的规范大小写。
+    return preserveWordCase(text, lang === "de" ? lang : "", true) ? text : item[0];
+  }
+  function previewWord(text) {
+    return typingWord(text, itemFor(text));
+  }
+  // 卡面写法（卡、导出、发布正文、读屏）。v00.03.01 R04（用户 11-18 定）：德语以外一律首字母大写，连 14 个大小写异义词也是；
+  // 存下的拼写（pick[0]）仍照打的，词义按它取（pierre 石头 / Pierre 皮埃尔），卡上靠冠词与释义区分。德语按词库写法（名词大写、其余小写）
+  function displayWord(i) {
+    var pick = state.picks[i];
+    if (!pick) return "";
+    var lang = (state.pickLangs && state.pickLangs[i]) || (state.langs.length === 1 ? state.langs[0] : "");
+    return lang === "de" || (!lang && state.langs.indexOf("de") >= 0) ? pick[0] : capitalize(pick[0]);
+  }
   var NO_WORDS = {}; // 词库没就绪时当空词库（只影响候选）；固定同一个对象，词库到了对象就变，缓存据此失效（V003-B1-R2）
   function words() { return langData("words") || NO_WORDS; }
   // 候选栏开关打开后才出的词（专业、历史文化）：与 words 同形，每条多一列类别标注；没有就当空
@@ -269,7 +473,7 @@ window.Backronym = {};
     state.langs = list;
     var code = CORE.LANG.code;
     state.lang = code;
-    if (el.wordCtl) { el.wordCtl.maxLength = CORE.LANG.compose ? CORE.LANG.wordMax * 4 : CORE.LANG.wordMax; el.wordCtl.lang = code; } // 西文的上限按合成后的字数由 rewriteWord 管（R9）：原生 maxlength 按码元数，分解编码的字会被提前截掉，所以放宽 // T28：格内上限随语言（英文 20、西文 28）；lang 给输入法与读屏
+    if (el.wordCtl) el.wordCtl.lang = code; // 空格与组合字符由 rewriteWord 统一计数。
     return true;
   }
   // 换语言（第 4 批 T20 的界面接这三个）：prepareLang 只加载、不改作品；拿到不 stale 且 ready.rules 的结果、用户确认后才 setLang；取消用 cancelLang
@@ -293,15 +497,30 @@ window.Backronym = {};
   // 词库迟到（恢复草稿时还没加载、失败后重试成功）：格里的词条按当前词库重新对一遍，与恢复时、打字时同一条规则（itemFor）。
   // 只动程序维护的列（释义来源、冠词、注释）；用户的拼写、释义、配文、未知扩展位不动。冠词的旧选择不在新选项里就清掉；没记词性的自动释义补上词性
   function refreshPicks() {
-    state.picks = state.picks.map(function (p, i) { return p && p[0] ? itemFor(p[0], p, i) : p; });
+    state.picks = state.picks.map(function (p, i) {
+      if (!p || !p[0]) return p;
+      var item = itemFor(p[0], p, i);
+      // 内容没变就沿用原对象：编辑器靠对象同一来认「这一格还是刚才打的那个词」（app-editor 的 lastTyping），
+      // 词形索引在打字中途加载完触发重核时换了对象，德语 essen 删改后会被写回成 Essen（2026-11-19 返工发现的时序问题）
+      if (JSON.stringify(item) === JSON.stringify(p)) item = p;
+      // 内容变了（词形索引迟到后，打到一半的 pierres 从自造词变成 pierre 的词形）：告诉编辑器这一格换了词条对象，
+      // 它记的「作者实际打的字」照样有效；否则删掉 s 时按框里的 Pierre（自造词首字母大写）重查，成了人名「皮埃尔」
+      else if (app.editor && app.editor.repick) app.editor.repick(i, p, item);
+      if (state.glossAuto[i] && !p[1]) state.glosses[i] = CORE.defaultGloss(item);
+      state.poss[i] = CORE.savedSense(p, item, state.poss[i]);
+      return item;
+    });
     state.picks.forEach(function (p, i) {
       if (!p) return;
       if (state.arts[i] && CORE.articleOptions(p).indexOf(state.arts[i]) < 0) state.arts[i] = "";
-      if (!state.poss[i] && state.glossAuto[i]) state.poss[i] = defaultSense(p);
+      if (state.glossAuto[i]) {
+        state.glosses[i] = CORE.savedAutoGloss(p, state.glosses[i]);
+        if (!state.poss[i]) state.poss[i] = defaultSense(p);
+      }
     });
   }
 
-  // 卡上打的（或草稿里的）一个词 → picks 条目：词库里有就带上它的义项，大小写照用户打的；新建且未命中时为无释义自定义词；恢复时保留原条目
+  // 卡上打的（或草稿里的）一个词 → picks 条目：词库里有就按命中的语言规范大小写并带上义项；新建且未命中时为无释义自定义词；恢复时保留原条目
   // i（可选）= 第几格：先在这一格记着的语言里查，查到了把语言记回这一格
   function itemFor(text, previous, i) {
     var known = typeof i === "number", own = known && state.langs.indexOf(state.pickLangs[i]) >= 0 ? state.pickLangs[i] : "", h = null;
@@ -309,11 +528,18 @@ window.Backronym = {};
     // V003-B4-R11：这一格记着的语言词库还没到，不去别的语言里找（同形词会顶替它），原样留着，等它到了由 refreshPicks 再核
     // V003-B4-R12：没记语言（自定义词）或记着的语言里查不到，要到别的语言里认——等选中的语言全部到齐，再按语言栏的先后找
     if (previous && known && window.LANGPACK) {
-      var here = function (c) { return window.LANGPACK.has(c, "words"); };
-      h = lookupHit(text, own);
+      var status = app.model.formStatus(text);
+      var here = function (c) {
+        if (!window.LANGPACK.has(c, "words")) return false;
+        if (!status) return true;
+        var cache = lexCaches[c];
+        return !cache || cache.sidecar || !window.LEXICON_STORE.mayHaveForm(cache.pack.formGate,cache.lx.key(text));
+      };
+      h = lookupHit(text, own, previous);
       if (h && h.lang !== own && !state.langs.every(here)) h = null; // 记着的语言没到时它查不到，查到的必是别的语言，这里一并挡下
-    } else h = lookupHit(text, own);
+    } else h = lookupHit(text, own, previous);
     var hit = h ? h.entry : null;
+    if (hit || !previous) text = spellingFor(text, h);
     if (known && h) state.pickLangs[i] = h.lang;
     else if (hit) tagLang(hit, h.lang);
     if (previous) {
@@ -343,10 +569,12 @@ window.Backronym = {};
     return p && p[0] ? CORE.articleOf(p, (state.arts || [])[i], (state.poss || [])[i]).text : "";
   }
   // 这个词的标准断词点（当前语言的断词表，按整词查；长度对不上的不用）。没有为 null
-  function hyphOf(word) {
+  function hyphOf(word, i) {
     if (!word) return null;
-    for (var k = 0; k < state.langs.length; k++) { // 选了几门语言：哪门的断词表有这个词就用哪门的
-      var h = window.LANGPACK.get(state.langs[k], "hyph");
+    var own = state.pickLangs[i];
+    var langs = state.langs.indexOf(own) >= 0 ? [own] : state.langs;
+    for (var k = 0; k < langs.length; k++) {
+      var h = window.LANGPACK.get(langs[k], "hyph");
       if (!h) continue;
       var pts = h[CORE.LANG.exactKey(word)], n = CORE.textUnits(word).length;
       if (!pts && CORE.LANG.fold(word).length === n) pts = h[CORE.LANG.fold(word)];
@@ -375,23 +603,24 @@ window.Backronym = {};
     return null;
   }
 
-  // ---------- 统一提示（T33）：标题下方的 Toast ----------
-  // 只有一个 #toast：新消息替换旧消息，到时清空（空了 CSS 不显示）。位置在「标题之下」：入场页贴页面标题，编辑页单图贴卡顶标题框，
-  // 列阵贴卡上标题区（1080 坐标 250）；标题滚出可视区时夹在可视区顶边，不出可视区底边（软键盘弹起时按 visualViewport 算）。
+  // ---------- 统一提示（T33）：固定顶栏正下方的 Toast ----------
+  // 只有一个 #toast：新消息替换旧消息，到时清空（空了 CSS 不显示）。位置见 placeToast：顶栏正下方，不出可视区底边（软键盘弹起时按 visualViewport 算）。
   var toastTimer = 0, toastRaf = 0;
+  // 设置页 / 借物页开着时不弹（2026-11-17 真机：切深浅时标题颜色的提醒串到了设置页里）：先记下，页面关掉后由 flushToast 补弹
+  var toastHeld = null;
+  function flushToast() { if (toastHeld && !pageOpen()) { var h = toastHeld; toastHeld = null; showToast(h[0], h[1]); } }
+  // 收回某一条提示（正在显示的或暂存待补弹的），不动别的消息。例：设置页里切深浅先变浅（标题颜色提醒被暂存）再切回，关页时不该补弹过时的提醒
+  function dropToast(msg) {
+    if (toastHeld && toastHeld[0] === msg) toastHeld = null;
+    if (el.toast.textContent === msg) showToast("", 0);
+  }
   function showToast(msg, ms) {
+    if (msg && pageOpen()) { toastHeld = [msg, ms]; return; }
+    if (!msg) toastHeld = null;
     clearTimeout(toastTimer);
     el.toast.textContent = msg || "";
     placeToast();
     if (msg) toastTimer = setTimeout(function () { el.toast.textContent = ""; }, ms);
-  }
-
-  function toastAnchorBottom() {
-    if (!el.entry.hidden) return el.entryTitle.getBoundingClientRect().bottom;
-    if (!el.title.hidden) return el.title.getBoundingClientRect().bottom;
-    var r = el.card.getBoundingClientRect();
-    var sh = sheets()[sheetOf(state.focus)];
-    return r.top + 250 * r.width / (state.view === "grid" ? CORE.gridShape(sh[1] - sh[0]).W : CORE.CARD.W);
   }
 
   function placeToast() {
@@ -400,12 +629,12 @@ window.Backronym = {};
     var box = el.app.getBoundingClientRect(), m = box.width * CORE.CARD.M / CORE.CARD.W, st = el.toast.style;
     st.left = box.left + m + "px";
     st.width = box.width - 2 * m + "px";
-    var floor = Math.max(vTop, el.top.getBoundingClientRect().bottom) + 8; // T29：不盖住固定顶栏
-    var top = Math.max(toastAnchorBottom() + 8, floor);
+    // 位置统一在固定顶栏正下方（2026-11-17 用户定：所有提示都放在返回按钮下面），不再跟着标题走
+    var top = Math.max(vTop, el.top.getBoundingClientRect().bottom) + 8;
     st.top = Math.max(vTop + 8, Math.min(top, vBottom - el.toast.offsetHeight - 8)) + "px";
   }
 
-  // 滚动 / 软键盘变化时跟着标题走（每帧最多一次）
+  // 滚动 / 软键盘变化时跟着顶栏走（每帧最多一次）
   function followToast() {
     if (toastRaf || !el.toast.textContent) return;
     toastRaf = requestAnimationFrame(function () { toastRaf = 0; placeToast(); });
@@ -467,14 +696,17 @@ window.Backronym = {};
     setLetters: setLetters,
     itemFor: itemFor,
     refreshPicks: refreshPicks,
+    formStatus: formStatus, retryForms: retryForms,
     autoCut: autoCut,
     cutOf: cutOf,
     sheets: sheets,
     sheetOf: sheetOf,
     lookup: lookup, lookupHit: lookupHit, lookupAll: lookupAll, formOf: formOf,
+    previewWord: previewWord, typingWord: typingWord, candidateWord: candidateWord,
+    displayWord: displayWord,
     inLang: inLang, tagLang: tagLang, itemLang: itemLang, setLangs: setLangs,
     words: words,
-    moreWords: moreWords,
+    moreWords: moreWords, randomWords: randomWords,
     langData: langData,
     setLang: setLang,
     LANGS: LANGS,
@@ -495,13 +727,16 @@ window.Backronym = {};
     setPick: setPick,
     defaultGloss: defaultGloss,
     posName: posName,
+    posAbbr: posAbbr,
+    posSpoken: posSpoken,
+    senseGender: senseGender,
     defaultPos: defaultPos,
     blocked: blocked,
     senseGroups: senseGroups,
     focusId: focusId,
     findBlocked: findBlocked,
     trapKeys: trapKeys,
-    showToast: showToast,
+    showToast: showToast, flushToast: flushToast, dropToast: dropToast,
     placeToast: placeToast,
     followToast: followToast,
     editingNow: editingNow,

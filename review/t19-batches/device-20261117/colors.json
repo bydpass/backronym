@@ -1,0 +1,321 @@
+[
+  {
+    "language": "en",
+    "display": "red",
+    "pos": "adj",
+    "zh": "红色的",
+    "article": "",
+    "forms": [
+      "redder"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/ecdict.csv:583046"
+  },
+  {
+    "language": "en",
+    "display": "blue",
+    "pos": "adj",
+    "zh": "蓝色的",
+    "article": "",
+    "forms": [],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/ecdict.csv:89161"
+  },
+  {
+    "language": "en",
+    "display": "green",
+    "pos": "adj",
+    "zh": "绿色的",
+    "article": "",
+    "forms": [
+      "greener",
+      "greenest"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/ecdict.csv:304037"
+  },
+  {
+    "language": "en",
+    "display": "white",
+    "pos": "adj",
+    "zh": "白色的",
+    "article": "",
+    "forms": [
+      "whiter"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/ecdict.csv:756835"
+  },
+  {
+    "language": "fr",
+    "display": "bleu",
+    "pos": "adj",
+    "zh": "蓝色的",
+    "article": "",
+    "forms": [
+      "bleue",
+      "bleus",
+      "bleues"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/fr.json#/lemmas/2679"
+  },
+  {
+    "language": "fr",
+    "display": "vert",
+    "pos": "adj",
+    "zh": "绿色的",
+    "article": "",
+    "forms": [
+      "verte",
+      "verts",
+      "vertes"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/fr.json#/lemmas/477"
+  },
+  {
+    "language": "fr",
+    "display": "noir",
+    "pos": "adj",
+    "zh": "黑色的",
+    "article": "",
+    "forms": [
+      "noire",
+      "noirs",
+      "noires"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/fr.json#/lemmas/2677"
+  },
+  {
+    "language": "fr",
+    "display": "blanc",
+    "pos": "adj",
+    "zh": "白色的",
+    "article": "",
+    "forms": [
+      "blanche",
+      "blancs",
+      "blanches"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/fr.json#/lemmas/2674"
+  },
+  {
+    "language": "de",
+    "display": "rot",
+    "pos": "adj",
+    "zh": "红色的",
+    "article": "",
+    "forms": [
+      "rote",
+      "roten",
+      "rotem",
+      "roter",
+      "rotes"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/de.json#/lemmas/227"
+  },
+  {
+    "language": "de",
+    "display": "blau",
+    "pos": "adj",
+    "zh": "蓝色的",
+    "article": "",
+    "forms": [
+      "blaue",
+      "blauen",
+      "blauem",
+      "blauer",
+      "blaues"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/de.json#/lemmas/498"
+  },
+  {
+    "language": "de",
+    "display": "grün",
+    "pos": "adj",
+    "zh": "绿色的",
+    "article": "",
+    "forms": [
+      "grüne",
+      "grünen",
+      "grünem",
+      "grüner",
+      "grünes"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/de.json#/lemmas/527"
+  },
+  {
+    "language": "de",
+    "display": "schwarz",
+    "pos": "adj",
+    "zh": "黑色的",
+    "article": "",
+    "forms": [
+      "schwarze",
+      "schwarzen",
+      "schwarzem",
+      "schwarzer",
+      "schwarzes"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/de.json#/lemmas/731"
+  },
+  {
+    "language": "es",
+    "display": "rojo",
+    "pos": "adj",
+    "zh": "红色的",
+    "article": "",
+    "forms": [
+      "roja",
+      "rojos",
+      "rojas"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/es.json#/lemmas/2150"
+  },
+  {
+    "language": "es",
+    "display": "azul",
+    "pos": "adj",
+    "zh": "蓝色的",
+    "article": "",
+    "forms": [
+      "azules"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/es.json#/lemmas/2137"
+  },
+  {
+    "language": "es",
+    "display": "verde",
+    "pos": "adj",
+    "zh": "绿色的",
+    "article": "",
+    "forms": [
+      "verdes"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/es.json#/lemmas/3557"
+  },
+  {
+    "language": "es",
+    "display": "negro",
+    "pos": "adj",
+    "zh": "黑色的",
+    "article": "",
+    "forms": [
+      "negra",
+      "negros",
+      "negras"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/es.json#/lemmas/940"
+  },
+  {
+    "language": "es",
+    "display": "blanco",
+    "pos": "adj",
+    "zh": "白色的",
+    "article": "",
+    "forms": [
+      "blanca",
+      "blancos",
+      "blancas"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/es.json#/lemmas/2747"
+  },
+  {
+    "language": "it",
+    "display": "rosso",
+    "pos": "adj",
+    "zh": "红色的",
+    "article": "",
+    "forms": [
+      "rossa",
+      "rossi",
+      "rosse"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/it.json#/lemmas/2877"
+  },
+  {
+    "language": "it",
+    "display": "blu",
+    "pos": "adj",
+    "zh": "蓝色的",
+    "article": "",
+    "forms": [],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/it.json#/lemmas/6738"
+  },
+  {
+    "language": "it",
+    "display": "verde",
+    "pos": "adj",
+    "zh": "绿色的",
+    "article": "",
+    "forms": [
+      "verdi"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/it.json#/lemmas/3366"
+  },
+  {
+    "language": "it",
+    "display": "nero",
+    "pos": "adj",
+    "zh": "黑色的",
+    "article": "",
+    "forms": [
+      "nera",
+      "neri",
+      "nere"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/it.json#/lemmas/3045"
+  },
+  {
+    "language": "it",
+    "display": "bianco",
+    "pos": "adj",
+    "zh": "白色的",
+    "article": "",
+    "forms": [
+      "bianca",
+      "bianchi",
+      "bianche"
+    ],
+    "category": "daily",
+    "theme": "D06",
+    "source": "scripts/.cache/v003/stage/it.json#/lemmas/1493"
+  }
+]

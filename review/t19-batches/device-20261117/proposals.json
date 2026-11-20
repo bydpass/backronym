@@ -1,0 +1,8 @@
+[
+  {"language":"fr","display":"rouge","pos":"adj","zh":"红色的","article":"","forms":["rouges"],"category":"daily","theme":"D06","source":"scripts/.cache/v003/stage/fr.json#/lemmas/1772"},
+  {"language":"fr","display":"rendez-vous","pos":"noun","zh":"约会","article":"le","forms":[],"category":"daily","theme":"D05","source":"scripts/.cache/v003/freedict-independent-5bdceeac8d0d/fra-eng.tei:118658；scripts/.cache/v003/cfdict/cfdict.u8:40242"},
+  {"language":"fr","display":"lamentation","pos":"noun","zh":"哀叹","article":"la","forms":["lamentations"],"category":"creative","theme":"C01","source":"scripts/.cache/v003/stage/fr.json#/lemmas/7721"},
+  {"language":"en","display":"rendezvous","pos":"noun","zh":"约会","article":"","forms":[],"category":"daily","theme":"D05","source":"scripts/.cache/ecdict.csv:588955"},
+  {"language":"en","display":"lamentation","pos":"noun","zh":"哀叹","article":"","forms":["lamentations"],"category":"creative","theme":"C01","source":"scripts/.cache/ecdict.csv:386178"},
+  {"language":"en","display":"lust","pos":"noun","zh":"色欲","article":"","forms":["lusts"],"category":"creative","theme":"C01","source":"scripts/.cache/ecdict.csv:411759"}
+]

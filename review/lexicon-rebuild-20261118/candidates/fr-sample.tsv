@@ -1,0 +1,151 @@
+group	lemma	pos	rank	subtitle_row	source	t19	legacy	category	source_rank	encyclopedia_rank	literature_rank	subtitle_rank	reason
+前100	avoir	noun,verb	1	28	mixed	yes	yes	daily		1	1	3	
+前100	être	noun,verb	2	56	mixed	yes	yes	daily		4	3	5	
+前100	pouvoir	noun,verb	3	82	mixed	yes	yes	daily		3	13	7	
+前100	pas	adv,noun	4	4	mixed	yes	yes	daily		11	7	2	
+前100	faire	verb	5	58	mixed	yes	yes	daily		19	10	8	
+前100	bien	adj,adv,noun	6	37	mixed	yes	yes	daily		23	16	13	
+前100	grand	adj,noun	7	270	mixed	yes	yes	daily		7	20	66	
+前100	prendre	verb	8	196	mixed	yes	yes	daily		23	33	30	
+前100	sud	noun	9	693	mixed	yes	no	daily		17	5	258	
+前100	dernier	adj	10	316	mixed	no	yes	daily		9	73	77	
+前100	nord	noun	11	1090	mixed	yes	no	daily		19	8	358	
+前100	jour	noun	12	197	mixed	yes	no	creative		34	24	52	
+前100	trouver	verb	13	233	mixed	yes	no	daily		28	44	47	
+前100	très	adv	14	97	mixed	yes	yes	daily		36	46	28	
+前100	nouveau	adj,noun	15	298	mixed	yes	yes	daily		9	98	110	
+前100	an	noun	16	164	mixed	yes	yes	daily		15	119	57	
+前100	autre	adj	17	192	mixed	yes	yes	daily		25	41	83	
+前100	année	noun	18	435	mixed	yes	no	daily		2	318	128	
+前100	petit	adj,noun	19	188	mixed	yes	yes	daily		46	32	36	
+前100	femme	noun	20	160	mixed	yes	yes	daily		46	29	50	
+前100	vouloir	noun,verb	21	66	mixed	yes	no	creative		125	21	9	
+前100	ville	noun	22	332	mixed	yes	no	daily		11	192	149	
+前100	homme	noun	23	157	mixed	yes	yes	daily		94	15	41	
+前100	encore	adv	24	121	mixed	yes	no	daily		94	19	39	
+前100	guerre	noun	25	463	mixed	yes	no	creative		4	1273	232	
+前100	premier	adj,noun	26	2213	mixed	no	yes	daily		4	318	754	
+前100	devoir	noun,verb	27	128	mixed	yes	yes	daily		125	30	16	
+前100	rester	verb	28	305	mixed	yes	no	daily		55	38	80	
+前100	vie	noun	29	129	mixed	yes	yes	creative		36	192	43	
+前100	devenir	noun,verb	30	692	mixed	no	yes	daily		25	131	121	
+前100	dire	noun,verb	31	83	mixed	yes	yes	daily		193	25	15	
+前100	personne	noun,pron	32	144	mixed	yes	no	daily		55	126	46	
+前100	eau	noun	33	398	mixed	yes	no	daily		36	90	181	
+前100	utiliser	verb	34	775	mixed	yes	yes	daily		13	3110	195	
+前100	nom	noun	35	204	mixed	yes	no	daily		46	115	82	
+前100	mer	noun	36	1124	mixed	yes	no	daily		17	181	623	
+前100	donner	verb	37	351	mixed	yes	no	daily		55	72	101	
+前100	enfant	noun	38	258	mixed	yes	no	daily		71	65	69	
+前100	aller	noun,verb	39	131	mixed	yes	yes	daily		291	22	17	
+前100	une	noun	40	23	mixed	no	yes	daily			4	6	
+前100	arriver	verb	41	210	mixed	no	yes	daily		125	47	35	
+前100	important	adj	42	470	mixed	yes	yes	daily		19	1359	174	
+前100	je	pron	43	2	mixed	yes	no	pronouns			12	1	
+前100	partie	noun	44		mixed	no	yes	daily		7			
+前100	air	noun	45	217	mixed	yes	yes	daily		94	36	97	
+前100	vous	pron	46	8	mixed	yes	yes	pronouns			11	4	
+前100	voir	verb	47	183	mixed	yes	yes	daily		94	83	44	
+前100	siècle	noun	48	2429	mixed	no	no	daily		13	813	981	
+前100	commencer	verb	49	561	mixed	no	no	daily		46	192	91	
+前100	venir	verb	50	158	mixed	yes	yes	daily		291	31	19	
+前100	seul	adj	51	215	mixed	yes	yes	creative		125	49	49	
+前100	travail	noun	52	242	mixed	yes	no	daily		55	116	113	
+前100	plusieurs	adj	53	862	mixed	no	yes	daily		19	528	497	
+前100	comprendre	verb	54	293	mixed	no	yes	daily		71	133	68	
+前100	certain	adj	55	735	mixed	no	yes	daily		28	481	215	
+前100	pays	noun	56	494	mixed	yes	yes	creative		34	204	265	
+前100	région	noun	57	2808	mixed	no	no	daily		15	1579	1473	
+前100	déjà	adv	58	168	mixed	yes	no	daily		125	54	65	
+前100	raison	noun	59	208	mixed	yes	no	daily		55	257	86	
+前100	état	noun	60	572	mixed	yes	yes	daily		28	562	281	
+前100	laisser	verb	61	326	mixed	yes	yes	daily		125	63	62	
+前100	nous	noun,pron	62	34	mixed	yes	yes	pronouns			18	10	
+前100	passer	verb	63	279	mixed	no	no	daily		125	48	84	
+前100	lieu	noun	64	558	mixed	yes	no	daily		36	281	257	
+前100	heure	noun	65	290	mixed	yes	yes	daily		291	14	72	
+前100	terre	noun	66	401	mixed	yes	yes	daily		28		196	
+前100	temps	noun	67	117	mixed	yes	yes	daily		193	60	37	
+前100	sortir	noun,verb	68	288	mixed	no	no	daily		125	77	61	
+前100	mettre	verb	69	328	mixed	yes	yes	daily		125	61	85	
+前100	partir	verb	70	252	mixed	yes	yes	daily		94	118	76	
+前100	toujours	adv	71	120	mixed	yes	no	daily		291	40	38	
+前100	général	adj,noun	72	743	mixed	no	yes	daily		36	313	364	
+前100	île	noun	73	1534	mixed	no	no	daily		25	952	803	
+前100	bon	adj,noun	74	93	mixed	yes	yes	daily		291	66	24	
+前100	besoin	noun	75	124	mixed	yes	no	daily		125	161	40	
+前100	là	adv	76	77	mixed	yes	yes	daily			17	21	
+前100	croire	verb	77	147	mixed	yes	no	daily		193	107	29	
+前100	époque	adj,noun	78	1063	mixed	no	yes	daily		28	1273	618	
+前100	fille	noun	79	179	mixed	yes	yes	daily		193	64	56	
+前100	jeune	adj,noun	80	428	mixed	yes	yes	daily		94	66	218	
+前100	suite	noun	81	382	mixed	yes	yes	daily		71	140	186	
+前100	histoire	noun	82	313	mixed	yes	yes	creative		55	456	144	
+前100	tard	adv	83	276	mixed	yes	no	daily		71	229	126	
+前100	zone	noun	84	1258	mixed	yes	no	daily		28		749	
+前100	savoir	noun,verb	85	64	mixed	yes	yes	daily			42	11	
+前100	système	noun	86	826	mixed	yes	no	daily		36	1208	409	
+前100	appeler	verb	87	249	mixed	no	no	daily		125	281	42	
+前100	mois	noun	88	324	mixed	yes	no	daily		71	244	151	
+前100	retrouver	verb	89	765	mixed	no	yes	daily		71	229	172	
+前100	rien	noun,pron	90	78	mixed	yes	yes	pronouns			33	22	
+前100	permettre	verb	91	2105	mixed	no	yes	daily		46	456	417	
+前100	décider	verb	92	817	mixed	no	no	daily		71	174	241	
+前100	demander	verb	93	424	mixed	yes	yes	daily		193	51	122	
+前100	ancien	adj,noun	94	1410	mixed	no	yes	daily		55	264	491	
+前100	tel	adj	95	1428	mixed	no	yes	daily		55	244	598	
+前100	famille	noun	96	236	mixed	yes	no	daily		94	270	102	
+前100	diriger	verb	97	2090	mixed	no	yes	daily		46	528	565	
+前100	construire	verb	98	2309	mixed	no	no	daily		36		693	
+前100	rendre	verb	99	555	mixed	yes	no	daily		125	114	123	
+前100	chaque	adj	100	331	mixed	no	no	daily		125	97	153	
+随机50	interpeller	verb	3941	34030	mixed	no	yes	daily			2698	9419	
+随机50	friture	noun	4232	24798	mixed	no	yes	daily			3110	9298	
+随机50	tenture	noun	4999		mixed	no	no	daily			3110		
+随机50	redevenir	verb	1776	7223	mixed	no	yes	daily			1359	1996	
+随机50	main	noun	170	373	mixed	yes	no	daily			43	103	
+随机50	parc	noun	2081	1780	mixed	no	yes	daily				956	
+随机50	mâture	noun	4635		mixed	no	no	daily			2698		
+随机50	fondé	adj	3635	14570	mixed	no	yes	daily			3110	4948	
+随机50	claquement	noun	2966	17023	mixed	no	yes	daily			1941	6270	
+随机50	chemin	noun	452	654	mixed	yes	no	creative			148	343	
+随机50	deuil	noun	2252	4480	mixed	yes	yes	creative			1941	2384	
+随机50	renflement	noun	4983		mixed	no	no	daily			3110		
+随机50	égyptien	adj,noun	413	18424	mixed	no	yes	daily		193		4547	
+随机50	cauchemar	noun	1494	2547	mixed	no	no	daily			1579	1109	
+随机50	précis	adj,noun	2319	3047	mixed	no	yes	daily			3110	1720	
+随机50	troisième	adj	225	1574	mixed	no	yes	daily		125	754	905	
+随机50	minoterie	noun	4968		mixed	no	no	daily			3110		
+随机50	corsage	noun	3986	28904	mixed	no	yes	daily			2698	10263	
+随机50	régal	noun	4156	20891	mixed	no	yes	daily			3110	8211	
+随机50	cueillir	verb	2707	11938	mixed	no	yes	daily			1941	4191	
+随机50	œuf	noun	2455	3576	mixed	no	yes	daily				1162	
+随机50	ligue	noun	4599	5121	mixed	no	no	daily				2697	
+随机50	scotch	noun	4520	4810	mixed	no	yes	daily				2551	
+随机50	vacance	noun	1775	1339	mixed	no	yes	daily				779	
+随机50	répéter	verb	480	1956	mixed	no	no	daily			130	552	
+随机50	seul	adj	51	215	mixed	yes	yes	creative		125	49	49	
+随机50	raide	adj	1899	7059	mixed	no	yes	daily			1208	3180	
+随机50	assiette	noun	1850	4974	mixed	no	no	daily			1455	2030	
+随机50	fouetté	adj	3918	24091	mixed	no	yes	daily			2698	9108	
+随机50	chef	noun	503	438	mixed	yes	yes	daily			281	207	
+随机50	poussière	noun	1368	3132	mixed	no	yes	daily			851	1758	
+随机50	poupée	noun	2590	2682	mixed	no	no	daily				1240	
+随机50	duel	adj,noun	3175	7231	mixed	no	yes	daily			3110	3357	
+随机50	premier	adj,noun	26	2213	mixed	no	yes	daily		4	318	754	
+随机50	dépendre	verb	460	1675	mixed	no	yes	daily		291	3110	812	
+随机50	supplier	verb	1143	2400	mixed	no	no	daily			851	964	
+随机50	écusson	noun	4384	33761	mixed	no	yes	daily			3110	11290	
+随机50	rouvrir	verb	2573	13810	mixed	no	no	daily			1579	5939	
+随机50	décrire	verb	1735	4673	mixed	no	no	daily			1749	1431	
+随机50	prolonger	verb	1695	14868	mixed	no	no	daily			902	4541	
+随机50	compassion	noun	4706	5319	mixed	no	no	daily				2774	
+随机50	étoile	noun	2163	2890	mixed	no	no	daily			2698	1649	
+随机50	parfait	adj,noun	723	502	mixed	no	yes	daily			2398	214	
+随机50	parker	verb	3510	3319	mixed	no	no	daily				1808	
+随机50	ficelle	noun	3605	14895	mixed	no	yes	daily			2698	6286	
+随机50	tangage	noun	4996		mixed	no	no	daily			3110		
+随机50	sable	noun	1830	3196	mixed	no	no	daily			1579	1785	
+随机50	gosier	noun	4293	29229	mixed	no	yes	daily			3110	10346	
+随机50	abaisser	verb	2477	19421	mixed	no	yes	daily			1455	6613	
+随机50	rejoindre	verb	354	1551	mixed	no	yes	daily		291	600	462	

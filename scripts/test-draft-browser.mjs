@@ -108,7 +108,31 @@ try {
     assert.equal(await page.evaluate(k => JSON.parse(localStorage.getItem(k)).t, KEY), original);
     await page.click("#finish"); await page.waitForFunction(() => !document.getElementById("exportView").disabled);
     assert.equal(await page.evaluate(k => JSON.parse(localStorage.getItem(k)).t, KEY), original);
+    // v00.03.01 R06（用户 11-18 定）：导出按 1.5 倍画，单图 1620×2160
+    const dims = await page.evaluate(() => Promise.all([...document.querySelectorAll("#finThumbs img")].map(im => im.complete ? [im.naturalWidth, im.naturalHeight] : new Promise(ok => { im.onload = () => ok([im.naturalWidth, im.naturalHeight]); }))));
+    assert.ok(dims.length && dims.every(d => d[0] === 1620 && d[1] === 2160), "导出单图 1620×2160：" + JSON.stringify(dims));
+    // 复审补：画的内容也跟着放大（ctx.scale），不是 1080 的画只占左上角、其余一片黑。右下角留白与左上角留白同是底色
+    const corners = await page.evaluate(() => { const im = document.querySelector("#finThumbs img"), c = document.createElement("canvas"); c.width = im.naturalWidth; c.height = im.naturalHeight; const x = c.getContext("2d"); x.drawImage(im, 0, 0); const px = (a, b) => Array.from(x.getImageData(a, b, 1, 1).data.slice(0, 3)); return [px(6, 6), px(c.width - 6, c.height - 6)]; });
+    assert.ok(corners[0].every((v, k) => Math.abs(v - corners[1][k]) < 12), "左上与右下的留白同色：" + JSON.stringify(corners));
     await page.evaluate(() => document.getElementById("finishPanel").click());
+    // 用户 11-18 定：1.5 倍画不出来（内存不够时 toDataURL 只返回 "data:,"）就自动、静默退回 1 倍，照样出图
+    await page.evaluate(() => { const real = HTMLCanvasElement.prototype.toDataURL; window.__realToDataURL = real; HTMLCanvasElement.prototype.toDataURL = function () { return this.width > 1080 ? "data:," : real.apply(this, arguments); }; });
+    await page.click("#finish"); await page.waitForFunction(() => !document.getElementById("exportView").disabled);
+    const small = await page.evaluate(() => Promise.all([...document.querySelectorAll("#finThumbs img")].map(im => im.complete ? im.naturalWidth : new Promise(ok => { im.onload = () => ok(im.naturalWidth); }))));
+    assert.ok(small.length && small.every(w => w === 1080), "退回 1 倍：" + JSON.stringify(small));
+    assert.doesNotMatch(await page.locator("#finMsg").innerText(), /失败|内存/, "静默：不报错");
+    await page.evaluate(() => { HTMLCanvasElement.prototype.toDataURL = window.__realToDataURL; document.getElementById("finishPanel").click(); });
+    // v00.03.01 复审：1.5 倍画到一半抛错（画字失败）也退回 1 倍；抛错那张画布要先归零，不留着等回收
+    await page.evaluate(() => {
+      const ce = document.createElement.bind(document), ft = CanvasRenderingContext2D.prototype.fillText; window.__cvs = []; window.__realFillText = ft; window.__realCreate = document.createElement;
+      document.createElement = function (t) { const e = ce.apply(document, arguments); if (String(t).toLowerCase() === "canvas") window.__cvs.push(e); return e; };
+      CanvasRenderingContext2D.prototype.fillText = function () { if (this.canvas.width > 1080) throw new Error("模拟画字失败"); return ft.apply(this, arguments); };
+    });
+    await page.click("#finish"); await page.waitForFunction(() => !document.getElementById("exportView").disabled);
+    const thrown = await page.evaluate(() => Promise.all([...document.querySelectorAll("#finThumbs img")].map(im => im.complete ? im.naturalWidth : new Promise(ok => { im.onload = () => ok(im.naturalWidth); }))));
+    assert.ok(thrown.length && thrown.every(w => w === 1080), "抛错也退回 1 倍：" + JSON.stringify(thrown));
+    assert.deepEqual(await page.evaluate(() => window.__cvs.filter(c => c.width > 0 && !c.isConnected).map(c => c.width)), [], "导出用过的画布都已归零");
+    await page.evaluate(() => { CanvasRenderingContext2D.prototype.fillText = window.__realFillText; document.createElement = window.__realCreate; document.getElementById("finishPanel").click(); });
     await page.locator("#toEntry").click(); await page.locator("#fillerCtl").fill("新作者"); await page.locator("#fillerCtl").press("Enter"); await page.waitForTimeout(450); // 填表人在入场界面改（T18）
     assert((await page.evaluate(k => JSON.parse(localStorage.getItem(k)).t, KEY)) > original);
     // 挂起超过18h：恢复事件先清空，随后旧的输入/保存不能复活。

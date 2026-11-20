@@ -12,6 +12,43 @@
   // 屏幕模式参数也没有证据会传进页面地址（B8-R1），所以一律预留两侧空间；宽度见 style.css 的 --container-gutter，以真机为准。
   root.setAttribute("data-container-full", "true");
 
+  // 顶部安全区兜底（2026-11-17 鸿蒙真机 U0）：安卓 / 鸿蒙的容器把网页铺到状态栏底下，env(safe-area-inset-*) 却全报 0，
+  // 顶栏整条压进状态栏、按钮点不到（Mate 60 Pro、HarmonyOS 4.2.0、小红书 9.53.3 实测）。iOS 报的是真实值。
+  // 容器在 launchOptions.miniToolEnv.windowInfo 里给了 statusBarHeight（该机实测 40），优先用它；
+  // 同一对象里还有 safeArea、menuButtons，miniTool 上有 getWindowInfo / onWindowResize，本地容器文档没记，暂未用。
+  // ponytail: 读不到 windowInfo 时，只在小红书里的安卓 / 鸿蒙上按 40px 留白；PC 模拟器自己注入 --safe-area-inset-top，不走这里。
+  var TOP_FALLBACK = 40;
+  function measuredTop() {
+    var p = document.createElement("div");
+    p.style.cssText = "position:fixed;top:0;left:0;width:0;height:0;visibility:hidden;padding-top:env(safe-area-inset-top,0px)";
+    root.appendChild(p);
+    var v = parseFloat(window.getComputedStyle(p).paddingTop) || 0;
+    root.removeChild(p);
+    return v;
+  }
+  function statusBar() {
+    var lo = window.xhs && window.xhs.launchOptions, wi = lo && lo.miniToolEnv && lo.miniToolEnv.windowInfo;
+    if (!wi) return null; // 容器没给：走按平台的估值
+    if (Number(wi.screenTop) > 0) return 0; // 网页本来就排在状态栏下面，不用补
+    var h = Number(wi.statusBarHeight);
+    return h > 0 && h < 200 ? h : null;
+  }
+  var topFixed = false;
+  function fixTopInset() {
+    if (!root.appendChild || !window.getComputedStyle || !root.style || !root.style.setProperty || !root.style.getPropertyValue) return;
+    if (root.style.getPropertyValue("--safe-area-inset-top") && !topFixed) return; // 别人（PC 模拟器）已经设了
+    var ua = (window.navigator && window.navigator.userAgent) || "", bar = statusBar(), want = 0;
+    if (bar !== null) want = bar; // 容器给了准数：任何平台都以它为准
+    else if (/android|harmony/i.test(ua) && (window.xhs || /xhs|xiaohongshu|discover/i.test(ua))) want = TOP_FALLBACK;
+    if (!want) return;
+    if (topFixed) root.style.removeProperty("--safe-area-inset-top"); // 先撤掉自己上次补的，量系统真实值
+    if (measuredTop() < Math.min(want, 24)) { root.style.setProperty("--safe-area-inset-top", want + "px"); topFixed = true; }
+    else topFixed = false;
+  }
+  fixTopInset(); // window.xhs 可能晚于这里注入，所以后面再查两次
+  if (document.addEventListener) document.addEventListener("DOMContentLoaded", fixTopInset);
+  if (window.addEventListener) window.addEventListener("load", fixTopInset);
+
   function systemDark() {
     return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
   }

@@ -7,7 +7,7 @@ import { fingerprint } from '../lexicon/baseline.mjs';
 import { LANGS, CATEGORIES, decode, admission, conjugationForms } from './schema.mjs';
 import {senseForms} from './forms.mjs';
 import {englishForms} from './english-forms.mjs';
-const POS = { noun: 'n.', verb: 'v.', adj: 'adj.', adv: 'adv.', num: 'num.', name: 'n.' };
+const POS = { noun: 'n.', verb: 'v.', adj: 'adj.', adv: 'adv.', num: 'num.', name: 'n.', pron: 'pron.' }; // pron：v00.03.01 L05 代词类别（与 lexicon-store.js queryEntries 一致）
 export function compileRecords(records, formsBySense=null) {
   const seen = new Set(), bundles = {}, excluded = [];
   for (const record of records) {
@@ -151,12 +151,25 @@ export async function compile(directory, output, stageDirectory=null, englishCsv
   const guards = {};
   if (formsBySense && stageDirectory && englishCsv) for (const lang of LANGS) guards[lang] = lookupGuards(records, formsBySense, known[lang] || [], lang);
   const index = { schema: formsBySense?(stageDirectory&&englishCsv?3:2):1, state: Object.keys(result.bundles).length ? 'needs-runtime-integration' : 'no-admitted-senses', bundles: [] };
+  // 单个文件须小于仓库提交钩子的 5,000,000 B（scripts/check-staged-size.mjs）：超过 PART_BYTES 的类别按记录顺序切成
+  // <类别>-001.json、-002.json……（2026-11-19 返工：重建后法德西意的 daily.json 有 6～10 MB，提交不进去）。小类别仍是一个 <类别>.json
+  const PART_BYTES = 4_000_000;
   for (const [key, bundle] of Object.entries(result.bundles)) {
-    const relative = key + '.json', absolute = path.join(output, relative);
-    fs.mkdirSync(path.dirname(absolute), { recursive: true });
-    fs.writeFileSync(absolute, JSON.stringify(bundle) + '\n', { flag: 'wx' });
-    index.bundles.push({ path: relative, language: bundle.language, category: bundle.category,
-      weight: bundle.weight, visibility: bundle.visibility, rows: bundle.records.length, ...await fingerprint(absolute) });
+    const parts = [];
+    let current = [], size = 0;
+    for (const record of bundle.records) {
+      const bytes = Buffer.byteLength(JSON.stringify(record)) + 1;
+      if (current.length && size + bytes > PART_BYTES) { parts.push(current); current = []; size = 0; }
+      current.push(record); size += bytes;
+    }
+    parts.push(current);
+    for (const [i, records] of parts.entries()) {
+      const relative = key + (parts.length > 1 ? '-' + String(i + 1).padStart(3, '0') : '') + '.json', absolute = path.join(output, relative);
+      fs.mkdirSync(path.dirname(absolute), { recursive: true });
+      fs.writeFileSync(absolute, JSON.stringify({ ...bundle, records }) + '\n', { flag: 'wx' });
+      index.bundles.push({ path: relative, language: bundle.language, category: bundle.category,
+        weight: bundle.weight, visibility: bundle.visibility, rows: records.length, ...await fingerprint(absolute) });
+    }
   }
   if (index.schema === 3) index.guards = guards;
   fs.writeFileSync(path.join(output, 'index.json'), JSON.stringify(index, null, 2) + '\n', { flag: 'wx' });

@@ -1,5 +1,6 @@
 import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync, readFileSync } from 'node:fs';
+import {checkZip, zipRelease, ZIP_LIMIT} from './check-zip.mjs';
 import { randomBytes } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -17,6 +18,13 @@ const check = () => spawnSync(process.execPath, [path.join(scripts, 'check-stage
 try {
   git('init', '-q');
   put('app/index.html', '<html>fixture</html>');
+  put('app/LICENSES/MIT.html', '仅网页版使用');
+  put('app/assets/_recovery/old.html', '不进包');
+  const archive = path.join(temporary, 'candidate.zip');
+  zipRelease(path.join(temporary, 'app'), archive);
+  checkZip(archive);
+  writeFileSync(archive, Buffer.alloc(ZIP_LIMIT));
+  assert.throws(() => checkZip(archive), /10000000 B/);
   git('add', 'app');
   assert.equal(check().status, 0, 'small staged app passes');
   put('app/index.html', randomBytes(5_000_000));
@@ -41,6 +49,7 @@ try {
   writeFileSync(path.join(inherited, 'pre-commit'), '#!/bin/sh\nexit 23\n', { mode: 0o755 });
   writeFileSync(path.join(inherited, 'pre-push'), '#!/bin/sh\nexit 24\n', { mode: 0o755 });
   git('config', '--local', 'core.hooksPath', inherited);
+  put('scripts/check-zip.mjs', readFileSync(path.join(scripts, 'check-zip.mjs')));
   put('scripts/check-staged-size.mjs', readFileSync(path.join(scripts, 'check-staged-size.mjs')));
   execFileSync(process.execPath, [path.join(scripts, 'install-size-hook.mjs')], { cwd: temporary });
   const hooks = git('config', '--get', 'core.hooksPath');

@@ -1,7 +1,7 @@
 /* 英语屏蔽词表（v00.03.00 T02 从原 blocklist.js 拆出，内容不变）。归一化、中文、导流与命中接口在 block/core.js，须先加载。 */
 window.BLOCK.add("en", {
   // 整词命中（不做子串，避免 class/assess 被 ass 误伤）
-  words: ["sex", "sexy", "rape", "raped", "rapist", "ravish", "seduce", "obscene", "lust", "horny",
+  words: ["sex", "sexy", "rape", "raped", "rapist", "ravish", "seduce", "obscene", "horny",
     "nude", "penis", "vagina", "boob", "boobs", "ass", "dick", "cock", "pussy", "cunt", "whore", "slut",
     "bastard", "fag", "faggot", "retard", "heroin", "cocaine", "opium", "meth", "marijuana", "cannabis",
     "suicide", "kys", "terrorist", "massacre", "carnage", "holocaust",

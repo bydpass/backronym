@@ -19,7 +19,7 @@ try {
   w("app/assets/block/core.js", "window.BLOCK = {};\n");
   w("app/assets/lang/en/block.js", "window.BLOCK.add = 1;\n");
   w("app/assets/app.js", "// 源码哨兵\n");
-  for (const k of ["GPL-3.0", "CC-BY-SA-4.0", "CC-BY-SA-3.0", "CC-BY-4.0", "MIT", "OFL-1.1"]) w("app/LICENSES/" + k + ".txt", "license text fixture\n"); // T07：两版都要带许可全文
+  for (const k of ["GPL-3.0", "CC-BY-SA-4.0", "CC-BY-SA-3.0", "CC-BY-4.0", "MIT", "OFL-1.1"]) w("app/LICENSES/" + k + ".html", "license text fixture\n"); // T07：两版都要带许可全文
   w("app/assets/lang/en/_recovery/fixture/words.js", "private recovery fixture");
   w("app/_recovery/fixture/index.html", "private recovery fixture");
   w("author.txt", "作者的稿子，不能丢\n");
@@ -44,8 +44,11 @@ try {
   fs.symlinkSync(path.join(F, "app"), path.join(F, "app-link"));
   fs.symlinkSync(F, path.join(F, "root-link"));
 
+  fs.symlinkSync(path.join(F, "missing"), path.join(F, "dangling"));
+  w("mine2/.backronym-web-build", "不是构建标记");
   const before = snap();
   for (const [args, why, cwd] of [
+    [["--out", "dangling"], "失效的符号链接"],
     [["--out", "app"], "源码 app/ 本身"],
     [["--out", F], "项目根"],
     [["--out", path.join(F, "app/assets/web")], "源码内部"],

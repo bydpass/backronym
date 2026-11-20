@@ -1,0 +1,736 @@
+subtitle_row	surface	lemma	decision
+1	de		功能词或副词待核
+2	je	je	独立词头（同形原形罕见）
+3	est		歧义词形
+4	pas	pas	独立词头
+5	le		专名
+6	que		功能词或副词待核
+7	la		功能词或副词待核
+8	vous	vous	独立词头（同形原形罕见）
+9	tu		功能词或副词待核
+10	un		功能词或副词待核
+11	c'		无可核词头
+12	à		功能词或副词待核
+13	et		功能词或副词待核
+14	il		功能词或副词待核
+15	a		歧义词形
+16	l'		无可核词头
+17	ne		专名
+18	les		无可核词头
+19	j'	je	归并词形
+20	en		功能词或副词待核
+21	on		专名
+22	ça		功能词或副词待核
+23	une	une	独立词头
+24	d'		无可核词头
+25	ce		专名
+26	qu'		无可核词头
+27	pour		功能词或副词待核
+28	ai	avoir	归并词形
+29	n'		无可核词头
+30	des		无可核词头
+31	qui		功能词或副词待核
+32	mais		功能词或副词待核
+33	dans		功能词或副词待核
+34	nous	nous	独立词头（同形原形罕见）
+35	elle		功能词或副词待核
+36	me	me	独立词头
+37	bien	bien	独立词头
+38	si		功能词或副词待核
+39	du		功能词或副词待核
+40	y		专名
+41	suis		歧义词形
+42	non		功能词或副词待核
+43	t'		无可核词头
+44	avec		功能词或副词待核
+45	tout		功能词或副词待核
+46	plus		功能词或副词待核
+47	mon		功能词或副词待核
+48	m'		无可核词头
+49	te	te	独立词头
+50	au		无可核词头
+51	fait		歧义词形
+52	moi		歧义词形
+53	s'		无可核词头
+54	oui		功能词或副词待核
+55	va		歧义词形
+56	était	être	归并词形
+57	as		歧义词形
+58	faire	faire	独立词头
+59	ils		功能词或副词待核
+60	sur		功能词或副词待核
+61	quoi		功能词或副词待核
+62	se		功能词或副词待核
+63	comme		功能词或副词待核
+64	sais	savoir	归并词形
+65	être	être	独立词头
+66	veux	vouloir	归并词形
+67	ici	ici	独立词头
+68	ma		无可核词头
+69	toi		歧义词形
+70	est-ce		无可核词头
+71	dit		歧义词形
+72	lui		功能词或副词待核
+73	votre		功能词或副词待核
+74	es	être	归并词形
+75	pourquoi		功能词或副词待核
+76	où		功能词或副词待核
+77	là	là	独立词头
+78	rien	rien	独立词头
+79	cette		专名
+80	sont	être	归并词形
+81	quand		功能词或副词待核
+82	peux	pouvoir	归并词形
+83	dire	dire	独立词头
+84	son		功能词或副词待核
+85	avez	avoir	归并词形
+86	vais		歧义词形
+87	alors		功能词或副词待核
+88	ton		功能词或副词待核
+89	comment		功能词或副词待核
+90	par		功能词或副词待核
+91	ou		功能词或副词待核
+92	chose	chose	独立词头
+93	bon	bon	独立词头
+94	ont	avoir	归并词形
+95	merci	merci	独立词头
+96	juste		功能词或副词待核
+97	très	très	独立词头
+98	jamais	jamais	独立词头
+99	été		歧义词形
+100	aussi		功能词或副词待核
+101	avoir	avoir	独立词头
+102	vraiment		功能词或副词待核
+103	voir		功能词或副词待核
+104	même		功能词或副词待核
+105	sa		功能词或副词待核
+106	oh		感叹词同形
+107	maintenant	maintenant	独立词头（同形原形罕见）
+108	tous		功能词或副词待核
+109	peut	pouvoir	归并词形
+110	deux		功能词或副词待核
+111	ces		无可核词头
+112	êtes	être	归并词形
+113	allez		感叹词同形
+114	ta		功能词或副词待核
+115	autre		功能词或副词待核
+116	peu		功能词或副词待核
+117	temps	temps	独立词头
+118	quelque		功能词或副词待核
+119	fais	faire	归并词形
+120	toujours	toujours	独立词头
+121	encore	encore	独立词头
+122	notre		功能词或副词待核
+123	mes		功能词或副词待核
+124	besoin	besoin	独立词头
+125	avait	avoir	归并词形
+126	accord	accord	独立词头
+127	faut		歧义词形
+128	dois	devoir	归并词形
+129	vie	vie	独立词头
+130	peut-être		无可核词头
+131	aller	aller	独立词头
+132	fois		功能词或副词待核
+133	vu		专名
+134	donc		功能词或副词待核
+135	sans		功能词或副词待核
+136	monde	monde	独立词头（同形原形罕见）
+137	étais		歧义词形
+138	parce		功能词或副词待核
+139	avant		功能词或副词待核
+140	sûr	sûr	独立词头
+141	trop		功能词或副词待核
+142	quelqu'		无可核词头
+143	parler	parler	独立词头
+144	personne	personne	独立词头
+145	avais	avoir	归并词形
+146	père	père	独立词头
+147	crois	croire	归并词形
+148	après		功能词或副词待核
+149	aux		无可核词头
+150	dieu	dieu	独立词头（同形原形罕见）
+151	ouais		感叹词同形
+152	ses		功能词或副词待核
+153	pense	penser	归并词形
+154	eu	avoir	归并词形
+155	aime	aimer	归并词形
+156	leur		功能词或副词待核
+157	homme	homme	独立词头
+158	viens	venir	归并词形
+159	vrai		功能词或副词待核
+160	femme	femme	独立词头
+161	ok		专名或非单词
+162	doit	devoir	归并词形
+163	veut	vouloir	归并词形
+164	ans	an	归并词形
+165	m.	monsieur	归并词形
+166	mal	mal	独立词头
+167	chez		功能词或副词待核
+168	déjà	déjà	独立词头
+169	depuis		功能词或副词待核
+170	beaucoup		功能词或副词待核
+171	vos		无可核词头
+172	bonne		歧义词形
+173	mort		歧义词形
+174	mieux		功能词或副词待核
+175	vas	aller	归并词形
+176	mère	mère	独立词头
+177	sera	être	归并词形
+178	dis	dire	归并词形
+179	fille	fille	独立词头
+180	tes		功能词或副词待核
+181	gens	gens	独立词头（同形原形罕见）
+182	quel		功能词或副词待核
+183	vois	voir	归并词形
+184	désolé	désolé	独立词头（同形原形罕见）
+185	ca		无可核词头
+186	voilà		功能词或副词待核
+187	avons	avoir	归并词形
+188	petit	petit	独立词头
+189	maison	maison	独立词头
+190	soit		功能词或副词待核
+191	cela		功能词或副词待核
+192	autres	autre	归并词形
+193	toute		无可核词头
+194	soir	soir	独立词头（同形原形罕见）
+195	passé		歧义词形
+196	prendre	prendre	独立词头
+197	jour	jour	独立词头
+198	monsieur	monsieur	独立词头
+199	nos		无可核词头
+200	savoir	savoir	独立词头
+201	choses	chose	归并词形
+202	salut	salut	独立词头
+203	cet		功能词或副词待核
+204	nom	nom	独立词头
+205	argent	argent	独立词头
+206	bonjour	bonjour	独立词头
+207	nuit	nuit	独立词头（同形原形罕见）
+208	raison	raison	独立词头
+209	moins		功能词或副词待核
+210	arrive	arriver	归并词形
+211	maman	maman	独立词头
+212	reste		歧义词形
+213	moment	moment	独立词头
+214	voulais	vouloir	归并词形
+215	seul	seul	独立词头
+216	aider	aider	独立词头
+217	air	air	独立词头
+218	entre		功能词或副词待核
+219	papa	papa	独立词头
+220	passe		歧义词形
+221	aurais	avoir	归并词形
+222	problème	problème	独立词头
+223	ah		感叹词同形
+224	peur	peur	独立词头
+225	regarde	regarder	归并词形
+226	voulez	vouloir	归并词形
+227	gars	gars	独立词头
+228	trouvé		歧义词形
+229	fils		歧义词形
+230	attends	attendre	归并词形
+231	savez	savoir	归并词形
+232	jusqu'		无可核词头
+233	trouver	trouver	独立词头
+234	trois		功能词或副词待核
+235	assez		功能词或副词待核
+236	famille	famille	独立词头
+237	dû		歧义词形
+238	eh		感叹词同形
+239	toutes		无可核词头
+240	plaît	plaire	归并词形
+241	pourrait	pouvoir	归并词形
+242	travail	travail	独立词头
+243	pris		歧义词形
+244	pu		歧义词形
+245	tête	tête	独立词头
+246	quelle	quelle	独立词头
+247	sait	savoir	归并词形
+248	sommes		歧义词形
+249	appelle	appeler	归并词形
+250	quelques		无可核词头
+251	faites		歧义词形
+252	partir	partir	独立词头
+253	vite		功能词或副词待核
+254	arrête	arrêter	归并词形
+255	seule	seul	归并词形
+256	serait	être	归并词形
+257	voiture	voiture	独立词头（同形原形罕见）
+258	enfants	enfant	归并词形
+259	tuer	tuer	独立词头
+260	merde		粗口或屏蔽
+261	hé		感叹词同形
+262	pendant		功能词或副词待核
+263	idée	idée	独立词头（同形原形罕见）
+264	chance	chance	独立词头
+265	parle	parler	归并词形
+266	aurait	avoir	归并词形
+267	part		歧义词形
+268	elles		功能词或副词待核
+269	jours	jour	归并词形
+270	grand	grand	独立词头
+271	aujourd'hui		无可核词头
+272	venir	venir	独立词头
+273	ami	ami	独立词头（同形原形罕见）
+274	demain	demain	独立词头
+275	hein		感叹词同形
+276	tard	tard	独立词头
+277	puis		功能词或副词待核
+278	truc	truc	独立词头
+279	passer	passer	独立词头
+280	petite	petit	归并词形
+281	tant		功能词或副词待核
+282	connais		歧义词形
+283	combien		功能词或副词待核
+284	mec	mec	独立词头
+285	sens		歧义词形
+286	pouvez	pouvoir	归并词形
+287	porte		歧义词形
+288	sortir	sortir	独立词头
+289	super		功能词或副词待核
+290	heure	heure	独立词头
+291	contre		功能词或副词待核
+292	coup	coup	独立词头
+293	comprends	comprendre	归并词形
+294	entendu		歧义词形
+295	vient	venir	归并词形
+296	allons	aller	归并词形
+297	ensemble	ensemble	独立词头
+298	nouveau	nouveau	独立词头
+299	amour	amour	独立词头
+300	importe	importer	归并词形
+301	sang	sang	独立词头
+302	désolée	désolé	归并词形
+303	cas	cas	独立词头
+304	sous		功能词或副词待核
+305	rester	rester	独立词头
+306	amis	ami	归并词形
+307	prends	prendre	归并词形
+308	fini		歧义词形
+309	hommes	homme	归并词形
+310	tué		歧义词形
+311	question	question	独立词头
+312	partie		歧义词形
+313	histoire	histoire	独立词头
+314	devrais	devoir	归并词形
+315	aide		歧义词形
+316	dernière	dernier	归并词形
+317	demande		歧义词形
+318	chercher	chercher	独立词头
+319	pensais	penser	归并词形
+320	genre		功能词或副词待核
+321	seulement		功能词或副词待核
+322	police	police	独立词头（同形原形罕见）
+323	car		功能词或副词待核
+324	mois	mois	独立词头
+325	frère	frère	独立词头
+326	laisser	laisser	独立词头
+327	aucun		功能词或副词待核
+328	mettre	mettre	独立词头
+329	eux		无可核词头
+330	laisse		歧义词形
+331	chaque	chaque	独立词头
+332	ville	ville	独立词头
+333	arrivé	arriver	归并词形
+334	devrait	devoir	归并词形
+335	parlé		歧义词形
+336	avez-vous		无可核词头
+337	vont		歧义词形
+338	longtemps	longtemps	独立词头
+339	aucune	aucun	归并词形
+340	heures	heure	归并词形
+341	bébé	bébé	独立词头
+342	place	place	独立词头（同形原形罕见）
+343	revoir	revoir	独立词头
+344	putain		粗口或屏蔽
+345	compris		歧义词形
+346	ni		功能词或副词待核
+347	savais	savoir	归并词形
+348	leurs		无可核词头
+349	étaient		歧义词形
+350	attention	attention	独立词头
+351	donner	donner	独立词头
+352	affaire	affaire	独立词头（同形原形罕见）
+353	endroit	endroit	独立词头
+354	pourrais	pouvoir	归并词形
+355	corps	corps	独立词头
+356	façon	façon	独立词头
+357	donné		歧义词形
+358	est-il		无可核词头
+359	voici		功能词或副词待核
+360	train	train	独立词头
+361	dont		功能词或副词待核
+362	écoute		歧义词形
+363	yeux	œil	归并词形
+364	trouve	trouver	归并词形
+365	pouvoir	pouvoir	独立词头
+366	type	type	独立词头
+367	perdu		歧义词形
+368	premier		功能词或副词待核
+369	première		歧义词形
+370	côté		功能词或副词待核
+371	point		功能词或副词待核
+372	tellement		功能词或副词待核
+373	main	main	独立词头
+374	tiens		感叹词同形
+375	sois		歧义词形
+376	enfant	enfant	独立词头
+377	vieux	vieux	独立词头
+378	matin	matin	独立词头
+379	venu	venir	归并词形
+380	pardon	pardon	独立词头
+381	là-bas		无可核词头
+382	suite	suite	独立词头
+383	vers		功能词或副词待核
+384	minutes		歧义词形
+385	demandé		歧义词形
+386	venez	venir	归并词形
+387	devant		功能词或副词待核
+388	dr	docteur	归并词形
+389	enfin	enfin	独立词头
+390	arrêter	arrêter	独立词头
+391	cause		歧义词形
+392	nouvelle		歧义词形
+393	attendez	attendre	归并词形
+394	chambre	chambre	独立词头（同形原形罕见）
+395	droit		功能词或副词待核
+396	parti		歧义词形
+397	mis		歧义词形
+398	eau	eau	独立词头
+399	compte		歧义词形
+400	dirait	dire	归并词形
+401	terre	terre	独立词头（同形原形罕见）
+402	belle		歧义词形
+403	espère	espérer	归并词形
+404	aimerais	aimer	归并词形
+405	loin	loin	独立词头
+406	as-tu		无可核词头
+407	mari	mari	独立词头
+408	donne		歧义词形
+409	fin	fin	独立词头
+410	croire	croire	独立词头
+411	mme	madame	归并词形
+412	aura		歧义词形
+413	gros	gros	独立词头
+414	boulot	boulot	独立词头
+415	plutôt		功能词或副词待核
+416	chérie	chéri	归并词形
+417	prêt	prêt	独立词头
+418	filles	fille	归并词形
+419	bureau	bureau	独立词头
+420	mourir	mourir	独立词头
+421	hier	hier	独立词头
+422	possible	possible	独立词头
+423	jouer	jouer	独立词头
+424	demander	demander	独立词头
+425	celui		功能词或副词待核
+426	voulait	vouloir	归并词形
+427	beau		功能词或副词待核
+428	jeune	jeune	独立词头（同形原形罕见）
+429	euh		感叹词同形
+430	dehors		功能词或副词待核
+431	docteur	docteur	独立词头
+432	a-t-il		无可核词头
+433	confiance	confiance	独立词头
+434	appeler	appeler	独立词头
+435	années	année	归并词形
+436	vérité	vérité	独立词头
+437	école	école	独立词头
+438	chef	chef	独立词头
+439	femmes	femme	归并词形
+440	propos	propos	独立词头
+441	semaine	semaine	独立词头
+442	vivre	vivre	独立词头
+443	regardez	regarder	归并词形
+444	feu	feu	独立词头
+445	journée	journée	独立词头
+446	madame	madame	独立词头
+447	hey		无可核词头
+448	téléphone		歧义词形
+449	près		功能词或副词待核
+450	affaires		歧义词形
+451	meilleur		歧义词形
+452	devez	devoir	归并词形
+453	dessus		功能词或副词待核
+454	mains	main	归并词形
+455	penses	penser	归并词形
+456	prie	prier	归并词形
+457	équipe	équipe	独立词头（同形原形罕见）
+458	vas-y		无可核词头
+459	grande	grand	归并词形
+460	manger	manger	独立词头
+461	arriver	arriver	独立词头
+462	dur		功能词或副词待核
+463	guerre	guerre	独立词头
+464	ait	avoir	归并词形
+465	appelé	appeler	归并词形
+466	marche		歧义词形
+467	sécurité	sécurité	独立词头
+468	garçon	garçon	独立词头
+469	essaie	essayer	归并词形
+470	important	important	独立词头（同形原形罕见）
+471	dites		歧义词形
+472	exactement		功能词或副词待核
+473	font	faire	归并词形
+474	fort		功能词或副词待核
+475	presque	presque	独立词头
+476	plein		功能词或副词待核
+477	derrière		功能词或副词待核
+478	ben		感叹词同形
+479	mariage	mariage	独立词头
+480	parents	parent	归并词形
+481	capitaine	capitaine	独立词头
+482	dernier	dernier	独立词头
+483	fou	fou	独立词头
+484	ceux		无可核词头
+485	tomber	tomber	独立词头
+486	attendre	attendre	独立词头
+487	vue	vue	独立词头
+488	pensé	penser	归并词形
+489	souviens	souvenir	归并词形
+490	envie	envie	独立词头（同形原形罕见）
+491	fête		歧义词形
+492	jeu	jeu	独立词头
+493	génial	génial	独立词头
+494	pays	pays	独立词头
+495	garde		歧义词形
+496	cours		歧义词形
+497	bientôt	bientôt	独立词头
+498	ii		无可核词头
+499	numéro	numéro	独立词头
+500	personnes	personne	归并词形
+501	cinq		功能词或副词待核
+502	parfait	parfait	独立词头（同形原形罕见）
+503	excusez-moi		无可核词头
+504	laissé	laisser	归并词形
+505	ainsi		功能词或副词待核
+506	retour	retour	独立词头
+507	semble	sembler	归并词形
+508	autant		功能词或副词待核
+509	peine	peine	独立词头（同形原形罕见）
+510	minute	minute	独立词头（同形原形罕见）
+511	essayé	essayer	归并词形
+512	plan	plan	独立词头
+513	instant	instant	独立词头
+514	serai	être	归并词形
+515	prison	prison	独立词头
+516	penser	penser	独立词头
+517	essayer	essayer	独立词头
+518	prend	prendre	归并词形
+519	arme	arme	独立词头（同形原形罕见）
+520	mauvais	mauvais	独立词头
+521	mot	mot	独立词头
+522	travailler	travailler	独立词头
+523	quatre		功能词或副词待核
+524	rentrer	rentrer	独立词头
+525	regarder	regarder	独立词头
+526	choix	choix	独立词头
+527	êtes-vous		无可核词头
+528	parfois	parfois	独立词头
+529	film		英语借词
+530	abord	abord	独立词头
+531	voyez	voir	归并词形
+532	faute	faute	独立词头（同形原形罕见）
+533	facile	facile	独立词头
+534	croyais	croire	归并词形
+535	bas		功能词或副词待核
+536	changer	changer	独立词头
+537	entendre	entendre	独立词头
+538	plaisir	plaisir	独立词头
+539	heureux	heureux	独立词头
+540	entrer	entrer	独立词头
+541	voudrais	vouloir	归并词形
+542	es-tu		无可核词头
+543	propre	propre	独立词头
+544	étiez	être	归并词形
+545	tour	tour	独立词头
+546	fera	faire	归并词形
+547	ensuite		功能词或副词待核
+548	garder	garder	独立词头
+549	agent	agent	独立词头
+550	allait	aller	归并词形
+551	lit		歧义词形
+552	travaille	travailler	归并词形
+553	adore	adorer	归并词形
+554	amie	amie	独立词头（同形原形罕见）
+555	rendre	rendre	独立词头
+556	allons-y		无可核词头
+557	route	route	独立词头（同形原形罕见）
+558	lieu	lieu	独立词头
+559	année	année	独立词头
+560	voit	voir	归并词形
+561	commence	commencer	归并词形
+562	service	service	独立词头
+563	devoir	devoir	独立词头
+564	attend	attendre	归并词形
+565	drôle	drôle	独立词头（同形原形罕见）
+566	difficile	difficile	独立词头
+567	sûre		专名
+568	pire		歧义词形
+569	pos		无可核词头
+570	peuvent	pouvoir	归并词形
+571	sujet	sujet	独立词头
+572	état	état	独立词头
+573	ceci		功能词或副词待核
+574	impossible	impossible	独立词头
+575	sorte		歧义词形
+576	perdre	perdre	独立词头
+577	dollars	dollar	归并词形
+578	voulu	vouloir	归并词形
+579	morte	mort	归并词形
+580	ira	aller	归并词形
+581	faisait	faire	归并词形
+582	bizarre	bizarre	独立词头
+583	oublié		歧义词形
+584	arrêtez	arrêter	归并词形
+585	ferai	faire	归并词形
+586	serais	être	归并词形
+587	tôt	tôt	独立词头
+588	inquiète		歧义词形
+589	payer	payer	独立词头
+590	coeur	cœur	归并词形
+591	dès		功能词或副词待核
+592	pouvais	pouvoir	归并词形
+593	reviens	revenir	归并词形
+594	chien	chien	独立词头
+595	suffit	suffire	归并词形
+596	prenez	prendre	归并词形
+597	pensez	penser	归并词形
+598	café	café	独立词头
+599	calme		歧义词形
+600	cherche	chercher	归并词形
+601	montrer	montrer	独立词头
+602	parles	parler	归并词形
+603	photo	photo	独立词头
+604	ferme		歧义词形
+605	problèmes	problème	归并词形
+606	the		无可核词头
+607	cœur	cœur	独立词头
+608	sûrement		功能词或副词待核
+609	verre	verre	独立词头（同形原形罕见）
+610	aimes	aimer	归并词形
+611	devons		歧义词形
+612	veulent	vouloir	归并词形
+613	doute		歧义词形
+614	musique	musique	独立词头（同形原形罕见）
+615	courant		歧义词形
+616	sauf		功能词或副词待核
+617	moyen	moyen	独立词头
+618	nouvelles		歧义词形
+619	puis-je		无可核词头
+620	avis	avis	独立词头
+621	sauver	sauver	独立词头
+622	hôpital	hôpital	独立词头
+623	questions	question	归并词形
+624	meurtre	meurtre	独立词头
+625	sérieux	sérieux	独立词头
+626	seconde		歧义词形
+627	trucs	truc	归并词形
+628	comprendre	comprendre	独立词头
+629	allais		专名
+630	esprit	esprit	独立词头
+631	cool		英语借词
+632	mlle	mademoiselle	归并词形
+633	marché		歧义词形
+634	fous		歧义词形
+635	laisse-moi		无可核词头
+636	haut		功能词或副词待核
+637	salle	salle	独立词头
+638	malade	malade	独立词头
+639	changé	changer	归并词形
+640	gentil	gentil	独立词头
+641	allé	aller	归并词形
+642	six		功能词或副词待核
+643	simple	simple	独立词头
+644	john		专名
+645	semaines	semaine	归并词形
+646	celle		无可核词头
+647	jack		无可核词头
+648	appris		歧义词形
+649	seigneur	seigneur	独立词头（同形原形罕见）
+650	dîner	dîner	独立词头
+651	sors	sortir	归并词形
+652	commencé	commencer	归并词形
+653	suppose	supposer	归并词形
+654	chemin	chemin	独立词头
+655	partout	partout	独立词头
+656	bras	bras	独立词头
+657	cul	cul	独立词头
+658	prochaine	prochain	归并词形
+659	visage	visage	独立词头
+660	h		无可核词头
+661	meilleure	meilleur	归并词形
+662	face	face	独立词头
+663	soirée	soirée	独立词头
+664	roi	roi	独立词头（同形原形罕见）
+665	surtout		功能词或副词待核
+666	retard	retard	独立词头
+667	écrit		歧义词形
+668	livre		歧义词形
+669	rapport	rapport	独立词头
+670	chéri	chéri	独立词头（同形原形罕见）
+671	message	message	独立词头
+672	voulez-vous		无可核词头
+673	vaut	valoir	归并词形
+674	ferais	faire	归并词形
+675	morts	mort	归并词形
+676	boire	boire	独立词头
+677	soyez	être	归并词形
+678	président	président	独立词头（同形原形罕见）
+679	plait	plaire	归并词形
+680	bois		歧义词形
+681	sinon		功能词或副词待核
+682	erreur	erreur	独立词头
+683	new		无可核词头
+684	ecoute		无可核词头
+685	mr		专名或非单词
+686	rentre	rentrer	归并词形
+687	rendez-vous		无可核词头
+688	devait	devoir	归并词形
+689	revenir	revenir	独立词头
+690	joue		歧义词形
+691	pauvre	pauvre	独立词头
+692	devenir	devenir	独立词头
+693	s	sud	归并词形
+694	rencontrer	rencontrer	独立词头
+695	sort		歧义词形
+696	commencer	commencer	独立词头
+697	pouvait	pouvoir	归并词形
+698	occupe	occuper	归并词形
+699	entends	entendre	归并词形
+700	souvent	souvent	独立词头
+701	pièce	pièce	独立词头
+702	reçu		歧义词形
+703	grave		功能词或副词待核
+704	mets		歧义词形
+705	intérieur	intérieur	独立词头
+706	honneur	honneur	独立词头
+707	dormir	dormir	独立词头
+708	an	an	独立词头
+709	faux		功能词或副词待核
+710	messieurs	monsieur	归并词形
+711	groupe	groupe	独立词头（同形原形罕见）
+712	rêve		歧义词形
+713	carte		歧义词形
+714	aviez	avoir	归并词形
+715	appel	appel	独立词头
+716	manque		歧义词形
+717	envoyé		歧义词形
+718	début	début	独立词头
+719	sam		无可核词头
+720	puisse	pouvoir	归并词形
+721	écoutez	écouter	归并词形
+722	laissez-moi		无可核词头
+723	bonsoir		感叹词同形
+724	content	content	独立词头（同形原形罕见）
+725	secret	secret	独立词头
+726	venue	venue	独立词头
+727	cher		功能词或副词待核
+728	dis-moi		无可核词头
+729	effet	effet	独立词头
+730	voyons		感叹词同形
+731	sac	sac	独立词头
+732	continue		歧义词形
+733	acheter	acheter	独立词头
+734	voix	voix	独立词头
+735	certains	certain	归并词形

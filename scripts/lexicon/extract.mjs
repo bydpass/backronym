@@ -25,6 +25,13 @@ const KEEP_TAG = /^(obsolete|archaic|rare|vulgar|offensive|derogatory|slang|date
 const catName = (c) => (typeof c === "string" ? c : c && c.name) || "";
 
 const lemmas = [], names = new Set(), form2 = new Map(), form2pos = new Map();
+// 第三次重建（2026-11-19，规格第 3、6 节）：只加字段、不改已有字段——ety 词源编号、gl_more 第 9 条起的义项、formTags 词形的语法标签。
+// 旧字段逐字节不变，现有选词与编译不受影响；新管线读 BACKRONYM_STAGE_OUT 指定的目录（scripts/.cache/v003/stage3）
+const formTags = new Map();
+const addTags = (f, t, pos, tags) => {
+  const k = t + "|" + (pos || "") + "|" + [...new Set(tags || [])].sort().join(",");
+  let s = formTags.get(f); if (!s) formTags.set(f, (s = new Set())); s.add(k);
+};
 // form2pos（V003-B4-R10）：变形 → 「原形 + 词性」。form2 只记原形写法，分不清 bist 是动词 sein 的变形还是名词 Sein 的；
 // 词性取变形条目自己的词性（form-of 条目）或原形条目的词性（forms[]）。form2 原样保留，选词与覆盖率口径不变
 const addForm = (f, t, pos) => {
@@ -44,7 +51,7 @@ for await (const line of rl) {
   const formof = senses.length > 0 && senses.every((s) => isInflectionSense(lang, pos, s));
   if (formof) {
     for (const s of senses) for (const t of [...(s.form_of || []), ...(s.alt_of || [])])
-      { const parts = String(t.word || "").toLowerCase().split(/\s+/).filter(Boolean); for (const tw of parts) if (ALPHA.test(tw)) addForm(lw, tw, parts.length === 1 ? pos : null); }
+      { const parts = String(t.word || "").toLowerCase().split(/\s+/).filter(Boolean); for (const tw of parts) if (ALPHA.test(tw)) { addForm(lw, tw, parts.length === 1 ? pos : null); if (parts.length === 1) addTags(lw, tw, pos, s.tags); } }
     continue;
   }
   if (pos === "name") { names.add(lw); continue; }
@@ -58,11 +65,12 @@ for await (const line of rl) {
   }
   for (const c of d.categories || []) cats.add(catName(c));
   const keep = (t) => GENDER_TAGS.includes(t) || ABBR.has(t) || KEEP_TAG.test(t);
-  const gl = [];
+  const gl = [], glMore = [];
   // 子义项的 glosses 是「上级标题, …, 本义」：取最后一项（venir 的 glosses[0] 是「Senses relating to literal movement.」）；重复的不要
   for (const s of real) {
     const gs = s.glosses || [], g = gs[gs.length - 1];
     if (g && gl.length < 8 && !gl.some((x) => x.g === g)) gl.push({ g, t: (s.tags || []).filter(keep) });
+    else if (g && gl.length >= 8 && !gl.some((x) => x.g === g) && !glMore.some((x) => x.g === g)) glMore.push({ g, t: (s.tags || []).filter(keep) });
   }
   const rec = {
     w, pos,
@@ -82,15 +90,18 @@ for await (const line of rl) {
   const dom = [...cats].filter((c) => /\b(Literature|Philosophy|Art|Arts|Music|Painting|Sculpture|Theater|Theatre|Poetry|Rhetoric|Architecture|Mythology)\b/.test(c));
   if (dom.length) rec.dom = dom.slice(0, 4);
   if (lang === "es") rec.ipa = (d.sounds || []).map((s) => s.ipa).filter(Boolean).slice(0, 6);
+  if (d.etymology_number) rec.ety = d.etymology_number;
+  if (glMore.length) rec.gl_more = glMore;
   if (lang === "la") rec.canon = (d.forms || []).filter((f) => (f.tags || []).includes("canonical")).map((f) => f.form);
   lemmas.push(rec);
   for (const f of d.forms || []) {
     if (!isSurfaceForm(f)) continue;
     const fw = String(f.form || "").toLowerCase();
-    if (fw && !fw.includes(" ") && ALPHA.test(fw) && fw !== lw) addForm(fw, lw, pos);
+    if (fw && !fw.includes(" ") && ALPHA.test(fw) && fw !== lw) { addForm(fw, lw, pos); addTags(fw, lw, pos, f.tags); }
   }
 }
 fs.mkdirSync(OUT_DIR, { recursive: true });
-const out = { lang, src: path.basename(SRC), lines, lemmas, names: [...names], form2: Object.fromEntries([...form2].map(([k, v]) => [k, [...v]])), form2pos: Object.fromEntries([...form2pos].map(([k, v]) => [k, [...v]])) };
+const out = { lang, src: path.basename(SRC), lines, lemmas, names: [...names], form2: Object.fromEntries([...form2].map(([k, v]) => [k, [...v]])), form2pos: Object.fromEntries([...form2pos].map(([k, v]) => [k, [...v]])),
+  formTags: Object.fromEntries([...formTags].map(([k, v]) => [k, [...v]])) };
 fs.writeFileSync(path.join(OUT_DIR, lang + ".json"), JSON.stringify(out));
 console.log(lang, "lines", lines, "lemmas", lemmas.length, "names", names.size, "forms", form2.size);

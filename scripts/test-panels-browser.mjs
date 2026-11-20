@@ -418,15 +418,30 @@ try {
     assert.equal(await page.locator("#title").evaluate(n => getComputedStyle(n.querySelector("[style]") || n).color), "rgb(217, 194, 122)");
     const toast = page.locator("#toast");
     assert.equal(await toast.getAttribute("role"), "status"); assert.ok(await toast.isVisible());
-    // T33：统一 Toast 在卡顶标题之下、在可视区内（含模拟 iOS 软键盘），与键盘行不重叠
+    // T33：统一 Toast 在可视区内（含模拟 iOS 软键盘），与键盘行不重叠；2026-11-17 起位置统一在固定顶栏正下方，不再跟标题走
     const assertBelowTitle = async () => {
-      const r = await page.evaluate(() => ({ toast: document.getElementById("toast").getBoundingClientRect().toJSON(), title: document.getElementById("title").getBoundingClientRect().toJSON(), kb: document.getElementById("kbRow").getBoundingClientRect().toJSON(), vv: (window.visualViewport || {}).height || innerHeight }));
-      assert.ok(r.toast.top >= Math.min(r.title.bottom, r.vv) - 1 || r.title.bottom < 0, "提示在标题之下");
+      const r = await page.evaluate(() => ({ toast: document.getElementById("toast").getBoundingClientRect().toJSON(), bar: document.querySelector(".top").getBoundingClientRect().toJSON(), kb: document.getElementById("kbRow").getBoundingClientRect().toJSON(), vv: (window.visualViewport || {}).height || innerHeight }));
+      assert.ok(Math.abs(r.toast.top - (r.bar.bottom + 8)) <= 1 || r.toast.bottom >= r.vv - 9, "提示贴在顶栏正下方（可视区放不下时贴底）：" + JSON.stringify([r.toast.top, r.bar.bottom]));
       assert.ok(r.toast.top >= 0 && r.toast.bottom <= r.vv + 1, "提示在可视区内");
-      assert.ok(r.toast.bottom <= r.kb.top + 1, "不压在键盘行上");
+      assert.ok(r.toast.bottom <= r.kb.top + 1, "不压在键盘行上：" + JSON.stringify({ toast: [r.toast.top, r.toast.bottom], kb: [r.kb.top, r.kb.bottom], bar: r.bar.bottom, vv: r.vv }));
     };
     await assertBelowTitle();
     await shot(page, "color-toast");
+    // 2026-11-17 真机 E1：设置页开着时提示不串进去；关掉设置页再补弹（切深浅时会重新检查标题颜色，这里用再触发一次颜色检查来模拟）
+    {
+      const msg = await toast.innerText();
+      await page.locator("#settingsOpen").click();
+      await input.evaluate(n => n.dispatchEvent(new Event("change", { bubbles: true })));
+      await page.waitForTimeout(3300); // 之前那条 3 秒到点清掉
+      await input.evaluate(n => n.dispatchEvent(new Event("change", { bubbles: true })));
+      assert.equal(await toast.innerText(), "", "设置页开着：不弹");
+      await page.locator("#settingsClose").click();
+      assert.equal(await toast.innerText(), msg, "关掉设置页：补弹");
+      const tp = await page.evaluate(() => [document.getElementById("toast").getBoundingClientRect().top, document.querySelector(".top").getBoundingClientRect().bottom]);
+      assert.ok(Math.abs(tp[0] - (tp[1] + 8)) <= 1, "补弹的提示也在顶栏正下方");
+      await input.focus(); // 焦点还给取色框，后面的软键盘场景照旧
+      await page.waitForFunction(() => !document.getElementById("kbRow").hidden);
+    }
     await page.evaluate(() => {
       window.realViewport = window.visualViewport;
       Object.defineProperty(window, "visualViewport", { configurable: true, value: { height: innerHeight - 300, offsetTop: 0 } });
@@ -461,6 +476,26 @@ try {
       assert.equal(await page.locator(".custom-mark").evaluate(n => getComputedStyle(n).borderStyle), "dashed");
       assert.equal(await input.evaluate(n => getComputedStyle(n).opacity), "0");
     }
+    assert.deepEqual(errors, []); await context.close();
+  }
+  // 复审补（2026-11-17）：设置页里切浅色（标题颜色提醒被暂存）再切回深色（颜色又够清楚），关页时不补弹过时的提醒
+  {
+    const { page, context, errors } = await pageFor({ draft: LIFE });
+    const setMode = async (skin, mode) => {
+      if (skin) await page.locator('input[name="skin"][value="' + skin + '"]').check({ force: true });
+      await page.locator('input[name="mode"][value="' + mode + '"]').check({ force: true });
+    };
+    await page.locator("#settingsOpen").click(); await setMode("dansaekhwa", "dark"); await page.locator("#settingsClose").click();
+    await page.locator("#title").fill("我的标题");
+    await page.locator("#tcolorCustom").evaluate(n => { n.value = "#d9c27a"; n.dispatchEvent(new Event("change", { bubbles: true })); });
+    assert.equal(await page.locator("#toast").innerText(), "", "深色底上这个颜色够清楚：不提醒");
+    await page.locator("#settingsOpen").click();
+    await setMode(null, "light");
+    await setMode(null, "dark");
+    await page.locator("#settingsClose").click();
+    assert.equal(await page.locator("#toast").innerText(), "", "暂存的提醒已过时：关页不补弹");
+    await page.locator("#settingsOpen").click(); await setMode(null, "light"); await page.locator("#settingsClose").click();
+    assert.equal(await page.locator("#toast").innerText(), "这个颜色在导出图上容易看不清", "仍然看不清：关页补弹");
     assert.deepEqual(errors, []); await context.close();
   }
   console.log("browser panels ok: credits semantics + keyboard, narrow pager, crop buttons + keyboard + mapping, T44 work copy cancel / reset / apply + default scope, T45 IndexedDB transparent PNG + JPEG + reopen + missing + sweep + no backend, custom color + three-second toast below title");

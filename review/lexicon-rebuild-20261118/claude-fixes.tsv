@@ -1,0 +1,531 @@
+lang	display	pos	zh	action	value	reason
+es	puñal	adj	手掌大小	drop		冷僻形容词义，卡面默认取到它；主义是名词「匕首」（P5-claude-review 第 5 条）
+es	celador	adj	守护	drop		主要用法是名词「看守、护工」，形容词义冷僻（第 5 条）
+es	nasa	noun	鱼笼	drop		名次来自字幕里的 NASA，鱼笼义冷僻（第 5 条）
+es	hot	adj	热的	drop		英语借词，西语里也不是「热」义（第 5 条）
+fr	un	noun	数字一	drop		数词只供查询，num 义已在查询表（第 5 条）
+fr	revenue	noun	回归	drop		名次来自 revenir 的过去分词，原形归错（第 5 条）
+fr	ranger	noun	护林员	drop		英语借词义（第 5 条，借词口径）
+fr	supporter	noun	支持者	drop		英语借词义（借词口径）
+it	manipolare	adj	罗马步兵中队	drop		冷僻且与动词同形，默认候选里会误导（第 5 条）
+it	ci	noun	字母 C 的名称	drop		字母名，代词义 ci 已在（第 5 条）
+la	ōstiārius	adj	门的	drop		冷僻形容词义（第 5 条）
+la	algus	noun	寒冷	drop		无名次的冷僻词（第 5 条）
+de	committen	verb	承诺	drop		英语借词（借词口径）
+de	chillen	verb	放松	drop		英语借词（借词口径）
+de	okay	adj	还行	drop		英语借词（借词口径）
+it	negro	noun	代笔者	query		有贬义联想，只供精确查询（P3 粗口口径）
+de	verdammt	adj	该死	query		轻度粗口，与英语 damn 同口径只供精确查询
+fr	solution	noun	溶液	zh	解决办法	主义是「解决办法」，溶液是化学专义（第 6 条）
+it	civile	adj	市民	zh	民用	形容词义是「民用、公民的」，市民是名词义（第 6 条）
+la	vester	adj	你方	zh	你们的	物主形容词（第 6 条）
+la	tuus	adj	你方	zh	你的	物主形容词（第 6 条）
+la	noster	adj	我方	zh	我们的	物主形容词（第 6 条）
+en	like	verb	想要	zh	喜欢	单独用的主义是「喜欢」；would like 才是「想要」（第 6 条）
+es	nada	noun	虚无	note	la nada 虚无	原说明写「代词不在本条」，合并成一条候选后与代词义矛盾
+it	io	noun	自我	note	l’io 自我	同上
+it	nulla	noun	虚无	note		同上
+it	tornare	verb	回来	first		主义是「回来」，「重新开始」是 tornare a 的用法
+fr	devoir	verb	必须	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+fr	devenir	verb	变成	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+fr	époque	noun	时代	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+fr	sujet	noun	主题	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+fr	dame	noun	女士	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+fr	accord	noun	同意	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+fr	désolé	adj	抱歉	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+fr	instant	noun	瞬间	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+fr	attendre	verb	等待	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+fr	toujours	adv	总是	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+fr	merci	noun	感谢	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+fr	parti	noun	党派	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+fr	toucher	verb	触摸	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+fr	ouvrir	verb	打开	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+fr	courir	verb	奔跑	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+de	wollen	verb	想要	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+de	Nacht	noun	夜晚	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+de	voll	adj	满的	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+de	Stück	noun	一块	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+de	bieten	verb	给予	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+en	good	adj	好的	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+en	mean	verb	意思是	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+en	today	adv	今天	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+en	home	noun	家	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+en	reason	noun	原因	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+es	ojo	noun	眼睛	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+es	palabra	noun	单词	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+es	número	noun	数字	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+es	guapo	adj	好看	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+es	nacimiento	noun	诞生	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+es	atención	noun	注意力	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+es	tamaño	noun	大小	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+es	comprar	verb	购买	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+es	dolor	noun	疼痛	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	bene	adv	很好地	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	fine	noun	结束	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	sentire	verb	感觉	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	forte	adj	强壮	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	seguito	noun	后续	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	terreno	noun	土地	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	parola	noun	单词	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	morto	adj	死去	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	uso	noun	使用	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	ritorno	noun	归来	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	pezzo	noun	一块	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	ordine	noun	命令	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	scoprire	verb	发现	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	gruppo	noun	群体	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	incidente	noun	事故	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	compagno	noun	同伴	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	minuto	noun	分钟	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	aereo	noun	飞机	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	dolore	noun	疼痛	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+la	mundus	noun	世界	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+la	numerus	noun	数目	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+la	verbum	noun	词语	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	natale	noun	圣诞节	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	fondo	noun	底部	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	ghiaccio	noun	冰	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	contratto	noun	合同	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	compito	noun	任务	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	parco	noun	公园	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	spalla	noun	肩膀	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	velluto	noun	天鹅绒	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	scempio	noun	破坏	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	inferno	noun	地狱	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+es	cerdo	noun	猪	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+es	cansado	adj	疲倦	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+es	efectivo	noun	现金	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+es	conjunto	noun	一组	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+es	manuscrito	noun	手稿	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+es	romance	noun	爱情	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+es	amante	noun	情人	first		复审 2026-11-19：卡面默认义项按词性与译名先后排错，最常用的是这一义
+it	prego	noun	祈祷	drop		复审 2026-11-19：名次来自 pregare 的变位与「不客气」，名词「祈祷」冷僻
+de	Heute	noun	今日	drop		复审 2026-11-19：名次来自句首大写的副词 heute，名词「das Heute」冷僻
+es	estudiante	adj	学习	drop		复审 2026-11-19 抽检：estudiante 是名词「学生」，形容词义冷僻且释义不准
+es	buscador	adj	搜寻	drop		复审 2026-11-19 抽检：主要是名词（搜索者、搜索引擎），形容词义冷僻
+es	extraño	noun	外国人	zh	陌生人	复审 2026-11-19 抽检：名词 extraño 是「陌生人」，「外国人」是 extranjero
+it	xi	noun	希腊字母 Ξ	query		复审 2026-11-19 抽检：字母名，名次来自字幕里的人名 Xi，只供精确查询（同 ci）
+de	Magistratsabteilung	noun	（维也纳）市政局	query		复审 2026-11-19 抽检：奥地利行政用语，名次来自百科小样，只供精确查询
+it	inferno	adj	地狱	zh	地狱般	复审 2026-11-19 抽检：形容词义写成名词「地狱」，与名词义同字
+fr	pas	adv	不	first		用户 11-19 定：否定义最常用，排第一（脚步、螺距在后）
+la	suus	adj	自身	zh	自己的	复审 2026-11-19：反身物主形容词（他/她/他们自己的），按用户 11-19「物主词保留「的」」，原写「自身」读成名词
+de	Bank	noun	银行	first		用户 11-19 点名：银行是 Bank 最常用的义项
+it	radio	noun	收音机	first		用户 11-19 点名：收音机、广播是 radio 最常用的义项，镭在后
+fr	affluent	noun	支流	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：法语 affluent 主要作名词「支流」，形容词用法罕见
+fr	amiral	noun	舰队司令	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：amiral 是名词「海军上将」，形容词用法少见
+fr	adolescent	noun	青少年	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：adolescent 最常作名词指青少年
+fr	allié	noun	同盟者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：allié 常作名词「盟友、同盟者」
+fr	alcoolique	noun	酒鬼	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：alcoolique 最常指酗酒者
+fr	apprentissage	noun	学习	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：现代法语 apprentissage 最常指「学习」，学徒期是较窄的用法
+fr	aspiration	noun	向往	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：日常 aspiration 多指「渴望、向往」，吸气是专业义
+fr	bâtard	noun	私生子	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：bâtard 多作名词使用（私生子、骂人话）
+fr	coupé	noun	双门轿车	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：当前首义「上下平分」是纹章术语，名词双门轿车更常见
+fr	chocolat	noun	巧克力	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：chocolat 首先是名词巧克力，颜色义是引申
+fr	cave	noun	地窖	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：cave 日常指地窖，形容词「凹陷」罕见
+fr	complice	noun	共犯	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：complice 最常作名词「同谋者」
+fr	cocher	verb	打勾	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：现代法语 cocher 最常用作「打勾」，马车夫是旧词
+fr	commerçant	noun	商人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：commerçant 最常作名词「商人、店主」
+fr	clinique	noun	诊所	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：日常 clinique 最常指诊所
+fr	combustible	noun	燃料	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：combustible 常作名词「燃料」
+fr	crasse	noun	污垢	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：crasse 最常作名词「污垢」，形容词限于固定搭配
+fr	chanteur	noun	歌手	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：chanteur 几乎总作名词「歌手」
+fr	disparu	adj	消失	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：disparu 作过去分词/形容词「消失、失踪」比名词常见
+fr	dit	verb	称作	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：dit 作分词「所谓、称作」远比名词「格言」常见
+fr	duel	noun	决斗	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：duel 日常指决斗，「双重」是语法术语
+fr	détaché	adj	超然	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：首义「分弓奏法」是音乐术语，形容词更常见
+fr	dealer	noun	贩毒者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：法语里 dealer 主要作名词「毒贩」
+fr	détenu	noun	被拘留者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：détenu 常作名词「在押犯」
+fr	étourdi	adj	粗心	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：étourdi 最常作形容词「冒失、粗心」
+fr	expert	noun	专家	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：expert 最常作名词「专家」
+fr	embranchement	noun	分岔点	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：日常 embranchement 指岔路口，分类学的「门」是专业义
+fr	extraterrestre	noun	外星人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：extraterrestre 最常作名词「外星人」
+fr	fichu	adj	糟糕	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：fichu 口语形容词「完蛋、糟糕」远比「头巾」常见
+fr	fini	adj	完成	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：fini 作分词/形容词「完成、结束」最常见
+fr	fauve	noun	猛兽	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：fauve 最常作名词「猛兽」
+fr	féminin	adj	女性	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：féminin 最常作形容词「女性的」，阴性是语法术语
+fr	fermier	noun	农夫	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：fermier 最常作名词「农民」
+fr	grêle	noun	冰雹	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：grêle 最常指冰雹，形容词「细长」少见
+fr	gymnastique	noun	体操	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：gymnastique 最常作名词「体操」
+fr	ivrogne	noun	酒鬼	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：ivrogne 主要作名词「醉鬼」
+fr	irlandais	adj	爱尔兰	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：irlandais 最常作形容词「爱尔兰的」
+fr	logique	adj	合乎逻辑	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：日常最常说 c'est logique，形容词更常见
+fr	marin	noun	水手	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：marin 最常作名词「水手」
+fr	meurtrier	noun	凶手	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：meurtrier 最常作名词「杀人犯」
+fr	marchand	noun	商人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：marchand 最常作名词「商人」
+fr	massif	adj	大块	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：massif 作形容词「大规模、厚重」更常见，山丛是地理术语
+fr	montant	noun	金额	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：montant 最常作名词「金额」
+fr	missionnaire	noun	传教士	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：missionnaire 最常作名词「传教士」
+fr	menu	noun	菜单	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：menu 最常作名词「菜单」，形容词「纤细」较书面
+fr	noyer	verb	淹死	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：noyer 作动词「淹死」比名词「胡桃树」常见
+fr	nain	noun	矮人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：nain 最常作名词「矮人、侏儒」
+fr	nostalgie	noun	怀旧	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：nostalgie 泛指怀旧之情，乡愁是较窄的用法
+fr	nouvelle	noun	消息	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：nouvelle 最常指「消息」，短篇小说是较窄的义项
+fr	officier	noun	军官	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：officier 最常作名词「军官」
+fr	objectif	noun	目标	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：objectif 作名词「目标」比形容词「客观」常见
+fr	promesse	noun	诺言	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：promesse 首先是「诺言、承诺」，希望是引申
+fr	policier	noun	警察	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：policier 最常作名词「警察」
+fr	prévenu	noun	被告	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：prévenu 最常作名词「被告」，形容词「有偏见」少见
+fr	plate	adj	乏味	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：plate 作 plat 的阴性形容词远比「平底小船」常见
+fr	pâtissier	noun	糕点师	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：pâtissier 最常作名词「糕点师」
+fr	potager	noun	菜园	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：potager 最常作名词「菜园」
+fr	révérend	noun	牧师	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：révérend 最常作称呼「牧师」
+fr	roman	noun	小说	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：roman 最常指小说，「罗曼式」是建筑史术语
+fr	réaliste	adj	现实	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：réaliste 最常作形容词「现实的」
+fr	sioux	adj	苏族	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：sioux 多指苏族（人、部落），苏语较少见
+fr	tiers	noun	三分之一	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：tiers 最常见于 un tiers「三分之一」
+fr	uniforme	noun	制服	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：uniforme 作名词「制服」更常见
+fr	voisin	noun	邻居	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：voisin 最常作名词「邻居」
+fr	vert	adj	绿色	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：vert 作形容词「绿色的」最常见
+fr	valeur	noun	价值	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：valeur 最常指「价值」，勇气是文学旧义
+fr	vidéo	noun	视频	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：vidéo 最常作名词「视频」
+fr	vœu	noun	心愿	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：vœu 日常多指「愿望、祝愿」
+fr	vendeur	noun	售货员	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：vendeur 最常作名词「售货员」
+fr	violet	adj	紫色	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：violet 作形容词更常见
+es	adjetivo	noun	形容词	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：作名词「形容词」这个术语最常见
+es	animal	noun	动物	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：日常最先想到名词「动物」
+es	anciano	noun	老人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「老人」使用
+es	amargura	noun	苦闷	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多用于心理上的苦涩、苦闷
+es	artificio	noun	诡计	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：常用义是花招、矫饰，非人工制品
+es	afecto	noun	感情	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：名词「感情、喜爱」远比形容词常用
+es	adolescente	noun	青少年	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「青少年」
+es	asesino	noun	凶手	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「杀手、凶手」
+es	ayudante	noun	助手	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「助手」
+es	antecedente	noun	先例	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词（前例、前科）
+es	aniversario	noun	周年纪念	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：几乎只作名词
+es	admirador	noun	钦佩者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「崇拜者、粉丝」
+es	alienígena	noun	外星人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「外星人」
+es	acompañante	noun	陪同者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「陪同者」
+es	autógrafo	noun	亲笔签名	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：几乎只作名词「签名」
+es	antepasado	noun	祖先	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「祖先」
+es	anular	verb	取消	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：动词「取消、作废」最常用
+es	aficionado	noun	爱好者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「爱好者、球迷」
+es	aliado	noun	盟友	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「盟友」
+es	atardecer	noun	日落	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「傍晚、日落」
+es	acosador	noun	欺凌弱小者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「骚扰者」
+es	aspirar	verb	渴望	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：aspirar a「追求、渴望」最常用
+es	antibiótico	noun	抗生素	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「抗生素」
+es	acelerador	noun	油门	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「油门、加速器」
+es	aspirante	noun	申请者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「候选人、申请者」
+es	acantilado	noun	悬崖	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「悬崖」
+es	atacante	noun	攻击者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「攻击者、前锋」
+es	alba	noun	黎明	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：常用义是「黎明」，圣职长袍是专业义
+es	ausentar	verb	离开	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多用 ausentarse「离开、缺席」
+es	blando	adj	柔软	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：本义「软的」最常用
+es	bombardero	noun	轰炸机	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「轰炸机」
+es	corriente	noun	水流	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：名词「水流、电流」比形容词「流动」常用
+es	capital	noun	资本	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词（首都、资本），形容词「首要」较少
+es	coraje	noun	勇气	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：通用义「勇气」，「愤怒」是墨西哥等地方用法
+es	cereza	noun	樱桃	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：本义名词「樱桃」
+es	combatiente	noun	战斗人员	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「战斗人员」
+es	centavo	noun	分	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「分（货币）」
+es	cazador	noun	猎人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「猎人」
+es	combustible	noun	燃料	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「燃料」
+es	cantante	noun	歌手	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：几乎只作名词「歌手」
+es	cómplice	noun	共犯	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「同谋、共犯」
+es	campesino	noun	农夫	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「农民」
+es	certificado	noun	证书	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「证书」
+es	contenedor	noun	容器	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「集装箱、容器」
+es	comprador	noun	买主	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「买家」
+es	creador	noun	创造者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「创作者」
+es	contable	noun	会计人员	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「会计」
+es	caro	adj	昂贵	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：现代常用义「贵」，「亲爱」偏书面
+es	competidor	noun	竞争者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「竞争者」
+es	constructor	noun	建造者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「建造者、建筑商」
+es	céntimo	noun	分	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「分（货币）」
+es	cacharro	noun	破烂	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：口语常用「破玩意儿、破烂」
+es	cuate	noun	朋友	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：墨西哥常用义「哥们、朋友」
+es	director	noun	负责人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：「主管、负责人」最概括常用
+es	desierto	noun	沙漠	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：名词「沙漠」更常用
+es	dispositivo	noun	装置	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：几乎只作名词「装置、设备」
+es	delincuente	noun	行为不良的人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「罪犯」
+es	defensor	noun	防卫者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「捍卫者、辩护人」
+es	diagnóstico	noun	诊断	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「诊断」
+es	donante	noun	捐赠人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「捐赠者」
+es	detector	noun	探测器	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「探测器」
+es	depredador	noun	捕食者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「捕食者」
+es	detonador	noun	雷管	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「雷管、引爆器」
+es	decantar	verb	选择	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：常用 decantarse por「倾向、选择」，滗析是专业义
+es	difuso	adj	朦胧	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：本义「模糊、弥散」
+es	escudo	noun	盾牌	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：本义「盾牌」，纹章是引申
+es	estante	noun	架子	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：几乎只作名词「架子」
+es	experto	noun	专家	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「专家」
+es	extraterrestre	noun	外星人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「外星人」
+es	enano	noun	矮子	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「矮人、侏儒」
+es	explorador	noun	探险家	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「探险家」
+es	escritura	noun	书写	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：常用义「书写、文字」，契约是法律义
+es	elevador	noun	电梯	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：拉美常用名词「电梯」
+es	fiar	verb	信任	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：fiarse de「信任」最常用
+es	funeral	noun	葬礼	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：几乎只作名词「葬礼」
+es	franco	adj	坦率	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：形容词「坦率」常用，法郎已过时
+es	formulario	noun	表格	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：几乎只作名词「表格」
+es	fundador	noun	创立者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「创始人」
+es	florecer	verb	绽放	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：本义「开花」
+es	ganador	noun	胜利者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「获胜者」
+es	guerrero	noun	战士	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「战士」
+es	generador	noun	产生器	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「发电机、生成器」
+es	género	noun	类型	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：最概括常用义「种类、类型」，属是生物学专业义
+es	ganso	noun	鹅	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：本义名词「鹅」
+es	hueco	noun	洞	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「洞、空隙」
+es	helado	noun	冰淇淋	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：名词「冰淇淋」最常用
+es	horario	noun	时间表	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「时刻表、作息时间」
+es	hechizo	noun	符咒	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「咒语、魔法」
+es	homicida	noun	凶手	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「杀人犯」
+es	inquisidor	noun	宗教裁判官	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「宗教裁判官」
+es	investigador	noun	研究人员	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「研究员、调查员」
+es	individuo	noun	个体	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：几乎只作名词「个人、家伙」
+es	intruso	noun	闯入者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「闯入者」
+es	interruptor	noun	开关	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「开关」
+es	inconveniente	noun	障碍	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：名词「不便、问题」更常用
+es	inodoro	noun	抽水马桶	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「马桶」
+es	inmigrante	noun	移民	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「移民」
+es	intestino	noun	肠	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「肠」
+es	ladrón	noun	小偷	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「小偷」
+es	ligero	adj	重量轻	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：本义「轻的」
+es	luchador	noun	斗士	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「斗士、摔跤手」
+es	leche	noun	牛奶	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：日常首先指「牛奶」
+es	mago	noun	魔术师	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「魔术师、巫师」
+es	muelle	noun	弹簧	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词，形容词「软的」少见
+es	músico	noun	音乐家	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「音乐家」
+es	motor	noun	发动机	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「发动机」
+es	marinero	noun	水手	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「水手」
+es	millonario	noun	百万富翁	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「百万富翁」
+es	minero	noun	矿工	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「矿工」
+es	marcador	noun	记分板	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「比分牌、记号笔」
+es	mercenario	noun	雇佣兵	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「雇佣兵」
+es	naranja	noun	橙子	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：本义名词「橙子」
+es	neumático	noun	轮胎	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「轮胎」
+es	plata	noun	银	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：本义名词「银」（拉美也指钱）
+es	paciente	noun	病人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：名词「病人」更常用
+es	pánico	noun	恐慌	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：几乎只作名词「恐慌」
+es	piedad	noun	怜悯	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：常用义「怜悯、同情」
+es	preso	noun	囚犯	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「囚犯」
+es	purgatorio	noun	炼狱	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：几乎只作名词「炼狱」
+es	perdedor	noun	失败者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「失败者」
+es	payaso	noun	小丑	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「小丑」
+es	pasajero	noun	乘客	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：名词「乘客」更常用
+es	propietario	noun	拥有者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「业主、所有者」
+es	productor	noun	生产者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「制片人、生产者」
+es	presupuesto	noun	预算	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「预算」
+es	pescador	noun	渔夫	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「渔民」
+es	pleno	adj	满的	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：形容词「完全、充满」（en pleno）更常用
+es	parásito	noun	寄生生物	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「寄生虫」
+es	predicador	noun	传道士	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「传道士」
+es	participante	noun	参与者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「参与者」
+es	quemar	verb	燃烧	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：本义「烧」，晒黑是引申
+es	residente	noun	居民	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「居民」
+es	rival	noun	对手	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「对手」
+es	refrigerador	noun	电冰箱	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「冰箱」
+es	resfriado	noun	感冒	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「感冒」
+es	receptor	noun	接收器	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「接收器、接收者」
+es	solar	adj	太阳	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：形容词「太阳的」最常用（energía solar）
+es	sapo	noun	蟾蜍	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：本义名词「蟾蜍」
+es	submarino	noun	潜水艇	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「潜水艇」
+es	sensor	noun	传感器	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：几乎只作名词「传感器」
+es	sobreviviente	noun	生还者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「幸存者」
+es	superviviente	noun	生还者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「幸存者」
+es	salvavidas	noun	救生圈	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「救生圈、救生员」
+es	sedante	noun	镇静剂	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「镇静剂」
+es	traidor	noun	叛徒	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「叛徒」
+es	tirano	noun	暴君	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「暴君」
+es	trabajador	noun	工人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：名词「劳动者、工人」更常用
+es	traficante	noun	毒贩	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「贩子」
+es	tractor	noun	牵引器	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：几乎只作名词「拖拉机」
+es	uña	noun	指甲	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：日常首先指「指甲」，蹄是引申
+es	viajero	noun	旅行者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「旅客」
+es	vaquero	noun	牧牛人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「牛仔」
+es	vagabundo	noun	流浪者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「流浪汉」
+es	visitante	noun	参观者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「访客」
+es	volante	noun	方向盘	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「方向盘」
+es	villano	noun	坏人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「反派、坏人」
+es	vigilante	noun	守卫者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「保安、看守」
+es	verso	noun	诗句	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：本义名词「诗句」，正矢是数学专业义
+es	vikingo	noun	维京人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：多作名词「维京人」
+it	avvenire	noun	未来	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：不定式形式日常多作名词 l'avvenire「未来」
+it	affare	noun	交易	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：affare 最典型义是「买卖、交易」(un buon affare)
+it	asciutto	adj	干燥	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：asciutto 基本义是「干的」，「精瘦」是引申
+it	avversario	noun	对手	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：avversario 多作名词「对手」
+it	affezione	noun	爱	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：affezione 日常义为「感情、喜爱」，疾病义属医学术语
+it	arrosto	noun	烤肉	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：arrosto 最常见作名词「烤肉」
+it	alba	noun	黎明	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：alba 本义是「黎明、拂晓」
+it	alieno	noun	外星人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：「不愿意」是文雅冷僻义，日常多指外星人
+it	adolescente	noun	青少年	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：adolescente 多作名词「青少年」
+it	anniversario	noun	周年纪念	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：anniversario 几乎总作名词「周年纪念日」
+it	affetto	noun	爱	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：affetto 名词「爱、感情」远比「患有」常用
+it	antidolorifico	noun	止痛剂	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：antidolorifico 多作名词「止痛药」
+it	alleato	noun	同盟者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：alleato 多作名词「盟友」
+it	avido	adj	贪婪	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：avido 最典型义是「贪婪」
+it	antibiotico	noun	抗生素	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：antibiotico 多作名词
+it	adottare	verb	采用	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：adottare 典型义是「采用、收养」，「选择」偏离
+it	aspirazione	noun	抱负	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：日常 aspirazione 多指「志向、抱负」
+it	attesa	noun	等待	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：attesa 本义「等待」(sala d'attesa)
+it	bugiardo	noun	说谎者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：bugiardo 最常作名词「骗子、说谎者」
+it	benvenuto	noun	欢迎	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：benvenuto 最常见是问候「欢迎」
+it	binario	noun	铁轨	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：日常 binario 指铁轨、站台
+it	centesimo	noun	一百分之一	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：centesimo 日常多指「一分钱、百分之一」
+it	celeste	adj	天蓝色	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：celeste 最常用作颜色「天蓝色」
+it	criminale	noun	罪犯	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：criminale 多作名词「罪犯」
+it	confuso	adj	困惑	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：confuso 典型义「困惑、混乱」
+it	consolare	verb	安慰	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：动词「安慰」远比形容词「领事的」常用
+it	crocifisso	noun	耶稣受难像	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：il crocifisso 名词最常见
+it	cavallino	noun	小马	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：cavallino 多作名词「小马」
+it	capitale	noun	都城	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：capitale 最常见作名词「首都」
+it	carburante	noun	燃料	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：carburante 几乎只作名词「燃料」
+it	contabile	noun	簿记员	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：contabile 多作名词「会计」
+it	compromesso	noun	妥协	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：compromesso 最常见作名词「妥协」
+it	creatore	noun	创造者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：creatore 多作名词「创造者」
+it	dipinto	noun	画	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：dipinto 多作名词「画作」
+it	debito	noun	债务	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：debito 最常见作名词「债务」
+it	dispositivo	noun	装置	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：dispositivo 几乎总作名词「装置、设备」
+it	digitale	adj	数字	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：digitale 日常义「数字的」，毛地黄是植物学冷僻义
+it	dipendente	noun	雇员	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：dipendente 多作名词「雇员」
+it	difensore	noun	防卫者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：difensore 多作名词「辩护人、后卫」
+it	documentario	noun	纪录片	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：documentario 多作名词「纪录片」
+it	disfarsi	verb	摆脱	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：disfarsi 最常用于 disfarsi di「摆脱」
+it	esperto	noun	专家	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：esperto 多作名词「专家」
+it	ebreo	noun	希伯来人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：ebreo 多作名词「犹太人」
+it	estero	noun	国外	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：最常见用法 all'estero「国外」
+it	editore	noun	出版者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：editore 多作名词「出版商」
+it	femmina	noun	女性	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：femmina 多作名词「雌性、女性」
+it	maschio	noun	男性	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：maschio 多作名词「雄性、男性」
+it	fidanzato	noun	未婚夫	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：fidanzato 最常作名词「男朋友、未婚夫」
+it	funerale	noun	葬礼	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：funerale 几乎总作名词
+it	fidare	verb	信任	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：fidarsi 典型义「信任」
+it	fisico	adj	身体	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：日常 fisico 多指「身体的」
+it	frigorifero	noun	电冰箱	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：frigorifero 几乎总作名词「冰箱」
+it	fuggitivo	noun	逃亡者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：fuggitivo 多作名词「逃犯」
+it	fornitore	noun	供应商	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：fornitore 多作名词「供应商」
+it	gigante	noun	巨人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：gigante 多作名词「巨人」
+it	giusto	adj	正确	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：giusto 日常最常见义「对的、正确」
+it	gelato	noun	冰淇淋	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：gelato 最常见作名词「冰淇淋」
+it	guerriero	noun	战士	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：guerriero 多作名词「战士」
+it	informatore	noun	线人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：informatore 多作名词「线人」
+it	insegnante	noun	教师	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：insegnante 几乎总作名词「老师」
+it	idraulico	noun	水管工人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：日常 idraulico 多指「水管工」
+it	istruttore	noun	教练	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：istruttore 多作名词「教练」，「调查」是法律术语
+it	incontro	noun	相遇	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：incontro 典型义「相遇、会面」，「比赛」是体育引申
+it	lavoratore	noun	工人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：lavoratore 多作名词「劳动者」
+it	medico	noun	医生	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：medico 最常见作名词「医生」
+it	misericordia	noun	怜悯	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：「怜悯短剑」是冷僻义
+it	mobile	noun	家具	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：名词「家具」最常用
+it	motore	noun	发动机	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：motore 多作名词「发动机」
+it	medio	adj	中等	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：medio 最常见作形容词「中等、平均」
+it	malinteso	noun	误会	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：malinteso 多作名词「误会」
+it	mercenario	noun	雇佣兵	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：mercenario 多作名词
+it	moccioso	noun	小屁孩	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：moccioso 多作名词「小鬼」
+it	mutuo	noun	贷款	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：日常 mutuo 多指「房贷」
+it	manoscritto	noun	手稿	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：manoscritto 多作名词「手稿」
+it	neonato	noun	婴儿	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：neonato 多作名词「新生儿」
+it	nulla	pron	没有什么	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：nulla 最常作代词「什么也没有」
+it	orario	noun	时间表	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：orario 多作名词「时刻表、时间」
+it	operaio	noun	工人	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：operaio 多作名词「工人」
+it	occupazione	noun	工作	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：occupazione 日常多指「就业、工作」
+it	piatto	noun	盘子	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：piatto 最常作名词「盘子、菜」
+it	passione	noun	激情	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：passione 典型义「热情、激情」
+it	partito	noun	政党	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：partito 名词「政党」最常见，纹章义冷僻
+it	proiettile	noun	发射体	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：proiettile 几乎总作名词「子弹」
+it	prigioniero	noun	囚犯	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：prigioniero 多作名词「囚犯」
+it	professionista	noun	专业人士	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：professionista 多作名词
+it	passeggero	noun	乘客	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：passeggero 多作名词「乘客」
+it	preservativo	noun	避孕套	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：preservativo 几乎总作名词
+it	pirata	noun	海盗	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：pirata 本是名词「海盗」
+it	percentuale	noun	百分比	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：percentuale 多作名词
+it	pneumatico	noun	轮胎	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：pneumatico 日常多作名词「轮胎」
+it	principiante	noun	初学者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：principiante 多作名词
+it	quadro	noun	画	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：quadro 最常作名词「画」
+it	raccolto	noun	收成	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：raccolto 多作名词「收成」
+it	ristretto	adj	狭窄	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：ristretto 主要是形容词「狭小、有限」，特浓咖啡是专门义
+it	romanzo	noun	小说	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：romanzo 最常作名词「小说」
+it	serata	noun	一晚	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：serata 本义「晚上」
+it	salutare	verb	欢迎	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：动词 salutare「打招呼、问候」远比「有益健康」常用
+it	soldo	noun	钱	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：soldi「钱」最常用，索尔多是古币
+it	scrittura	noun	写作	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：scrittura 基本义「书写、写作」
+it	sovrano	noun	君主	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：sovrano 多作名词「君主」
+it	schiavo	noun	奴隶	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：schiavo 多作名词「奴隶」
+it	soggetto	noun	主题	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：soggetto 多作名词「主题、主语」
+it	scomparire	verb	消失	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：scomparire 本义「消失」，「去世」是委婉义
+it	sindacato	noun	工会	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：sindacato 几乎总作名词「工会」
+it	scoperto	adj	无遮盖	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：scoperto 多作形容词，「透支」是银行术语
+it	torto	noun	错误	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：最常见于 avere torto「错」
+it	tipo	noun	家伙	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：tipo 多作名词「类型、家伙」
+it	temporale	noun	雷暴雨	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：temporale 日常多指「雷雨」
+it	tradito	adj	被背叛	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：tradito 多作分词形容词
+it	tessuto	noun	纺织品	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：tessuto 多作名词「布料、组织」
+it	tramontare	verb	日月落下	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：tramontare 本义「日月落下」
+it	vinto	adj	被击败	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：vinto 多作分词形容词
+it	vincitore	noun	胜利者	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：vincitore 多作名词「获胜者」
+it	vestito	noun	套装	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：vestito 最常作名词「衣服」
+it	veterano	noun	老兵	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：veterano 多作名词
+it	veterinario	noun	兽医	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：veterinario 多作名词「兽医」
+it	viaggio	noun	旅行	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：viaggio 最典型义「旅行」
+en	administer	verb	管理	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：administer 日常最常见是管理、实施，给药是专业语境
+en	bitter	adj	苦的	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：bitter 本义是味道苦，愤懑是引申义
+en	bark	verb	犬吠	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：bark 日常最先想到狗叫，树皮相对少见
+en	bloom	verb	绽放	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：bloom 最常用是开花绽放，「青春」是冷僻引申义
+en	borderline	adj	边界	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：borderline 绝大多数作形容词用（临界的），名词少见
+en	colony	noun	殖民地	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：colony 最常见义是殖民地，生物群体是专业义
+en	convict	verb	判有罪	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：convict 动词（定罪）远比名词常用
+en	conceive	verb	构想	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：conceive 最常用是设想、构想，怀孕义较正式少用
+en	clip	noun	短片	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：clip 现今最常见是视频片段
+en	coordinate	verb	协调	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：coordinate 动词协调最常用，坐标是数学专业义
+en	domain	noun	领域	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：domain 日常义是领域，定义域是数学专业义
+en	essential	adj	必需	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：essential 主要作形容词，名词少见
+en	exhaust	verb	耗尽	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：exhaust 动词耗尽比名词废气常用
+en	fork	noun	叉子	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：fork 最先想到餐具叉子，分岔是引申
+en	flexible	adj	灵活	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：flexible 最常用是灵活，可弯曲是物理本义但少用
+en	hate	verb	憎恨	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：hate 绝大多数作动词
+en	harmony	noun	和谐	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：harmony 日常义是和谐，和声是音乐专业义
+en	monthly	adj	每月一次	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：monthly 主要作形容词，月刊是名词少见用法
+en	momentum	noun	势头	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：momentum 日常义是势头，动量是物理专业义
+en	plain	adj	朴素	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：plain 主要作形容词，名词平原较少
+en	pupil	noun	学生	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：pupil 最常用义是学生，瞳孔是解剖义
+en	realm	noun	领域	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：realm 现代英语多指领域，王国义偏古雅
+en	romance	noun	恋情	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：romance 最常用是浪漫恋情，爱情小说是派生义
+en	swallow	verb	吞咽	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：swallow 动词吞咽远比燕子常用
+en	sole	adj	唯一	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：sole 最常见是形容词唯一，鞋底较少
+en	suspension	noun	暂停	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：suspension 日常义是暂停、停职，悬浮液是化学专业义
+en	transmission	noun	传输	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：transmission 一般义是传输、传播，变速器是汽车专业义
+en	thirsty	adj	口渴	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：thirsty 本义口渴，渴望是引申义
+de	absterben	verb	枯死	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：absterben 最常用于植物枯死，坏死是医学义
+de	buchen	verb	预订	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：buchen 几乎总是动词预订，形容词山毛榉木罕见
+de	durchdrehen	verb	发疯	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：durchdrehen 口语最常用义是发疯，绞碎是专业义
+de	Einkauf	noun	购物	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：Einkauf 日常最常见是购物
+de	erwachsen	adj	成年	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：erwachsen 最常用作形容词成年的
+de	entschlafen	verb	安逝	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：entschlafen 现代德语主要作「安详去世」的委婉语
+de	Geburt	noun	诞生	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：Geburt 一般义是出生诞生，分娩偏医学
+de	Klang	noun	声响	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：Klang 基本义是声音、声响，音色是专业义
+de	modern	adj	现代	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：modern 绝大多数作形容词现代，动词腐烂罕见
+de	poltern	verb	轰隆作响	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：poltern 本义是发出隆隆声，怒吼是引申
+de	quatschen	verb	闲聊	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：quatschen 日常最常用是闲聊
+de	Quatsch	noun	胡说	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：Quatsch 最常用是胡说、废话
+de	rennen	verb	奔跑	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：rennen 一般义是奔跑，赛跑是特定用法
+de	Schüler	noun	学生	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：Schüler 最常用义是中小学学生，门生是引申
+de	scheiden	verb	离婚	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：scheiden 现代最常见于 sich scheiden lassen 离婚
+de	versehen	adj	配备了…	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：versehen 最常见是 versehen mit 配备，动词担任少用
+de	vererben	verb	遗赠	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：vererben 本义是遗赠财产，遗传是引申
+de	weich	adj	柔软	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：weich 本义是柔软，温和是引申
+de	wandern	verb	徒步	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：wandern 日常最常用是徒步远足
+de	zurücktreten	verb	辞职	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：zurücktreten 新闻和日常最常见义是辞职
+de	zufügen	verb	造成	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：zufügen 最常见于 Schaden zufügen 造成伤害
+la	aemulus	adj	争胜	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：aemulus 古典基本义是竞争、争胜，嫉妒是贬义引申
+la	aenigma	noun	谜语	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：aenigma 常用义是谜语，隐晦比喻是修辞术语
+la	dēcidō	verb	掉落	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：dēcidō 本义是掉落，死亡是引申
+la	pābulum	noun	饲料	first		前 1000 名以外默认义项（用户 11-19 要求修；模型逐词判断，抽查 25 条）：pābulum 古典常用义是牲畜饲料
+it	deputato	noun	副手	zhfirst	议员	名词常用义是「议员」，原释义「副手」不准（11-19 默认义项检查发现）
+it	ospite	noun	主人	zhfirst	客人	名词最常用义是「客人」，原只有「主人」（11-19 默认义项检查发现）
+es	pena	noun	遗憾	first		主义「遗憾、痛苦」排第一
+es	tienda	noun	商店	first		主义「商店」排第一
+es	sentir	verb	感觉	first		复审 11-19（前 1000 名以内仍排错）：sentir 最常用义是「感觉」，「遗憾」只在 lo siento 里
+es	periódico	noun	报纸	first		复审 11-19（前 1000 名以内仍排错）：periódico 最常作名词「报纸」，形容词「周期的」少见
+it	sito	noun	地点	first		复审 11-19（前 1000 名以内仍排错）：sito 最常作名词（网站、地点），形容词「位于…」是书面语
+en	right	adj	正确	first		复审 11-19（前 1000 名以内仍排错）：right 最常用作形容词「对的」，名词「权利」在后
+de	Boden	noun	地面	first		复审 11-19（前 1000 名以内仍排错）：Boden 最常用义是「地面、地板」，「土壤」在后
+fr	plan	noun	计划	first		复审 11-19（前 1000 名以内仍排错）：plan 最常用义是「计划」，「平面」在后
+la	capiō	verb	抓住	first		复审 11-19（前 1000 名以内仍排错）：capiō 本义「拿、抓住」，「容纳」是引申义
+la	audiō	verb	听见	first		复审 11-19（前 1000 名以内仍排错）：audiō 本义「听见」，「听从」是引申义
+la	odium	noun	仇恨	first		复审 11-19（前 1000 名以内仍排错）：odium 本义「仇恨」，「不受欢迎」是引申义
+la	genus	noun	类别	first		复审 11-19（前 1000 名以内仍排错）：拉丁语 genus 是「出身、种类」，生物分类的「属」是现代术语
+la	ars	noun	技艺	first		复审 11-19（前 1000 名以内仍排错）：ars 本义「技艺」，「职业」在后
+la	ferō	verb	携带	first		复审 11-19（前 1000 名以内仍排错）：ferō 本义「携带、带来」，「忍受」是引申义
+en	nephew	noun	侄子	first		复审 R3-10：手工新增同词性多义项按 ID 排首义不确定，明确「侄子」在前
+en	succession	noun	继承	first		复审 R3-10：同上，单用 succession 多指继承、继位
+fr	avoir	verb	有	zh	拥有	用户 11-19 第六轮真机（二-3）：动词义写「拥有」

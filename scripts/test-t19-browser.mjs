@@ -4,12 +4,17 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
+import { legacyDir } from './legacy-packs.mjs';
 const require=createRequire(import.meta.url);
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const root=process.cwd();
+const legacy=legacyDir(); // picker.html 明示这里查看旧成品基线，现行词包由 scope-picker 和主编辑器覆盖。
 const server=createServer(async(req,res)=>{
- const file=path.resolve(root,'.'+req.url.split('?')[0]);
+ const urlPath=req.url.split('?')[0];
+ let file=path.resolve(root,'.'+urlPath);
  if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return;}
+ const fixture=/^\/app\/assets\/lang\/(en|fr|de|es|it|la)\/(words|phrases)\.js$/.exec(urlPath);
+ if(fixture)file=path.join(legacy,fixture[1],fixture[2]+'.js');
  try{res.setHeader('Content-Type',({'.js':'text/javascript','.html':'text/html','.css':'text/css'})[path.extname(file)]||'application/octet-stream');res.end(await readFile(file));}catch{res.writeHead(404).end();}
 });
 await new Promise(r=>server.listen(0,'127.0.0.1',r));

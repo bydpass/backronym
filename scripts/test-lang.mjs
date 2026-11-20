@@ -37,7 +37,7 @@ const fr = { letters: (t) => String(t || "").toUpperCase().replace(/[^A-ZÀ-ÖØ
   assert.equal(CORE.hasLang("toString"), false, "原型上的名字不算语种");
   assert.equal(CORE.useLang("fr"), false, "没注册不切"); assert.equal(CORE.LANG.code, "en");
   CORE.addLang("fr", fr);
-  assert.equal(CORE.hasLang("fr"), true); assert.equal(CORE.normalizeWord("été"), "T", "全局仍是英语规则");
+  assert.equal(CORE.hasLang("fr"), true); assert.equal(CORE.normalizeWord("āb"), "ĀB", "全局仍是英语规则（R07 起英语也留带变音符的字母，假法语规则不收 Ā）");
   assert.equal(CORE.useLang("fr"), true); assert.equal(CORE.LANG.code, "fr", "CORE.LANG 跟着当前规则变");
   { // 2026-11-12：法、西、意的冠词在块内右对齐（贴着词），其余（德语）左对齐；省音冠词本来就紧贴词。这里不另注册语言（后面的加载器用例要求它们未注册）：右对齐用法语测，左对齐那条路径用当前不在名单里的英语规则测
     const m = (font, t) => String(t).length * 10, W = CORE.CARD.WORD, at = (lang, art) => { const was = CORE.LANG.code; CORE.useLang(lang);
@@ -62,7 +62,7 @@ const fr = { letters: (t) => String(t || "").toUpperCase().replace(/[^A-ZÀ-ÖØ
   const f = CORE.migrateDraft({ v: 2, t: now, lang: "fr", word: "été", picks: [["Éclat", ""]] });
   assert.equal(f.lang, "fr"); assert.equal(f.word, "ÉTÉ", "法语稿按法语规则规整，不被英语规则压成一格"); assert.equal(f.picks.length, 3);
   assert.equal(CORE.LANG.code, "en", "迁移不改全局当前语言");
-  CORE.useLang("fr"); assert.equal(CORE.migrateDraft({ v: 2, t: now, word: "été" }).word, "T", "英文稿在法语当前语言下仍按英语规整"); CORE.useLang("en");
+  CORE.useLang("fr"); assert.equal(CORE.migrateDraft({ v: 2, t: now, word: "āb" }).word, "ĀB", "英文稿在法语当前语言下仍按英语规整（假法语规则会丢掉 Ā）"); CORE.useLang("en");
   for (const lang of ["xx", 3, "", "toString"]) assert.equal(CORE.migrateDraft({ v: 2, t: now, lang, word: "life" }), null, "不认识的 lang：当不能套用的原文（" + lang + "）");
   // 迁移中途抛错：全局当前语言照样还原
   assert.throws(() => CORE.migrateDraft({ v: 2, t: now, lang: "fr", word: "été", get titleRuns() { throw new Error("坏字段"); } }));
@@ -246,7 +246,7 @@ const fr = { letters: (t) => String(t || "").toUpperCase().replace(/[^A-ZÀ-ÖØ
   assert.equal((await loading).stale, true, "取消后迟到结果作废"); assert.equal(state.lang, "en");
   assert.equal(e.setLang("ko"), false, "规则没注册：不改"); assert.equal(state.lang, "en");
   assert.equal(e.setLang("fr"), true); assert.equal(state.lang, "fr"); assert.equal(CORE.LANG.code, "fr");
-  assert.deepEqual([wordEl.wordCtl.maxLength, wordEl.wordCtl.lang], [CORE.LANG.compose ? CORE.LANG.wordMax * 4 : CORE.LANG.wordMax, "fr"], "词框的原生上限与 lang 跟着语言走（西文放宽，上限由 rewriteWord 按合成后的字数管，R9）");
+  assert.equal(wordEl.wordCtl.lang, "fr");
   assert.equal(e.draftPayload().lang, "fr");
   assert.equal("langs" in e.draftPayload(), false, "只选一门：草稿不写 langs / pickLangs，旧稿内容不变");
   // 语言多选（2026-11-12）：选了英语和法语 → 字母规则按西文（法语）；草稿写 langs 与各格的词来自哪门，lang 仍写定规则的那一门
@@ -256,7 +256,7 @@ const fr = { letters: (t) => String(t || "").toUpperCase().replace(/[^A-ZÀ-ÖØ
   { const q = e.draftPayload(); assert.deepEqual([q.lang, plain(q.langs), plain(q.pickLangs)], ["fr", ["en", "fr"], ["fr", ""]]); }
   assert.equal(e.setLangs(["en", "ko"]), false, "有没注册的语言：整个不改"); assert.deepEqual(plain(state.langs), ["en", "fr"]);
   assert.equal(e.setLangs([]), false, "至少一门");
-  assert.equal(e.setLang("en"), true); assert.deepEqual([wordEl.wordCtl.maxLength, wordEl.wordCtl.lang], [20, "en"], "回到英语：20"); assert.deepEqual(plain(state.langs), ["en"]);
+  assert.equal(e.setLang("en"), true); assert.equal(wordEl.wordCtl.lang, "en"); assert.deepEqual(plain(state.langs), ["en"]);
 }
 
 // ---------- V003-B4-R5：换语言时格的对应（去变音符同格、连字展开、没有对应字母的格）与配图引用跟着格走 ----------
@@ -292,7 +292,7 @@ const fr = { letters: (t) => String(t || "").toUpperCase().replace(/[^A-ZÀ-ÖØ
 // ---------- V003-B1-R2：规则先到、词库迟到——候选 / 排名 / 自动切点按新数据重算，到了就重画，不动草稿 ----------
 {
   CORE.addLang("eo", fr); CORE.useLang("eo");
-  const state = { lang: "eo", letters: ["A"], picks: [["ap", ""]], arts: [""], poss: [""], glossAuto: [true] };
+  const state = { lang: "eo", letters: ["A"], picks: [["ap", ""]], glosses: [""], arts: [""], poss: [""], glossAuto: [true] };
   const listed = [], drawn = { shell: 0 };
   const hyphEo = { x: [1] };
   const inject = (url) => {
@@ -302,8 +302,8 @@ const fr = { letters: (t) => String(t || "").toUpperCase().replace(/[^A-ZÀ-ÖØ
     return Promise.resolve();
   };
   let quiet = 0;
-  const e = loadAppFunctions(["langData", "words", "moreWords", "rankOf", "autoCut", "renderWordBar", "cellState", "prepareLang", "refreshPicks", "itemFor"], {
-    quietly: (fn) => { quiet++; fn(); }, defaultSense: CORE.defaultSense,
+  const e = loadAppFunctions(["langData", "words", "moreWords", "rankOf", "autoCut", "renderWordBar", "cellState", "prepareLang", "refreshPicks", "spellingFor", "itemFor"], {
+    preserveWordCase: () => false, quietly: (fn) => { quiet++; fn(); }, defaultSense: CORE.defaultSense,
     CORE, window: env.window, state, NO_WORDS: {}, cutMemo: { word: "", W: null, hyph: null, cut: null }, rankIndex: null, rankSrc: null,
     candPage: 0, candKey: "", candQuiet: false, candMemo: { key: "", list: [] },
     capitalize: CORE.capitalize, blocked: CORE.blocked, lookup: () => null,
@@ -331,9 +331,11 @@ const fr = { letters: (t) => String(t || "").toUpperCase().replace(/[^A-ZÀ-ÖØ
     e.lookup = (w) => dict[String(w).toLowerCase()] || null;
     state.letters = ["A", "S", "J", "X"]; state.glossAuto = [true, false, true, true];
     state.picks = [["Artista", "n.艺术家"], ["sangre", "n.血", "el", "", { author: 1 }], ["joven", "adj.年轻的|n.年轻人"], ["xyz", ""]];
+    state.glosses = ["", "", "原有释义", ""];
     state.arts = ["la", "el", "", ""]; state.poss = ["", "", "", ""];
     e.refreshPicks();
-    assert.deepEqual(plain(state.picks), [["Artista", "n.艺术家", "el / la", ""], ["sangre", "n.血", "la", "", { author: 1 }], ["joven", "adj.年轻的|n.年轻人", "el / la", ""], ["xyz", ""]], "冠词按词库补齐 / 更正；拼写、扩展位、词库外的词不动");
+    assert.deepEqual(plain(state.picks), [["Artista", "n.艺术家", "el / la", ""], ["Sangre", "n.血", "la", "", { author: 1 }], ["Joven", "adj.年轻的|n.年轻人", "el / la", ""], ["xyz", ""]], "按词库补齐冠词、规范大小写，保留扩展位与自定义词");
+    assert.deepEqual(plain(state.glosses), ["艺术家", "", "原有释义", ""], "词库迟到只填空的自动释义，手动留空与已写释义保留");
     assert.deepEqual(plain(state.arts), ["la", "", "", ""], "仍在选项里的选择留着，不在的清掉");
     assert.deepEqual(plain(state.poss), ["n.", "", "adj.", ""], "自动带出的释义补上词条第一个词性；自己写的释义不猜");
     state.arts[0] = ""; assert.deepEqual([0, 1, 2].map((i) => e.cellState(i)), ["art", "ok", "ok"], "补齐后：两性名词没选会被拦；单一冠词、形容词义项不用选");
@@ -346,10 +348,10 @@ const fr = { letters: (t) => String(t || "").toUpperCase().replace(/[^A-ZÀ-ÖØ
     const loaded = { en: true, es: false, it: false }; let cur = "en";
     const dict = { en: { idea: ["idea", "n.想法", "", ""] }, es: { idea: ["idea", "n.主意", "la", ""], mar: ["mar", "n.海", "el / la", ""] }, it: { mar: ["mar", "n.海（诗）", "", ""] } };
     // 五格：0、1 记着西语；2 没记语言、英语里有；3 没记语言、英语里没有（西、意都有）；4 记着英语但英语里没有
-    const st = { lang: "es", langs: ["en", "es", "it"], pickLangs: ["es", "es", "", "", "en"], letters: ["I", "M", "I", "M", "M"], glossAuto: [false, true, true, false, false], poss: ["", "n.", "", "", ""],
+    const st = { lang: "es", langs: ["en", "es", "it"], pickLangs: ["es", "es", "", "", "en"], glosses: ["", "", "", "我的海", ""], letters: ["I", "M", "I", "M", "M"], glossAuto: [false, true, true, false, false], poss: ["", "n.", "", "", ""],
       picks: [["Idea", "n.主意", "la"], ["mar", "n.海", "el / la"], ["idea", ""], ["mar", ""], ["Mar", ""]], arts: ["", "el", "", "", ""] };
-    const m = loadAppFunctions(["itemFor", "lookupHit", "refreshPicks"], {
-      CORE, state: st, defaultSense: CORE.defaultSense, tagLang: (x) => x,
+    const m = loadAppFunctions(["spellingFor", "itemFor", "lookupHit", "refreshPicks"], {
+      preserveWordCase: () => false, capitalize: CORE.capitalize, CORE, state: st, defaultSense: CORE.defaultSense, tagLang: (x) => x,
       window: { LANGPACK: { has: (c, part) => part === "words" && !!loaded[c] } },
       inLang: (code, fn) => { const keep = cur; cur = code; try { return fn(); } finally { cur = keep; } },
       lookupIn: (w) => (loaded[cur] && dict[cur][String(w).toLowerCase()]) || null,
@@ -362,15 +364,15 @@ const fr = { letters: (t) => String(t || "").toUpperCase().replace(/[^A-ZÀ-ÖØ
     assert.deepEqual(plain(st.picks), start, "意语先到：仍然都不动——没记语言的 mar 不被先到的意语认走");
     assert.deepEqual(plain(st.pickLangs), ["es", "es", "", "", "en"]);
     loaded.es = true; m.refreshPicks(); // 西语到了，选中的三门到齐
-    assert.deepEqual(plain(st.picks.slice(0, 2)), [["Idea", "n.主意", "la", ""], ["mar", "n.海", "el / la", ""]], "记着的语言到了：按它的词库核对");
+    assert.deepEqual(plain(st.picks.slice(0, 2)), [["Idea", "n.主意", "la", ""], ["Mar", "n.海", "el / la", ""]], "记着的语言到了：按它的词库核对");
     assert.deepEqual([plain(st.pickLangs.slice(0, 2)), st.arts[1]], [["es", "es"], "el"]);
-    assert.deepEqual([plain(st.picks[2]), st.pickLangs[2]], [["idea", "n.想法", "", ""], "en"], "到齐后没记语言的格按语言栏的先后找：英语在前");
-    assert.deepEqual([plain(st.picks[3]), st.pickLangs[3]], [["mar", "n.海", "el / la", ""], "es"], "西语排在意语前：认成西语，与谁先到无关");
+    assert.deepEqual([plain(st.picks[2]), st.pickLangs[2]], [["Idea", "n.想法", "", ""], "en"], "到齐后没记语言的格按语言栏的先后找：英语在前");
+    assert.deepEqual([plain(st.picks[3]), st.pickLangs[3]], [["Mar", "n.海", "el / la", ""], "es"], "西语排在意语前：认成西语，与谁先到无关");
     assert.deepEqual([plain(st.picks[4]), st.pickLangs[4]], [["Mar", "n.海", "el / la", ""], "es"], "记着的语言里查不到：到齐后同样按先后找，拼写照用户的");
     st.picks[1] = ["xyzzy", ""]; m.refreshPicks();
     assert.deepEqual(plain(st.picks[1]), ["xyzzy", ""], "哪门都查不到（自定义词）：保留原条目");
-    loaded.it = false; assert.deepEqual(plain(m.itemFor("mar")), ["mar", "n.海", "el / la", ""], "新打的词不受影响：没到齐也照旧按选中语言的先后找");
-    assert.deepEqual(plain(m.itemFor("idea", ["idea", "n.想法", "", ""], 2)), ["idea", "n.想法", "", ""], "在自己记着的语言里查得到：不用等别的语言");
+    loaded.it = false; assert.deepEqual(plain(m.itemFor("mar")), ["Mar", "n.海", "el / la", ""], "新打的词不受影响：没到齐也照旧按选中语言的先后找");
+    assert.deepEqual(plain(m.itemFor("idea", ["idea", "n.想法", "", ""], 2)), ["Idea", "n.想法", "", ""], "在自己记着的语言里查得到：不用等别的语言");
   }
   assert.equal(e.rankOf("apple"), 0, "排名按新词库重建");
   e.autoCut("abcdefghijkl");

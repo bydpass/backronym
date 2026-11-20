@@ -2,7 +2,7 @@
 (function (app) {
   "use strict";
   app.publish = {};
-  var CORE = app.model.CORE, state = app.model.state, el = app.model.el, capitalize = app.model.capitalize;
+  var CORE = app.model.CORE, state = app.model.state, el = app.model.el;
 
   // ---------- 小红书端能力 ----------
 
@@ -30,6 +30,10 @@
     }
   }
 
+  // 保存到相册 / 发布笔记的结果用统一的 Toast 报（2026-11-17 真机反馈：按钮下的注文不够醒目）。失败多停一会儿
+  // 读屏仍走常驻的 #live（原先 say() 的路径）：#toast 空着时是 display:none，有的读屏不播报刚出现的提示区
+  function result(msg) { app.model.showToast(msg, /失败|没能/.test(msg) ? 5000 : 3000); el.live.textContent = msg; }
+
   async function onSave() {
     var m = miniTool("saveImageToPhotosAlbum");
     if (!m || app.publish.busy || !state.outputs.length) return;
@@ -43,10 +47,10 @@
         done++;
       }
       if (epoch !== app.draft.draftEpoch) return;
-      say(el.finMsg, "已保存 " + done + " 张到相册");
+      result("已保存 " + done + " 张到相册");
     } catch (e) {
       if (epoch !== app.draft.draftEpoch) return;
-      say(el.finMsg, "保存了 " + done + " 张后失败：" + ((e && e.errMsg) || "请检查相册权限"));
+      result("保存了 " + done + " 张后失败：" + ((e && e.errMsg) || "请检查相册权限"));
     }
     setBusy(false);
   }
@@ -56,7 +60,7 @@
     if (!m || app.publish.busy || !state.outputs.length) return;
     setBusy(true);
     var epoch = app.draft.draftEpoch;
-    var words = state.picks.map(function (p) { return capitalize(p[0]); }).join(" · ");
+    var words = state.picks.map(function (p, i) { return app.model.displayWord(i); }).join(" · "); // 与卡面同一套大小写（德语等保留）
     try {
       var images = [];
       for (var i = 0; i < state.outputs.length; i++) {
@@ -72,7 +76,7 @@
       }), 30000);
     } catch (e) {
       if (epoch !== app.draft.draftEpoch) return;
-      say(el.finMsg, "没能打开发布页：" + ((e && e.errMsg) || "请稍后再试"));
+      result("没能打开发布页：" + ((e && e.errMsg) || "请稍后再试"));
     }
     if (epoch === app.draft.draftEpoch) setBusy(false);
   }
@@ -187,22 +191,29 @@
     if (urls.length) (el.save.hidden ? el.exportView.hidden ? el.post : el.exportView : el.save).focus(); // 导出完把焦点交给第一个可用的按钮
   }
 
-  // 逐张 1080 画布 → paintBoxes → toDataURL → 立即释放，10 张单图不会同时占着内存。onProgress(已画完几张, 共几张)
+  // 导出倍率（v00.03.01 R06，用户 11-18 定）：1080 制版式按 1.5 倍画（单图 1620×2160）。取证：3 倍屏 393 宽的手机上卡占 1179 物理像素，
+  // 1080 宽的导出图显示时被放大约 9%，看着比编辑面糊；JPEG 0.92 与 PNG 对比几乎无差，原因在分辨率不在压缩
+  var EXPORT_SCALE = 1.5;
+  // 逐张画布（1080 制 × EXPORT_SCALE）→ paintBoxes → toDataURL → 立即释放，10 张单图不会同时占着内存。onProgress(已画完几张, 共几张)
   async function exportAll(palette, onProgress) {
     var n = state.letters.length, epoch = app.draft.draftEpoch;
     var jobs = state.view === "single"
-      ? state.letters.map(function (l, i) { return function () { return app.view.drawCard(i, palette); }; })
-      : app.model.sheets().map(function (sh) { return function () { return app.view.drawGrid(palette, sh); }; }); // T42：每张一个任务，顺序固定
+      ? state.letters.map(function (l, i) { return function (scale) { return app.view.drawCard(i, palette, scale); }; })
+      : app.model.sheets().map(function (sh) { return function (scale) { return app.view.drawGrid(palette, sh, scale); }; }); // T42：每张一个任务，顺序固定；scale 由下面的循环给
     var urls = [];
     onProgress(0, jobs.length);
     await app.view.ensureFonts();
     for (var k = 0; k < jobs.length; k++) {
       await new Promise(function (ok) { setTimeout(ok, 20); }); // 让进度先画出来再开始下一张
       if (epoch !== app.draft.draftEpoch || app.draft.checkDraftExpiry()) throw new Error("草稿已过期");
-      var canvas = jobs[k]();
-      var url = canvas.toDataURL("image/jpeg", 0.92);
-      canvas.width = canvas.height = 0;
-      if (url.length < 1000) throw new Error("空白图"); // 内存不够时 toDataURL 可能不报错、只返回 "data:,"
+      // 先按 EXPORT_SCALE 画；内存不够（抛错，或 toDataURL 只返回 "data:," 这类空图）时自动、静默退回 1 倍再画这一张（用户 11-18 定）
+      var url = "";
+      for (var s = 0; s < 2 && url.length < 1000; s++) {
+        var canvas = null;
+        try { canvas = jobs[k](s ? 1 : EXPORT_SCALE); url = canvas.toDataURL("image/jpeg", 0.92); } catch (e) { url = ""; if (s) throw e; }
+        if (canvas) canvas.width = canvas.height = 0;
+      }
+      if (url.length < 1000) throw new Error("空白图"); // 1 倍也画不出来：照旧报错
       urls.push(url);
       onProgress(k + 1, jobs.length);
     }

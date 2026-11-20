@@ -90,7 +90,7 @@
       </div>
       <div class="ent-field">
         <div class="ent-lab"><label for="fillerCtl">填表人（选填）</label><span id="fillerCount" class="ent-count"></span></div>
-        <input id="fillerCtl" class="ent-input" type="text" maxlength="12" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+        <input id="fillerCtl" class="ent-input" type="text" maxlength="16" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
                aria-describedby="fillerHelp fillerErr" />
         <p id="fillerHelp" class="ent-help">留空则图上不出现</p>
         <p id="fillerErr" class="ent-err" role="alert"></p>
@@ -111,14 +111,17 @@
              aria-label="标题（留空则导出时用单词作标题）" aria-describedby="titleHint" spellcheck="false" hidden></div>
         <p id="titleHint" class="sr-only">选中部分文字再点样式，可以单独改颜色、粗细、斜体；不选则改整个标题</p>
         <button id="plateHit" class="hit" type="button" hidden></button>
-        <input id="wordCtl" class="ctl ctl-word" type="text" maxlength="20" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="en" hidden />
+        <input id="wordCtl" class="ctl ctl-word" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="en" hidden />
         <input id="glossCtl" class="ctl ctl-line" type="text" maxlength="16" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" hidden />
-        <input id="capCtl" class="ctl ctl-line cap" type="text" maxlength="16" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" hidden />
+        <textarea id="capCtl" class="ctl ctl-line cap" rows="1" maxlength="160" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" hidden></textarea>
         <div id="cand" class="cand ctl" hidden>
           <!-- 栏头两行位置固定（2026-11-11 用户定）：第一行提示（出错时同一位置换成墨底说明），第二行左开关、右两个操作；用不上的操作停用而不拿掉 -->
           <div class="cand-top">
-            <p id="candMsg" class="cand-msg" role="status" aria-atomic="true"></p>
-            <span id="candLab" class="cand-lab"></span>
+            <div class="cand-say">
+              <p id="candMsg" class="cand-msg" role="status" aria-atomic="true"></p>
+              <span id="candLab" class="cand-lab"></span>
+            </div>
+            <span id="candCount" class="cand-count ent-count" hidden></span>
           </div>
           <div id="candRow" class="cand-row">
             <button id="candMore" class="cand-more" type="button" aria-pressed="false"><span class="cand-box" aria-hidden="true"></span><span class="cand-more-t">专业、历史文化词</span><span id="candMoreN" class="cand-more-n"></span></button>
@@ -232,11 +235,11 @@
           <p><b>藏头 - Backronym</b> v00.03.00 · © 2026 BeyondPassenger</p>
           <p>本程序是自由软件：你可以按自由软件基金会发布的 GNU 通用公共许可证的条款再分发、修改它，适用第 3 版，或由你选择的任一更新版本。</p>
           <p>本程序不提供任何担保，包括不保证适销，也不保证适合某一特定用途。</p>
-          <p>许可全文在本页末尾「许可全文」里的第一项，也在包内的 <span lang="en">LICENSES/GPL-3.0.txt</span>。源代码：<span lang="en">github.com/bydpass/backronym</span></p>
+          <p>许可全文在本页末尾「许可全文」里的第一项，也在源代码仓库的 <span lang="en">LICENSES/</span> 目录。源代码：<span lang="en">github.com/bydpass/backronym</span></p>
         </div>
         <h3>省流</h3>
         <ul class="credits-tldr">
-          <li><b>可以</b>：用本工具做的图，署名即可商用（署名可写「版式：藏头 - Backronym，CC BY 4.0，creativecommons.org/licenses/by/4.0」）；代码可以改，可以商用。</li>
+          <li><b>可以</b>：用本工具做的图，署名即可商用（署名可写「版式：藏头 - Backronym（BeyondPassenger），CC BY 4.0，creativecommons.org/licenses/by/4.0」；图上直接取自词库的释义仍按词库的许可）；代码可以改，可以商用。</li>
           <li><b>不可以</b>：把改过的程序分发给别人，却不向对方提供源码；删掉署名或许可声明；把设计稿与文档拿去商用。</li>
           <li><b>注意</b>：第三方资源各守原许可；一切以许可原文为准，这段中文说明不具法律效力；本工具不提供担保。</li>
         </ul>
@@ -249,7 +252,7 @@
             <tr><th scope="row">本工具</th><td>藏头 - Backronym v00.03.00 · © 2026 BeyondPassenger<br>源代码：<span lang="en">github.com/bydpass/backronym</span></td><td><span lang="en">GPL-3.0-or-later</span></td></tr>
             <tr><th scope="row">词库 · 英语</th><td>ECDICT（<span lang="en">github.com/skywind3000/ECDICT</span>）· © 2025 Linwei<br>英语的选词、词形和释义依据。</td><td>MIT License</td></tr>
             <tr><th scope="row">词库 · 法、德、西、意、拉丁</th><td>维基词典（<span lang="en">Wiktionary</span>，经 <span lang="en">kaikki.org</span> 抽取）· 维基词典的编者们<br>五门语言的词头、词性、变格变位和英文释义依据。法、德、西、意的人名中文译写取自 ECDICT（MIT，© 2025 Linwei）。</td><td>CC BY-SA 4.0（来源是双许可，这里按 CC BY-SA 4.0 使用）</td></tr>
-            <tr><th scope="row">词库 · 选词用的词频</th><td>FrequencyWords（<span lang="en">github.com/hermitdave/FrequencyWords</span>）· Hermit Dave，法、德、西、意<br><span lang="en">Dickinson College Commentaries</span> 拉丁语核心词表（<span lang="en">dcc.dickinson.edu</span>）· Dickinson College，Christopher Francese 主持<br>仅用于筛选，未随包分发其内容。</td><td>词频数据 CC BY-SA 4.0；核心词表 <span lang="en">CC BY-SA 3.0 Unported</span></td></tr>
+            <tr><th scope="row">词库 · 选词用的词频</th><td>FrequencyWords（<span lang="en">github.com/hermitdave/FrequencyWords</span>）· Hermit Dave，法、德、西、意字幕词频<br>Lexique 4.10（<span lang="fr">www.lexique.org</span>）· Boris New、Christophe Pallier 等，法语按原形与词性分开的字幕频次<br>ParlaMint 4.1 带标注议会语料（CLARIN.SI，<span lang="en">hdl.handle.net/11356/1911</span>）· Tomaž Erjavec 等 ParlaMint 项目，西语、意语、奥地利、英国分库，用来把字幕次数和英语词频按原形与词性拆分<br>百科语料取自 <span lang="en">Universal Dependencies Parallel UD 2.16</span> 四语树库的 Wikipedia 部分（<span lang="en">universaldependencies.org</span>）。按原形计数并合成名次。<br><span lang="en">Dickinson College Commentaries</span> 拉丁语核心词表（<span lang="en">dcc.dickinson.edu</span>）· Dickinson College，Christopher Francese 主持<br>仅用于筛选，未随包分发其内容。</td><td>字幕词频 CC BY-SA 4.0；Lexique CC BY-SA 4.0；ParlaMint CC BY 4.0；百科树库 CC BY-SA 3.0；核心词表 <span lang="en">CC BY-SA 3.0 Unported</span></td></tr>
             <tr><th scope="row">词库 · 早期参考</th><td>CFDICT（法语，<span lang="en">chine.in</span>）· David Houstin 创办，<span lang="en">Chine Informations</span><br>HanDeDict（德语，<span lang="en">handedict.zydeo.net</span>）· Gábor L Ugray 与原始团队<br><span lang="en">Whitaker's Words</span>（拉丁语，<span lang="en">github.com/mk270/whitakers-words</span>）· William A. Whitaker。作者的许可原句：<span lang="en">“Permission is hereby freely given for any and all use of program and data. You can sell it as your own, but at least tell me.”</span><br>早期选词与中文释义的参考；现在的中文释义已逐条重写。<span lang="en">Whitaker's Words</span> 仅用于筛选，未随包分发其内容。</td><td>CFDICT：CC BY-SA 3.0；HanDeDict：CC BY-SA 3.0（介绍页另写 2.0 DE）；<span lang="en">Whitaker's Words</span>：作者的自由使用声明（原句见左）</td></tr>
             <tr><th scope="row">断词点</th><td>TeX hyph-utf8 连字符模式（<span lang="en">github.com/hyphenation/tex-hyphen</span>）<br>法语 © Daniel Flipo、Bernard Gaulle、Arthur Reutenauer；德语 © 2013-2024 <span lang="de">Stephan Hennig, Werner Lemberg, Günter Milde, Sander van Geloven, Georg Pfeiffer, Gisbert W. Selke, Tobias Wendorf, Keno Wehr</span>（作者署名：<span lang="de">Deutschsprachige Trennmustermannschaft</span>）；西语 © Javier Bezos、CervanTeX；意语、拉丁语 © Claudio Beccari</td><td>MIT License（意语、拉丁语的来源是双许可：意语 MIT 或 LPPL 1.3 及更高版本，拉丁语 MIT 或 LPPL 1 及更高版本；这里都取 MIT）</td></tr>
             <tr><th scope="row">词库的改编</th><td>已改编：据以上数据抽取、筛选、合并词形、去掉不属于本词的词形，翻译为中文并人工审核；中文释义、冠词和用法说明逐条核写。改编后的五门西文词库整体按 CC BY-SA 4.0 发布，数据随源代码公开，可在本页开头的地址取得。核对时查阅了 Lewis &amp; Short、Gaffiot（经芝加哥大学 Logeion）、TLFi、Duden、DWDS、RAE、Treccani 等词典，未收录它们的文字。各语言的声明附在 <code>words.js</code> 文件头。许可原文见本页末尾的全文，也可查 <span lang="en">creativecommons.org/licenses/by-sa/4.0</span>、<span lang="en">creativecommons.org/licenses/by-sa/3.0</span></td><td>CC BY-SA 4.0</td></tr>
@@ -267,19 +270,19 @@
         <h3>许可全文</h3>
         <details data-license="GPL-3.0">
           <summary>GNU General Public License 第 3 版（本工具的代码）</summary>
-          <pre lang="zh-CN">展开后读取全文；读不到时请看包内的 LICENSES/GPL-3.0.txt。</pre>
+          <pre lang="zh-CN">展开后读取全文；读不到时请看源代码仓库的 LICENSES/GPL-3.0.txt。</pre>
         </details>
         <details data-license="CC-BY-SA-4.0">
-          <summary>CC BY-SA 4.0（五门西文词库 / 维基词典 / FrequencyWords）</summary>
-          <pre lang="zh-CN">展开后读取全文；读不到时请看包内的 LICENSES/CC-BY-SA-4.0.txt。</pre>
+          <summary>CC BY-SA 4.0（五门西文词库 / 维基词典 / FrequencyWords / Lexique）</summary>
+          <pre lang="zh-CN">展开后读取全文；读不到时请看源代码仓库的 LICENSES/CC-BY-SA-4.0.txt。</pre>
         </details>
         <details data-license="CC-BY-SA-3.0">
           <summary>CC BY-SA 3.0（CFDICT / HanDeDict / 拉丁语核心词表）</summary>
-          <pre lang="zh-CN">展开后读取全文；读不到时请看包内的 LICENSES/CC-BY-SA-3.0.txt。</pre>
+          <pre lang="zh-CN">展开后读取全文；读不到时请看源代码仓库的 LICENSES/CC-BY-SA-3.0.txt。</pre>
         </details>
         <details data-license="CC-BY-4.0">
-          <summary>CC BY 4.0（屏蔽词表 LDNOOBW / 用本工具做出的图的版式部分）</summary>
-          <pre lang="zh-CN">展开后读取全文；读不到时请看包内的 LICENSES/CC-BY-4.0.txt。</pre>
+          <summary>CC BY 4.0（屏蔽词表 LDNOOBW / ParlaMint / 用本工具做出的图的版式部分）</summary>
+          <pre lang="zh-CN">展开后读取全文；读不到时请看源代码仓库的 LICENSES/CC-BY-4.0.txt。</pre>
         </details>
         <details>
           <summary>MIT License（ECDICT / Phosphor Icons / TeX 连字符模式）</summary>
@@ -432,9 +435,9 @@ OTHER DEALINGS IN THE FONT SOFTWARE.</pre>
         </div>
         <h3 id="modeLab" class="set-lab set-lab2">深浅</h3>
         <div id="modeGroup" class="set-seg" role="radiogroup" aria-labelledby="modeLab" aria-describedby="modeWhy">
-          <label class="set-opt"><input type="radio" name="mode" value="auto" /><span>跟随系统</span></label>
-          <label class="set-opt"><input type="radio" name="mode" value="light" /><span>浅色</span></label>
-          <label class="set-opt"><input type="radio" name="mode" value="dark" /><span>深色</span></label>
+          <label class="set-opt"><input type="radio" name="mode" value="auto" /><span><svg class="ic set-ck" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-check"/></svg>跟随系统</span></label>
+          <label class="set-opt"><input type="radio" name="mode" value="light" /><span><svg class="ic set-ck" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-check"/></svg>浅色</span></label>
+          <label class="set-opt"><input type="radio" name="mode" value="dark" /><span><svg class="ic set-ck" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-check"/></svg>深色</span></label>
         </div>
         <p id="modeWhy" class="ent-help" hidden>这个主题只有浅色。系统是深色模式时，整个界面也是浅色</p>
         <div class="set-foot"><button id="setCredits" class="fin-credit" type="button">借物与版权</button><span>v00.03.00</span></div>

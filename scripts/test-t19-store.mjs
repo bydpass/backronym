@@ -33,6 +33,13 @@ const en=await store.load('review/t19-batches/t19-batch5-20261111/compiled','en'
 assert.equal(store.select(en,{...opts,mode:'query',query:'moon'})[0].record.zh,'月亮');
 await assert.rejects(store.load('review/t19-batches/t19-batch5-20261111/compiled','en',async f=>{const r=await read(f);if(f.endsWith('/daily.json'))r.sha256='0'.repeat(64);return r;}),/checksum/);
 await assert.rejects(store.load('review/t19-batches/t19-batch5-20261111/compiled','en',async f=>{const r=await read(f);if(f.endsWith('index.json'))r.value.bundles[0].path='../outside.json';return r;}),/path/);
+// 分片编译包（compile.mjs 的 <类别>-001.json）：认得三位序号，别的写法、别的类别名、别的语言一律拒收（2026-11-19 复审补）
+{
+  const split='review/t19-batches/rebuild-20261119/compiled';
+  assert.ok((await store.load(split,'de',read)).length>0,'分片编译包能读');
+  for (const bad of ['de/daily-1.json','de/daily-0001.json','de/creative-001.json','fr/daily-001.json','de/daily-001.json.bak','de/daily-001/../x.json'])
+    await assert.rejects(store.load(split,'de',async f=>{const r=await read(f);if(f.endsWith('index.json')){const b=r.value.bundles.find(x=>x.path==='de/daily-001.json');b.path=bad;}return r;}),/path/,bad+' 应被拒收');
+}
 assert.equal(Object.values(compileRecords(all).bundles).flatMap(b=>b.records).length,8);
 const sampling=all.map(record=>({record,tier:0,blocked:record===blocked}));
 const original=sampling.slice();
@@ -280,4 +287,12 @@ console.log('T19 scoped form evidence passed: exact sense binding and source rel
  assert.throws(()=>store.select([{...dawnBase,evidence:{...dawnBase.evidence,query_only:{reason:'x'}}}],opts),/requires reason, source and reviewer/);
  assert.equal(store.select([{...dawn,review:{state:'pending'}}],{...opts,mode:'query',query:'alba'}).length,0,'the mark never admits an unreviewed sense');
  console.log('T19 query-only senses passed: hidden from default/expanded/random, lemma and forms queryable, ranked last');
+}
+
+{
+ const spouse=make('époux','daily',{language:'fr',article:'l’'});
+ spouse.evidence.noun_forms={épouse:{gender:'f',number:'sg',article:'l’'},épouses:{gender:'f',number:'pl',article:''}};
+ const rows=[spouse];rows.formsBySense={[spouse.sense_id]:['épouse','épouses']};
+ for(const spelling of ['épouse','epouse'])assert.equal(store.queryEntries(rows,spelling,opts)[0].entry[2],'l’');
+ assert.equal(store.queryEntries(rows,'épouses',opts)[0].entry[2],'');
 }

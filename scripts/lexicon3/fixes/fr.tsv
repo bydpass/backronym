@@ -1,0 +1,16 @@
+写法	Lexique原形	改记给	类别	说明
+parfait	parfaire	parfait	核对表	形容词化分词被 Lexique 归到动词 parfaire
+parfaite	parfaire	parfait	核对表	形容词化分词被 Lexique 归到动词 parfaire
+parfaits	parfaire	parfait	核对表	形容词化分词被 Lexique 归到动词 parfaire
+parfaites	parfaire	parfait	核对表	形容词化分词被 Lexique 归到动词 parfaire
+ravi	ravir	ravi	核对表	形容词化分词被 Lexique 归到动词 ravir
+ravie	ravir	ravi	核对表	形容词化分词被 Lexique 归到动词 ravir
+ravis	ravir	ravi	核对表	形容词化分词被 Lexique 归到动词 ravir
+ravies	ravir	ravi	核对表	形容词化分词被 Lexique 归到动词 ravir
+désolé	désoler	désolé	核对表	「对不起」，形容词化分词被 Lexique 归到动词 désoler
+désolée	désoler	désolé	核对表	「对不起」，形容词化分词被 Lexique 归到动词 désoler
+désolés	désoler	désolé	核对表	「对不起」，形容词化分词被 Lexique 归到动词 désoler
+désolées	désoler	désolé	核对表	「对不起」，形容词化分词被 Lexique 归到动词 désoler
+sur	sur	-	核对表	标成形容词（酸的）的那份基本是介词 sur 的标注错误
+coucou	coucou	-	功能词当名词	新包回归（test-lexicon-required ⑤）：感叹词「你好」的频次借给冷僻名词「杜鹃」；旧管线同样否决
+blanche	blanche	-	形容词当名词	合并回归（device-20261117 check）：Lexique 名词 blanche「二分音符」3.7/百万，收进后打 blanche 先出它，压过 blanc 阴性「白色的」（29.2/百万）；真机批次审定 blanche → blanc

@@ -67,7 +67,7 @@
         <rect x="44" y="240" width="68" height="16" fill="#f5f5f5"/><text x="78" y="252">读旧数据</text>
         <rect x="204" y="352" width="68" height="16" fill="#f5f5f5"/><text x="238" y="364">读编译包</text>
         <rect x="520" y="224" width="92" height="16" fill="#f5f5f5"/><text x="566" y="236">数据由它生成</text>
-        <rect x="444" y="284" width="68" height="16" fill="#f5f5f5"/><text x="478" y="296">读交付63</text>
+        <rect x="444" y="284" width="68" height="16" fill="#f5f5f5"/><text x="478" y="296">读正式包</text>
         <rect x="608" y="352" width="52" height="16" fill="#f5f5f5"/><text x="634" y="364">读来源</text>
         <rect x="708" y="344" width="68" height="16" fill="#f5f5f5"/><text x="742" y="356">读审定表</text>
         <rect x="448" y="404" width="64" height="16" fill="#f5f5f5"/><text x="480" y="416">读抽取</text>
@@ -184,7 +184,7 @@
       <tr><td>来源缓存</td><td><code>scripts/.cache/</code>：来源词典、词频表、原始字体、字体工具</td><td>生成脚本、各批合并脚本、两个自检</td><td class="warn">否，删了无法恢复</td><td class="num">629 MB</td></tr>
 
       <tr class="group"><td colspan="5">三、词库源与审定表（都在 review/ 下）</td></tr>
-      <tr><td>当前词库源</td><td><code>review/t19-batches/t19-batch63-20261112/</code></td><td><code>build-packs</code> 默认读它；两个自检读它</td><td>是</td><td class="num">31 MB</td></tr>
+      <tr><td>当前词库源</td><td><code>review/t19-batches/device-20261117/</code></td><td><code>build-packs</code>、编辑器自检与检查器读它</td><td>是</td><td class="num">28 MB</td></tr>
       <tr><td>自检固定读的旧批次</td><td>交付 5、10、11、20、21、50 的 <code>compiled/</code>，交付 61 的 <code>lexicon/</code></td><td>自检脚本里写死了路径</td><td>是</td><td class="num">28 MB</td></tr>
       <tr><td>其余中间批次</td><td>交付 13—62 中除上面以外的 45 个</td><td>只留各批的 <code>REPORT.md</code>，供交接和审计记录里的链接打开；数据已于 2026-11-12 删除，在 git 历史里</td><td>是</td><td class="num">很小</td></tr>
       <tr><td>概念清单</td><td><code>review/t19-batches/t19-batch4-20261111/concepts.json</code></td><td>各批合并脚本生成进度页时读它</td><td>是（2026-11-12 补入库）</td><td class="num">76 KB</td></tr>

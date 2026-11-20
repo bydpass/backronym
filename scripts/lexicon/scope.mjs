@@ -1,5 +1,6 @@
 // 正式命名词库范围；按词性而非拼写排除，同形实义词保留。
-export const SCOPE_VERSION = 2; // 2：非独立形式（Q4-R1）不作独立候选
+import policy from '../../app/assets/lexicon-policy.js';
+export const SCOPE_VERSION = 3; // 重建：按义放行代词，感叹词退出。
 const FUNCTION = new Set(['prep', 'preposition', 'postp', 'conj', 'conjunction',
   'pron', 'pronoun', 'det', 'determiner', 'art', 'article', 'aux', 'auxiliary',
   'part', 'particle', 'contraction']);
@@ -8,7 +9,14 @@ export function excludedPos(pos) {
 }
 export function scopeRow(row, lang) {
   const groups = String(row[1] || '').split('|');
-  const kept = groups.filter(g => !excludedPos((g.match(/^([a-z]+)\./i) || [])[1]));
+  const kept = groups.filter(group => {
+    const pos = ((group.match(/^([a-z]+)\./i) || [])[1] || '').toLowerCase();
+    if (['intj', 'interj', 'int', 'interjection'].includes(pos)) return false;
+    if (pos === 'pron' || pos === 'pronoun') {
+      return policy.admittedPronoun(lang, row[0], group.slice(pos.length + 1));
+    }
+    return !excludedPos(pos);
+  });
   if (!kept.some(Boolean)) return null;
   const result = row.slice(); // 保留未来扩展位与未知元数据
   result[1] = kept.join('|');

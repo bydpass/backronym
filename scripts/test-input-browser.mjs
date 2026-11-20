@@ -105,7 +105,7 @@ try {
     const a = document.getElementById("app"), m = a.style.minHeight; a.style.minHeight = ""; const n = a.offsetHeight; a.style.minHeight = m;
     return { m: parseFloat(m) || 0, n };
   });
-  const snap = page => page.evaluate(() => ({ y: scrollY, h: document.documentElement.scrollHeight, v: document.getElementById("wordCtl").value, cand: !document.getElementById("cand").hidden, act: document.activeElement.id }));
+  const snap = page => page.evaluate(() => ({ y: scrollY, h: document.documentElement.scrollHeight, v: document.getElementById("wordCtl").value, cand: !document.getElementById("cand").hidden, list: !document.getElementById("candList").hidden && !document.getElementById("candRow").hidden, act: document.activeElement.id }));
   const FIRST_L = { ...LIFE, picks: [["l", ""], ["ice", ""], ["fire", ""], ["echo", ""]], glosses: ["", "冰", "火", "回声"] };
 
   // 返工 R1：候选展开、滚到底后开始组字——候选收起但页面不缩短、不跳；组字中回车不提交；组字结束照常继续输入；普通回车收键盘、失焦放开
@@ -118,7 +118,7 @@ try {
     assert.ok(a.y > 0 && a.cand, pick + "：候选已展开且滚到底 " + JSON.stringify(a));
     await page.locator("#wordCtl").dispatchEvent("compositionstart");
     const b = await snap(page);
-    assert.equal(b.cand, false, pick + "：组字开始收起候选");
+    assert.deepEqual([b.cand, b.list], [true, false], pick + "：组字开始收起候选列表，只留提示行（v00.03.01 E6：计数器组字期间也看得到）");
     assert.equal(b.y, a.y, pick + "：组字开始不跳 " + a.y + " → " + b.y);
     assert.ok(b.h >= a.h, pick + "：页面不缩短 " + a.h + " → " + b.h);
     assert.equal(b.v, a.v, pick + "：组字开始不改写输入");

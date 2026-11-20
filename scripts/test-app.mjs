@@ -24,14 +24,14 @@ vm.runInNewContext(fs.readFileSync(new URL("../app/assets/core.js", import.meta.
 const CORE = core.window.CORE;
 {
   const sourceRow = ["sangre", "n.血", "la", "", { future: true }];
-  const e = load(["itemFor"], { lookup: w => w.toLowerCase() === "sangre" ? sourceRow : null });
+  const e = load(["itemFor", "spellingFor"], { CORE, capitalize: CORE.capitalize, preserveWordCase: () => false, lookup: w => w.toLowerCase() === "sangre" ? sourceRow : null });
   const item = e.itemFor("Sangre");
   assert.deepEqual(item, ["Sangre", "n.血", "la", "", { future: true }], "改大小写不能丢冠词和扩展字段");
   assert.equal(sourceRow[0], "sangre", "不得改写词库源行");
   const old = ["Sangre", "n.旧义", "la", "", { author: true }];
   assert.deepEqual(e.itemFor("Sangre", old), ["Sangre", "n.血", "la", "", { author: true }], "恢复更新已知义项，保留未知元数据");
   const stale = ["Sangre", "n.旧义", "el", "中古", { author: true }];
-  const noArt = load(["itemFor"], { lookup: () => ["sangre", "n.血"] });
+  const noArt = load(["itemFor", "spellingFor"], { CORE, capitalize: CORE.capitalize, preserveWordCase: () => false, lookup: () => ["sangre", "n.血"] });
   assert.deepEqual(noArt.itemFor("Sangre", stale), ["Sangre", "n.血", "", "", { author: true }], "词库已去掉的冠词 / 注释不能被旧草稿带回");
   assert.deepEqual(e.itemFor("自定义", ["自定义", "n.作者内容", "", "", 42]), ["自定义", "n.作者内容", "", "", 42]);
 }
@@ -102,6 +102,28 @@ assert.equal(await env.within(new Promise(() => {}), 5), undefined);
   assert.equal(m.draftLoaded, false, "图没读完：不放开编辑"); assert.equal(m.el.wordInput.disabled, true);
   releaseMedia(); await p;
   assert.equal(m.draftLoaded, true); assert.equal(m.state.images[0], pic, "读回的图套进那一格"); assert.equal(m.state.crops[0].z, 2, "取景一起恢复");
+}
+// D3 复审（2026-11-17）：恢复时独立图没找回、默认图在：那一格显示默认图，取景用落盘时配对的默认取景，不用独立图的取景。
+// 同一段顺带测六语专项的恢复补释义：词库已在时只补空的自动释义，主动留空（glossAuto 为假）的不补
+{
+  const dc = { z: 2, x: 0.3, y: 0.4 }, oc = { z: 3, x: 0.6, y: 0.5 }, side = { z: 1.5, x: 0.5, y: 0.6 };
+  const d = { v: 2, t: now, word: "LI", media: { def: "m1-00000000000000aa.jpg", cells: ["m1-0123456789abcdef.jpg", null], defaultCrops: [dc, null] }, crops: [oc, side],
+    picks: [["Lion", ""], ["Ice", ""]], glosses: ["", ""], glossAuto: [true, false] };
+  const defPic = { bkName: "m1-00000000000000aa.jpg" };
+  const m = load(["restoreDraft", "applyDraft", "abandonRestore", "guardFor", "readDraft", "tagNotice"], { noticeTag: null, READ_FAIL_NOTICE: "",
+    CORE, draftGuard: null, sideGuard: null, sideKeep: "", sideRead: false, sideMsg: "", guardMsg: "", draftExtra: {}, draftLoaded: false,
+    draftEpoch: 0, draftSavedAt: 0, draftNotice: "", draftContent: "", window: { DRAFT: { deadline: x => x.t + 64800000 } },
+    draftStore: { read: async () => ({ entry: { obj: d, draft: CORE.migrateDraft(d), raw: JSON.stringify(d) } }) },
+    el: { wordInput: { disabled: true }, finish: { disabled: true } }, state: { letters: [], images: [], crops: [], image: null },
+    loadMedia: async () => ({ def: defPic, cells: [null, null], lost: "有 1 张配图没能找回", unsure: false }),
+    renderShell() {}, focusEntry() {}, syncViews() {}, setLetters(w) { m.state.letters = w.split(""); m.state.images = m.state.letters.map(() => null); },
+    setTitleRuns() {}, itemFor: w => (w === "Lion" ? ["lion", "n.狮子"] : ["ice", "n.冰"]), firstOpen: () => 0, finishRestore() {}, checkDraftExpiry: () => false,
+    clearDraftView() {}, draftPayload: () => ({}), renderDraftStatus() {},
+  });
+  await m.restoreDraft();
+  assert.deepEqual(Array.from(m.state.glosses), ["狮子", ""], "空的自动释义按词库补上；主动留空的不补");
+  assert.deepEqual(JSON.parse(JSON.stringify(m.state.crops)), [dc, side], "缺图的格用默认图配对的取景；只有默认图的格照旧");
+  assert.deepEqual(JSON.parse(JSON.stringify(m.state.defaultCrops)), [dc, side], "默认图各格取景都记住");
 }
 
 // T05 / T23：恢复出错（读取抛错 / 套用抛错）→ 提示、放开输入、从空白开始；存储里的原草稿一字不动，未经编辑也不会被写回。
@@ -698,8 +720,212 @@ for (const mode of ["读取抛错", "读取一侧失败无原文"]) {
   assert.deepEqual(listed, [], "H 格里没有 live：不拿别的词凑数");
   b.renderWordBar(1);
   assert.equal(bars[1].msg, "", "L 格打 Lov：首字母对，没有错误提示");
-  assert.match(bars[1].lab, /^以 L 开头 · 1 \/ 1 批$/);
+  assert.match(bars[1].lab, /^L 开头 · 1 \/ 1 批$/);
   assert.deepEqual(listed, ["lovely", "love", "lover", "loving", "loved", "lovingly", "lovable"], "候选照常出，lovemaking 被屏蔽");
+}
+// 逐键输入保留德语及英语大小写歧义，普通英语仍按原规则大写。
+{
+  const listeners = new Map();
+  const input = {
+    value: "", selectionStart: 0, selectionEnd: 0, setSelectionRange() {},
+    addEventListener(event, listener) { listeners.set(event, listener); }
+  };
+  const env = vm.createContext({
+    window: {}, document: {getElementById: id => id === "wordCtl" ? input : null}
+  });
+  for (const name of ["core.js", "lexicon-policy.js", "lexicon-store.js", "lang/packs.js",
+    "lang/en/words.js", "lang/de/rules.js", "lang/de/words.js", "lang/fr/rules.js", "lang/fr/words.js", "lang/es/rules.js", "lang/es/words.js", "lang/en/inflections.js", "lang/de/inflections.js", "lang/fr/inflections.js", "lang/es/inflections.js", "app-model.js", "app-editor.js"]) {
+    const url = new URL("../app/assets/" + name, import.meta.url);
+    vm.runInContext(fs.readFileSync(url, "utf8"), env, {filename: name});
+  }
+  const {editor, model} = env.window.Backronym;
+  const layout = load(["layoutData", "caseText"], {
+    state: model.state, hasTitle: () => false, cellImage: () => null,
+    articleText: model.articleText, displayWord: model.displayWord
+  });
+  model.changed = () => {};
+  editor.bindWordControl(input);
+  function type(word) {
+    input.value = "";
+    for (const ch of word) {
+      input.value += ch;
+      input.selectionStart = input.selectionEnd = input.value.length;
+      listeners.get("input")();
+    }
+    return Array.from(model.state.picks[0].slice(0, 3));
+  }
+  model.setLangs(["en", "de"]);
+  model.setLetters("S");
+  assert.deepEqual(type("sein"), ["sein", "v.是", ""]);
+  assert.deepEqual(type("Sein"), ["Sein", "n.存在", "das"]);
+  model.setLang("en");
+  model.setLetters("R");
+  assert.deepEqual(type("renaissance"), ["renaissance", "n.复兴", ""]);
+  assert.deepEqual(type("Renaissance"), ["Renaissance", "n.文艺复兴", ""]);
+  model.setLetters("T");
+  assert.equal(type("tree")[0], "Tree");
+  // 词形按原形的首字母大小写（hunde → Hunde，Läuft → läuft），不照用户打的
+  for (const [typed, want] of [["hund", "Hund"], ["Laufen", "laufen"], ["apple", "Apple"], ["hunde", "Hunde"], ["Läuft", "läuft"]]) {
+    model.setLangs(["en", "de"]);
+    model.setLetters(typed[0].toUpperCase());
+    assert.equal(type(typed)[0], want);
+    assert.equal(input.value, want);
+    assert.equal(model.displayWord(0), want);
+  }
+
+  for (const [language, spelling, expected] of [["de", "laufen", "laufen"], ["en", "tree", "Tree"]]) {
+    model.setLang(language);
+    model.setLetters(spelling[0].toUpperCase());
+    input.value = "";
+    for (let i = 0; i < spelling.length; i++) {
+      input.value += spelling[i];
+      input.selectionStart = input.selectionEnd = input.value.length;
+      listeners.get("input")({inputType: "insertText", data: spelling[i]});
+      assert.equal(input.value, expected.slice(0, i + 1), spelling + " 逐键拼写");
+    }
+  }
+  // 混选时别的语言命中的短词（法西 pierre 打到西语 pie、英德 morgen 打到英语 mo）不让框里首字母先变大写再变回小写
+  for (const [langs, spelling, sense] of [[["fr", "es"], "pierre", "n.石头"], [["en", "de"], "morgen", "adv.明天"]]) {
+    model.setLangs(langs);
+    model.setLetters(spelling[0].toUpperCase());
+    input.value = "";
+    for (let i = 0; i < spelling.length; i++) {
+      input.value += spelling[i];
+      input.selectionStart = input.selectionEnd = input.value.length;
+      listeners.get("input")({inputType: "insertText", data: spelling[i]});
+      assert.equal(input.value, spelling.slice(0, i + 1), langs.join("+") + " " + spelling + " 逐键拼写不来回跳");
+    }
+    assert.deepEqual(Array.from(model.state.picks[0].slice(0, 2)), [spelling, sense]);
+  }
+  // 候选：英语首字母大写，德语与 14 个大小写异义词照词库（候选栏里 pierre / Pierre 要分得开）；
+  // 选中后的卡面写法（v00.03.01 R04，用户 11-18 定）：德语以外一律首字母大写，词义仍按存下的拼写取
+  for (const [lang, word, want, card] of [["en", "tree", "Tree", "Tree"], ["de", "laufen", "laufen", "laufen"], ["de", "Hund", "Hund", "Hund"], ["en", "renaissance", "renaissance", "Renaissance"], ["fr", "pierre", "pierre", "Pierre"], ["es", "casa", "Casa", "Casa"]]) {
+    model.setLang(lang);
+    model.setLetters(word[0].toUpperCase());
+    const hit = model.lookupHit(word); assert.ok(hit, "词库里有 " + word); const item = hit.entry;
+    assert.equal(model.candidateWord(item, lang), want, "候选 " + word);
+    model.setPick(0, item, lang);
+    assert.equal(model.displayWord(0), card, "选中候选 " + word);
+    assert.equal(model.state.picks[0][0], want, "存下的拼写不变（词义按它取）：" + word);
+  }
+  function edit(start, end, inserted, beforeInput) {
+    input.selectionStart = start;
+    input.selectionEnd = end;
+    if (beforeInput) listeners.get("beforeinput")();
+    input.value = input.value.slice(0, start) + inserted + input.value.slice(end);
+    input.selectionStart = input.selectionEnd = start + inserted.length;
+    listeners.get("input")({inputType: inserted ? "insertText" : "deleteContentBackward", data: inserted || null});
+  }
+  for (const beforeInput of [true, false]) {
+    model.setLang("de");
+    model.setLetters("E");
+    type("essen");
+    edit(1, 2, "", beforeInput);
+    edit(1, 1, "s", beforeInput);
+    assert.deepEqual(Array.from(model.state.picks[0].slice(0, 2)), ["essen", "v.吃"]);
+    for (const [lang, word, noun] of [["de", "sein", "n.存在"], ["fr", "pierre", "n.皮埃尔"], ["en", "renaissance", "n.文艺复兴"]]) {
+      model.setLang(lang);
+      model.setLetters(word[0].toUpperCase());
+      type(word);
+      edit(0, 1, "", beforeInput);
+      edit(0, 0, word[0].toUpperCase(), beforeInput);
+      assert.deepEqual(Array.from(model.state.picks[0].slice(0, 2)), [word[0].toUpperCase() + word.slice(1), noun]);
+    }
+  }
+  model.setLangs(["en", "de"]);
+  model.setLetters("M");
+  assert.deepEqual(type("Morgen"), ["Morgen", "n.早晨", "der"]);
+  model.setLangs(["fr", "es"]);
+  model.setLetters("P");
+  type("Pie");
+  input.value = input.value.slice(0, -1);
+  input.selectionStart = input.selectionEnd = input.value.length;
+  listeners.get("input")({inputType: "deleteContentBackward"});
+  for (const ch of "erre") {
+    input.value += ch;
+    input.selectionStart = input.selectionEnd = input.value.length;
+    listeners.get("input")({inputType: "insertText", data: ch});
+  }
+  assert.deepEqual(Array.from(model.state.picks[0].slice(0, 3)), ["Pierre", "n.皮埃尔", ""]);
+  assert.deepEqual(type("Pierre"), ["Pierre", "n.皮埃尔", ""]);
+  assert.deepEqual(type("pierre"), ["pierre", "n.石头", "la"]);
+  assert.deepEqual(type("pierres"), ["Pierres", "n.石头", ""]);
+  // 同一作品的各格使用自己选中的词条。
+  model.setLangs(["en", "de"]);
+  model.setLetters("SRT");
+  model.setPick(0, model.itemFor("sein"));
+  model.setPick(1, model.itemFor("renaissance"));
+  model.setPick(2, model.itemFor("tree"));
+  const C = model.CORE, measure = (_, word) => word.length * 12;
+  const words = result => Array.from(result.boxes.filter(box => box.role === "word"), box => box.text);
+  assert.deepEqual(words(C.layoutCard(layout.layoutData(0), measure)), ["sein"]);
+  assert.deepEqual(words(C.layoutCard(layout.layoutData(1), measure)), ["Renaissance"], "R04：英语的大小写异义词卡面也首字母大写");
+  assert.deepEqual(words(C.layoutGrid(layout.layoutData(0), measure)), ["sein", "Renaissance", "Tree"], "德语照词库，其余首字母大写");
+  assert.match(layout.caseText(0), /^sein（是）$/);
+  assert.match(layout.caseText(1), /^Renaissance（复兴）$/, "释义仍是小写 renaissance 的「复兴」");
+  // 组字预览（安卓带候选的输入法）：镜像按预览的词套同一条大小写规则，选定前后卡面一致
+  let composing = null;
+  const preview = load(["layoutData"], {
+    state: model.state, hasTitle: () => false, cellImage: () => null, articleText: model.articleText,
+    displayWord: model.displayWord, previewWord: model.previewWord, composePreview: k => composing && composing.i === k ? composing : null
+  });
+  model.setLang("de");
+  model.setLetters("HS");
+  for (const [value, want] of [["hund", "Hund"], ["laufen", "laufen"], ["Sein", "Sein"], ["sein", "sein"]]) {
+    composing = {kind: "word", i: value[0] === "h" ? 0 : 1, value};
+    assert.equal(preview.layoutData(composing.i, true).displayWords[composing.i], want, "组字预览 " + value);
+  }
+}
+// 精确词形独立于前缀候选：插入一条也要把原来页尾的词带到下一页。
+{
+  const ordinary = Array.from({length: 8}, (_, i) => ["T" + i, "n.词"]);
+  const state = {lang: "en", langs: ["en"], letters: ["T"], picks: [["T", ""]]};
+  const shown = [], labels = [];
+  const pool = {t: ordinary}, noExtra = {};
+  const e = load(["renderWordBar"], {
+    CORE: {...CORE, candidates: source => source === pool ? ordinary.slice() : []},
+    state, words: () => pool, moreWords: () => noExtra, lookupAll: () => [{lang: "en", entry: ["T", "v.变形"]}],
+    cellState: () => "ok", blocked: () => false, formOf: () => "", capitalize: CORE.capitalize,
+    candMemo: {}, candPage: 0, candKey: "", candItem: it => it[0],
+    showBar: (_, label) => labels.push(label),
+    el: {senseList: {}, candList: {appendChild: f => shown.push(...f.items)}},
+    document: {createDocumentFragment: () => ({items: [], appendChild(n) { this.items.push(n); }})}
+  });
+  e.renderWordBar(0);
+  e.candPage = 1;
+  e.renderWordBar(0);
+  assert.deepEqual(shown, ["T", ...ordinary.map(it => it[0])]);
+  assert.match(labels[1], /2 \/ 2 批/);
+  // 复审补（2026-11-17）：命中的词本来就在候选里：从原位置提到最前，不重复出现，也不多出一批
+  shown.length = 0; labels.length = 0;
+  e.lookupAll = () => [{lang: "en", entry: ["T3", "n.词"]}];
+  e.candMemo = {}; e.candKey = ""; e.candPage = 0;
+  e.renderWordBar(0);
+  assert.deepEqual(shown, ["T3", "T0", "T1", "T2", "T4", "T5", "T6", "T7"]);
+  assert.match(labels[0], /1 \/ 1 批/);
+}
+// 同形推荐行只提供类别标注，精确候选完整保留义项；其他原形组和其他语言照常出现。
+{
+  const recommended = ["Sein", "n.存在", "das", "", "专业"];
+  const verb = ["sein", "v.是"];
+  const noun = ["Sein", "n.存在|n.生存", "das|das", ""];
+  const alternative = ["Sein", "adj.自己的"];
+  const tagged = new Map([[recommended, "de"], [verb, "de"]]);
+  const state = {lang: "de", langs: ["de"], letters: ["S"], picks: [["Sein", ""]]};
+  const shown = [], pool = {s: [recommended, verb]}, noExtra = {};
+  const e = load(["renderWordBar"], {
+    CORE: {...CORE, candidates: source => source === pool ? pool.s.slice() : []},
+    state, words: () => pool, moreWords: () => noExtra,
+    lookupAll: () => [{lang: "de", entry: noun}, {lang: "de", entry: alternative}],
+    itemLang: item => tagged.get(item), tagLang: (item, lang) => (tagged.set(item, lang), item),
+    cellState: () => "ok", blocked: () => false, formOf: () => "", capitalize: CORE.capitalize,
+    candMemo: {}, candPage: 0, candKey: "", candItem: item => item, showBar() {},
+    el: {senseList: {}, candList: {appendChild: f => shown.push(...f.items)}},
+    document: {createDocumentFragment: () => ({items: [], appendChild(n) { this.items.push(n); }})}
+  });
+  e.renderWordBar(0);
+  assert.equal(JSON.stringify(shown), JSON.stringify([[...noun, "专业"], alternative, verb]));
+  assert.equal(noun.length, 4, "类别标注不写回精确查词结果");
 }
 // 交付57复审（2026-11-12）：还没打字时，开关的「+N」按这一格能拿到的展开词数算。数字格按读法首字母（2 → two → T），不能拿「2」当关键词去匹配
 {
@@ -780,7 +1006,9 @@ for (const mode of ["读取抛错", "读取一侧失败无原文"]) {
   const files = { photo: { files: [], value: "" }, cellPhoto: { files: [], value: "" } };
   let locked = false;
   let L; L = load(["loadImage", "bumpImg", "onPhoto", "onCellPhoto", "clearPhoto", "removeCellPhoto"], {
-    Image: FakeImage, URL: { createObjectURL: () => "blob:x", revokeObjectURL(url) { revoked.push(url); } }, alert(msg) { alerts.push(msg); },
+    Image: FakeImage, URL: { createObjectURL: () => "blob:x", revokeObjectURL(url) { revoked.push(url); } },
+    // v00.03.01 E1：提示走页内 Toast；容器把原生 alert 画成无字深色框，调到就算失败
+    showToast(msg) { if (msg) alerts.push(msg); }, alert() { throw new Error("不该调原生 alert（v00.03.01 E1）"); },
     shrink: img => { shrinks.push(img); return img; }, checkDraftExpiry: () => locked, draftEpoch: 0, imgSeq: {},
     el: { photo: files.photo, cellPhoto: files.cellPhoto, imgPick: { focus() {} } },
     state: { letters: ["L", "I", "F"], images: [], crops: [], image: null, imgIndex: 0 },
@@ -839,6 +1067,38 @@ for (const mode of ["读取抛错", "读取一侧失败无原文"]) {
   files.cellPhoto.files = []; L.onCellPhoto();
   land(M);
   assert.equal(L.state.images[0], M, "取消选择不作废");
+  // 鸿蒙放宽类型后会选到视频：类型是视频的，不建地址、不解码，直接提示
+  { const n = imgs.length, a = alerts.length; files.cellPhoto.files = [{ name: "v.mp4", type: "video/mp4" }]; files.cellPhoto.value = "C:\\fakepath\\v.mp4"; L.onCellPhoto();
+    assert.equal(imgs.length, n, "视频不进解码"); assert.equal(alerts.length, a + 1, "视频要提示");
+    assert.equal(files.cellPhoto.value, "", "拦下后也清空，允许重选"); alerts.length = 0;
+    // 类型为空（部分 HEIC）、image/heic、文件管理器给的 octet-stream 都照常解码，不误拦
+    for (const type of ["", "image/heic", "application/octet-stream"]) {
+      const k = imgs.length; files.cellPhoto.files = [{ name: "h.heic", type }]; L.onCellPhoto();
+      assert.equal(imgs.length, k + 1, "不误拦：" + (type || "空类型")); assert.equal(alerts.length, 0);
+    } } // 这三张没落地：之后的选图序号更新，不影响下面的断言
+  {
+    // 载入时 window.xhs 还没注入、UA 也认不出：先是 image/*；点开选图前再判一次，注入后改成放宽写法
+    const ph = { a: "", setAttribute(k, v) { this[k] = v; } }, cp = { a: "", setAttribute(k, v) { this[k] = v; } };
+    const win = { navigator: { userAgent: "Mozilla/5.0 (Linux; Android 12; ALN-AL00; HarmonyOS 4.2.0)" } };
+    const S = load(["pickAccept", "syncPickAccept"], { window: win, el: { photo: ph, cellPhoto: cp } });
+    S.syncPickAccept(); assert.equal(ph.accept, "image/*", "容器未注入时不放宽");
+    win.xhs = {}; S.syncPickAccept();
+    assert.equal(ph.accept, "image/*,video/*", "晚注入后再判能放宽"); assert.equal(cp.accept, "image/*,video/*");
+    const appJs = fs.readFileSync(new URL("../app/assets/app.js", import.meta.url), "utf8");
+    assert.match(appJs, /syncPickAccept\(\); el\.cellPhoto\.click\(\)/, "点开格配图前再判");
+    assert.match(appJs, /syncPickAccept\(\); el\.photo\.click\(\)/, "点开默认图前再判");
+  }
+  {
+    const P = load(["pickAccept"], {});
+    assert.equal(P.pickAccept("Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 discover/9.53.3 XiaoHongShu/9.53.3", true), "image/*", "iOS 小红书 UA 不动");
+    assert.equal(P.pickAccept("Mozilla/5.0 (Linux; Android 12; ALN-AL00) AppleWebKit/537.36 Mobile discovery/9.53.3 xhsminitool/1.0.0", false), "image/*,video/*", "取证机的真实 UA（无 window.xhs 时）");
+    assert.equal(P.pickAccept("Mozilla/5.0 (Phone; OpenHarmony 5.0) AppleWebKit/537.36 ArkWeb/4.1.6.1 Mobile discover/9.53", false), "image/*,video/*", "纯血鸿蒙 UA 也认得出");
+    assert.equal(P.pickAccept("Mozilla/5.0 (iPhone; CPU iPhone OS 27_2 like Mac OS X) discover", true), "image/*", "iOS 不动");
+    assert.equal(P.pickAccept("Mozilla/5.0 (Linux; Android 12; ALN-AL00; HarmonyOS 4.2.0)", true), "image/*,video/*", "鸿蒙容器内放宽");
+    assert.equal(P.pickAccept("Mozilla/5.0 (Linux; Android 14) xhs/9.53", false), "image/*,video/*", "靠 UA 也认得出容器");
+    assert.equal(P.pickAccept("Mozilla/5.0 (Linux; Android 14) Chrome/120", false), "image/*", "容器外的安卓浏览器不动");
+    assert.equal(P.pickAccept(undefined, true), "image/*", "读不到 UA 不动");
+  }
   // 读草稿期间（作品不可改）解码完成也不落入作品
   const N = pickCell("N"); locked = true; land(N); locked = false;
   assert.equal(L.state.images[0], M, "不可改时解码结果丢弃");
@@ -982,7 +1242,7 @@ assert.equal(clean.draftNotice, " 部分存储读取失败。");
   const env = load(["lostCells", "cropEdited", "applyEntry", "submitEntry", "validateEntry", "entryValues", "setLetters", "keepSame", "firstOpen", "bumpImg", "focusEntry", "focusBehind", "pageOpen"], {
     langBlock: () => "", // T20：语言已就绪（英语随包加载）
     CORE, state: mkState(), imgSeq: {}, entryFrom: "edit", draftLoaded: true, splits: Object.create(null), splitFor: () => null, /* T42 */ BLOCKED_WORD: "词被拦", BLOCKED_FILLER: "名被拦",
-    capitalize: CORE.capitalize, blocked: (t) => /SEX|微信/i.test(t), checkDraftExpiry: () => false,
+    capitalize: CORE.capitalize, blocked: (t) => /SEX|微信/i.test(t), checkDraftExpiry: () => false, displayWord: i => CORE.capitalize(env.state.picks[i][0]),
     el: { wordInput: { value: "", focus() { calls.push("focus:word"); } }, fillerCtl: { value: "", focus() { calls.push("focus:filler"); } }, toEntry: { focus() { calls.push("focus:toEntry"); } }, settings: { hidden: true }, credits: { hidden: true } },
     setEntryErr(f, m) { if (m) calls.push("err:" + f + ":" + m); }, showConfirm(w, f, lost) { calls.push("confirm:" + w + ":" + lost.map(c => c.letter).join("")); },
     saveEntry(back) { calls.push("save:" + back); },
@@ -993,8 +1253,17 @@ assert.equal(clean.draftNotice, " 部分存储读取失败。");
   const lost = j(env.lostCells("LOVE"));
   assert.deepEqual(lost.map(c => [c.letter, c.word, c.parts.join("·")]), [["I", "Ice", "词·配文"], ["F", "", "配图"]], "只列有内容、且字母变了的格及其内容");
   assert.deepEqual(j(env.lostCells("LIFE")), [], "单词没变：不清空");
+  { // 列表里的词与卡面同一套写法（德语 laufen 不改成首字母大写）
+    const keep = [env.displayWord, env.state.picks[1]];
+    env.state.picks[1] = ["laufen", ""]; env.displayWord = i => env.state.picks[i][0];
+    assert.equal(j(env.lostCells("LOVE"))[0].word, "laufen", "确认列表用卡面显示词");
+    [env.displayWord, env.state.picks[1]] = keep;
+  }
   env.state.images[2] = null; // F 格什么都没有了：变了也不用确认
   assert.deepEqual(j(env.lostCells("LOVE")).map(c => c.letter), ["I"], "空格子不列入清空确认");
+  env.heldAt = i => ({ img: i === 2, crop: null });
+  assert.deepEqual(j(env.lostCells("LOVE"))[1].parts, ["配图"]);
+  env.heldAt = () => ({ img: false, crop: null });
   env.state.images[2] = "img-F";
   // 取景：只调过默认图取景的空格也算有内容；打开过取景面板但没动（默认值）不算
   env.state.crops[2] = { z: 1, x: 0.5, y: 0.5 }; env.state.images[2] = null;
@@ -1054,7 +1323,14 @@ assert.equal(clean.draftNotice, " 部分存储读取失败。");
 {
   assert.doesNotMatch(source, /FocusEvent|dispatchEvent/, "app.js 不再合成事件");
   const calls = [];
-  const lv = load(["leaveWordCtl", "leaveLineCtl"], { holdHeight() {}, syncOwn() {}, focusKind: "word", onWordCtl() { calls.push("onWordCtl"); }, renderCand() { calls.push("renderCand"); } });
+  const lv = load(["leaveWordCtl", "leaveLineCtl"], { lastTyping: null, holdHeight() {}, syncOwn() {}, focusKind: "word", onWordCtl() { calls.push("onWordCtl"); }, renderCand() { calls.push("renderCand"); } });
+  { // 框里停在照打的短词（法西逐键打到 pie，卡面是西语 Pie）时离开：框换成卡面写法
+    const P = ["Pie", "n.脚"], box = { value: "pie" };
+    const snap = load(["leaveWordCtl"], { lastTyping: { cell: 0, pick: P, raw: "pie", shown: "pie" }, curCell: () => 0, state: { picks: [P] },
+      holdHeight() {}, syncOwn() {}, focusKind: "word", onWordCtl() {}, renderCand() {} });
+    snap.leaveWordCtl(box);
+    assert.equal(box.value, "Pie", "离开后框与卡面一致");
+  }
   const inp = { value: "Love  " };
   lv.leaveWordCtl(inp);
   assert.equal(inp.value, "Love", "去掉末尾空格"); assert.equal(lv.focusKind, ""); assert.deepEqual(calls, ["onWordCtl"], "值变了走 onWordCtl");
@@ -1064,7 +1340,7 @@ assert.equal(clean.draftNotice, " 部分存储读取失败。");
   assert.equal(lv.focusKind, ""); assert.deepEqual(calls, ["renderCand"]);
   // 输入框失焦：Tab 进候选栏时不离开，去别处才离开
   const h = {}, cand = { contains: (t) => t === "candBtn" };
-  const bw = load(["bindWordControl", "leaveWordCtl"], { holdHeight() {}, syncOwn() {}, el: { cand }, focusKind: "word", candQuiet: false, onWordCtl() {}, renderCand() { calls.push("renderCand"); }, revealCtl() {} });
+  const bw = load(["bindWordControl", "leaveWordCtl"], { lastTyping: null, holdHeight() {}, syncOwn() {}, el: { cand }, focusKind: "word", candQuiet: false, onWordCtl() {}, renderCand() { calls.push("renderCand"); }, revealCtl() {} });
   const box = { value: "Love", classList: { add() {}, remove() {} }, addEventListener: (n, fn) => { h[n] = fn; } };
   bw.bindWordControl(box);
   calls.length = 0; h.blur({ relatedTarget: "candBtn" }); assert.deepEqual(calls, [], "Tab 进候选栏：不收栏");
@@ -1205,6 +1481,7 @@ assert.deepEqual(inserts, ["👨‍👩‍👧‍👦"], "截短粘贴保留完�
     el: { tcolorCustom: { value: "#d9c27a" }, toast: { textContent: "" } },
     formatTitle(cmd, value) { applied = [cmd, value]; },
     showToast(msg, ms) { toasts.push([msg, ms]); e.el.toast.textContent = msg; },
+    dropToast(msg) { if (e.el.toast.textContent === msg) { toasts.push(["", 0]); e.el.toast.textContent = ""; } }, // 同 app-model.js：只收回这一条（暂存的那条在浏览器回归里测）
   });
   for (const color of ["#d9c27a", "#ffffff"]) {
     e.el.tcolorCustom.value = color; e.applyCustomColor();
@@ -1237,8 +1514,10 @@ assert.match(html, /David Houstin 创办/, "CFDICT 写明作者");
 assert.match(html, /Permission is hereby freely given for any and all use of program and data\. You can sell it as your own, but at least tell me\./, "Whitaker 保留许可原句（Q14）");
 assert.match(html, /Whitaker's Words<\/span> 仅用于筛选，未随包分发其内容/);
 assert.match(html, /意语 MIT 或 LPPL 1\.3 及更高版本，拉丁语 MIT 或 LPPL 1 及更高版本/);
-assert.doesNotMatch(html + fs.readFileSync(new URL("../app/LICENSES/MIT.txt", import.meta.url), "utf8"), /Copyright \(c\) 2013-2024 Deutschsprachige Trennmustermannschaft/, "德语断词模式的版权行照抄原文（那个名字是作者署名，不是版权人）");
-assert.match(html, /<td>词频数据 CC BY-SA 4\.0；/, "FrequencyWords 的数据按 CC BY-SA 4.0");
+assert.doesNotMatch(html + fs.readFileSync(new URL("../LICENSES/MIT.txt", import.meta.url), "utf8"), /Copyright \(c\) 2013-2024 Deutschsprachige Trennmustermannschaft/, "德语断词模式的版权行照抄原文（那个名字是作者署名，不是版权人）");
+assert.match(html, /<td>字幕词频 CC BY-SA 4\.0；/, "FrequencyWords 的数据按 CC BY-SA 4.0");
+// 第三次重建（2026-11-19）选词来源：法语 Lexique 4.10（CC BY-SA 4.0），西意德英 ParlaMint 4.1（CC BY 4.0）要署名；文学语料已去掉（D6）
+assert.match(html, /Lexique 4\.10[\s\S]*Boris New[\s\S]*Lexique CC BY-SA 4\.0/, "Lexique 署名与许可"); assert.match(html, /ParlaMint 4\.1[\s\S]*11356\/1911[\s\S]*ParlaMint CC BY 4\.0/, "ParlaMint 署名与许可"); assert.doesNotMatch(html, /GITenberg/, "D6 去掉文学语料后借物页不再列 GITenberg");
 assert.match(html, /霞鹜、霞鶩、落霞孤鹜、落霞孤鶩、LXGW 是保留字体名，裁剪后的文件已改名为 BK Dansaekhwa Kai/, "霞鹜文楷裁剪后改名（2026-11-13 用户定），不靠附加许可沿用原名");
 {
   // 样式和 app/assets 下的全部脚本（语言包除外）：去掉注释后不得再出现保留字样（不分大小写——CSS 的字体名不分大小写）
@@ -1250,12 +1529,12 @@ assert.match(html, /霞鹜、霞鶩、落霞孤鹜、落霞孤鶩、LXGW 是保�
   assert.deepEqual(fs.readdirSync(new URL("../app/assets/fonts/", import.meta.url)).filter(f => /lxgw|wenkai/i.test(f)), [], "包里没有以保留字体名命名的字体文件");
 }
 assert.match(html, /人名中文译写取自 ECDICT/);
-assert.match(html, /署名可写「版式：藏头 - Backronym，CC BY 4\.0，creativecommons\.org\/licenses\/by\/4\.0」/, "署名样板带许可名与许可网址（CC BY 4.0 第 3(a)(1)(C) 条两项都要）");
+assert.match(html, /署名可写「版式：藏头 - Backronym（BeyondPassenger），CC BY 4\.0，creativecommons\.org\/licenses\/by\/4\.0」；图上直接取自词库的释义仍按词库的许可）/, "署名样板带版权人、许可名与许可网址；省流里提到词库释义另按词库许可");
 {
-  const ofl = fs.readFileSync(new URL("../app/LICENSES/OFL-1.1.txt", import.meta.url), "utf8");
+  const ofl = fs.readFileSync(new URL("../LICENSES/OFL-1.1.txt", import.meta.url), "utf8");
   assert.match(ofl, /LXGW WenKai: Copyright 2021-2026 LXGW[^\n]*\[ADDITIONAL PERMISSION\][^\n]*solely for web font delivery[^\n]*Copyright 2020 The Klee Project Authors/, "霞鹜文楷的版权声明带着附加许可原文");
   // 各门 words.js 文件头：来源都在借物页出现；西文五门写明已改编与改编后的许可
-  const SRC = { "维基词典": /维基词典/, "kaikki.org": /kaikki\.org/, "FrequencyWords": /FrequencyWords/, "CFDICT": /CFDICT/, "HanDeDict": /HanDeDict/, "Dickinson College Commentaries": /Dickinson College Commentaries/, "Whitaker's Words": /Whitaker's Words/, "ECDICT": /ECDICT/, "TeX hyph-utf8": /TeX hyph-utf8/ };
+  const SRC = { "Universal Dependencies": /Universal Dependencies Parallel UD 2\.16/, "Lexique": /Lexique 4\.10/, "ParlaMint": /ParlaMint 4\.1/, "维基词典": /维基词典/, "kaikki.org": /kaikki\.org/, "FrequencyWords": /FrequencyWords/, "CFDICT": /CFDICT/, "HanDeDict": /HanDeDict/, "Dickinson College Commentaries": /Dickinson College Commentaries/, "Whitaker's Words": /Whitaker's Words/, "ECDICT": /ECDICT/, "TeX hyph-utf8": /TeX hyph-utf8/ };
   for (const lang of ["en", "fr", "de", "es", "it", "la"]) {
     const text = fs.readFileSync(new URL("../app/assets/lang/" + lang + "/words.js", import.meta.url), "utf8"), head = text.slice(0, text.indexOf("*/"));
     const named = head.split("\n").filter(l => l.startsWith("- "));
@@ -1277,7 +1556,7 @@ assert.doesNotMatch(html, /见来源项目/, "不再有「见来源项目」这�
 // T07 协议与证书更新（2026-11-12）：代码 GPL-3.0-or-later；借物页开头四项齐全（版权声明、「第 3 版或任一更新版本」、不提供担保、全文入口）
 {
   const own = html.slice(html.indexOf('class="credits-own"'), html.indexOf('class="credits-table"'));
-  assert.match(own, /© 2026 BeyondPassenger/); assert.match(own, /第 3 版，或由你选择的任一更新版本/); assert.match(own, /不提供任何担保/); assert.match(own, /LICENSES\/GPL-3\.0\.txt/);
+  assert.match(own, /© 2026 BeyondPassenger/); assert.match(own, /第 3 版，或由你选择的任一更新版本/); assert.match(own, /不提供任何担保/); assert.match(own, /也在源代码仓库的 <span lang="en">LICENSES\/<\/span> 目录/); assert.doesNotMatch(html, /包内的 LICENSES/, "小红书包不带独立的许可文件，页面不得说包内有");
   assert.doesNotMatch(html, /<td>MIT License<\/td><\/tr>\s*<tr><th scope="row">词库 · 英语/, "本工具一行不再写 MIT");
   assert.doesNotMatch(html, /Copyright \(c\) 2026 BeyondPassenger/, "MIT 全文里不再有本工具的版权行");
   assert.doesNotMatch(html, /GFDL/, "维基词典只按 CC BY-SA 4.0 使用（用户 11-12 定）");
@@ -1290,13 +1569,34 @@ assert.doesNotMatch(html, /见来源项目/, "不再有「见来源项目」这�
   for (const li of lis) assert.ok(readme.includes(li), "README 第 07 节缺这一行：" + li.slice(0, 12));
   const mdLis = fs.readFileSync(new URL("../README.md", import.meta.url), "utf8").split("\n").filter(l => /^- \*\*(可以|不可以|注意)\*\*/.test(l)).map(l => plain(l.slice(2)));
   assert.deepEqual(mdLis, lis, "README 的省流与借物页逐行相同，不多不少");
-  // 许可全文随包：六份独立文件都在；借物页里直接写的 MIT、OFL 与文件同文；展开才读的四份与 licenses.js 一致
-  const { ALL, LAZY, render } = await import("./build-licenses.mjs");
-  const dir = new URL("../app/LICENSES/", import.meta.url);
+  // 许可全文：来源是仓库根目录 LICENSES/*.txt；随包的是由它生成的六份 html（容器不收 txt）；借物页里直接写的 MIT、OFL 与文件同文；展开才读的四份与 licenses.js 一致
+  const { ALL, LAZY, render, outputs } = await import("./build-licenses.mjs");
+  const dir = new URL("../LICENSES/", import.meta.url);
   for (const k of ALL) assert.ok(fs.statSync(new URL(k + ".txt", dir)).size > 1000, "缺许可全文：" + k);
   assert.match(fs.readFileSync(new URL("GPL-3.0.txt", dir), "utf8"), /GNU GENERAL PUBLIC LICENSE\s+Version 3, 29 June 2007/);
   assert.equal(fs.readFileSync(new URL("../LICENSE", import.meta.url), "utf8"), fs.readFileSync(new URL("GPL-3.0.txt", dir), "utf8"), "仓库的 LICENSE 就是 GPL 第 3 版全文");
-  assert.equal(fs.readFileSync(new URL("../app/assets/licenses.js", import.meta.url), "utf8"), render(), "licenses.js 与 app/LICENSES 一致（重跑 npm run licenses）");
+  for (const [rel, text] of outputs()) assert.equal(fs.readFileSync(new URL("../" + rel, import.meta.url), "utf8"), text, rel + " 与 LICENSES/*.txt 一致（重跑 npm run licenses）");
+  assert.equal(outputs()[0][1], render());
+  {
+    // 随包的 html 还原出来就是来源全文；没有内联脚本与样式（容器 CSP）
+    const unescP = t => t.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+    for (const k of ALL) {
+      const h = fs.readFileSync(new URL("../app/LICENSES/" + k + ".html", import.meta.url), "utf8"), m = /<pre>([\s\S]*)<\/pre>/.exec(h);
+      assert.equal(unescP(m[1]), fs.readFileSync(new URL(k + ".txt", dir), "utf8"), k + ".html 还原后与来源同文");
+      assert.doesNotMatch(h, /<script|style=|<style/i, k + ".html 不带脚本与样式");
+    }
+    // 小红书容器只收这些类型（2026-11-14 真机预览时被拒过 txt）
+    const OK = new Set(["jpg", "css", "gif", "svg", "png", "js", "jpeg", "json", "html", "woff2", "webp", "woff"]), bad = [];
+    (function walk(d) { for (const e of fs.readdirSync(d, { withFileTypes: true })) { if (e.name[0] === ".") continue; const p = d + "/" + e.name; if (e.isDirectory()) walk(p); else if (!OK.has(e.name.split(".").pop().toLowerCase()) || e.name.indexOf(".") < 0) bad.push(p); } })(new URL("../app", import.meta.url).pathname);
+    assert.deepEqual(bad, [], "app/ 里有容器不收的文件类型");
+    // 打包后的 zip 另由 scripts/check-zip.mjs 检查；这里测它的判断本身
+    const { problems } = await import("./check-zip.mjs");
+    assert.deepEqual(problems(["index.html", "assets/", "assets/app.js", "assets/fonts/a.woff2"]), []);
+    assert.equal(problems(["index.html", "LICENSES/MIT.html"]).length, 1, "第二个 html 要报");
+    assert.equal(problems(["index.html", "LICENSES/MIT.txt"]).length, 1, "txt 要报");
+    assert.equal(problems(["assets/app.js"]).length, 1, "没有 index.html 要报");
+    assert.equal(problems(["index.html", "README"]).length, 1, "没有扩展名要报");
+  }
   for (const k of LAZY) assert.ok(html.includes('data-license="' + k + '"'), "借物页缺全文入口：" + k);
   const unesc = t => t.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, "&");
   const inline = [...html.matchAll(/<details>\s*<summary>[^<]+<\/summary>\s*<pre lang="en">([\s\S]*?)<\/pre>/g)].map(m => unesc(m[1]).replace(/\n+$/, "") + "\n");

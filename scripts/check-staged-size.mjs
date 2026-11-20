@@ -5,7 +5,7 @@ import path from 'node:path';
 
 // Decimal MB, deliberately stricter than the platform's 10 MiB audit.
 const FILE_LIMIT = 5_000_000;
-const ZIP_LIMIT = 10_000_000;
+import {ZIP_LIMIT, zipRelease} from './check-zip.mjs';
 const git = (...args) => execFileSync('git', args, { maxBuffer: 64 * 1024 * 1024 });
 const changed = new Set(git('diff', '--cached', '--name-only', '--diff-filter=ACMRT', '-z')
   .toString().split('\0').filter(Boolean));
@@ -41,7 +41,7 @@ try {
     writeFileSync(destination, git('cat-file', 'blob', entry.oid), { mode: parseInt(entry.mode, 8) & 0o777 });
   }
   const archive = path.join(temporary, 'backronym.zip');
-  execFileSync('zip', ['-q', '-r', '-X', archive, '.', '-x', '.*', '-x', '*/.*'], { cwd: directory });
+  zipRelease(directory, archive);
   const size = statSync(archive).size;
   console.log(`Staged release ZIP: ${size} B (${(size / 1_000_000).toFixed(2)} MB).`);
   if (size >= ZIP_LIMIT) {

@@ -5,6 +5,7 @@ import {excludedPos} from '../lexicon/scope.mjs';
 const key=s=>s.normalize('NFC').toLowerCase();
 // Botanical Latin commonly omits length marks; do not strip other accents.
 const withoutMacrons=s=>key(s).normalize('NFD').replace(/\u0304/g,'').normalize('NFC');
+const stripAccents=s=>key(s).normalize('NFD').replace(/\p{M}/gu,'').normalize('NFC');
 export function senseForms(records, stage, allow=new Set(), reviewedForms=[]) {
   const targets=new Map(), result=new Map(), lemmas=new Set(), functional=new Set(), latin=new Set(), canonicalTargets=new Map();
   for(const r of records){
@@ -15,6 +16,12 @@ export function senseForms(records, stage, allow=new Set(), reviewedForms=[]) {
     if(!targets.has(k))targets.set(k,[]);
     targets.get(k).push(r.sense_id);
     if(r.language==='la'){
+      if(r.evidence.quantity_source && r.evidence.original_display){
+        assert.equal(withoutMacrons(r.display),withoutMacrons(r.evidence.original_display),'长音不能更换词头');
+        const sourceKey=key(r.evidence.original_display)+'|'+r.pos;
+        if(!targets.has(sourceKey))targets.set(sourceKey,[]);
+        if(!targets.get(sourceKey).includes(r.sense_id))targets.get(sourceKey).push(r.sense_id);
+      }
       latin.add(r.sense_id);
       if(!canonicalTargets.has(k))canonicalTargets.set(k,[]);
       canonicalTargets.get(k).push(r.sense_id);
@@ -97,7 +104,12 @@ export function senseForms(records, stage, allow=new Set(), reviewedForms=[]) {
     assert.ok(typeof addition.form==='string'&&/^\p{L}+$/u.test(addition.form)&&key(addition.form)===addition.form,'invalid reviewed form');
     assert.ok(addition.source&&addition.evidence&&addition.reviewer,'reviewed form evidence required');
     const pair=key(r.display)+'|'+r.pos;
-    assert.ok(Object.prototype.hasOwnProperty.call(edges,addition.form)&&edges[addition.form].includes(pair),'reviewed form source relation missing');
+    // 第三次重建 D5（2026-11-19）：字幕里漏写重音的写法（farò → faro）。只在它正好是该原形某个来源词形去掉重音后的样子时才认
+    const unaccented=addition.relation==='unaccented'&&Object.keys(edges).some(g=>g!==addition.form&&stripAccents(g)===addition.form&&edges[g].includes(pair));
+    assert.ok(unaccented||(Object.prototype.hasOwnProperty.call(edges,addition.form)&&edges[addition.form].includes(pair)),'reviewed form source relation missing');
+    // 复审 R3-2：去重音写法撞上已收词头（意 faro 灯塔）时不登记。form-additions.json 新旧管线共用：verro 在旧候选里是「公猪」要跳过，
+    // 新管线里不是词头照常登记，所以跳过而不是断言失败
+    if(addition.relation==='unaccented'&&records.some(x=>!admission(x)&&key(x.display)===addition.form))continue;
     result.get(r.sense_id).push(addition.form);
   }
   // Fail closed: a sense on a homograph headword keeps forms only after an
@@ -115,6 +127,18 @@ export function senseForms(records, stage, allow=new Set(), reviewedForms=[]) {
       for(const f of excluded)assert.ok(result.get(r.sense_id).includes(f),'homograph exclusion is not a source form: '+r.display+' '+f);
       result.set(r.sense_id,result.get(r.sense_id).filter(f=>!excluded.has(f)));
     }else if(!r.evidence.form_restriction)result.set(r.sense_id,[]);
+  }
+  // ami → amie → amies。女性单数本身是独立词头，常规归并在此停止。
+  // 仅给显式逐形复核清单补回同一名词的复数，要求两条来源关系都真实存在。
+  for(const r of records){
+    const meta=r.evidence.noun_forms,restriction=r.evidence.form_restriction,forms=result.get(r.sense_id);
+    if(!meta||!restriction||!forms)continue;
+    const source=key(r.display)+'|noun';
+    const links=w=>Object.prototype.hasOwnProperty.call(edges,w)?edges[w]:[];
+    const singular=restriction.allowed.filter(w=>meta[w]&&meta[w].number==='sg'&&links(w).includes(source));
+    for(const w of restriction.allowed){
+      if(meta[w]&&meta[w].number==='pl'&&singular.some(s=>meta[s].gender===meta[w].gender && links(w).includes(s+'|noun')))forms.push(w);
+    }
   }
   for(const [id,forms] of result)result.set(id,[...new Set(forms)].sort());
   return result;

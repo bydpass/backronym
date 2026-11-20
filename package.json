@@ -6,11 +6,11 @@
   "engines": {
     "node": ">=22"
   },
-  "description": "小红书小工具：藏头 - Backronym（英文单词首字母梗图）",
+  "description": "离线六语藏头梗图编辑器",
   "scripts": {
     "dict": "node scripts/build-dict.mjs",
     "block": "node scripts/build-block.mjs",
-    "lexicon:extract": "for l in fr de es it la; do node --max-old-space-size=8192 scripts/lexicon/extract.mjs $l; done",
+    "lexicon:extract": "for l in fr de es it la; do node --max-old-space-size=8192 scripts/lexicon/extract.mjs $l || exit $?; done",
     "lexicon": "node --max-old-space-size=8192 scripts/build-lexicon.mjs",
     "lexicon:check": "node scripts/lexicon/review.mjs",
     "lexicon:audit": "node --max-old-space-size=8192 scripts/lexicon/audit-review.mjs",
@@ -18,8 +18,8 @@
     "presets": "node scripts/build-presets.mjs",
     "fonts": "node scripts/build-fonts.mjs",
     "audit": "node .claude/skills/minitool-zip-builder/scripts/audit_artifact.mjs app",
-    "test": "node scripts/test-blocklist.mjs && node scripts/test-core.mjs && node scripts/test-app.mjs && node scripts/test-draft.mjs && node scripts/test-media.mjs && node scripts/test-lang.mjs && node scripts/test-lexicon.mjs && node scripts/test-lexicon-scope.mjs && node scripts/test-build-web.mjs && node scripts/test-lexicon-baseline.mjs && node scripts/test-lexicon-picker.mjs && node scripts/test-german-expansion.mjs && node scripts/test-t19.mjs && node scripts/test-t19-lookup.mjs && node scripts/test-t19-store.mjs && node scripts/test-t19-editor-query.mjs && node scripts/test-t19-numerals.mjs && node scripts/test-t19-names.mjs && node scripts/test-t19-conjugation.mjs && node scripts/test-t19-packs.mjs && node scripts/test-presets.mjs && node scripts/test-size-hook.mjs",
-    "pack": "npm test && npm run audit && rm -f dist/backronym.zip && mkdir -p dist && cd app && zip -r -X ../dist/backronym.zip . -x '.*' -x '*/.*' -x '_recovery/*' -x '*/_recovery/*' && cd .. && node .claude/skills/minitool-zip-builder/scripts/audit_artifact.mjs dist/backronym.zip",
+    "test": "node scripts/test-blocklist.mjs && node scripts/test-core.mjs && node scripts/test-app.mjs && node scripts/test-draft.mjs && node scripts/test-media.mjs && node scripts/test-lang.mjs && node scripts/test-lexicon.mjs && node scripts/test-lexicon-scope.mjs && node scripts/test-build-web.mjs && node scripts/test-lexicon-baseline.mjs && node scripts/test-lexicon-picker.mjs && node scripts/test-german-expansion.mjs && node scripts/test-t19.mjs && node scripts/test-t19-lookup.mjs && node scripts/test-t19-store.mjs && node scripts/test-t19-editor-query.mjs && node scripts/test-t19-numerals.mjs && node scripts/test-t19-names.mjs && node scripts/test-t19-conjugation.mjs && node scripts/test-rebuild-lookup.mjs && node scripts/test-t19-packs.mjs && node scripts/test-lexicon-required.mjs && node scripts/test-presets.mjs && node scripts/test-size-hook.mjs",
+    "pack": "npm test && npm run audit && node scripts/pack-container.mjs",
     "pack:web": "node scripts/build-web.mjs",
     "dev": "python3 scripts/dev.py 5173",
     "licenses": "node scripts/build-licenses.mjs"

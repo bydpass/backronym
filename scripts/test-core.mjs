@@ -67,7 +67,7 @@ assert.deepEqual(C.customWord("Initial", "I"), ["Initial", ""], "不分大小写
 assert.equal(C.customWord("Bold", "i"), null, "词里没有 i");
 assert.equal(C.customWord("Live", "I"), null, "i 只在词中");
 assert.deepEqual(C.customWord("1ab", "1"), ["1ab", ""], "T41：数字格可以打以该数字开头的自定义词"); assert.equal(C.customWord("-ab", "a"), null, "必须字母或数字开头");
-// T41 / U16 / U19：数字格——读法首字母或数字本身开头都算对；候选按读法首字母；提示写「T 或 2」
+// T41 / U16 / U19：数字格——读法首字母或数字本身开头都算对；候选按读法首字母；提示写「T」（v00.03.01 R03）
 assert.equal(C.cellInitial("2"), "t"); assert.equal(C.cellInitial("0"), "o", "0 读作 oh"); assert.equal(C.cellInitial("B"), "b");
 assert.ok(C.containsLetter("two", "2") && C.containsLetter("2nd", "2") && C.containsLetter("Time", "2"), "2 格：two / Time / 2nd 都对");
 assert.ok(!C.containsLetter("one", "2") && !C.containsLetter("3rd", "2"), "2 格：别的读法或别的数字不对");
@@ -86,15 +86,28 @@ assert.ok(!C.containsLetter("one", "2") && !C.containsLetter("3rd", "2"), "2 格
   assert.deepEqual(C.LANG.digitSounds[4], ["for", "fore", "four"]);
 }
 assert.ok(C.containsLetter("oak", "0") && C.containsLetter("0day", "0"));
-assert.equal(C.startText("2"), "T 或 2"); assert.equal(C.startText("L"), "L");
+assert.equal(C.startText("2"), "T"); assert.equal(C.startText("L"), "L");
 // v00.03.00：格首提示把算对的写法全列出来——有跨首字母的读音别名时写出别名（zero / won / ate），与 containsLetter 同一条规则
-assert.equal(["0", "1", "4", "8", "9"].map(d => C.startText(d)).join(" | "), "O、zero 或 0 | O、won 或 1 | F 或 4 | E、ate 或 8 | N 或 9");
+assert.equal(["0", "1", "4", "8", "9"].map(d => C.startText(d)).join(" | "), "O/zero | O/won | F | E/ate | N");
+assert.equal(C.startSpoken("0") + " | " + C.startSpoken("L"), "O 或 zero | L", "读屏写法：斜线换成「或」");
 for (const [d, w] of [["0", "zero"], ["0", "oh"], ["0", "0th"], ["1", "won"], ["8", "ate"], ["8", "eight"]]) assert.equal(C.containsLetter(w, d), true, "提示里列出的写法都算对：" + d + " " + w);
-assert.equal(C.customWord("a".repeat(21), "a"), null, "最长 20 字符");
+assert.equal(C.customWord("a".repeat(29), "a"), null, "最长 28 字符"); assert.equal(C.customWord("a".repeat(28), "a")[0], "a".repeat(28), "28 个字符的词典外词合法（E2）");
 assert.deepEqual(C.senseGroups(["image", "adj.想象的，虚拟的|n.图像|[计]映像"]),
   [{ pos: "adj.", senses: ["想象的", "虚拟的"] }, { pos: "n.", senses: ["图像"] }, { pos: "[计]", senses: ["映像"] }]);
 assert.deepEqual(C.senseList(["image", "adj.想象的，虚拟的|n.图像"]), ["想象的", "虚拟的", "图像"]);
-assert.equal(C.defaultGloss(["image", "adj.想象的，虚拟的，第三个|n.图像"]), "想象的", "默认释义只取第一组第一个义项（T35 / U9）");
+assert.equal(C.defaultGloss(["image", "adj.想象，虚拟|n.图像"]), "想象", "默认取数据层第一组的第一义");
+assert.deepEqual(C.displayGroups(["red", "adj.红色，脆弱（书），大的|n.目的"]), [{ pos:"adj.", senses:["红色","脆弱（书）","大的"] },{ pos:"n.", senses:["目的"] }]);
+// v00.03.01：配文截断时把后面几行拼回一行，折行处原有的空格要补回（原来「ut labore」会拼成「utlabo…」）
+{ const cw = C.wrapCaption((f, t) => t.length * 60, "lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod", 0);
+  assert.equal(cw.cut, true); assert.match(cw.lines[cw.lines.length - 1], /^consectetur ad/, "截断行保留词间空格：" + JSON.stringify(cw.lines));
+  // 复审补：原文没有空格的折行处（中文、逐字拆开的长词）拼回时不能多出空格
+  const m60 = (f, t) => [...t].length * 60;
+  // 每行 15 字、2 行：第 2 行只有一个「春」，后面 15 个 b 的词整个换行（折行处原文无空格），截断拼回应是「春bbb…」
+  const r = C.wrapCaption(m60, "春".repeat(16) + "b".repeat(15) + "春".repeat(20), 64);
+  assert.deepEqual(r.lines, ["春".repeat(15), "春" + "b".repeat(13) + "…"], "原文无空格的折行处不插空格");
+  // 截在补回的空格上：省略号紧跟词尾，不留空格
+  const r2 = C.wrapCaption(m60, "x".repeat(15) + " " + "y".repeat(15) + " " + "a".repeat(13) + " " + "b".repeat(15) + " c", 0);
+  assert.equal(r2.lines[2], "a".repeat(13) + "…", "省略号前不留空格：" + JSON.stringify(r2.lines)); }
 // T37 / U11：显示层去掉人名 / 地名类括号标注（闭合、不闭合、被「，」劈开的残片），其余括号说明保留；词库原文与专名判断不动
 assert.equal(C.stripNameLabel("戴维（男子名）"), "戴维");
 assert.equal(C.stripNameLabel("凯特（女子名"), "凯特", "不闭合写法");
@@ -120,6 +133,8 @@ assert.equal(C.defaultPos(["image", "adj.想象的"]), "adj.");
 assert.equal(C.defaultGloss(["x", ""]), "");
 assert.equal(C.capitalize("image"), "Image");
 // 义项过屏蔽器：整组都被拦则该组消失（屏蔽器在，窗口里有 BLOCK）
+assert.deepEqual(C.displayGroups(["drug", "n.药物|n.毒品"]), [{pos: "n.", senses: ["药物"]}]);
+assert.deepEqual(C.filterWords([["drug", "n.药物|n.毒品"]], "毒品"), []);
 assert.deepEqual(C.senseGroups(["sex", "n.性爱"]), [], "被屏蔽的义项和变空的组都去掉");
 assert.equal(C.FONT.indexOf("Noto Sans"), 1);
 // 没有屏蔽器（window.BLOCK）时放行（用一个没有 BLOCK 的 window 重新加载）
@@ -203,7 +218,7 @@ for (let n = 1; n <= 10; n++) {
   // 信息栏 / 墨线 / 标题（标题留空用单词）
   const L4 = C.layoutGrid(ldata(4, false, { word: "ABCD", titleRuns: [] }), fm);
   const info = byRole(L4, "info-count")[0], fil = byRole(L4, "info-filler")[0];
-  assert.deepEqual([info.text, info.x, info.baseline, info.size, info.color, info.align], ["4 格", 100, 80, 26, "mute", "left"]);
+  assert.deepEqual([info.text, info.x, info.baseline, info.size, info.color, info.align], ["4 格", 100, 80, 34, "mute", "left"]);
   assert.deepEqual([fil.text, fil.x, fil.baseline, fil.align], ["填表人 小满", 1544 - 100, 80, "right"]);
   assert.deepEqual(byRole(L4, "rule")[0], { role: "rule", x: 100, y: 104, w: 1544 - 200, h: 3, color: "ink" });
   assert.deepEqual(byRole(L4, "title").map((b) => [b.text, b.x, b.baseline, b.size, b.track, b.weight]), [["ABCD", 100, 230, 96, -1.5, 700]], "标题留空用单词");
@@ -246,9 +261,9 @@ for (let n = 1; n <= 10; n++) {
 
 // T14：释义来源（D7）
 {
-  const it = ["bold", "adj.大胆的，粗体的|n.粗体"], other = ["brave", "adj.勇敢的"], custom = ["boldly-x", ""];
+  const it = ["bold", "adj.大胆，粗体|n.粗体"], other = ["brave", "adj.勇敢"], custom = ["boldly-x", ""];
   const d1 = C.defaultGloss(it), d2 = C.defaultGloss(other);
-  assert.equal(d1, "大胆的", "默认一个义项（T35）");
+  assert.equal(d1, "大胆", "默认一个义项（T35；L01 起形容词去「的」）");
   assert.deepEqual(C.nextGloss("", true, it), { gloss: d1, auto: true }, "空 → 默认");
   assert.deepEqual(C.nextGloss("", false, it), { gloss: d1, auto: true }, "用户清空后也算空 → 默认");
   assert.deepEqual(C.nextGloss(d1, true, other), { gloss: d2, auto: true }, "自动值 → 新默认");
@@ -274,8 +289,13 @@ for (let n = 1; n <= 10; n++) {
   // 各框坐标 = D14 单图表
   let L = base();
   assert.deepEqual([L.W, L.H], [1080, 1440]);
-  same(one(L, "info-folio"), { x: 80, baseline: 96, size: 26, weight: 400, color: "mute", text: "02 / 04", align: "left" }, "页码");
-  same(one(L, "info-filler"), { x: 1000, baseline: 96, size: 26, weight: 400, color: "mute", text: "填表人 小满", align: "right" }, "填表人");
+  same(one(L, "info-folio"), { x: 80, baseline: 96, size: 50, weight: 400, color: "mute", text: "02 / 04", align: "left" }, "页码（v00.03.01 U01：34 → 50）");
+  same(one(L, "info-filler"), { x: 1000, baseline: 96, size: 50, weight: 400, color: "mute", text: "填表人 小满", align: "right" }, "填表人");
+  { // v00.03.01（用户 11-18 定）：16 字的填表人放不下时只给它缩字号（下限 26），页码仍 50，16 个字都在、不截断
+    const LF = base({ filler: "一二三四五六七八九十一二三四五六" }), f = one(LF, "info-filler"), fo = one(LF, "info-folio");
+    assert.ok(f.size < 50 && f.size >= 26 && fo.size === 50, "填表人缩字号：" + f.size);
+    assert.equal(f.text, "填表人 一二三四五六七八九十一二三四五六", "缩到放得下，不截断");
+    assert.ok(f.x - f.w > fo.x + fo.w, "不压页码"); }
   same(one(L, "rule"), { x: 80, y: 120, w: 920, h: 3, color: "ink" }, "墨线");
   same(one(L, "title"), { x: 80, baseline: 236, size: 76, weight: 700, track: -1, color: "ink", text: "总之 这里有四种情况", align: "left" }, "标题");
   same(one(L, "plate"), { x: 80, y: 290, w: 920, h: 600, color: "plate" }, "图版");
@@ -283,8 +303,12 @@ for (let n = 1; n <= 10; n++) {
   assert.equal(pick(L, "giant").length, 0, "有图不出超大字母");
   same(one(L, "word"), { x: 80, baseline: 1036, size: 120, weight: 700, track: -2, color: "ink", text: "Inside", keyAt: 0, align: "left" }, "单词");
   same(one(L, "bar"), { x: 80, y: 1068, w: 140, h: 10, color: "ink" }, "墨条");
-  same(one(L, "gloss"), { x: 80, baseline: 1158, size: 48, weight: 700, color: "ink", text: "活的，逼真的", align: "left" }, "释义");
-  same(one(L, "caption"), { x: 80, baseline: 1228, size: 38, weight: 400, color: "soft", text: "她看人从不绕弯", align: "left" }, "配文");
+  same(one(L, "gloss"), { x: 80, baseline: 1158, size: 40, weight: 400, color: "soft", text: "活的，逼真的", align: "left" }, "释义（v00.03.01 U04 乙：40 常规灰色）");
+  same(one(L, "caption"), { x: 80, baseline: 1228, size: 48, weight: 700, color: "ink", text: "她看人从不绕弯", align: "left" }, "配文（U04 乙：粗体墨色）");
+  { // U04 复审：配文的折行与「写满」判断按粗体量宽（拉丁字母粗体更宽；全中文测不出来）
+    const fonts = new Set(); C.wrapCaption((f, t) => { fonts.add(f.split(" ")[0]); return t.length; }, "abc def", 0);
+    assert.deepEqual([...fonts], ["700"], "wrapCaption 用粗体量宽");
+  }
   assert.equal(one(L, "word").w, fm(fontB(120), "Inside") - 2 * 5, "单词宽 = measure + (字数 − 1) × 字距");
   for (const gone of ["seal", "folio"]) assert.equal(L.boxes.some((b) => b.role === gone), false, `没有 ${gone}`);
   // 无配图：图版里放超大关键字母（x 128、基线 834、620、字距 −8、墨色）
@@ -301,7 +325,39 @@ for (let n = 1; n <= 10; n++) {
   // 超长释义 / 配文（旧草稿）保险截断，宽度不超 920
   L = base({ glosses: ["", LONG_GLOSS.repeat(3), "", ""], captions: ["", LONG_CAP, "", ""] });
   assert.ok(one(L, "gloss").text.endsWith("…") && one(L, "gloss").w <= 920);
-  assert.ok(one(L, "caption").text.endsWith("…") && one(L, "caption").w <= 920);
+  // 配文可折行（2026-11-17）：词没折行时最多 3 行，行距 62，末行基线不超过 1356；超出的旧稿末行加「…」
+  {
+    const caps = pick(L, "caption");
+    assert.equal(caps.length, 3, "超长配文排满 3 行");
+    assert.deepEqual(caps.map((b) => [b.line, b.baseline, b.size]), [[0, 1228, 48], [1, 1290, 48], [2, 1352, 48]]);
+    assert.ok(caps.every((b) => b.w <= 920) && caps[2].text.endsWith("…") && !caps[0].text.endsWith("…"), "每行不超宽，只有末行带省略号");
+    const W3 = C.wrapCaption(fm, LONG_CAP, 0), W2 = C.wrapCaption(fm, LONG_CAP, 64), W1 = C.wrapCaption(fm, LONG_CAP, 128);
+    assert.deepEqual([W3.lines.length, W2.lines.length, W1.lines.length, W3.cut, W1.cut], [3, 2, 1, true, true], "词每多折一行，配文少一行");
+    const short = C.wrapCaption(fm, "她看人从不绕弯", 0);
+    assert.deepEqual([short.lines, short.cut], [["她看人从不绕弯"], false]);
+    // 刚好写满不算截断；折行不丢字、不重字
+    const fits = C.wrapCaption(fm, "配".repeat(40), 0);
+    assert.equal(fits.cut, false); assert.equal(fits.lines.join(""), "配".repeat(40)); assert.ok(fits.lines.length > 1);
+    // 西文单词尽量不拆；比一行还宽的才逐字拆
+    const en = C.wrapCaption(fm, "she never beats around the bush when she looks at people at all", 0);
+    assert.ok(en.lines.length >= 2 && en.lines.every((l) => !/^\s|\s$/.test(l)), "行首行尾不留空格");
+    assert.equal(en.lines.join(" "), "she never beats around the bush when she looks at people at all", "单词没被拆开");
+    assert.equal(C.wrapCaption(fm, "x".repeat(200), 0).lines.every((l) => fm("400 48px f", l) <= 920), true, "超宽的词逐字拆，每行不超宽");
+    assert.deepEqual(C.wrapCaption(fm, "   ", 0).lines, [], "只有空格不出框");
+    // 复审补：分解形式的变音字母（e + U+0301）仍算单词的一部分，不在它前后断行
+    for (let k = 0; k < 24; k++) { // 前面垫不同长度，让行尾落在 café 的不同位置
+      const wn = C.wrapCaption(fm, "x".repeat(k) + " " + "cafe\u0301 ".repeat(8), 0);
+      assert.ok(!wn.cut && wn.lines.every((l) => !/caf$/.test(l) && !/^e\u0301/.test(l)), "café 不被拆开：" + JSON.stringify(wn.lines));
+    }
+    assert.deepEqual([C.FILLER_MAX, C.CAPTION_MAX], [16, 160]);
+  }
+  // 填表人写到上限 16 字：信息行放不下时截断，不压到页码
+  {
+    const LF = base({ filler: "小".repeat(16) }), fo = one(LF, "info-folio"), fi = one(LF, "info-filler");
+    assert.ok(fo.x + fo.w < fi.x - fi.w, "页码与填表人不重叠");
+    const LX = base({ filler: "W".repeat(60) }), fx = one(LX, "info-filler"), fox = one(LX, "info-folio");
+    assert.ok(fx.text.endsWith("…") && fox.x + fox.w < fx.x - fx.w, "超长的旧稿填表人截断");
+  }
 
   // 标题留空 → 标题框文字 = 单词（墨色 76 / 700），其余框一个不动
   const custom = base(), blank = base({ titleRuns: [] });
@@ -374,7 +430,7 @@ for (let n = 1; n <= 10; n++) {
   // 占位：没选词 → 占位文字 + 灰线，不出单词 / 墨条 / 释义 / 配文（空串当作没选）
   for (const over of [{ picks: [["lake", ""], null, ["fire", ""], ["echo", ""]] }, { picks: [["lake", ""], ["", ""], ["fire", ""], ["echo", ""]] }]) {
     L = base(over);
-    same(one(L, "empty"), { x: 80, baseline: 1036, size: 72, weight: 400, color: "ph", text: "打一个以 I 开头的词" }, "占位");
+    same(one(L, "empty"), { x: 80, baseline: 1036, size: 72, weight: 400, color: "ph", text: "I 开头" }, "占位");
     same(one(L, "ul"), { x: 80, y: 1062, w: 560, h: 3, color: "ph" }, "占位线");
     for (const gone of ["word", "bar", "gloss", "caption"]) assert.equal(pick(L, gone).length, 0, `占位时没有 ${gone}`);
   }
@@ -611,6 +667,33 @@ for (let n = 1; n <= 10; n++) {
   assert.equal(run(null, false), false, "跟随系统 + 系统浅色");
   assert.equal(run(null, false, false), false, "没有 matchMedia 当浅色");
 }
+// 顶部安全区兜底（theme.js，2026-11-17 鸿蒙真机 U0）：env 报 0 的小红书安卓 / 鸿蒙补留白；容器给了 statusBarHeight 就用它；
+// screenTop > 0、iOS 报了真实值、普通浏览器、PC 模拟器已设值时都不动
+{
+  const run = ({ ua, xhs, env = 0, preset = "" }) => {
+    const saved = [globalThis.window, globalThis.document, globalThis.localStorage];
+    const vars = preset ? { "--safe-area-inset-top": preset } : {};
+    const root = {
+      getAttribute: () => null, setAttribute() {}, removeAttribute() {}, appendChild() {}, removeChild() {},
+      style: { setProperty: (k, v) => { vars[k] = v; }, getPropertyValue: (k) => vars[k] || "", removeProperty: (k) => { delete vars[k]; } },
+    };
+    globalThis.document = { documentElement: root, addEventListener() {}, createElement: () => ({ style: {} }) };
+    globalThis.window = { navigator: { userAgent: ua }, xhs, matchMedia: () => ({ matches: false }), getComputedStyle: () => ({ paddingTop: env + "px" }), addEventListener() {} };
+    globalThis.localStorage = { getItem: () => null, setItem() {} };
+    new Function(fs.readFileSync(new URL("../app/assets/theme.js", import.meta.url), "utf8"))();
+    [globalThis.window, globalThis.document, globalThis.localStorage] = saved;
+    return vars["--safe-area-inset-top"] || "";
+  };
+  const harmony = "Mozilla/5.0 (Linux; Android 12; ALN-AL00) discovery/9.53.3 xhsminitool/1.0.0";
+  const win = (wi) => ({ launchOptions: { miniToolEnv: { windowInfo: wi } } });
+  assert.equal(run({ ua: harmony, xhs: win({ statusBarHeight: 40, screenTop: 0 }) }), "40px", "鸿蒙真机：用容器给的 statusBarHeight");
+  assert.equal(run({ ua: harmony, xhs: win({ statusBarHeight: 32, screenTop: 0 }) }), "32px", "数值随容器");
+  assert.equal(run({ ua: harmony, xhs: {} }), "40px", "容器没给 windowInfo：按 40px 估值");
+  assert.equal(run({ ua: harmony, xhs: win({ statusBarHeight: 40, screenTop: 40 }) }), "", "网页本来就在状态栏下面：不补");
+  assert.equal(run({ ua: "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0) xhsminitool", xhs: win({ statusBarHeight: 54, screenTop: 0 }), env: 59 }), "", "iOS 报了真实安全区：不覆盖");
+  assert.equal(run({ ua: "Mozilla/5.0 (Linux; Android 14) Chrome/120" }), "", "普通安卓浏览器：不动");
+  assert.equal(run({ ua: harmony, xhs: {}, preset: "30px" }), "30px", "PC 模拟器已设值：不动");
+}
 // CSS 注释配对：注释里写了 `.focus*/` 这类字样会提前结束注释，吞掉后面的规则（402bcf1 曾因此丢了 Noto Sans 400 的 @font-face）
 {
   const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
@@ -645,6 +728,10 @@ for (let n = 1; n <= 10; n++) {
   assert.deepEqual(rw("li!v", 4, 4), { value: "Liv", start: 3, end: 3 });
   assert.deepEqual(rw("l!iv", 1, 1), { value: "Liv", start: 1, end: 1 }, "删的字在光标后，光标不动");
   assert.deepEqual(rw("2nd", 3, 3), { value: "2nd", start: 3, end: 3 }, "数字保留（T41）");
+  assert.deepEqual(rw("a  c", 3, 4), { value: "A c", start: 2, end: 3 });
+  assert.equal(rw("binomial nomenclature").value, "Binomial nomenclature");
+  assert.equal(rw("binomial nomenclaturexxxxxxxxx").over, true, "第 29 个字不收（空格不算字；v00.03.01 E2 起上限 28）");
+  assert.equal(rw("binomial nomenclaturexxxxxxxx").over, undefined, "正好 28 个字");
   assert.equal(rw("ice cream").value, "Ice cream");
   assert.equal(rw("well-known").value, "Well-known");
   assert.equal(rw("don\u2019t").value, "Don't", "弯撇号换成直撇号");
@@ -652,12 +739,17 @@ for (let n = 1; n <= 10; n++) {
   assert.equal(rw("li!v?e").value, "Live");
   // 开头空白去掉；光标跟着左移
   assert.deepEqual(rw("  liv", 5, 5), { value: "Liv", start: 3, end: 3 });
-  // 最多 20 个字符
-  assert.equal(rw("a".repeat(30)).value, "A" + "a".repeat(19));
-  assert.equal(rw("a".repeat(30), 30, 30).start, 20, "光标夹在末尾");
+  // 最多 28 个字符（v00.03.01 E2，英语同西文）
+  assert.equal(rw("a".repeat(30)).value, "A" + "a".repeat(27));
+  assert.equal(rw("a".repeat(30), 30, 30).start, 28, "光标夹在末尾");
   // 缺省 = 末尾
   assert.deepEqual(rw("liv"), { value: "Liv", start: 3, end: 3 });
-  assert.equal(C.WORD_MAX, 20);
+  assert.equal(C.WORD_MAX, 28); // v00.03.01 E2：六门一致
+  // v00.03.01 E6：单词框计数器的 wordUnits 与 rewriteWord 同一口径——组合变音符并进前一个字，空格与不收的字不算，弯撇号、连字符、数字、汉字各算一个；不封顶
+  for (const [s, n] of [["école", 5], ["don’t", 5], ["ice cream", 8], ["well-known", 10], ["2nd", 3], ["脸庞", 2], ["li!v?e", 4], ["  liv ", 3], ["", 0]]) assert.equal(C.wordUnits(s), n, "wordUnits " + JSON.stringify(s));
+  assert.equal(C.wordUnits("a".repeat(30)), 30, "不封顶：组字期间照实计");
+  for (const s of ["binomial nomenclaturexxxxxxxx", "binomial nomenclaturexxxxxxxxx", "é".repeat(28), "é".repeat(29), "a b ".repeat(14), "a b ".repeat(15), "don’t".repeat(5) + "abc", "don’t".repeat(5) + "abcd"])
+    assert.equal(rw(s).over === true, C.wordUnits(s) > C.WORD_MAX, "计数器与上限判断一致：" + JSON.stringify(s));
 }
 
 // T11：左右滑动判断（D16）——横向位移 > 40px 且 > 1.5 × 纵向位移；手指向左 = 下一格
@@ -849,7 +941,7 @@ for (let n = 1; n <= 10; n++) {
     assert.deepEqual(senses("aaron"), [["亚伦"]]);
     assert.deepEqual(senses("miriam"), [["苦难之洋", "米里亚姆"]]);
     assert.deepEqual(senses("kipling"), [["吉卜林"]], "名字说明里切出来的年份不显示");
-    assert.equal(C.defaultGloss(real("gloved")), "（手）戴着手套的", "普通括号说明保留");
+    assert.equal(C.defaultGloss(real("gloved")), "（手）戴着手套的", "旧测试词典按原文显示，含括号说明");
     assert.equal(C.defaultGloss(real("wes")), "", "整条只剩标签：空着，不拿「男子名」冒充译名（B3-R2 复审）");
     // B3-R2 复审：名字说明被切成三段时的中段别名（「等于Arabella」）、义项上挂的别名括号（「黛安（等于Diana」）、英文括号的人名标签
     for (const [w, g] of [["bella", "贝拉"], ["bobbie", "博比"], ["ricky", "里基"], ["jo", "乔"], ["diane", "黛安"], ["reid", "里德"]]) assert.deepEqual(senses(w), [[g]], w + "：只留名字");
@@ -869,7 +961,8 @@ for (let n = 1; n <= 10; n++) {
           return;
         }
         const dg = d.find((x) => x.pos === g.pos);
-        if (!dg || JSON.stringify([...new Set(g.senses)]) !== JSON.stringify(dg.senses)) plain++;
+        const want = [...new Set(g.senses)]; // v00.03.01 L01：形容词组只允许去掉末尾的「的」
+        if (!dg || JSON.stringify(want) !== JSON.stringify(dg.senses)) plain++;
       });
     }
     assert.deepEqual([empty.sort().join(","), label, plain], ["cornwall,emerson,fletcher,fran,mercia,salisbury,wes", 0, 0], "全词库：只有 7 个纯标签词条显示为空、残留人名标注与别名残片 0、没有名字标注的组被改动 0");
@@ -942,8 +1035,8 @@ for (let n = 1; n <= 10; n++) {
     assert.ok(!roles(C.layoutCard(base, fm)).some((r) => /-ph$/.test(r)), "导出不出占位框");
     const E = C.layoutCard(Object.assign({}, base, { edit: true }), fm);
     const g = E.boxes.find((b) => b.role === "gloss-ph"), c = E.boxes.find((b) => b.role === "caption-ph");
-    assert.deepEqual([g.text, g.x, g.baseline, g.size, g.weight, g.color], ["释义", 80, 1158, 48, 400, "ph"]);
-    assert.deepEqual([c.text, c.x, c.baseline, c.size, c.weight, c.color], ["配文（选填）", 80, 1228, 38, 400, "ph"]);
+    assert.deepEqual([g.text, g.x, g.baseline, g.size, g.weight, g.color], ["释义", 80, 1158, 40, 400, "ph"], "释义占位跟释义字号 40（U04）");
+    assert.deepEqual([c.text, c.x, c.baseline, c.size, c.weight, c.color], ["配文（选填）", 80, 1228, 48, 400, "ph"]);
     const F = C.layoutCard(Object.assign({}, base, { edit: true, glosses: ["湖"], captions: ["短"] }), fm);
     assert.ok(!roles(F).some((r) => /-ph$/.test(r)) && roles(F).includes("gloss") && roles(F).includes("caption"), "有字就不出占位");
     const none = C.layoutCard(Object.assign({}, base, { edit: true, picks: [null] }), fm);
@@ -969,11 +1062,11 @@ for (let n = 1; n <= 10; n++) {
   assert.notEqual(fam("bed"), fam("b"), "后缀去掉后不足 3 个字母就不去");
   assert.equal(typeof fam(""), "string");
 
-  // 真词库 + 屏蔽器的页数边界（Astra 复审 P3）：L/lus 9 个原始、8 个可见 → 1 批；S/sl 104 个可见 → 13 批
+  // 真词库 + 屏蔽器的页数边界（Astra 复审 P3）：放行 lust 后 L/lus 9 个可见 → 2 批；S/sl 104 个可见 → 13 批
   {
     const pg = (L, q) => C.pageOf(C.candidates(DICT, L, q), 0, C.PAGE_SIZE, skip);
     const lus = C.candidates(DICT, "L", "lus");
-    assert.equal(lus.filter((it) => !skip(it)).length, 8); assert.equal(pg("L", "lus").pages, 1, "lus 只有 1 批");
+    assert.equal(lus.filter((it) => !skip(it)).length, 9); assert.equal(pg("L", "lus").pages, 2, "lus 的第九项可翻页");
     const sl = C.candidates(DICT, "S", "sl").filter((it) => !skip(it)).length;
     assert.equal(pg("S", "sl").pages, Math.ceil(sl / C.PAGE_SIZE), "sl 页数按可见数算");
   }
@@ -1317,7 +1410,10 @@ for (let n = 1; n <= 10; n++) {
   assert.equal(C.migrateDraft({ v: 2, word: "li fe1" }).word, "LIFE1", "单词经 normalizeWord（T41 起数字保留）");
   assert.equal(C.migrateDraft({ v: 2, word: "" }).word, "", "没有单词的草稿合法（恢复后处于 first 模式）");
   assert.equal(C.migrateDraft({ v: 2, word: "AB", view: "weird" }).view, "single");
-  assert.equal(C.migrateDraft({ v: 2, word: "AB", filler: "一二三四五六七八九十甲乙丙丁" }).filler, "一二三四五六七八九十甲乙", "填表人最多 12 字（输入框本来就限 12）");
+  // v00.03.01 批 B 复审：输入框限 16（2026-11-17 起），恢复时原来截到 12，13～16 字的填表人刷新后丢尾巴
+  assert.equal(C.migrateDraft({ v: 2, word: "AB", filler: "一二三四五六七八九十甲乙丙丁戊己" }).filler, "一二三四五六七八九十甲乙丙丁戊己", "填表人 16 字恢复后不丢");
+  assert.equal(C.migrateDraft({ v: 2, word: "AB", filler: "一二三四五六七八九十甲乙丙丁戊己庚" }).filler, "一二三四五六七八九十甲乙丙丁戊己", "超过 16 的旧稿截到 16");
+  assert.equal(C.migrateDraft({ v: 2, word: "AB", filler: "一二三四五六七八九十甲乙丙丁戊😀" }).filler, "一二三四五六七八九十甲乙丙丁戊", "不从代理对中间切开");
   // 坏数据返回 null，不抛错
   for (const bad of [null, undefined, 0, 5, "LIFE", true, [], [1, 2], {}, { v: 2 }, { v: 2, word: 5 }, { v: 2, word: null }, { v: 2, picks: [["a", ""]] }]) assert.equal(C.migrateDraft(bad), null, `坏数据 ${JSON.stringify(bad)} 返回 null`);
   // 字段类型乱了也不抛错，能规整就规整
@@ -1446,7 +1542,7 @@ for (const p of [C.PALETTE.light, C.PALETTE.dark]) {
   assert.equal(C.articleOf(POLI, "", "n.").text, "la");
   assert.deepEqual(plainOf(C.articleOf(POLI, "", "n.#2")), { text: "le / la", pending: true, options: ["le", "la"] }, "第二组名词是两性通用：仍要二选一");
   assert.equal(C.articleOf(["jeune", "adj.年轻的|n.年轻人", "le / la"], "", "n.").pending, true, "只有一个冠词时名词组共用它（原有数据不变）");
-  // V003-B4-R9：西文把「字母 + 组合变音符」合成一个字再过滤、计数；英语照旧
+  // V003-B4-R9：西文把「字母 + 组合变音符」合成一个字再过滤、计数；v00.03.01 R07 起英语同样
   C.addLang("zz", { wordMax: 28, wordChar: /[A-Za-z\u00c0-\u024f0-9' \-]/ }); C.useLang("zz");
   assert.deepEqual(plainOf(C.rewriteWord("e\u0301cole")), { value: "\u00c9cole", start: 5, end: 5 }, "分解编码的 école 不丢重音");
   assert.equal(C.rewriteWord("\u00e9cole").value, C.rewriteWord("e\u0301cole").value, "两种编码得到同一个词");
@@ -1456,8 +1552,23 @@ for (const p of [C.PALETTE.light, C.PALETTE.dark]) {
   assert.deepEqual(plainOf(C.rewriteWord("ae\u0301b", 2, 2)), { value: "A\u00e9b", start: 2, end: 2 }, "光标落在一组中间：算在它后面");
   assert.deepEqual(plainOf(C.rewriteWord("ae\u0301b", 3, 3)), { value: "A\u00e9b", start: 2, end: 2 }, "光标在这一组之后：对应合成后的位置");
   C.useLang("en");
-  assert.equal(C.rewriteWord("e\u0301cole").value, "Ecole", "英语不变：组合符照旧被滤掉");
-  assert.equal(C.rewriteWord("a".repeat(25)).value.length, 20, "英语上限仍是 20");
+  // v00.03.01 R07（用户 11-18 定：输入框兼容重音符，照原样保留拼写）：英语也收带变音符的字母，两种编码同一个词
+  assert.equal(C.rewriteWord("e\u0301cole").value, "\u00c9cole", "英语：分解编码的 école 不丢重音");
+  assert.equal(C.rewriteWord("\u00eatre").value, "\u00catre", "英语：être 照原样");
+  assert.equal(C.normalizeWord("Émail"), "\u00c9MAIL", "英语：主单词里的带变音符字母自成一格");
+  assert.equal(C.containsLetter("\u00e9cole", "E") && C.containsLetter("ecole", "\u00c9"), true, "英语：比对去变音符");
+  assert.equal(C.normalizeWord("Hello2026"), "HELLO2026", "纯 A–Z 与数字：结果不变");
+  { // R3-12：前缀候选也保留输入里已有的音符（farò 不列 faro，publicó 不列 público）；没打音符的输入照旧去音符比
+    const list = [["faro", "n.灯塔"], ["far\u00f2", "v.做"], ["p\u00fablico", "adj.公众"], ["publico", "v.出版"], ["\u00e9tage", "n.楼"], ["eau", "n.水"]];
+    const hit = (q) => C.filterTiers(list, q).flat().map((it) => it[0]);
+    assert.deepEqual(hit("faro"), ["faro", "far\u00f2"], "没打音符：照旧，带音符的也列");
+    assert.deepEqual(hit("far\u00f2"), ["far\u00f2"], "打了 ò：不再列 faro");
+    assert.deepEqual(hit("public\u00f3"), [], "打了 ó：既不是 público 也不是 publico");
+    assert.deepEqual(hit("publico"), ["p\u00fablico", "publico"]);
+    assert.deepEqual(hit("e"), ["\u00e9tage", "eau"]); assert.deepEqual(hit("\u00e9"), ["\u00e9tage"]); assert.deepEqual(hit("\u00c9TAG"), ["\u00e9tage"], "大写、分解编码都认");
+    assert.deepEqual(hit("E\u0301tag"), ["\u00e9tage"]);
+  }
+  assert.equal(C.rewriteWord("a".repeat(30)).value.length, 28, "英语上限 28（v00.03.01 E2）");
 
   const W = C.CARD.WORD, f56 = C.fontOf(700, 56);
   // 折行：空格处折不加连字符；断词点处行尾加连字符；原有连字符之后可折；都没有才在字母间断（两边至少 3 个字）

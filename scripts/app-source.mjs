@@ -27,6 +27,11 @@ export function loadAppFunctions(names, env) {
   if (!("itemLang" in env) && !names.includes("itemLang")) env.itemLang = () => "";
   if (!("lookupHit" in env) && !names.includes("lookupHit")) env.lookupHit = (w, prefer) => { const e = env.lookup ? env.lookup(w) : null; return e ? { entry: e, lang: prefer || one() } : null; };
   if (!("lookupAll" in env) && !names.includes("lookupAll")) env.lookupAll = w => { const e = env.lookup ? env.lookup(w) : null; return e ? [{ entry: e, lang: one() }] : []; };
+  if (!("spellingFor" in env) && !names.includes("spellingFor")) env.spellingFor = (word, h) => h && h.entry[0].toLowerCase() === word.toLowerCase() ? h.entry[0] : word;
+  if (!names.includes("langData") && !env.langData) env.langData = () => null;
+  if (!names.includes("lexicon") && !env.lexicon) env.lexicon = () => null; // 复审 R3-13：lookupHit 汇总漏音符候选前先看有无新词库；替身段按旧式词包处理
+  if (!names.includes("formStatus") && !env.formStatus) env.formStatus = () => "";
+  if (!names.includes("retryForms") && !env.retryForms) env.retryForms = () => {};
   attachModules(env);
   vm.createContext(env);
   for (const name of names) {

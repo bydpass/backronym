@@ -1,0 +1,1240 @@
+lemma	pos	rank	subtitle_row	source	t19	legacy	category	source_rank	encyclopedia_rank	literature_rank	subtitle_rank	reason	tier	score_rank	freq_source
+sum	verb	1		DCC	yes	no	daily	2					common	1	dcc
+nōn	adv	2		DCC	no	no	daily	6					common	2	dcc
+tū	pron	3		DCC	yes	no	pronouns	9					common	3	dcc
+ego	pron	4		DCC	yes	no	pronouns	11					common	4	dcc
+omnis	adj	5		DCC	yes	yes	daily	18					common	5	dcc
+possum	verb	6		DCC	yes	yes	daily	23					common	6	dcc
+māgnus	adj	7		DCC	no	no	daily	25					common	7	dcc
+suus	adj	8		DCC	no	no	daily	27					common	8	dcc
+dō	verb	9		DCC	yes	yes	daily	28					common	9	dcc
+videō	verb	10		DCC	yes	yes	daily	31					common	10	dcc
+faciō	verb	11		DCC	yes	no	daily	32					common	11	dcc
+dīcō	verb	12		DCC	yes	no	daily	33					common	12	dcc
+iam	adv	13		DCC	yes	yes	daily	34					common	13	dcc
+alius	adj	14		DCC	no	no	daily	37					common	14	dcc
+rēs	noun	15		DCC	yes	yes	daily	38					common	15	dcc
+habeō	verb	16		DCC	yes	yes	daily	39					common	16	dcc
+animus	noun	17		DCC	yes	yes	creative	40					common	17	dcc
+deus	noun	18		DCC	yes	yes	creative	42					common	18	dcc
+multus	adj	19		DCC	yes	no	daily	43					common	19	dcc
+tuus	adj	20		DCC	no	no	daily	44					common	20	dcc
+ferō	verb	21		DCC	yes	yes	creative	45					common	21	dcc
+manus	noun	22		DCC	yes	yes	daily	48					common	22	dcc
+nūllus	adj	23		DCC	no	no	daily	49					common	23	dcc
+nunc	adv	24		DCC	yes	yes	daily	50					common	24	dcc
+nōs	pron	25		DCC	yes	no	pronouns	51					common	25	dcc
+noster	adj	26		DCC	no	no	daily	52					common	26	dcc
+ūnus	adj	27		DCC	yes	yes	daily	53					common	27	dcc
+diēs	noun	28		DCC	yes	yes	daily	54					common	28	dcc
+nihil	pron	29		DCC	yes	yes	pronouns	55					common	29	dcc
+tum	adv	30		DCC	yes	yes	daily	56					common	30	dcc
+rēx	noun	31		DCC	yes	yes	daily	60					common	31	dcc
+locus	noun	32		DCC	yes	no	daily	62					common	32	dcc
+veniō	verb	33		DCC	yes	yes	daily	63					common	33	dcc
+pars	noun	34		DCC	yes	yes	daily	65					common	34	dcc
+volō	verb	35		DCC	yes	yes	creative	66					common	35	dcc
+bonus	adj	36		DCC	yes	no	daily	68					common	36	dcc
+agō	verb	37		DCC	yes	yes	daily	69					common	37	dcc
+terra	noun	38		DCC	yes	yes	daily	70					common	38	dcc
+pater	noun	39		DCC	yes	no	daily	71					common	39	dcc
+domus	noun	40		DCC	yes	yes	daily	73					common	40	dcc
+corpus	noun	41		DCC	yes	no	daily	75					common	41	dcc
+aliquis	pron	42		DCC	no	no	pronouns	77					common	42	dcc
+tōtus	adj	43		DCC	no	yes	daily	78					common	43	dcc
+hīc	adv	44		DCC	no	no	daily	80					common	44	dcc
+urbs	noun	45		DCC	yes	no	daily	82					common	45	dcc
+petō	verb	46		DCC	yes	yes	daily	83					common	46	dcc
+iubeō	verb	47		DCC	no	yes	daily	84					common	47	dcc
+vir	noun	48		DCC	yes	no	daily	85					common	48	dcc
+bellum	noun	49		DCC	yes	no	creative	86					common	49	dcc
+vīta	noun	50		DCC	yes	yes	creative	87					common	50	dcc
+homō	noun	51		DCC	yes	no	daily	88					common	51	dcc
+tempus	noun	52		DCC	yes	yes	creative	89					common	52	dcc
+prīmus	adj	53		DCC	yes	no	daily	91					common	53	dcc
+ubi	adv	54		DCC	no	no	daily	92					common	54	dcc
+hostis	noun	55		DCC	yes	yes	daily	93					common	55	dcc
+mors	noun	56		DCC	yes	no	creative	95					common	56	dcc
+eō	verb	57		DCC	yes	no	daily	97					common	57	dcc
+arma	noun	58		DCC	yes	yes	creative	98					common	58	dcc
+superus	adj	59		DCC	no	yes	daily	99					common	59	dcc
+vincō	verb	60		DCC	yes	yes	creative	101					common	60	dcc
+pōnō	verb	61		DCC	yes	yes	daily	102					common	61	dcc
+tantus	adj	62		DCC	yes	yes	daily	105					common	62	dcc
+teneō	verb	63		DCC	yes	yes	daily	106					common	63	dcc
+causa	noun	64		DCC	yes	yes	daily	107					common	64	dcc
+sequor	verb	65		DCC	yes	yes	daily	108					common	65	dcc
+crēdō	verb	66		DCC	yes	no	creative	109					common	66	dcc
+accipiō	verb	67		DCC	yes	yes	daily	110					common	67	dcc
+virtūs	noun	68		DCC	yes	yes	creative	111					common	68	dcc
+quaerō	verb	69		DCC	yes	no	daily	113					common	69	dcc
+mittō	verb	70		DCC	yes	yes	daily	114					common	70	dcc
+vīs	noun	71		DCC	yes	yes	daily	115					common	71	dcc
+amor	noun	72		DCC	yes	yes	creative	116					common	72	dcc
+caelum	noun	73		DCC	yes	no	daily	117					common	73	dcc
+nox	noun	74		DCC	yes	no	daily	119					common	74	dcc
+rēgnum	noun	75		DCC	yes	yes	daily	121					common	75	dcc
+populus	noun	76		DCC	yes	yes	daily	122					common	76	dcc
+caput	noun	77		DCC	yes	no	daily	124					common	77	dcc
+mare	noun	78		DCC	yes	no	daily	125					common	78	dcc
+quīdam	pron	79		DCC	no	yes	pronouns	126					common	79	dcc
+māter	noun	80		DCC	yes	yes	daily	127					common	80	dcc
+vōs	pron	81		DCC	yes	yes	pronouns	130					common	81	dcc
+capiō	verb	82		DCC	yes	yes	daily	131					common	82	dcc
+dūcō	verb	83		DCC	yes	yes	daily	133					common	83	dcc
+nōmen	noun	84		DCC	yes	yes	daily	135					common	84	dcc
+miser	adj	85		DCC	yes	no	creative	137					common	85	dcc
+fortūna	noun	86		DCC	yes	yes	creative	138					common	86	dcc
+novus	adj	87		DCC	yes	no	daily	139					common	87	dcc
+gravis	adj	88		DCC	yes	yes	daily	140					common	88	dcc
+longus	adj	89		DCC	yes	yes	daily	142					common	89	dcc
+parvus	adj	90		DCC	yes	yes	daily	143					common	90	dcc
+relinquō	verb	91		DCC	yes	no	daily	144					common	91	dcc
+saepe	adv	92		DCC	yes	no	daily	145					common	92	dcc
+fīō	verb	93		DCC	yes	no	daily	146					common	93	dcc
+ōs	noun	94		DCC	yes	yes	daily	147					common	94	dcc
+alter	adj	95		DCC	no	no	daily	148					common	95	dcc
+semper	adv	96		DCC	yes	yes	daily	149					common	96	dcc
+ignis	noun	97		DCC	yes	no	creative	151					common	97	dcc
+timeō	verb	98		DCC	yes	yes	creative	153					common	98	dcc
+scelus	noun	99		DCC	yes	yes	creative	154					common	99	dcc
+dēbeō	verb	100		DCC	yes	yes	daily	155					common	100	dcc
+vīvō	verb	101		DCC	yes	yes	creative	156					common	101	dcc
+fātum	noun	102		DCC	yes	yes	creative	157					common	102	dcc
+vocō	verb	103		DCC	no	no	daily	158					common	103	dcc
+altus	adj	104		DCC	yes	yes	professional-humanities	159					common	104	dcc
+parō	verb	105		DCC	no	yes	daily	160					common	105	dcc
+mīles	noun	106		DCC	yes	no	daily	161					common	106	dcc
+medius	adj	107		DCC	no	no	daily	162					common	107	dcc
+inquam	verb	108		DCC	no	no	daily	163					common	108	dcc
+audiō	verb	109		DCC	yes	yes	daily	165					common	109	dcc
+putō	verb	110		DCC	no	yes	daily	166					common	110	dcc
+annus	noun	111		DCC	yes	no	daily	167					common	111	dcc
+stō	verb	112		DCC	no	yes	daily	168					common	112	dcc
+vōx	noun	113		DCC	yes	yes	daily	169					common	113	dcc
+genus	noun	114		DCC	yes	no	professional-natural	170					common	114	dcc
+referō	verb	115		DCC	yes	yes	daily	171					common	115	dcc
+sciō	verb	116		DCC	yes	yes	daily	172					common	116	dcc
+mēns	noun	117		DCC	yes	yes	creative	173					common	117	dcc
+reddō	verb	118		DCC	yes	yes	daily	174					common	118	dcc
+licet	verb	119		DCC	yes	yes	daily	175					common	119	dcc
+sōlus	adj	120		DCC	yes	no	daily	176					common	120	dcc
+fugiō	verb	121		DCC	yes	yes	creative	177					common	121	dcc
+ūllus	adj	122		DCC	no	no	daily	178					common	122	dcc
+nēmō	pron	123		DCC	yes	no	pronouns	179					common	123	dcc
+nātūra	noun	124		DCC	yes	no	daily	180					common	124	dcc
+mōs	noun	125		DCC	yes	yes	daily	181					common	125	dcc
+beneficium	noun	126		DCC	yes	yes	daily	182					common	126	dcc
+pectus	noun	127		DCC	yes	no	daily	183					common	127	dcc
+fidēs	noun	128		DCC	yes	no	creative	184					common	128	dcc
+patior	verb	129		DCC	no	no	daily	185					common	129	dcc
+cūra	noun	130		DCC	yes	yes	creative	186					common	130	dcc
+īra	noun	131		DCC	yes	no	creative	187					common	131	dcc
+verbum	noun	132		DCC	yes	yes	daily	188					common	132	dcc
+parēns	noun	133		DCC	yes	no	daily	190					common	133	dcc
+puer	noun	134		DCC	yes	no	daily	191					common	134	dcc
+moveō	verb	135		DCC	no	yes	daily	192					common	135	dcc
+dolor	noun	136		DCC	yes	no	creative	193					common	136	dcc
+gēns	noun	137		DCC	yes	yes	daily	194					common	137	dcc
+modus	noun	138		DCC	yes	yes	professional-humanities	195					common	138	dcc
+via	noun	139		DCC	yes	no	daily	196					common	139	dcc
+quisque	pron	140		DCC	no	yes	pronouns	197					common	140	dcc
+amīcus	adj	141		DCC	yes	yes	daily	198					common	141	dcc
+pēs	noun	142		DCC	yes	yes	daily	199					common	142	dcc
+imperium	noun	143		DCC	yes	yes	daily	200					common	143	dcc
+labor	noun	144		DCC	yes	no	daily	201					common	144	dcc
+ingēns	adj	145		DCC	yes	yes	daily	202					common	145	dcc
+tālis	adj	146		DCC	yes	yes	daily	203					common	146	dcc
+oculus	noun	147		DCC	yes	yes	daily	206					common	147	dcc
+unda	noun	148		DCC	yes	no	creative	207					common	148	dcc
+vultus	noun	149		DCC	yes	yes	daily	209					common	149	dcc
+cadō	verb	150		DCC	yes	yes	creative	210					common	150	dcc
+nātus	noun	151		DCC	no	yes	daily	211					common	151	dcc
+trahō	verb	152		DCC	yes	yes	daily	213					common	152	dcc
+sanguis	noun	153		DCC	yes	no	daily	214					common	153	dcc
+metus	noun	154		DCC	yes	no	creative	215					common	154	dcc
+cōnsilium	noun	155		DCC	yes	no	daily	217					common	155	dcc
+coniūnx	noun	156		DCC	yes	yes	daily	218					common	156	dcc
+amō	verb	157		DCC	yes	yes	creative	219					common	157	dcc
+levis	adj	158		DCC	no	no	daily	220					common	158	dcc
+ferus	adj	159		DCC	yes	no	creative	222					common	159	dcc
+poena	noun	160		DCC	yes	yes	daily	223					common	160	dcc
+castrum	noun	161		DCC	no	yes	daily	224					common	161	dcc
+frāter	noun	162		DCC	yes	yes	daily	225					common	162	dcc
+haud	adv	163		DCC	no	yes	daily	226					common	163	dcc
+malus	adj	164		DCC	yes	yes	daily	227					common	164	dcc
+iaceō	verb	165		DCC	no	yes	daily	228					common	165	dcc
+līber	adj	166		DCC	yes	yes	creative	229					common	166	dcc
+iter	noun	167		DCC	yes	yes	creative	230					common	167	dcc
+ferrum	noun	168		DCC	yes	yes	creative	231					common	168	dcc
+spēs	noun	169		DCC	yes	yes	creative	232					common	169	dcc
+puella	noun	170		DCC	yes	yes	daily	233					common	170	dcc
+silva	noun	171		DCC	yes	no	daily	234					common	171	dcc
+fīnis	noun	172		DCC	yes	no	creative	236					common	172	dcc
+gerō	verb	173		DCC	yes	yes	daily	237					common	173	dcc
+dux	noun	174		DCC	yes	yes	daily	239					common	174	dcc
+premō	verb	175		DCC	no	yes	daily	240					common	175	dcc
+dominus	noun	176		DCC	yes	yes	daily	241					common	176	dcc
+mōns	noun	177		DCC	yes	yes	daily	242					common	177	dcc
+saevus	adj	178		DCC	no	no	daily	244					common	178	dcc
+lītus	noun	179		DCC	yes	yes	daily	245					common	179	dcc
+soleō	verb	180		DCC	no	yes	daily	246					common	180	dcc
+equus	noun	181		DCC	yes	yes	daily	248					common	181	dcc
+dūrus	adj	182		DCC	no	yes	daily	249					common	182	dcc
+cōgō	verb	183		DCC	no	no	daily	250					common	183	dcc
+numquam	adv	184		DCC	yes	no	daily	251					common	184	dcc
+morior	verb	185		DCC	yes	yes	creative	253					common	185	dcc
+carmen	noun	186		DCC	yes	no	creative	254					common	186	dcc
+tēlum	noun	187		DCC	yes	yes	creative	255					common	187	dcc
+ratiō	noun	188		DCC	yes	yes	professional-humanities	256					common	188	dcc
+umbra	noun	189		DCC	yes	yes	creative	257					common	189	dcc
+ars	noun	190		DCC	yes	no	daily	258					common	190	dcc
+dexter	adj	191		DCC	no	yes	daily	260					common	191	dcc
+sīgnum	noun	192		DCC	no	no	daily	261					common	192	dcc
+laetus	adj	193		DCC	yes	yes	daily	262					common	193	dcc
+lēx	noun	194		DCC	yes	yes	daily	264					common	194	dcc
+perīculum	noun	195		DCC	yes	yes	daily	265					common	195	dcc
+nāscor	verb	196		DCC	yes	yes	creative	266					common	196	dcc
+exercitus	noun	197		DCC	yes	yes	daily	267					common	197	dcc
+pereō	verb	198		DCC	no	yes	daily	268					common	198	dcc
+ventus	noun	199		DCC	yes	yes	daily	269					common	199	dcc
+audeō	verb	200		DCC	no	no	daily	270					common	200	dcc
+aqua	noun	201		DCC	yes	no	daily	272					common	201	dcc
+rapiō	verb	202		DCC	yes	no	daily	273					common	202	dcc
+simul	adv	203		DCC	yes	no	daily	274					common	203	dcc
+trīstis	adj	204		DCC	yes	no	creative	275					common	204	dcc
+mūnus	noun	205		DCC	yes	yes	daily	276					common	205	dcc
+iuvenis	noun	206		DCC	yes	yes	daily	277					common	206	dcc
+fāma	noun	207		DCC	yes	no	creative	278					common	207	dcc
+adsum	verb	208		DCC	no	yes	daily	279					common	208	dcc
+quisquam	pron	209		DCC	no	no	pronouns	280					common	209	dcc
+pār	adj	210		DCC	no	yes	daily	281					common	210	dcc
+vester	adj	211		DCC	no	no	daily	282					common	211	dcc
+flūmen	noun	212		DCC	yes	yes	daily	283					common	212	dcc
+certus	adj	213		DCC	no	no	daily	285					common	213	dcc
+fortis	adj	214		DCC	no	no	daily	286					common	214	dcc
+placeō	verb	215		DCC	no	yes	daily	287					common	215	dcc
+vertō	verb	216		DCC	no	yes	daily	288					common	216	dcc
+servō	verb	217		DCC	no	no	daily	289					common	217	dcc
+honor	noun	218		DCC	yes	no	creative	290					common	218	dcc
+dīgnus	adj	219		DCC	no	no	daily	291					common	219	dcc
+cūnctus	adj	220		DCC	no	yes	daily	292					common	220	dcc
+tollō	verb	221		DCC	no	yes	daily	293					common	221	dcc
+negō	verb	222		DCC	no	no	daily	294					common	222	dcc
+vetus	adj	223		DCC	yes	no	daily	295					common	223	dcc
+eques	noun	224		DCC	yes	no	historical-cultural	296					common	224	dcc
+trādō	verb	225		DCC	no	yes	daily	297					common	225	dcc
+flamma	noun	226		DCC	yes	no	creative	298					common	226	dcc
+lūx	noun	227		DCC	yes	yes	creative	299					common	227	dcc
+redeō	verb	228		DCC	yes	yes	creative	301					common	228	dcc
+sentiō	verb	229		DCC	no	yes	daily	302					common	229	dcc
+aurum	noun	230		DCC	yes	yes	daily	303					common	230	dcc
+cēdō	verb	231		DCC	no	yes	daily	304					common	231	dcc
+saxum	noun	232		DCC	yes	no	daily	306					common	232	dcc
+aetās	noun	233		DCC	yes	yes	creative	308					common	233	dcc
+fēlīx	adj	234		DCC	no	yes	daily	309					common	234	dcc
+loquor	verb	235		DCC	no	yes	daily	310					common	235	dcc
+coepī	verb	236		DCC	no	yes	daily	312					common	236	dcc
+iūs	noun	237		DCC	yes	yes	daily	314					common	237	dcc
+mūtō	verb	238		DCC	no	yes	daily	315					common	238	dcc
+inveniō	verb	239		DCC	yes	yes	daily	316					common	239	dcc
+prīnceps	adj	240		DCC	no	no	daily	317					common	240	dcc
+ops	noun	241		DCC	yes	yes	daily	318					common	241	dcc
+recipiō	verb	242		DCC	yes	yes	daily	319					common	242	dcc
+sōl	noun	243		DCC	yes	no	daily	320					common	243	dcc
+cōnsul	noun	244		DCC	yes	yes	historical-cultural	321					common	244	dcc
+orbis	noun	245		DCC	yes	yes	creative	322					common	245	dcc
+turba	noun	246		DCC	yes	no	daily	323					common	246	dcc
+ager	noun	247		DCC	yes	yes	daily	324					common	247	dcc
+solvō	verb	248		DCC	no	yes	daily	325					common	248	dcc
+vitium	noun	249		DCC	yes	yes	daily	326					common	249	dcc
+vulnus	noun	250		DCC	yes	yes	daily	327					common	250	dcc
+senātus	noun	251		DCC	yes	yes	historical-cultural	329					common	251	dcc
+ūtor	verb	252		DCC	yes	no	daily	330					common	252	dcc
+cōpia	noun	253		DCC	yes	yes	daily	331					common	253	dcc
+opus	noun	254		DCC	yes	yes	daily	332					common	254	dcc
+colō	verb	255		DCC	no	yes	daily	333					common	255	dcc
+vōtum	noun	256		DCC	yes	yes	creative	334					common	256	dcc
+iugum	noun	257		DCC	yes	yes	daily	335					common	257	dcc
+tellūs	noun	258		DCC	no	yes	daily	337					common	258	dcc
+numerus	noun	259		DCC	yes	yes	daily	338					common	259	dcc
+cōgnōscō	verb	260		DCC	no	no	daily	339					common	260	dcc
+victor	noun	261		DCC	yes	no	daily	340					common	261	dcc
+patria	noun	262		DCC	yes	no	daily	342					common	262	dcc
+cāsus	noun	263		DCC	yes	yes	creative	344					common	263	dcc
+frangō	verb	264		DCC	yes	no	creative	345					common	264	dcc
+cīvitās	noun	265		DCC	yes	yes	daily	346					common	265	dcc
+nōscō	verb	266		DCC	no	yes	daily	347					common	266	dcc
+proelium	noun	267		DCC	yes	yes	creative	348					common	267	dcc
+ēripiō	verb	268		DCC	yes	yes	daily	349					common	268	dcc
+mundus	adj,noun	269		DCC	yes	yes	creative	350					common	269	dcc
+cursus	noun	270		DCC	yes	yes	daily	351					common	270	dcc
+vix	adv	271		DCC	yes	yes	daily	352					common	271	dcc
+nāvis	noun	272		DCC	yes	no	daily	353					common	272	dcc
+lacrima	noun	273		DCC	yes	yes	creative	354					common	273	dcc
+hūmānus	adj	274		DCC	yes	no	daily	355					common	274	dcc
+mollis	adj	275		DCC	yes	no	creative	356					common	275	dcc
+maneō	verb	276		DCC	no	yes	daily	357					common	276	dcc
+āgmen	noun	277		DCC	no	no	daily	358					common	277	dcc
+sīdus	noun	278		DCC	yes	no	creative	359					common	278	dcc
+glōria	noun	279		DCC	yes	no	creative	360					common	279	dcc
+fuga	noun	280		DCC	yes	yes	daily	364					common	280	dcc
+tūtus	adj	281		DCC	no	no	daily	365					common	281	dcc
+auris	noun	282		DCC	yes	no	daily	366					common	282	dcc
+aliēnus	adj	283		DCC	no	yes	daily	367					common	283	dcc
+taceō	verb	284		DCC	yes	yes	creative	369					common	284	dcc
+legiō	noun	285		DCC	yes	no	daily	370					common	285	dcc
+ostendō	verb	286		DCC	yes	yes	daily	371					common	286	dcc
+socius	adj	287		DCC	no	yes	daily	372					common	287	dcc
+prōsum	verb	288		DCC	yes	yes	daily	373					common	288	dcc
+āra	noun	289		DCC	yes	no	daily	374					common	289	dcc
+lūmen	noun	290		DCC	yes	no	creative	375					common	290	dcc
+tegō	verb	291		DCC	no	no	daily	376					common	291	dcc
+turpis	adj	292		DCC	no	yes	daily	377					common	292	dcc
+voluptās	noun	293		DCC	yes	yes	daily	378					common	293	dcc
+adhūc	adv	294		DCC	no	yes	daily	379					common	294	dcc
+grātia	noun	295		DCC	yes	yes	creative	380					common	295	dcc
+iniūria	noun	296		DCC	yes	yes	creative	381					common	296	dcc
+latus	noun	297		DCC	yes	no	daily	382					common	297	dcc
+dulcis	adj	298		DCC	no	no	daily	383					common	298	dcc
+extrēmus	adj	299		DCC	yes	no	creative	385					common	299	dcc
+tēctum	noun	300		DCC	yes	no	daily	386					common	300	dcc
+ingenium	noun	301		DCC	yes	yes	daily	387					common	301	dcc
+pāx	noun	302		DCC	yes	yes	creative	388					common	302	dcc
+canō	verb	303		DCC	no	yes	daily	389					common	303	dcc
+iuvō	verb	304		DCC	yes	yes	daily	390					common	304	dcc
+campus	noun	305		DCC	yes	yes	daily	391					common	305	dcc
+claudō	verb	306		DCC	no	yes	daily	392					common	306	dcc
+doceō	verb	307		DCC	no	yes	daily	393					common	307	dcc
+excipiō	verb	308		DCC	no	yes	daily	394					common	308	dcc
+clārus	adj	309		DCC	no	no	daily	395					common	309	dcc
+procul	adv	310		DCC	yes	no	creative	397					common	310	dcc
+sacer	adj	311		DCC	no	yes	daily	398					common	311	dcc
+mora	noun	312		DCC	yes	yes	daily	399					common	312	dcc
+errō	verb	313		DCC	no	no	daily	402					common	313	dcc
+sēdēs	noun	314		DCC	yes	yes	daily	403					common	314	dcc
+coma	noun	315		DCC	yes	yes	daily	405					common	315	dcc
+aiō	verb	316		DCC	no	yes	daily	406					common	316	dcc
+gaudeō	verb	317		DCC	yes	yes	creative	407					common	317	dcc
+beātus	adj	318		DCC	yes	yes	creative	408					common	318	dcc
+perveniō	verb	319		DCC	no	yes	daily	409					common	319	dcc
+vērus	adj	320		DCC	no	yes	daily	410					common	320	dcc
+incipiō	verb	321		DCC	yes	no	daily	411					common	321	dcc
+parcō	verb	322		DCC	no	yes	daily	412					common	322	dcc
+vestis	noun	323		DCC	yes	yes	daily	413					common	323	dcc
+similis	adj	324		DCC	no	yes	daily	414					common	324	dcc
+caedēs	noun	325		DCC	yes	yes	creative	415					common	325	dcc
+ōrdō	noun	326		DCC	yes	yes	daily	416					common	326	dcc
+optō	verb	327		DCC	yes	yes	creative	417					common	327	dcc
+virgō	noun	328		DCC	yes	yes	daily	418					common	328	dcc
+legō	verb	329		DCC	yes	yes	daily	419					common	329	dcc
+aura	noun	330		DCC	yes	no	daily	420					common	330	dcc
+impetus	noun	331		DCC	yes	yes	daily	421					common	331	dcc
+fōrma	noun	332		DCC	yes	yes	creative	422					common	332	dcc
+praestō	verb	333		DCC	no	yes	daily	423					common	333	dcc
+aequor	noun	334		DCC	yes	yes	creative	424					common	334	dcc
+misceō	verb	335		DCC	no	yes	daily	425					common	335	dcc
+spatium	noun	336		DCC	yes	yes	daily	426					common	336	dcc
+tandem	adv	337		DCC	yes	no	daily	427					common	337	dcc
+īnferus	adj	338		DCC	no	yes	daily	428					common	338	dcc
+metuō	verb	339		DCC	no	yes	daily	429					common	339	dcc
+temptō	verb	340		DCC	no	yes	daily	430					common	340	dcc
+trānseō	verb	341		DCC	no	yes	daily	431					common	341	dcc
+ultimus	adj	342		DCC	no	yes	daily	432					common	342	dcc
+addō	verb	343		DCC	no	yes	daily	433					common	343	dcc
+grātus	adj	344		DCC	yes	no	creative	434					common	344	dcc
+laudō	verb	345		DCC	no	no	daily	435					common	345	dcc
+impōnō	verb	346		DCC	no	yes	daily	437					common	346	dcc
+somnus	noun	347		DCC	yes	no	daily	438					common	347	dcc
+aciēs	noun	348		DCC	yes	yes	creative	439					common	348	dcc
+rūrsus	adv	349		DCC	yes	yes	daily	440					common	349	dcc
+cupiō	verb	350		DCC	yes	yes	creative	441					common	350	dcc
+exspectō	verb	351		DCC	yes	no	daily	442					common	351	dcc
+compōnō	verb	352		DCC	no	yes	daily	443					common	352	dcc
+laus	noun	353		DCC	yes	no	creative	444					common	353	dcc
+absum	verb	354		DCC	yes	yes	daily	445					common	354	dcc
+ūsus	noun	355		DCC	yes	yes	professional-humanities	446					common	355	dcc
+comes	noun	356		DCC	yes	no	daily	448					common	356	dcc
+studium	noun	357		DCC	yes	yes	daily	450					common	357	dcc
+facilis	adj	358		DCC	no	yes	daily	451					common	358	dcc
+nūmen	noun	359		DCC	yes	yes	creative	452					common	359	dcc
+sapiēns	adj	360		DCC	no	no	daily	453					common	360	dcc
+sūmō	verb	361		DCC	no	yes	daily	454					common	361	dcc
+nōbilis	adj	362		DCC	no	yes	daily	455					common	362	dcc
+fleō	verb	363		DCC	no	no	daily	457					common	363	dcc
+nōlō	verb	364		DCC	yes	yes	daily	458					common	364	dcc
+plēnus	adj	365		DCC	no	yes	daily	459					common	365	dcc
+nemus	noun	366		DCC	yes	no	creative	461					common	366	dcc
+cārus	adj	367		DCC	no	no	daily	462					common	367	dcc
+dēsum	verb	368		DCC	no	yes	daily	463					common	368	dcc
+lēgātus	noun	369		DCC	yes	yes	daily	464					common	369	dcc
+discō	verb	370		DCC	yes	yes	daily	465					common	370	dcc
+furor	noun	371		DCC	yes	no	creative	466					common	371	dcc
+amnis	noun	372		DCC	yes	yes	daily	467					common	372	dcc
+arbor	noun	373		DCC	yes	yes	daily	468					common	373	dcc
+mox	adv	374		DCC	yes	yes	daily	469					common	374	dcc
+cīvis	noun	375		DCC	yes	yes	historical-cultural	471					common	375	dcc
+occupō	verb	376		DCC	no	no	daily	472					common	376	dcc
+spectō	verb	377		DCC	no	yes	daily	473					common	377	dcc
+tergum	noun	378		DCC	yes	no	daily	474					common	378	dcc
+crīmen	noun	379		DCC	yes	yes	daily	475					common	379	dcc
+dōnum	noun	380		DCC	yes	yes	daily	476					common	380	dcc
+nōtus	adj	381		DCC	no	no	daily	477					common	381	dcc
+sinus	noun	382		DCC	yes	yes	daily	478					common	382	dcc
+faciēs	noun	383		DCC	yes	yes	daily	479					common	383	dcc
+rumpō	verb	384		DCC	no	no	daily	480					common	384	dcc
+membrum	noun	385		DCC	yes	yes	daily	481					common	385	dcc
+umquam	adv	386		DCC	yes	no	daily	482					common	386	dcc
+aspiciō	verb	387		DCC	yes	yes	daily	483					common	387	dcc
+templum	noun	388		DCC	yes	yes	daily	485					common	388	dcc
+āmittō	verb	389		DCC	no	yes	daily	486					common	389	dcc
+pōscō	verb	390		DCC	no	no	daily	487					common	390	dcc
+perdō	verb	391		DCC	no	no	daily	488					common	391	dcc
+tener	adj	392		DCC	no	no	daily	490					common	392	dcc
+currus	noun	393		DCC	yes	yes	daily	491					common	393	dcc
+precor	verb	394		DCC	no	yes	daily	492					common	394	dcc
+anima	noun	395		DCC	yes	yes	creative	493					common	395	dcc
+contingō	verb	396		DCC	no	yes	daily	494					common	396	dcc
+lībertās	noun	397		DCC	yes	no	creative	495					common	397	dcc
+servus	noun	398		DCC	yes	no	daily	496					common	398	dcc
+soror	noun	399		DCC	yes	yes	daily	497					common	399	dcc
+flūctus	noun	400		DCC	yes	yes	daily	498					common	400	dcc
+exigō	verb	401		DCC	no	yes	daily	500					common	401	dcc
+fēmina	noun	402		DCC	yes	no	daily	501					common	402	dcc
+nimius	adj	403		DCC	no	yes	daily	502					common	403	dcc
+fallō	verb	404		DCC	no	no	daily	503					common	404	dcc
+mīror	verb	405		DCC	no	yes	daily	504					common	405	dcc
+classis	noun	406		DCC	yes	yes	daily	505					common	406	dcc
+sedeō	verb	407		DCC	no	yes	daily	506					common	407	dcc
+singulī	adj	408		DCC	no	no	daily	507					common	408	dcc
+mūrus	noun	409		DCC	yes	yes	daily	508					common	409	dcc
+noceō	verb	410		DCC	no	yes	daily	509					common	410	dcc
+fax	noun	411		DCC	yes	no	daily	511					common	411	dcc
+intellegō	verb	412		DCC	no	no	daily	512					common	412	dcc
+iungō	verb	413		DCC	no	yes	daily	513					common	413	dcc
+afferō	verb	414		DCC	no	yes	daily	514					common	414	dcc
+cōgitō	verb	415		DCC	no	no	daily	515					common	415	dcc
+līmen	noun	416		DCC	yes	no	daily	516					common	416	dcc
+pūblicus	adj	417		DCC	no	yes	daily	517					common	417	dcc
+queror	verb	418		DCC	yes	no	creative	518					common	418	dcc
+exemplum	noun	419		DCC	yes	yes	daily	519					common	419	dcc
+prex	noun	420		DCC	yes	no	creative	520					common	420	dcc
+dubitō	verb	421		DCC	no	yes	daily	521					common	421	dcc
+odium	noun	422		DCC	yes	no	creative	522					common	422	dcc
+fundō	verb	423		DCC	no	yes	daily	523					common	423	dcc
+fūnus	noun	424		DCC	yes	no	daily	524					common	424	dcc
+nesciō	verb	425		DCC	no	yes	daily	525					common	425	dcc
+prior	adj	426		DCC	no	yes	daily	526					common	426	dcc
+dubius	adj	427		DCC	no	yes	daily	528					common	427	dcc
+tendō	verb	428		DCC	no	no	daily	529					common	428	dcc
+pecūnia	noun	429		DCC	yes	no	daily	530					common	429	dcc
+spargō	verb	430		DCC	no	yes	daily	532					common	430	dcc
+tangō	verb	431		DCC	no	yes	daily	534					common	431	dcc
+respondeō	verb	432		DCC	yes	yes	daily	535					common	432	dcc
+timor	noun	433		DCC	yes	no	creative	536					common	433	dcc
+properō	verb	434		DCC	no	yes	daily	537					common	434	dcc
+subeō	verb	435		DCC	no	yes	daily	538					common	435	dcc
+valeō	verb	436		DCC	no	yes	daily	539					common	436	dcc
+condō	verb	437		DCC	no	yes	daily	540					common	437	dcc
+nefās	noun	438		DCC	no	yes	daily	541					common	438	dcc
+quondam	adv	439		DCC	yes	yes	daily	542					common	439	dcc
+auxilium	noun	440		DCC	yes	no	daily	543					common	440	dcc
+dēserō	verb	441		DCC	no	yes	daily	544					common	441	dcc
+nūdus	adj	442		DCC	no	yes	daily	545					common	442	dcc
+auctor	noun	443		DCC	no	yes	daily	546					common	443	dcc
+animal	noun	444		DCC	no	no	daily	547					common	444	dcc
+decus	noun	445		DCC	no	yes	daily	548					common	445	dcc
+salūs	noun	446		DCC	no	yes	daily	549					common	446	dcc
+pateō	verb	447		DCC	no	yes	daily	550					common	447	dcc
+rogō	verb	448		DCC	no	no	daily	551					common	448	dcc
+uxor	noun	449		DCC	no	no	daily	552					common	449	dcc
+abeō	verb	450		DCC	yes	no	daily	553					common	450	dcc
+regō	verb	451		DCC	no	yes	daily	554					common	451	dcc
+auferō	verb	452		DCC	no	yes	daily	556					common	452	dcc
+senex	noun	453		DCC	no	yes	daily	558					common	453	dcc
+frōns	noun	454		DCC	no	yes	daily	559					common	454	dcc
+rēgius	adj	455		DCC	no	no	daily	561					common	455	dcc
+currō	verb	456		DCC	yes	yes	daily	562					common	456	dcc
+pellō	verb	457		DCC	no	yes	daily	563					common	457	dcc
+dīves	adj	458		DCC	no	yes	daily	564					common	458	dcc
+iūdicō	verb	459		DCC	no	yes	daily	565					common	459	dcc
+pecus	noun	460		DCC	no	yes	daily	566					common	460	dcc
+potēns	adj	461		DCC	no	no	daily	567					common	461	dcc
+scrībō	verb	462		DCC	no	no	daily	568					common	462	dcc
+pulcher	adj	463		DCC	no	yes	daily	569					common	463	dcc
+surgō	verb	464		DCC	no	no	daily	570					common	464	dcc
+careō	verb	465		DCC	no	yes	daily	572					common	465	dcc
+efficiō	verb	466		DCC	no	yes	daily	573					common	466	dcc
+ōlim	adv	467		DCC	yes	yes	daily	574					common	467	dcc
+sermō	noun	468		DCC	no	yes	daily	575					common	468	dcc
+exerceō	verb	469		DCC	no	yes	daily	576					common	469	dcc
+gradus	noun	470		DCC	no	yes	daily	577					common	470	dcc
+agitō	verb	471		DCC	no	yes	daily	578					common	471	dcc
+honestus	adj	472		DCC	yes	yes	creative	580					common	472	dcc
+moror	verb	473		DCC	no	no	daily	581					common	473	dcc
+praesidium	noun	474		DCC	yes	no	daily	582					common	474	dcc
+sonō	verb	475		DCC	no	yes	daily	583					common	475	dcc
+praebeō	verb	476		DCC	yes	yes	daily	584					common	476	dcc
+regiō	noun	477		DCC	yes	yes	creative	585					common	477	dcc
+sententia	noun	478		DCC	no	yes	daily	586					common	478	dcc
+ācer	adj	479		DCC	no	no	daily	587					common	479	dcc
+brevis	adj	480		DCC	yes	no	daily	589					common	480	dcc
+citus	adj	481		DCC	no	no	daily	590					common	481	dcc
+cornū	noun	482		DCC	no	no	daily	591					common	482	dcc
+ingrātus	adj	483		DCC	no	yes	daily	592					common	483	dcc
+moenia	noun	484		DCC	no	yes	daily	593					common	484	dcc
+vinculum	noun	485		DCC	no	yes	daily	594					common	485	dcc
+adeō	verb	486		DCC	no	yes	daily	595					common	486	dcc
+cēterus	adj	487		DCC	no	yes	daily	596					common	487	dcc
+exeō	verb	488		DCC	yes	yes	daily	597					common	488	dcc
+mālō	verb	489		DCC	no	yes	daily	598					common	489	dcc
+speciēs	noun	490		DCC	yes	yes	professional-natural	599					common	490	dcc
+imperō	verb	491		DCC	no	yes	daily	602					common	491	dcc
+prohibeō	verb	492		DCC	no	yes	daily	604					common	492	dcc
+clāmor	noun	493		DCC	no	yes	daily	605					common	493	dcc
+dōnō	verb	494		DCC	no	yes	daily	606					common	494	dcc
+officium	noun	495		DCC	no	no	daily	607					common	495	dcc
+committō	verb	496		DCC	no	yes	daily	608					common	496	dcc
+crēscō	verb	497		DCC	no	yes	daily	609					common	497	dcc
+aequus	adj	498		DCC	no	no	daily	610					common	498	dcc
+factum	noun	499		DCC	no	no	daily	611					common	499	dcc
+caedō	verb	500		DCC	no	no	daily	612					common	500	dcc
+exīstimō	verb	501		DCC	no	yes	daily	613					common	501	dcc
+accēdō	verb	502		DCC	no	yes	daily	614					common	502	dcc
+contemnō	verb	503		DCC	no	no	daily	615					common	503	dcc
+pudor	noun	504		DCC	no	no	daily	616					common	504	dcc
+antīquus	adj	505		DCC	yes	no	daily	617					common	505	dcc
+ārdeō	verb	506		DCC	yes	yes	daily	618					common	506	dcc
+ibī	adv	507		DCC	yes	no	daily	619					common	507	dcc
+prōvincia	noun	508		DCC	no	yes	daily	620					common	508	dcc
+custōs	noun	509		DCC	no	no	daily	622					common	509	dcc
+supersum	verb	510		DCC	no	yes	daily	623					common	510	dcc
+dēsinō	verb	511		DCC	no	yes	daily	624					common	511	dcc
+fessus	adj	512		DCC	yes	yes	daily	625					common	512	dcc
+praeda	noun	513		DCC	no	yes	daily	626					common	513	dcc
+memoria	noun	514		DCC	yes	no	creative	627					common	514	dcc
+dīvidō	verb	515		DCC	no	no	daily	628					common	515	dcc
+pretium	noun	516		DCC	no	yes	daily	629					common	516	dcc
+pontus	noun	517		DCC	yes	no	daily	630					common	517	dcc
+varius	adj	518		DCC	no	yes	daily	631					common	518	dcc
+vehō	verb	519		DCC	no	yes	daily	632					common	519	dcc
+falsus	adj	520		DCC	no	no	daily	633					common	520	dcc
+niger	adj	521		DCC	yes	yes	professional-natural	634					common	521	dcc
+oppidum	noun	522		DCC	no	no	daily	635					common	522	dcc
+pondus	noun	523		DCC	no	no	daily	636					common	523	dcc
+arvum	noun	524		DCC	no	yes	daily	637					common	524	dcc
+arx	noun	525		DCC	no	no	daily	638					common	525	dcc
+sors	noun	526		DCC	yes	yes	creative	639					common	526	dcc
+vīnum	noun	527		DCC	no	yes	daily	640					common	527	dcc
+dīversus	adj	528		DCC	no	no	daily	641					common	528	dcc
+orior	verb	529		DCC	no	yes	daily	642					common	529	dcc
+cōnferō	verb	530		DCC	no	yes	daily	645					common	530	dcc
+facinus	noun	531		DCC	no	yes	daily	646					common	531	dcc
+retineō	verb	532		DCC	no	yes	daily	647					common	532	dcc
+spērō	verb	533		DCC	yes	yes	creative	648					common	533	dcc
+plēbs	noun	534		DCC	no	yes	daily	649					common	534	dcc
+pūgna	noun	535		DCC	no	no	daily	650					common	535	dcc
+repetō	verb	536		DCC	no	yes	daily	651					common	536	dcc
+cōnstituō	verb	537		DCC	no	yes	daily	652					common	537	dcc
+dēfendō	verb	538		DCC	no	yes	daily	653					common	538	dcc
+marītus	noun	539		DCC	no	yes	daily	654					common	539	dcc
+cernō	verb	540		DCC	yes	no	daily	655					common	540	dcc
+superbus	adj	541		DCC	no	yes	daily	656					common	541	dcc
+adversus	adj	542		DCC	no	no	daily	657					common	542	dcc
+morbus	noun	543		DCC	no	no	daily	658					common	543	dcc
+sānctus	adj	544		DCC	no	no	daily	659					common	544	dcc
+commūnis	adj	545		DCC	no	yes	daily	660					common	545	dcc
+dēdūcō	verb	546		DCC	no	yes	daily	661					common	546	dcc
+rīpa	noun	547		DCC	no	yes	daily	662					common	547	dcc
+concēdō	verb	548		DCC	yes	yes	daily	663					common	548	dcc
+hōra	noun	549		DCC	yes	no	daily	664					common	549	dcc
+vetō	verb	550		DCC	no	no	daily	665					common	550	dcc
+cohors	noun	551		DCC	no	yes	daily	666					common	551	dcc
+gīgnō	verb	552		DCC	no	no	daily	667					common	552	dcc
+superō	verb	553		DCC	no	yes	daily	668					common	553	dcc
+maestus	adj	554		DCC	yes	no	creative	669					common	554	dcc
+meminī	verb	555		DCC	no	no	daily	670					common	555	dcc
+impleō	verb	556		DCC	no	yes	daily	671					common	556	dcc
+māgnitūdō	noun	557		DCC	no	no	daily	672					common	557	dcc
+vacuus	adj	558		DCC	no	no	daily	673					common	558	dcc
+vagus	adj	559		DCC	no	yes	daily	674					common	559	dcc
+vulgus	noun	560		DCC	no	no	daily	675					common	560	dcc
+dēficiō	verb	561		DCC	no	yes	daily	676					common	561	dcc
+occurrō	verb	562		DCC	no	yes	daily	677					common	562	dcc
+statuō	verb	563		DCC	no	yes	daily	678					common	563	dcc
+praemium	noun	564		DCC	no	yes	daily	680					common	564	dcc
+tertius	adj	565		DCC	no	no	daily	682					common	565	dcc
+supplicium	noun	566		DCC	no	yes	daily	683					common	566	dcc
+vātēs	noun	567		DCC	no	no	daily	684					common	567	dcc
+astrum	noun	568		DCC	no	no	daily	685					common	568	dcc
+canis	noun	569		DCC	no	yes	daily	687					common	569	dcc
+ēdō	verb	570		DCC	no	yes	daily	688					common	570	dcc
+fateor	verb	571		DCC	no	yes	daily	689					common	571	dcc
+amīcitia	noun	572		DCC	yes	no	creative	690					common	572	dcc
+aureus	adj	573		DCC	yes	yes	professional-natural	691					common	573	dcc
+candidus	adj	574		DCC	yes	yes	professional-natural	692					common	574	dcc
+lateō	verb	575		DCC	no	yes	daily	695					common	575	dcc
+os	noun	576		DCC	no	yes	daily	696					common	576	dcc
+sēcūrus	adj	577		DCC	no	yes	daily	697					common	577	dcc
+conveniō	verb	578		DCC	no	yes	daily	698					common	578	dcc
+interficiō	verb	579		DCC	no	yes	daily	699					common	579	dcc
+appellō	verb	580		DCC	no	yes	daily	700					common	580	dcc
+dolus	noun	581		DCC	no	yes	daily	701					common	581	dcc
+permittō	verb	582		DCC	no	yes	daily	702					common	582	dcc
+spīritus	noun	583		DCC	yes	yes	daily	703					common	583	dcc
+terreō	verb	584		DCC	no	yes	daily	705					common	584	dcc
+fōns	noun	585		DCC	no	yes	daily	706					common	585	dcc
+invidia	noun	586		DCC	yes	yes	creative	707					common	586	dcc
+pugnō	verb	587		DCC	no	no	daily	708					common	587	dcc
+augeō	verb	588		DCC	no	yes	daily	709					common	588	dcc
+littera	noun	589		DCC	no	yes	daily	710					common	589	dcc
+moneō	verb	590		DCC	no	no	daily	711					common	590	dcc
+dīvitiae	noun	591		DCC	no	no	daily	712					common	591	dcc
+experior	verb	592		DCC	no	yes	daily	713					common	592	dcc
+superī	noun	593		DCC	no	yes	daily	714					common	593	dcc
+ōtium	noun	594		DCC	yes	yes	daily	715					common	594	dcc
+vestīgium	noun	595		DCC	no	no	daily	716					common	595	dcc
+sinō	verb	596		DCC	no	no	daily	717					common	596	dcc
+decet	verb	597		DCC	no	yes	daily	718					common	597	dcc
+effundō	verb	598		DCC	no	yes	daily	719					common	598	dcc
+prōmittō	verb	599		DCC	no	no	daily	720					common	599	dcc
+fingō	verb	600		DCC	no	yes	daily	721					common	600	dcc
+respiciō	verb	601		DCC	no	yes	daily	722					common	601	dcc
+imperātor	noun	602		DCC	no	yes	daily	723					common	602	dcc
+vacō	verb	603		DCC	no	yes	daily	724					common	603	dcc
+color	noun	604		DCC	no	yes	daily	725					common	604	dcc
+discēdō	verb	605		DCC	yes	yes	daily	726					common	605	dcc
+gaudium	noun	606		DCC	yes	no	creative	727					common	606	dcc
+caecus	adj	607		DCC	no	yes	daily	728					common	607	dcc
+libet	verb	608		DCC	no	yes	daily	729					common	608	dcc
+cōnstō	verb	609		DCC	no	yes	daily	731					common	609	dcc
+lingua	noun	610		DCC	yes	yes	daily	732					common	610	dcc
+multitūdō	noun	611		DCC	no	yes	daily	733					common	611	dcc
+aeternus	adj	612		DCC	yes	no	creative	734					common	612	dcc
+ōrātiō	noun	613		DCC	no	yes	daily	736					common	613	dcc
+potestās	noun	614		DCC	no	yes	daily	737					common	614	dcc
+tardus	adj	615		DCC	no	yes	daily	738					common	615	dcc
+for	verb	616		DCC	no	no	daily	739					common	616	dcc
+humus	noun	617		DCC	yes	yes	daily	740					common	617	dcc
+testis	noun	618		DCC	no	yes	daily	741					common	618	dcc
+īnferō	verb	619		DCC	no	yes	daily	742					common	619	dcc
+cūrō	verb	620		DCC	no	yes	daily	743					common	620	dcc
+aes	noun	621		DCC	no	yes	daily	744					common	621	dcc
+celer	adj	622		DCC	no	no	daily	745					common	622	dcc
+prōcēdō	verb	623		DCC	no	yes	daily	746					common	623	dcc
+mēnsa	noun	624		DCC	yes	yes	daily	747					common	624	dcc
+pius	adj	625		DCC	yes	no	creative	748					common	625	dcc
+iūdicium	noun	626		DCC	no	no	daily	749					common	626	dcc
+victōria	noun	627		DCC	no	no	daily	750					common	627	dcc
+damnō	verb	628		DCC	no	yes	daily	751					common	628	dcc
+rārus	adj	629		DCC	no	yes	daily	752					common	629	dcc
+tempestās	noun	630		DCC	no	yes	daily	753					common	630	dcc
+imāgō	noun	631		DCC	yes	yes	professional-humanities	754					common	631	dcc
+ōrō	verb	632		DCC	no	yes	daily	755					common	632	dcc
+cōnsulō	verb	633		DCC	no	yes	daily	757					common	633	dcc
+iterum	adv	634		DCC	yes	no	daily	758					common	634	dcc
+porta	noun	635		DCC	yes	no	daily	759					common	635	dcc
+intersum	verb	636		DCC	no	yes	daily	760					common	636	dcc
+libīdō	noun	637		DCC	yes	yes	creative	761					common	637	dcc
+sustineō	verb	638		DCC	no	yes	daily	762					common	638	dcc
+māiōrēs	noun	639		DCC	no	no	daily	764					common	639	dcc
+reperiō	verb	640		DCC	no	no	daily	765					common	640	dcc
+intrō	verb	641		DCC	no	no	daily	766					common	641	dcc
+pietās	noun	642		DCC	yes	yes	creative	767					common	642	dcc
+barbarus	noun	643		DCC	yes	no	daily	768					common	643	dcc
+culpa	noun	644		DCC	no	no	daily	769					common	644	dcc
+iūstus	adj	645		DCC	no	no	daily	770					common	645	dcc
+fluō	verb	646		DCC	no	yes	daily	772					common	646	dcc
+necesse	adj	647		DCC	no	no	daily	773					common	647	dcc
+reor	verb	648		DCC	no	yes	daily	774					common	648	dcc
+tenebrae	noun	649		DCC	no	no	daily	775					common	649	dcc
+saeculum	noun	650		DCC	no	yes	daily	776					common	650	dcc
+dīmittō	verb	651		DCC	no	yes	daily	777					common	651	dcc
+cinis	noun	652		DCC	no	yes	daily	779					common	652	dcc
+cōnsistō	verb	653		DCC	no	yes	daily	780					common	653	dcc
+recēns	adj	654		DCC	yes	no	daily	781					common	654	dcc
+laedō	verb	655		DCC	no	yes	daily	783					common	655	dcc
+probō	verb	656		DCC	no	yes	daily	784					common	656	dcc
+doleō	verb	657		DCC	yes	yes	creative	785					common	657	dcc
+reliquus	adj	658		DCC	no	yes	daily	788					common	658	dcc
+ōdī	verb	659		DCC	no	yes	daily	790					common	659	dcc
+peccō	verb	660		DCC	no	yes	daily	792					common	660	dcc
+sēnsus	noun	661		DCC	yes	yes	daily	793					common	661	dcc
+exsilium	noun	662		DCC	no	yes	daily	794					common	662	dcc
+cor	noun	663		DCC	no	no	daily	795					common	663	dcc
+dēnique	adv	664		DCC	yes	yes	daily	796					common	664	dcc
+sapientia	noun	665		DCC	no	yes	daily	797					common	665	dcc
+statim	adv	666		DCC	yes	yes	daily	798					common	666	dcc
+accidō	verb	667		DCC	no	yes	daily	799					common	667	dcc
+dēcernō	verb	668		DCC	no	yes	daily	800					common	668	dcc
+occīdō	verb	669		DCC	no	yes	daily	801					common	669	dcc
+dēscendō	verb	670		DCC	no	yes	daily	802					common	670	dcc
+hiems	noun	671		DCC	yes	no	creative	803					common	671	dcc
+contineō	verb	672		DCC	no	yes	daily	804					common	672	dcc
+dēferō	verb	673		DCC	no	yes	daily	805					common	673	dcc
+oportet	verb	674		DCC	no	yes	daily	806					common	674	dcc
+tribūnus	noun	675		DCC	no	yes	daily	807					common	675	dcc
+bōs	noun	676		DCC	no	yes	daily	808					common	676	dcc
+īrāscor	verb	677		DCC	no	yes	daily	809					common	677	dcc
+aeger	adj	678		DCC	yes	yes	daily	810					common	678	dcc
+forum	noun	679		DCC	no	no	daily	811					common	679	dcc
+offerō	verb	680		DCC	no	yes	daily	812					common	680	dcc
+revocō	verb	681		DCC	no	yes	daily	813					common	681	dcc
+cingō	verb	682		DCC	no	yes	daily	814					common	682	dcc
+integer	adj	683		DCC	no	yes	daily	815					common	683	dcc
+validus	adj	684		DCC	no	yes	daily	816					common	684	dcc
+alō	verb	685		DCC	no	yes	daily	817					common	685	dcc
+flōs	noun	686		DCC	yes	no	daily	818					common	686	dcc
+īctus	noun	687		DCC	no	no	daily	819					common	687	dcc
+colligō	verb	688		DCC	no	yes	daily	820					common	688	dcc
+pergō	verb	689		DCC	no	yes	daily	821					common	689	dcc
+praesēns	adj	690		DCC	no	no	daily	822					common	690	dcc
+rēctus	adj	691		DCC	no	no	daily	823					common	691	dcc
+lātus	adj	692		DCC	no	no	daily	824					common	692	dcc
+praeceptum	noun	693		DCC	no	yes	daily	825					common	693	dcc
+recēdō	verb	694		DCC	yes	yes	daily	826					common	694	dcc
+famēs	noun	695		DCC	no	no	daily	828					common	695	dcc
+pariō	verb	696		DCC	no	yes	daily	829					common	696	dcc
+appāreō	verb	697		DCC	no	yes	daily	830					common	697	dcc
+error	noun	698		DCC	no	yes	daily	832					common	698	dcc
+convertō	verb	699		DCC	no	yes	daily	834					common	699	dcc
+proficīscor	verb	700		DCC	yes	no	daily	835					common	700	dcc
+secundus	adj	701		DCC	no	yes	daily	836					common	701	dcc
+aperiō	verb	702		DCC	no	yes	daily	837					common	702	dcc
+castus	adj	703		DCC	no	yes	daily	838					common	703	dcc
+iūdex	noun	704		DCC	no	no	daily	839					common	704	dcc
+lapis	noun	705		DCC	no	yes	daily	840					common	705	dcc
+onus	noun	706		DCC	no	no	daily	842					common	706	dcc
+opera	noun	707		DCC	yes	yes	daily	843					common	707	dcc
+pauper	adj	708		DCC	no	no	daily	844					common	708	dcc
+āēr	noun	709		DCC	no	no	daily	845					common	709	dcc
+negōtium	noun	710		DCC	yes	yes	daily	846					common	710	dcc
+pāreō	verb	711		DCC	no	yes	daily	847					common	711	dcc
+argentum	noun	712		DCC	no	no	daily	849					common	712	dcc
+ūtilis	adj	713		DCC	no	no	daily	850					common	713	dcc
+aethēr	noun	714		DCC	yes	yes	daily	851					common	714	dcc
+mereō	verb	715		DCC	no	yes	daily	852					common	715	dcc
+portō	verb	716		DCC	no	yes	daily	853					common	716	dcc
+proprius	adj	717		DCC	no	yes	daily	854					common	717	dcc
+avis	noun	718		DCC	no	no	daily	855					common	718	dcc
+vānus	adj	719		DCC	no	yes	daily	856					common	719	dcc
+māteria	noun	720		DCC	no	yes	daily	857					common	720	dcc
+paucī	adj	721		DCC	no	no	daily	858					common	721	dcc
+voluntās	noun	722		DCC	no	no	daily	859					common	722	dcc
+ēgregius	adj	723		DCC	no	yes	daily	860					common	723	dcc
+difficilis	adj	724		DCC	no	yes	daily	861					common	724	dcc
+gladius	noun	725		DCC	yes	yes	daily	862					common	725	dcc
+cibus	noun	726		DCC	yes	no	daily	863					common	726	dcc
+certō	verb	727		DCC	no	yes	daily	864					common	727	dcc
+initium	noun	728		DCC	no	yes	daily	865					common	728	dcc
+pertineō	verb	729		DCC	no	yes	daily	866					common	729	dcc
+turbō	verb	730		DCC	no	yes	daily	868					common	730	dcc
+cōnsūmō	verb	731		DCC	no	yes	daily	869					common	731	dcc
+corrumpō	verb	732		DCC	no	yes	daily	870					common	732	dcc
+incidō	verb	733		DCC	no	yes	daily	871					common	733	dcc
+hospes	noun	734		DCC	no	no	daily	873					common	734	dcc
+rīdeō	verb	735		DCC	no	no	daily	874					common	735	dcc
+aevum	noun	736		DCC	yes	yes	creative	875					common	736	dcc
+audāx	adj	737		DCC	no	no	daily	876					common	737	dcc
+posterus	adj	738		DCC	no	yes	daily	877					common	738	dcc
+praetor	noun	739		DCC	no	yes	daily	878					common	739	dcc
+rūs	noun	740		DCC	no	yes	daily	879					common	740	dcc
+differō	verb	741		DCC	no	yes	daily	880					common	741	dcc
+vītō	verb	742		DCC	no	no	daily	881					common	742	dcc
+prīvātus	adj	743		DCC	no	yes	daily	882					common	743	dcc
+serviō	verb	744		DCC	no	yes	daily	883					common	744	dcc
+vereor	verb	745		DCC	no	yes	daily	884					common	745	dcc
+ingredior	verb	746		DCC	no	yes	daily	885					common	746	dcc
+addūcō	verb	747		DCC	no	no	daily	886					common	747	dcc
+hortor	verb	748		DCC	no	no	daily	887					common	748	dcc
+reus	noun	749		DCC	no	yes	daily	888					common	749	dcc
+comparō	verb	750		DCC	no	no	daily	890					common	750	dcc
+perpetuus	adj	751		DCC	yes	no	daily	891					common	751	dcc
+dēsīderō	verb	752		DCC	yes	yes	creative	892					common	752	dcc
+celebrō	verb	753		DCC	no	yes	daily	893					common	753	dcc
+cōnficiō	verb	754		DCC	no	yes	daily	894					common	754	dcc
+intendō	verb	755		DCC	no	yes	daily	895					common	755	dcc
+iūrō	verb	756		DCC	no	no	daily	896					common	756	dcc
+auctōritās	noun	757		DCC	no	yes	daily	898					common	757	dcc
+iaciō	verb	758		DCC	no	yes	daily	899					common	758	dcc
+labōrō	verb	759		DCC	no	no	daily	900					common	759	dcc
+liber	noun	760		DCC	yes	yes	daily	901					common	760	dcc
+lūna	noun	761		DCC	yes	no	daily	902					common	761	dcc
+cōnor	verb	762		DCC	no	no	daily	905					common	762	dcc
+cupīdō	noun	763		DCC	yes	no	creative	906					common	763	dcc
+īnsula	noun	764		DCC	no	yes	daily	908					common	764	dcc
+fīlia	noun	765		DCC	no	no	daily	909					common	765	dcc
+narrō	verb	766		DCC	no	no	daily	910					common	766	dcc
+necessitās	noun	767		DCC	yes	yes	creative	911					common	767	dcc
+ēgredior	verb	768		DCC	yes	yes	daily	912					common	768	dcc
+poēta	noun	769		DCC	no	no	daily	913					common	769	dcc
+amplus	adj	770		DCC	yes	no	daily	915					common	770	dcc
+aptus	adj	771		DCC	no	no	daily	916					common	771	dcc
+cōnsequor	verb	772		DCC	no	yes	daily	917					common	772	dcc
+frequēns	adj	773		DCC	no	yes	daily	918					common	773	dcc
+nūntius	noun	774		DCC	no	yes	daily	919					common	774	dcc
+condīciō	noun	775		DCC	no	no	daily	920					common	775	dcc
+convīvium	noun	776		DCC	no	no	daily	921					common	776	dcc
+foedus	adj	777		DCC	no	no	daily	922					common	777	dcc
+fruor	verb	778		DCC	no	yes	daily	923					common	778	dcc
+albus	adj	779		DCC	yes	no	professional-natural	925					common	779	dcc
+damnum	noun	780		DCC	no	yes	daily	926					common	780	dcc
+frūctus	noun	781		DCC	no	yes	daily	927					common	781	dcc
+cēnseō	verb	782		DCC	no	yes	daily	928					common	782	dcc
+prōdō	verb	783		DCC	no	yes	daily	929					common	783	dcc
+prōpōnō	verb	784		DCC	no	yes	daily	930					common	784	dcc
+īnstituō	verb	785		DCC	no	no	daily	931					common	785	dcc
+magister	noun	786		DCC	no	yes	daily	933					common	786	dcc
+stēlla	noun	787		DCC	no	no	daily	934					common	787	dcc
+ēdūcō	verb	788		DCC	no	yes	daily	935					common	788	dcc
+frūmentum	noun	789		DCC	no	yes	daily	936					common	789	dcc
+suscipiō	verb	790		DCC	no	yes	daily	937					common	790	dcc
+sacerdōs	noun	791		DCC	yes	yes	historical-cultural	939					common	791	dcc
+vīcīnus	adj	792		DCC	no	yes	daily	940					common	792	dcc
+caveō	verb	793		DCC	no	yes	daily	941					common	793	dcc
+ēligō	verb	794		DCC	yes	no	creative	942					common	794	dcc
+familia	noun	795		DCC	yes	yes	daily	943					common	795	dcc
+paene	adv	796		DCC	yes	yes	daily	944					common	796	dcc
+praecipiō	verb	797		DCC	no	yes	daily	945					common	797	dcc
+sānus	adj	798		DCC	no	yes	daily	946					common	798	dcc
+potis	adj	799		DCC	no	yes	daily	947					common	799	dcc
+prīncipium	noun	800		DCC	no	no	daily	948					common	800	dcc
+sepulcrum	noun	801		DCC	no	no	daily	949					common	801	dcc
+mortālis	adj	802		DCC	no	yes	daily	950					common	802	dcc
+epistula	noun	803		DCC	no	no	daily	951					common	803	dcc
+inimīcus	adj	804		DCC	no	yes	daily	952					common	804	dcc
+interrogō	verb	805		DCC	no	no	daily	953					common	805	dcc
+cōnsuētūdō	noun	806		DCC	no	yes	daily	954					common	806	dcc
+dīgnitās	noun	807		DCC	no	no	daily	956					common	807	dcc
+fugō	verb	808		DCC	no	yes	daily	957					common	808	dcc
+afficiō	verb	809		DCC	no	yes	daily	958					common	809	dcc
+adhibeō	verb	810		DCC	no	yes	daily	959					common	810	dcc
+caelestis	adj	811		DCC	yes	yes	daily	960					common	811	dcc
+mulier	noun	812		DCC	no	no	daily	961					common	812	dcc
+dīvus	adj	813		DCC	no	no	daily	962					common	813	dcc
+arbitror	verb	814		DCC	no	yes	daily	963					common	814	dcc
+aedēs	noun	815		DCC	no	no	daily	965					common	815	dcc
+fābula	noun	816		DCC	yes	no	creative	966					common	816	dcc
+quiēscō	verb	817		DCC	no	no	daily	969					common	817	dcc
+scientia	noun	818		DCC	no	yes	daily	971					common	818	dcc
+cōnfiteor	verb	819		DCC	no	yes	daily	972					common	819	dcc
+dīligō	verb	820		DCC	yes	yes	creative	973					common	820	dcc
+dormiō	verb	821		DCC	no	no	daily	975					common	821	dcc
+volucris	noun	822		DCC	no	no	daily	976					common	822	dcc
+volucer	adj	823		DCC	no	no	daily	977					common	823	dcc
+creō	verb	824		DCC	no	yes	daily	978					common	824	dcc
+fidēlis	adj	825		DCC	no	no	daily	979					common	825	dcc
+indicō	verb	826		DCC	no	no	daily	980					common	826	dcc
+hodiē	adv	827		DCC	yes	no	daily	981					common	827	dcc
+disciplīna	noun	828		DCC	no	yes	daily	982					common	828	dcc
+advertō	verb	829		DCC	no	yes	daily	986					common	829	dcc
+adveniō	verb	830		DCC	no	yes	daily	987					common	830	dcc
+pendō	verb	831		DCC	no	yes	daily	988					common	831	dcc
+studeō	verb	832		DCC	yes	yes	daily	989					common	832	dcc
+ascendō	verb	833		DCC	no	no	daily	990					common	833	dcc
+fors	noun	834		DCC	no	no	daily	993					common	834	dcc
+revertō	verb	835		DCC	no	no	daily	995					common	835	dcc
+ēdīcō	verb	836		DCC	no	yes	daily	996					common	836	dcc
+Alexandrīnus	adj			concept	yes	yes	historical-cultural					已审概念 K04-03	other		
+Athēniēnsis	adj			concept	yes	no	historical-cultural					已审概念 K04-02	other		
+Atticus	adj			concept	yes	yes	historical-cultural					已审概念 K04-02	other		
+Orphēus	adj			concept	yes	no	historical-cultural					已审概念 K04-06	other		
+Rōmānus	adj			concept	yes	yes	historical-cultural					已审概念 K04-01	other		
+Trōiānus	adj			concept	yes	no	historical-cultural					已审概念 K04-10	other		
+abitiō	noun			concept	yes	yes	daily					已审概念 D04-04	other		
+absconditus	adj			concept	yes	no	creative					已审概念 C05-03	other		
+abscēdō	verb			concept	yes	no	daily					已审概念 D04-04	other		
+absistō	verb			concept	yes	yes	daily					已审概念 D04-04	other		
+abstrūsus	adj			concept	yes	no	creative					已审概念 C05-03	other		
+absurdus	adj			concept	yes	yes	professional-humanities					已审概念 H01-10	other		
+accentus	noun			concept	yes	yes	professional-humanities					已审概念 H03-03	other		
+adminiculum	noun			concept	yes	yes	daily					已审概念 D05-08	other		
+adoptō	verb			concept	yes	yes	creative					已审概念 C04-05	other		
+adulēscentia	noun			concept	yes	yes	creative					已审概念 C02-03	other		
+adventus	noun			concept	yes	no	daily					已审概念 D04-03	other		
+adversor	verb			concept	yes	no	creative					已审概念 C04-09	other		
+aegritūdō	noun			concept	yes	no	creative					已审概念 C01-07	other		
+aequoreus	adj			concept	yes	yes	daily					已审概念 D03-07	other		
+aetherius	adj			concept	yes	yes	daily					已审概念 D03-01	other		
+aethra	noun			concept	yes	yes	daily					已审概念 D03-01	other		
+affectātiō	noun			concept	yes	yes	creative					已审概念 C04-07	other		
+affectō	verb			concept	yes	yes	creative					已审概念 C04-07	other		
+alba	noun			concept	yes	yes	creative					已审概念 C03-03	other		
+album	noun			concept	yes	yes	professional-natural					已审概念 L01-01	other		
+algor	noun			concept	yes	yes	daily					已审概念 D06-08	other		
+algus	noun			concept	yes	no	daily					已审概念 D06-08	other		
+alimentum	noun			concept	yes	no	daily					已审概念 D02-09	other		
+alimōnia	noun			concept	yes	no	daily					已审概念 D02-09	other		
+altitūdō	noun			concept	yes	yes	professional-humanities					已审概念 H01-09	other		
+altum	noun			concept	yes	no	daily					已审概念 D03-07	other		
+ambulō	verb			concept	yes	yes	daily					已审概念 D04-01	other		
+amphora	noun			concept	yes	yes	historical-cultural					已审概念 K01-01	other		
+amplitūdō	noun			concept	yes	no	daily					已审概念 D06-05	other		
+angustifolius	adj			concept	yes	no	professional-natural					已审概念 L01-06	other		
+anhēlitus	noun			concept	yes	yes	daily					已审概念 D01-09	other		
+animātus	noun			concept	yes	no	daily					已审概念 D01-09	other		
+appetentia	noun			concept	yes	yes	creative					已审概念 C01-10	other		
+appetītiō	noun			concept	yes	yes	creative					已审概念 C01-10	other		
+appetō	verb			concept	yes	yes	creative					已审概念 C04-07	other		
+aquārius	adj			concept	yes	yes	daily					已审概念 D02-07	other		
+aquātilis	adj			concept	yes	yes	professional-natural					已审概念 L01-10	other		
+arcānum	noun			concept	yes	no	creative					已审概念 C05-03	other		
+arcānus	adj			concept	yes	no	creative					已审概念 C05-03	other		
+asserviō	verb			concept	yes	no	daily					已审概念 D05-08	other		
+asservō	verb			concept	yes	yes	creative					已审概念 C04-08	other		
+atomus	noun			concept	yes	yes	professional-natural					已审概念 N02-01	other		
+aureolus	adj			concept	yes	yes	professional-natural					已审概念 L01-04	other		
+auxilior	verb			concept	yes	yes	daily					已审概念 D05-08	other		
+auxiliāris	adj			concept	yes	yes	daily					已审概念 D05-08	other		
+aveō	verb			concept	yes	yes	creative					已审概念 C01-10	other		
+aviditās	noun			concept	yes	no	creative					已审概念 C01-10	other		
+barathrum	noun			concept	yes	no	creative					已审概念 C03-06	other		
+caldor	noun			concept	yes	no	daily					已审概念 D06-07	other		
+caleō	verb			concept	yes	yes	daily					已审概念 D06-07	other		
+calor	noun			concept	yes	no	daily					已审概念 D06-07	other		
+captō	verb			concept	yes	yes	creative					已审概念 C04-07	other		
+carcinōma	noun			concept	yes	no	professional-natural					已审概念 N04-04	other		
+cardiacus	adj			concept	yes	yes	daily					已审概念 D01-08	other		
+cellula	noun			concept	yes	yes	professional-natural					已审概念 N03-01	other		
+cibāria	noun			concept	yes	yes	daily					已审概念 D02-09	other		
+cibārius	adj			concept	yes	yes	daily					已审概念 D02-09	other		
+cibātus	noun			concept	yes	no	daily					已审概念 D02-09	other		
+clandestīnus	adj			concept	yes	no	creative					已审概念 C05-03	other		
+coenobium	noun			concept	yes	yes	historical-cultural					已审概念 K02-10	other		
+collēgium	noun			concept	yes	yes	historical-cultural					已审概念 K02-04	other		
+columna	noun			concept	yes	yes	historical-cultural					已审概念 K01-09	other		
+commentātiō	noun			concept	yes	no	daily					已审概念 D05-01	other		
+commiseror	verb			concept	yes	no	creative					已审概念 C01-09	other		
+commiserēscō	verb			concept	yes	yes	creative					已审概念 C01-09	other		
+concentus	noun			concept	yes	yes	professional-humanities					已审概念 H04-06	other		
+conclāve	noun			concept	yes	yes	daily					已审概念 D02-02	other		
+congredior	verb			concept	yes	yes	creative					已审概念 C05-07	other		
+contextus	noun			concept	yes	yes	professional-humanities					已审概念 H03-08	other		
+contāgium	noun			concept	yes	yes	professional-natural					已审概念 N04-02	other		
+contāgiō	noun			concept	yes	yes	professional-natural					已审概念 N04-02	other		
+corporālis	adj			concept	yes	no	daily					已审概念 D01-05	other		
+cothurnus	noun			concept	yes	yes	professional-humanities					已审概念 H02-09	other		
+crepusculum	noun			concept	yes	no	creative					已审概念 C03-04	other		
+cubitus	noun			concept	yes	yes	daily					已审概念 D02-06	other		
+cubīle	noun			concept	yes	yes	daily					已审概念 D02-06	other		
+cupidus	adj			concept	yes	yes	creative					已审概念 C01-10	other		
+curriculum	noun			concept	yes	yes	daily					已审概念 D04-02	other		
+cursiō	noun			concept	yes	yes	daily					已审概念 D04-02	other		
+cursō	verb			concept	yes	yes	daily					已审概念 D04-02	other		
+cālīginōsus	adj			concept	yes	no	creative					已审概念 C06-06	other		
+cāritās	noun			concept	yes	yes	creative					已审概念 C01-01	other		
+cīvicus	adj			concept	yes	yes	historical-cultural					已审概念 K02-01	other		
+cīvīlis	adj			concept	yes	yes	historical-cultural					已审概念 K02-01	other		
+cōdex	noun			concept	yes	no	daily					已审概念 D05-03	other		
+cōnfīdō	verb			concept	yes	no	creative					已审概念 C01-05	other		
+cōnfīnium	noun			concept	yes	yes	creative					已审概念 C03-07	other		
+cōnscientia	noun			concept	yes	yes	professional-humanities					已审概念 H01-04	other		
+cōnscrīptiō	noun			concept	yes	yes	daily					已审概念 D05-04	other		
+cōnsector	verb			concept	yes	yes	creative					已审概念 C04-07	other		
+cōnsenēscō	verb			concept	yes	yes	creative					已审概念 C02-04	other		
+cōnspiciō	verb			concept	yes	yes	daily					已审概念 D04-06	other		
+cōnspicor	verb			concept	yes	yes	daily					已审概念 D04-06	other		
+cōnstrūctiō	noun			concept	yes	yes	professional-humanities					已审概念 H03-06	other		
+cōnsulāris	adj			concept	yes	yes	historical-cultural					已审概念 K02-02	other		
+datiō	noun			concept	yes	yes	daily					已审概念 D04-09	other		
+diabētēs	noun			concept	yes	no	professional-natural					已审概念 N04-08	other		
+dictiō	noun			concept	yes	yes	daily					已审概念 D04-08	other		
+discessus	noun			concept	yes	no	creative					已审概念 C05-08	other		
+discipulus	noun			concept	yes	yes	historical-cultural					已审概念 K02-05	other		
+domesticus	adj			concept	yes	yes	daily					已审概念 D01-03	other		
+dēcessus	noun			concept	yes	no	daily					已审概念 D04-04	other		
+dēcrepitus	adj			concept	yes	yes	creative					已审概念 C02-04	other		
+dēcēdō	verb			concept	yes	yes	daily					已审概念 D04-04	other		
+dēlectātiō	noun			concept	yes	no	daily					已审概念 D06-09	other		
+dēliciae	noun			concept	yes	yes	daily					已审概念 D06-09	other		
+dēligō	verb			concept	yes	yes	creative					已审概念 C04-05	other		
+dēlēctus	noun			concept	yes	yes	creative					已审概念 C04-05	other		
+dēmigrō	verb			concept	yes	yes	daily					已审概念 D04-04	other		
+dēspondeō	verb			concept	yes	yes	creative					已审概念 C04-06	other		
+dēsīderium	noun			concept	yes	yes	creative					已审概念 C01-02	other		
+dēsūmō	verb			concept	yes	no	creative					已审概念 C04-05	other		
+dēveniō	verb			concept	yes	yes	daily					已审概念 D04-03	other		
+dīgredior	verb			concept	yes	yes	daily					已审概念 D04-04	other		
+dīgressus	noun			concept	yes	yes	creative					已审概念 C05-08	other		
+dīlēctiō	noun			concept	yes	no	creative					已审概念 C01-01	other		
+dīvum	noun			concept	yes	no	daily					已审概念 D03-01	other		
+edō	verb			concept	yes	no	daily					已审概念 D02-10	other		
+edūlia	noun			concept	yes	no	daily					已审概念 D02-09	other		
+efflōreō	verb			concept	yes	yes	creative					已审概念 C06-08	other		
+emō	verb			concept	yes	no	daily					已审概念 D05-09	other		
+epos	noun			concept	yes	no	professional-humanities					已审概念 H02-10	other		
+equester	adj			concept	yes	yes	historical-cultural					已审概念 K02-06	other		
+erēmus	noun			concept	yes	no	creative					已审概念 C03-09	other		
+essentia	noun			concept	yes	yes	professional-humanities					已审概念 H01-02	other		
+essentiālis	adj			concept	yes	yes	professional-humanities					已审概念 H01-02	other		
+etymologia	noun			concept	yes	no	professional-humanities					已审概念 H03-10	other		
+excelsus	adj			concept	yes	yes	professional-humanities					已审概念 H01-09	other		
+excessiō	noun			concept	yes	no	daily					已审概念 D04-04	other		
+excessus	noun			concept	yes	yes	creative					已审概念 C02-02,D04-04	other		
+excēdō	verb			concept	yes	yes	daily					已审概念 D04-04	other		
+exitus	noun			concept	yes	yes	daily					已审概念 D04-04	other		
+expositiō	noun			concept	yes	yes	professional-humanities					已审概念 H02-05	other		
+exsequor	verb			concept	yes	yes	creative					已审概念 C04-07	other		
+exsistō	verb			concept	yes	yes	professional-humanities					已审概念 H01-01	other		
+exstō	verb			concept	yes	yes	professional-humanities					已审概念 H01-01	other		
+familiāris	adj			concept	yes	yes	daily					已审概念 D01-03	other		
+fenestra	noun			concept	yes	no	daily					已审概念 D02-04	other		
+fluvius	noun			concept	yes	yes	daily					已审概念 D03-06	other		
+flāmen	noun			concept	yes	yes	historical-cultural					已审概念 K02-09	other		
+foris	noun			concept	yes	yes	daily					已审概念 D02-03	other		
+fortitūdō	noun			concept	yes	yes	creative					已审概念 C04-03	other		
+fragilis	adj			concept	yes	no	creative					已审概念 C06-02	other		
+frīgidus	adj			concept	yes	no	daily					已审概念 D06-08	other		
+frīgus	noun			concept	yes	yes	daily					已审概念 D06-08	other		
+fulgor	noun			concept	yes	no	creative					已审概念 C06-05	other		
+gelidus	adj			concept	yes	yes	daily					已审概念 D06-08	other		
+gelū	noun			concept	yes	no	daily					已审概念 D06-08	other		
+grabattus	noun			concept	yes	no	daily					已审概念 D02-06	other		
+grandiflōrus	adj			concept	yes	no	professional-natural					已审概念 L01-07	other		
+grandis	adj			concept	yes	no	daily					已审概念 D06-05	other		
+gravitātiō	noun			concept	yes	no	professional-natural					已审概念 N01-02	other		
+gurges	noun			concept	yes	yes	creative					已审概念 C03-06	other		
+harmonia	noun			concept	yes	yes	professional-humanities					已审概念 H04-06	other		
+harpa	noun			concept	yes	no	historical-cultural					已审概念 K01-06	other		
+historia	noun			concept	yes	yes	creative					已审概念 C05-10	other		
+hūmānī	noun			concept	yes	no	creative					已审概念 D01-01	other		
+ictus	noun			concept	yes	yes	professional-humanities					已审概念 H04-08	other		
+imber	noun			concept	yes	no	daily					已审概念 D03-04	other		
+incēdō	verb			concept	yes	yes	daily					已审概念 D04-01	other		
+intereō	verb			concept	yes	yes	creative					已审概念 C06-09	other		
+invideō	verb			concept	yes	yes	creative					已审概念 C01-06	other		
+invidus	adj			concept	yes	yes	creative					已审概念 C01-06	other		
+labyrinthus	noun			concept	yes	no	creative					已审概念 C05-05	other		
+laetor	verb			concept	yes	yes	creative					已审概念 C01-08	other		
+langueō	verb			concept	yes	yes	daily					已审概念 D06-10	other		
+lassus	adj			concept	yes	yes	daily					已审概念 D06-10	other		
+latex	noun			concept	yes	no	daily					已审概念 D02-07	other		
+laura	noun			concept	yes	yes	historical-cultural					已审概念 K02-10	other		
+lectus	noun			concept	yes	no	daily					已审概念 D02-06	other		
+licentia	noun			concept	yes	yes	creative					已审概念 C04-02	other		
+linquō	verb			concept	yes	no	daily					已审概念 D04-04	other		
+locūtiō	noun			concept	yes	yes	daily					已审概念 D04-08	other		
+longifolius	adj			concept	yes	no	professional-natural					已审概念 L01-05	other		
+loquēla	noun			concept	yes	yes	daily					已审概念 D04-08	other		
+lychnus	noun			concept	yes	yes	historical-cultural					已审概念 K01-04	other		
+lympha	noun			concept	yes	no	daily					已审概念 D02-07	other		
+lymphor	noun			concept	yes	no	daily					已审概念 D02-07	other		
+lēctiō	noun			concept	yes	yes	daily					已审概念 D05-05	other		
+lēnis	adj			concept	yes	yes	creative					已审概念 C01-04	other		
+lētum	noun			concept	yes	yes	creative					已审概念 C02-02	other		
+līberī	noun			concept	yes	no	daily					已审概念 D01-04	other		
+līmes	noun			concept	yes	yes	creative					已审概念 C03-07	other		
+lūctus	noun			concept	yes	yes	creative					已审概念 C01-07	other		
+maereō	verb			concept	yes	yes	creative					已审概念 C01-07	other		
+maeror	noun			concept	yes	no	creative					已审概念 C01-07	other		
+maestitia	noun			concept	yes	no	creative					已审概念 C01-07	other		
+magnificentia	noun			concept	yes	yes	professional-humanities					已审概念 H01-09	other		
+magnus	adj			concept	yes	no	daily					已审概念 D06-05	other		
+maleficus	adj			concept	yes	no	daily					已审概念 D06-02	other		
+mantō	verb			concept	yes	yes	daily					已审概念 D04-10	other		
+marca	noun			concept	yes	yes	creative					已审概念 C03-07	other		
+maritimus	adj			concept	yes	yes	daily					已审概念 D03-07	other		
+membrāna	noun			concept	yes	no	historical-cultural					已审概念 K01-02	other		
+memorō	verb			concept	yes	yes	professional-humanities					已审概念 H02-05	other		
+misereō	verb			concept	yes	yes	creative					已审概念 C01-09	other		
+misericordia	noun			concept	yes	yes	creative					已审概念 C01-09	other		
+miseror	verb			concept	yes	yes	creative					已审概念 C01-09	other		
+modulātiō	noun			concept	yes	yes	professional-humanities					已审概念 H02-08,H04-07	other		
+monasticus	adj			concept	yes	no	historical-cultural					已审概念 K02-10	other		
+montānus	adj			concept	yes	no	professional-natural					已审概念 L01-09	other		
+mōlēcula	noun			concept	yes	no	professional-natural					已审概念 N02-02	other		
+mōmentum	noun			concept	yes	yes	creative					已审概念 C02-07	other		
+mōrālis	adj			concept	yes	yes	professional-humanities					已审概念 H01-08	other		
+mūsa	noun			concept	yes	yes	historical-cultural					已审概念 K03-01	other		
+mūtus	adj			concept	yes	no	creative					已审概念 C05-09	other		
+oblīviō	noun			concept	yes	yes	creative					已审概念 C02-06	other		
+obscūrus	adj			concept	yes	yes	creative					已审概念 C06-06	other		
+occidō	verb			concept	yes	yes	creative					已审概念 C02-02	other		
+oecologia	noun			concept	yes	no	professional-natural					已审概念 N03-06	other		
+operor	verb			concept	yes	yes	daily					已审概念 D05-02	other		
+oriēns	noun			concept	yes	no	creative					已审概念 C03-03	other		
+paradīsus	noun			concept	yes	no	historical-cultural					已审概念 K03-05	other		
+parviflōrus	adj			concept	yes	no	professional-natural					已审概念 L01-08	other		
+parvulus	adj			concept	yes	yes	daily					已审概念 D06-06	other		
+paulus	adj			concept	yes	no	daily					已审概念 D06-06	other		
+pelagus	noun			concept	yes	no	daily					已审概念 D03-07	other		
+pellūcidus	adj			concept	yes	no	creative					已审概念 C06-01	other		
+penus	noun			concept	yes	yes	daily					已审概念 D02-09	other		
+peregrīnātiō	noun			concept	yes	yes	daily					已审概念 D05-10	other		
+perennis	adj			concept	yes	no	creative					已审概念 C02-08	other		
+persequor	verb			concept	yes	yes	creative					已审概念 C04-07	other		
+persevērantia	noun			concept	yes	no	creative					已审概念 C06-03	other		
+phaenomenon	noun			concept	yes	no	professional-humanities					已审概念 H01-03	other		
+phoenīx	noun			concept	yes	yes	historical-cultural					已审概念 K03-02	other		
+placidus	adj			concept	yes	yes	creative					已审概念 C06-04	other		
+problēma	noun			concept	yes	no	daily					已审概念 D05-06	other		
+profugus	adj			concept	yes	yes	creative					已审概念 C06-10	other		
+prōlēs	noun			concept	yes	no	daily					已审概念 D01-04	other		
+prōportiō	noun			concept	yes	no	professional-natural					已审概念 N01-08	other		
+pugillārēs	noun			concept	yes	no	historical-cultural					已审概念 K01-03	other		
+pābulum	noun			concept	yes	no	daily					已审概念 D02-09	other		
+pānis	noun			concept	yes	yes	daily					已审概念 D02-08	other		
+pāpa	noun			concept	yes	yes	daily					已审概念 D02-09	other		
+ratiōnālis	adj			concept	yes	yes	professional-humanities					已审概念 H01-05	other		
+refrāgor	verb			concept	yes	no	creative					已审概念 C04-09	other		
+relātiō	noun			concept	yes	yes	professional-humanities					已审概念 H02-05	other		
+renāscor	verb			concept	yes	no	creative					已审概念 C02-10	other		
+requīrō	verb			concept	yes	yes	daily					已审概念 D04-05	other		
+resistō	verb			concept	yes	yes	creative					已审概念 C04-09	other		
+ruber	adj			concept	yes	yes	professional-natural					已审概念 L01-03	other		
+rubor	noun			concept	yes	yes	professional-natural					已审概念 L01-03	other		
+rādīx	noun			concept	yes	yes	professional-humanities					已审概念 H03-05	other		
+salum	noun			concept	yes	yes	daily					已审概念 D03-07	other		
+scrīptiō	noun			concept	yes	no	daily					已审概念 D05-04	other		
+sculptūra	noun			concept	yes	no	professional-humanities					已审概念 H04-05	other		
+scēnographia	noun			concept	yes	no	professional-humanities					已审概念 H04-02	other		
+sector	verb			concept	yes	yes	creative					已审概念 C04-07	other		
+sempiternus	adj			concept	yes	no	creative					已审概念 C02-08	other		
+sequāx	adj			concept	yes	yes	creative					已审概念 C04-07	other		
+serēnus	adj			concept	yes	yes	creative					已审概念 C06-04	other		
+significātiō	noun			concept	yes	no	professional-humanities					已审概念 H03-07	other		
+silentium	noun			concept	yes	yes	creative					已审概念 C05-09	other		
+sileō	verb			concept	yes	yes	creative					已审概念 C05-09	other		
+sodālis	noun			concept	yes	yes	daily					已审概念 D01-02	other		
+somnium	noun			concept	yes	yes	creative					已审概念 C05-01	other		
+sopor	noun			concept	yes	yes	daily					已审概念 D01-10	other		
+spectrum	noun			concept	yes	no	professional-natural					已审概念 N01-07	other		
+sponda	noun			concept	yes	no	daily					已审概念 D02-06	other		
+spīrō	verb			concept	yes	yes	daily					已审概念 D01-09	other		
+sublīmis	adj			concept	yes	yes	professional-humanities					已审概念 H01-09	other		
+subveniō	verb			concept	yes	yes	daily					已审概念 D05-08	other		
+succurrō	verb			concept	yes	yes	daily					已审概念 D05-08	other		
+syllaba	noun			concept	yes	yes	professional-humanities					已审概念 H03-02	other		
+symmetria	noun			concept	yes	no	professional-natural					已审概念 N01-08	other		
+symphōnia	noun			concept	yes	yes	professional-humanities					已审概念 H04-06	other		
+sīdereus	adj			concept	yes	yes	creative					已审概念 C03-05	other		
+sōlitārius	adj			concept	yes	no	creative					已审概念 C01-03	other		
+sōlitūdō	noun			concept	yes	yes	creative					已审概念 C01-03	other		
+sōlārium	noun			concept	yes	yes	historical-cultural					已审概念 K01-07	other		
+tepeō	verb			concept	yes	yes	daily					已审概念 D06-07	other		
+terminus	noun			concept	yes	yes	creative					已审概念 C03-07	other		
+tonus	noun			concept	yes	yes	professional-humanities					已审概念 H04-03	other		
+trānslātiō	noun			concept	yes	yes	professional-humanities					已审概念 H02-01	other		
+trīstitia	noun			concept	yes	yes	creative					已审概念 C01-07	other		
+tēla	noun			concept	yes	yes	historical-cultural					已审概念 K01-05	other		
+tūtēla	noun			concept	yes	yes	creative					已审概念 C04-08	other		
+vādō	verb			concept	yes	yes	daily					已审概念 D04-01	other		
+vīctus	noun			concept	yes	yes	daily					已审概念 D02-09	other		
+vīsiō	noun			concept	yes	yes	creative					已审概念 C05-02	other		
+vīsum	noun			concept	yes	yes	creative					已审概念 C05-02	other		
+vītālis	adj			concept	yes	no	creative					已审概念 C02-01	other		
+āctuārius	noun			concept	yes	yes	historical-cultural					已审概念 K02-08	other		
+āvium	noun			concept	yes	no	creative					已审概念 C03-09	other		
+ēchō	noun			concept	yes	no	creative					已审概念 C05-04	other		
+ēmptiō	noun			concept	yes	yes	daily					已审概念 D05-09	other		
+ēns	noun			concept	yes	no	professional-humanities					已审概念 H01-01	other		
+ēsca	noun			concept	yes	yes	daily					已审概念 D02-09	other		
+ēvānēscō	verb			concept	yes	yes	creative					已审概念 C06-09	other		
+Īliacus	adj			concept	yes	no	historical-cultural					已审概念 K04-10	other		
+īnficiō	verb			concept	yes	yes	professional-natural					已审概念 N04-02	other		
+īnflammātiō	noun			concept	yes	yes	professional-natural					已审概念 N04-01	other		
+īrōnīa	noun			concept	yes	no	professional-humanities					已审概念 H02-04	other		
+ōstium	noun			concept	yes	no	daily					已审概念 D02-03	other		
+ōstiārius	adj			concept	yes	yes	daily					已审概念 D02-03	other		
+abbātiālis	adj			retained	yes	yes	historical-cultural					Q4 沿用既有逐义裁决，未占词频名额	other		
+absentia	noun			retained	yes	no	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+adamō	verb			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+adhinniō	verb			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+aedis	noun			retained	yes	yes	historical-cultural					Q4 沿用既有逐义裁决，未占词频名额	other		
+aemulor	verb			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+aemulus	adj			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+aemulātiō	noun			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+aenigma	noun			retained	yes	no	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+aerūgō	noun			retained	yes	yes	professional-natural					Q4 沿用既有逐义裁决，未占词频名额	other		
+aestās	noun			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+aeternitās	noun			retained	yes	no	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+aetātula	noun			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+afflō	verb			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+agmen	noun			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+amoenitās	noun			retained	yes	no	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+amātor	noun			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+animula	noun			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+anīlis	adj			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+aprīcus	adj			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+aspīrō	verb			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+assēnsus	noun			retained	yes	no	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+aucupor	verb			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+aurōra	noun			retained	yes	no	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+autumnus	noun			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+benedīcō	verb			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+bibō	verb			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+cadūcus	adj			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+camera	noun			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+castra	noun			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+chaos	noun			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+coalēscō	verb			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+collūsor	noun			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+compāreō	verb			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+concordia	noun			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+coniciō	verb			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+cothurnātus	adj			retained	yes	yes	professional-humanities					Q4 沿用既有逐义裁决，未占词频名额	other		
+crystallinus	adj			retained	yes	no	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+crās	adv			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+culīna	noun			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+diū	adv			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+dulcēdō	noun			retained	yes	no	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+dēcidō	verb			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+dērīvātiō	noun			retained	yes	yes	professional-humanities					Q4 沿用既有逐义裁决，未占词频名额	other		
+fortāsse	adv			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+fretum	noun			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+fīlius	noun			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+gemitus	noun			retained	yes	no	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+generālis	adj			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+gignō	verb			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+herī	adv			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+incubō	verb			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+interdum	adv			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+intereā	adv			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+interitus	noun			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+kalendae	noun			retained	yes	yes	historical-cultural					Q4 沿用既有逐义裁决，未占词频名额	other		
+liquidus	adj			retained	yes	no	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+lyra	noun			retained	yes	yes	historical-cultural					Q4 沿用既有逐义裁决，未占词频名额	other		
+lābor	verb			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+lār	noun			retained	yes	yes	historical-cultural					Q4 沿用既有逐义裁决，未占词频名额	other		
+malevolus	adj			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+mandūcō	verb			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+micō	verb			retained	yes	no	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+mēnsis	noun			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+mētior	verb			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+nusquam	adv			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+ortus	noun			retained	yes	no	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+orīgō	noun			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+paternus	adj			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+paucus	adj			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+persōna	noun			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+polus	noun			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+pontō	noun			retained	yes	no	historical-cultural					Q4 沿用既有逐义裁决，未占词频名额	other		
+postis	noun			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+probābilitās	noun			retained	yes	no	professional-natural					Q4 沿用既有逐义裁决，未占词频名额	other		
+pūbēs	noun			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+quantus	adj			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+quiēs	noun			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+reditus	noun			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+remedium	noun			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+restō	verb			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+signum	noun			retained	yes	no	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+sitiō	verb			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+subsistō	verb			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+taedium	noun			retained	yes	no	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+tunc	adv			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+ubīque	adv			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+vadum	noun			retained	yes	yes	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+vapor	noun			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+vēlificor	verb			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+vēnor	verb			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+vēr	noun			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+vēritās	noun			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+xenium	noun			retained	yes	no	historical-cultural					Q4 沿用既有逐义裁决，未占词频名额	other		
+zephyrus	noun			retained	yes	no	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+zēlus	noun			retained	yes	no	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+zōna	noun			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		
+ārdor	noun			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+ātrātus	adj			retained	yes	yes	historical-cultural					Q4 沿用既有逐义裁决，未占词频名额	other		
+ēloquium	noun			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+ēlābor	verb			retained	yes	yes	creative					Q4 沿用既有逐义裁决，未占词频名额	other		
+īr	noun			retained	yes	no	daily					Q4 沿用既有逐义裁决，未占词频名额	other		

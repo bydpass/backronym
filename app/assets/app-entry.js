@@ -2,7 +2,7 @@
 (function (app) {
   "use strict";
   app.entry = {};
-  var CORE = app.model.CORE, state = app.model.state, el = app.model.el, blocked = app.model.blocked, capitalize = app.model.capitalize;
+  var CORE = app.model.CORE, state = app.model.state, el = app.model.el, blocked = app.model.blocked, displayWord = app.model.displayWord;
 
   // ---- 入场界面（T18，闸口 A 第 1 节；含 D3 填表人、Q2–Q6） ----
   // entryFrom：""（不在入场页）/ "boot"（没有草稿，第一次进入：主按钮「开始填充」，没有返回箭头）/ "edit"（从编辑界面进来：返回箭头 = 应用并返回）。
@@ -29,11 +29,12 @@
   // ---- 语言栏（T20；2026-11-12 起多选）----
   // 语言属于作品，可以选几门，一律平等：候选、查词、预设词、屏蔽词表、数字格读法都按选中的各门语言合起来算（CORE.useLangs）。
   // 勾上就算选中（规则随页面已在），语言包随后加载，行内写状态；有一门没就绪就不能开始 / 保存。勾选和取消都不清空已填的内容。
-  // langBusy / langFail = 正在加载 / 上次没加载成功的语言；langNote = 这次取消没做成的原因
-  var langOpen = false, langBusy = Object.create(null), langFail = Object.create(null), langNote = "";
+  // langBusy / langFail = 正在加载 / 上次没加载成功的语言
+  var langOpen = false, langBusy = Object.create(null), langFail = Object.create(null);
   var LANG_RULE = { de: "ß 会占两格（SS）" }; // 2026-11-12：法、西、意的「可以打 É、Ç 这类字母」删去，只留输入前必须知道的
 
   function openEntry(from, focusField) {
+    app.model.retryForms();
     app.entry.entryFrom = from;
     resetSplits();
     saveFail = ""; backAfterSave = false; lastField = null;
@@ -41,7 +42,7 @@
     el.wordInput.value = state.letters.join("");
     el.fillerCtl.value = state.filler || "";
     pickEntryPresets();
-    langOpen = false; langNote = "";
+    langOpen = false;
     setEntryErr("word", ""); setEntryErr("filler", "");
     renderEntry();
     app.model.rebaseHeight(); // T28：编辑页的锁高不带进入场页
@@ -81,11 +82,23 @@
       if (state.picks[i]) parts.push("词");
       if (state.glosses[i]) parts.push("释义");
       if (state.captions[i]) parts.push("配文");
-      if (state.images[i]) parts.push("配图");
-      if (cropEdited(state.crops[i])) parts.push("取景");
-      if (parts.length) out.push({ i: i, letter: l, word: state.picks[i] ? capitalize(state.picks[i][0]) : "", parts: parts });
+      var held = app.draft.heldAt(i);
+      if (state.images[i] || held.img) parts.push("配图");
+      if (cropEdited(state.crops[i]) || cropEdited(held.crop)) parts.push("取景");
+      if (parts.length) out.push({ i: i, letter: l, word: state.picks[i] ? displayWord(i) : "", parts: parts });
     });
     return out;
+  }
+
+  // v00.03.01 U02（用户 11-18 定逐级缩放）：单词框放不下时字号逐级减 2px，下限 16px（iOS 输入框小于 16px 聚焦时会放大页面；
+  // 设计稿原拟 24px，320 宽下 14 个 A 到 24px 仍放不下）；放得下就回到样式表的字号。
+  // 先清掉上次的行内字号再量（框宽随 --u 变），所以单词变短、窗口变宽时会自动长回去
+  function fitWordInput() {
+    var n = el.wordInput, s;
+    n.style.fontSize = "";
+    if (n.scrollWidth <= n.clientWidth) return;
+    s = parseFloat(window.getComputedStyle(n).fontSize);
+    while (n.scrollWidth > n.clientWidth && s > 16) { s = Math.max(16, s - 2); n.style.fontSize = s + "px"; }
   }
 
   function renderEntry() {
@@ -104,7 +117,12 @@
     var w = CORE.normalizeWord(el.wordInput.value), f = el.fillerCtl.value;
     if (!app.entry.entryComposing) renderSense(w); // 组字结束后才更新，拼音阶段不闪
     el.wordCount.textContent = w.length + " / " + CORE.MAX_LETTERS + " 个字符"; // T41：含数字时「个字母」不准确
-    el.fillerCount.textContent = CORE.textUnits(f).length + " / 12";
+    var fn = CORE.textUnits(f).length;
+    el.fillerCount.textContent = fn + " / " + CORE.FILLER_MAX;
+    // v00.03.01 U03（用户 11-18 定）：12 字起计数墨色粗体，写满朱色；只改计数，不改输入框
+    el.fillerCount.classList.toggle("hot", fn >= 12 && fn < CORE.FILLER_MAX);
+    el.fillerCount.classList.toggle("full", fn >= CORE.FILLER_MAX);
+    fitWordInput();
     el.fillerCtl.disabled = el.wordInput.disabled;
     // 预览将得到的格：虚下划线 = 未填；从编辑界面进来时同位置字母没变、已有词的格是实下划线（会保留）
     el.wordPreview.textContent = "";
@@ -157,11 +175,18 @@
     var had = el.langList.contains(document.activeElement) ? document.activeElement : null;
     var hadCode = had ? had.value || had.getAttribute("data-code") : "", multi = state.langs.length > 1, wait = langWaiting();
     el.langNow.textContent = "";
-    app.model.LANGS.forEach(function (row) { // 摘要行并列写出选中的语言，放不下由样式省略
+    var full = [], abbr = [];
+    app.model.LANGS.forEach(function (row) { // 摘要行：只选一门写全名加原文；选了多门只写首字（英 法 德 西 意 拉），全名交给读屏（2026-11-17 真机反馈）
       if (state.langs.indexOf(row[0]) < 0) return;
-      if (el.langNow.childNodes.length) el.langNow.appendChild(document.createTextNode("、"));
-      nameNodes(row, el.langNow);
+      full.push(row[1]); abbr.push(row[1].charAt(0));
+      if (!multi) nameNodes(row, el.langNow);
     });
+    if (multi) { // 首字只给眼睛看，读屏读隐藏的全名（span 上的 aria-label 读屏多半不读，读了又会盖掉后面的加载状态）
+      var ab = app.model.make("span", null, abbr.join(" "));
+      ab.setAttribute("aria-hidden", "true");
+      el.langNow.appendChild(ab);
+      el.langNow.appendChild(app.model.make("span", "sr-only", full.join("、")));
+    }
     // 状态：只选英语且就绪不写（随包加载）；有没就绪的写明是哪一门（多选时）；都就绪写「已就绪」
     if (wait) el.langNow.appendChild(app.model.make("span", "lang-st", " · " + (multi ? app.model.langName(wait) : "") + LANG_ST[langStatus(wait)]));
     else if (multi || state.langs[0] !== "en") el.langNow.appendChild(app.model.make("span", "lang-st", " · " + LANG_ST.ready));
@@ -195,7 +220,7 @@
       var back = el.langList.querySelector(had.type === "checkbox" ? 'input[value="' + hadCode + '"]' : '.lang-retry[data-code="' + hadCode + '"]') || el.langList.querySelector('input[value="' + hadCode + '"]');
       if (back && !back.disabled) back.focus(); else if (back) el.langMore.focus();
     }
-    el.langRule.textContent = langNote || (state.langs.indexOf("de") >= 0 ? LANG_RULE.de : "");
+    el.langRule.textContent = state.langs.indexOf("de") >= 0 ? LANG_RULE.de : "";
     el.wordInput.lang = state.lang;
     el.wordInput.placeholder = multi ? "输入一个单词" : "输入一个" + app.model.langName(state.langs[0]) + "单词";
     var why = langBlock();
@@ -217,33 +242,14 @@
     });
   }
 
-  // 只剩英语时英语规则不收的内容：单词里的变音字母、格里超过 20 个字符或带变音符的词。返回要写给用户的原因（没有就是 ""）
-  function englishOnlyBlock() {
-    var typed = el.wordInput.value, now = CORE.normalizeWord(typed);
-    var why = CORE.withLang("en", function () {
-      if (state.letters.some(function (c) { return CORE.normalizeWord(c) !== c; }) || CORE.normalizeWord(typed) !== now) return "单词里有英语没有的字母";
-      for (var i = 0; i < state.picks.length; i++) {
-        var w = state.picks[i] && state.picks[i][0];
-        if (w && (CORE.textUnits(w).length > CORE.LANG.wordMax || CORE.LANG.exactKey(CORE.rewriteWord(w).value) !== CORE.LANG.exactKey(w))) return "第 " + (i + 1) + " 格的词（" + capitalize(w) + "）英语的规则放不下";
-      }
-      return "";
-    });
-    return why ? why + "，所以至少要留一门别的语言" : "";
-  }
-
   // 勾上 / 取消一门语言。用户写下的文字（词的拼写、自己写的释义、配文）和配图都不清空，候选里多了或少了这门语言的词。
   // 取消时各格按剩下的语言重对一遍（V003-B4-R12）：记着这门语言的格，剩下的语言里有同形词就改认成那门语言的词，
   // 词库带出的释义、冠词跟着换，已选的冠词不在新选项里就清掉；再把这门语言加回来也不恢复（与重新载入后的结果一致）
-  // 唯一拦下的情况：取消后只剩英语，而单词或某一格的词英语规则放不下
+  // v00.03.01 E2：英语格内上限改 28 后，六门语言的规则收的字一样，取消任何一门都不再拦
   function toggleOne(code, on) {
     if (!app.entry.entryFrom || !app.draft.draftLoaded || app.draft.checkDraftExpiry()) return;
     var next = on ? state.langs.concat([code]) : state.langs.filter(function (c) { return c !== code; });
-    langNote = "";
     if (!next.length || (on && state.langs.indexOf(code) >= 0)) { renderEntry(); return; }
-    if (!on && next.length === 1 && next[0] === "en") {
-      langNote = englishOnlyBlock();
-      if (langNote) { renderEntry(); el.live.textContent = langNote; return; }
-    }
     if (!app.model.setLangs(next)) { renderEntry(); return; }
     if (on && !app.model.langReady(code)) loadLang(code);
     else if (!on) app.model.cancelLang(code);
@@ -265,11 +271,11 @@
     var t = "";
     if (w) {
       if (blocked(w)) t = BLOCKED_HINT;
-      else if (/^[0-9]+$/.test(w)) { // T41 / U16：全是数字——写明每格按读法取的首字母（替代义项行）
-        t = "按读法取首字母：" + w.split("").map(function (d) { return CORE.startText(d).charAt(0) + "（" + CORE.LANG.digitNames[+d] + "）"; }).join(" · ");
-      } else {
+      else if (/^[0-9]+$/.test(w)) t = ""; // 全是数字：入场页不再写读法（2026-11-17 真机：多语言互相覆盖、四位数溢出）；编辑面每格的「T 开头」已经说了
+      else {
         var g = CORE.defaultGloss(app.model.itemFor(w)); // itemFor 查词不分大小写
-        t = g ? w + "：" + g : "词库里没有 " + w + " 的释义";
+        var status = app.model.formStatus(w);
+        t = g ? w + "：" + g : status || "词库里没有 " + w + " 的释义";
       }
     }
     el.wordSense.textContent = t;
@@ -445,6 +451,7 @@
   function leaveSave() { closeLeave(); saveEntry(true); }
 
   function onEntryWord() {
+    app.model.retryForms();
     if (app.entry.entryComposing) return;
     var c = el.wordInput, raw = c.value, v = CORE.normalizeWord(raw);
     if (v !== raw) { // 就地改写，光标按「光标前被留下的字数」放回去，不跳到末尾
@@ -546,6 +553,7 @@
     setEntryErr: setEntryErr,
     hideConfirm: hideConfirm,
     renderEntry: renderEntry,
+    fitWordInput: fitWordInput,
     closeEntry: closeEntry,
     bindEntryInput: bindEntryInput,
     submitEntry: submitEntry,

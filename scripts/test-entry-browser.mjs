@@ -147,6 +147,9 @@ try {
     await page.locator("#toEntry").click(); await page.locator("#wordInput").fill("LOVE"); await backSave(page);
     assert.equal(await visible(page, "#wordConfirm"), true, "会清空已填格：先确认");
     assert.equal(await page.evaluate(() => document.activeElement.id), "confKeep", "初始焦点在安全选项");
+    // v00.03.01 U06（真机 E7，用户定）：确认框贴在顶栏正下方，不再从底部升起
+    const pos = await page.evaluate(() => ({ panel: document.querySelector("#wordConfirm .conf-panel").getBoundingClientRect().top, bar: document.getElementById("top").getBoundingClientRect().bottom, h: innerHeight }));
+    assert.ok(Math.abs(pos.panel - pos.bar) <= 1 && pos.panel < pos.h / 3, "确认框贴在顶栏下：" + JSON.stringify(pos));
     assert.match(await page.locator("#confTitle").innerText(), /改成 LOVE 会清空以下 2 格，不可撤销/); assert.match(await page.locator("#confKeep").innerText(), /保留 LIFE/);
     assert.match(await page.locator("#confList").innerText(), /I[\s\S]*Ice[\s\S]*F[\s\S]*Fire/, "列出要清空的格");
     await page.keyboard.press("Escape"); // Esc = 保留
@@ -156,7 +159,7 @@ try {
     await page.waitForFunction(() => document.getElementById("entry").hidden);
     await savedWhere(page, "d.word === 'LOVE'");
     const d = JSON.parse(await stored(page));
-    assert.equal(d.word, "LOVE"); assert.deepEqual(d.picks.map(p => p && p[0]), ["love", null, null, "echo"], "L、E 保留词，O、V 清空");
+    assert.equal(d.word, "LOVE"); assert.deepEqual(d.picks.map(p => p && p[0]), ["Love", null, null, "Echo"], "L、E 保留词，O、V 清空（旧稿里的小写英语词按 T22 存回首字母大写）");
     assert.deepEqual(d.captions, ["一段配文", "", "", "回声配文"], "配文同理");
     const imgs = await page.evaluate(() => [0, 1, 3].map(i => { document.getElementById("pl-" + i).click(); return !!document.querySelector("#mirror canvas"); }));
     assert.deepEqual(imgs, [true, false, true], "本次会话的配图仍在 L、E，被清空的 O 格没有");
@@ -262,12 +265,60 @@ try {
     assert.equal(await page.locator("#hint").innerText(), "还差 4 格", "提示行只留下一步");
     await page.locator("#wordCtl").pressSequentially("lo"); await page.waitForTimeout(100);
     assert.equal(await visible(page, "#cand"), true);
-    assert.match(await page.locator("#candLab").innerText(), /^以 L 开头 · 1 \/ \d+ 批$/, "候选标签只留首字母与批次");
+    assert.match(await page.locator("#candLab").innerText(), /^L 开头 · 1 \/ \d+ 批$/, "候选标签只留首字母与批次");
     await page.locator("#wordCtl").fill(""); await page.waitForTimeout(50);
-    assert.equal(await page.locator("#candLab").innerText(), "以 L 开头", "词框空着：不再说「打几个字母…」");
+    assert.equal(await page.locator("#candLab").innerText(), "L 开头", "词框空着：不再说「打几个字母…」");
     assert.equal(await page.locator("#hint").innerText(), "还差 4 格");
     await page.locator("#wordCtl").fill("ice"); await page.waitForTimeout(50);
     assert.equal(await page.locator("#hint").innerText(), "还差 4 格", "首字母不对的格也算在「还差」里");
+    assert.deepEqual(errors, []); await context.close();
+  }
+  // 8b v00.03.01 E6（用户 11-19 定）：单词框计数器「N / 28」在候选栏提示行右端；差 7 字到上限起墨色粗体、写满朱色；
+  //    组字期间（安卓 / 鸿蒙带候选的西文输入法）栏只留提示行，按框里正在打的字计，超上限先写明，不等上屏后字消失才发现
+  {
+    const { page, context, errors } = await pageFor({ width: 320 });
+    await page.locator("#wordInput").fill("MH"); await page.locator("#entryStart").click();
+    await page.waitForFunction(() => document.getElementById("entry").hidden);
+    const count = page.locator("#candCount");
+    const cls = () => count.evaluate(n => ["hot", "full"].filter(c => n.classList.contains(c)).join());
+    await page.locator("#wordCtl").focus(); await page.waitForTimeout(50);
+    assert.equal(await visible(page, "#candCount"), false, "词框空着不显示计数");
+    await page.locator("#wordCtl").fill("m".repeat(20)); await page.waitForTimeout(50);
+    assert.deepEqual([await count.innerText(), await cls()], ["20 / 28", ""], "20 字：常规");
+    await page.locator("#wordCtl").fill("m".repeat(21)); await page.waitForTimeout(50);
+    assert.deepEqual([await count.innerText(), await cls()], ["21 / 28", "hot"], "差 7 字：墨色粗体");
+    assert.equal(await count.evaluate(n => getComputedStyle(n).fontWeight), "700");
+    await page.locator("#wordCtl").fill("m".repeat(28)); await page.waitForTimeout(50);
+    assert.deepEqual([await count.innerText(), await cls()], ["28 / 28", "full"], "写满：朱色");
+    assert.equal(await page.locator("#candMsg").innerText(), "这一格最多 28 个字符");
+    const box = await page.evaluate(() => { const m = document.getElementById("candMsg").getBoundingClientRect(), c = document.getElementById("candCount").getBoundingClientRect(), bar = document.getElementById("cand").getBoundingClientRect(); return { gap: c.left - m.right, inBar: c.right <= bar.right + 1, scroll: document.documentElement.scrollWidth <= innerWidth }; });
+    assert.ok(box.gap >= 0 && box.inBar && box.scroll, "墨底说明不盖住计数，320 宽不出栏、不横向滚动：" + JSON.stringify(box));
+    // 组字：14 个 m 已上屏，再用带候选的输入法打 m……
+    await page.locator("#wordCtl").fill("m".repeat(14)); await page.waitForTimeout(50);
+    const before = await page.locator("#wordCtl").inputValue();
+    const compose = (value, end) => page.evaluate(([v, e]) => {
+      const c = document.getElementById("wordCtl");
+      if (!e && !window.__composing) { c.dispatchEvent(new CompositionEvent("compositionstart", { data: "" })); window.__composing = true; }
+      c.value = v; c.dispatchEvent(new InputEvent("input", { inputType: "insertCompositionText", data: v, isComposing: true }));
+      if (e) { window.__composing = false; c.dispatchEvent(new CompositionEvent("compositionend", { data: v })); c.dispatchEvent(new InputEvent("input", { inputType: "insertText" })); }
+    }, [value, end]);
+    await compose("m".repeat(16)); await page.waitForTimeout(50);
+    assert.equal(await visible(page, "#cand"), true, "组字期间栏不收起");
+    assert.deepEqual([await count.innerText(), await visible(page, "#candList"), await visible(page, "#candRow")], ["16 / 28", false, false], "只留提示行，按正在打的字计");
+    assert.equal(await page.locator("#candLab").innerText(), "M 开头");
+    await compose("m".repeat(30)); await page.waitForTimeout(50);
+    assert.deepEqual([await count.innerText(), await cls()], ["30 / 28", "full"], "组字超上限：照实计、朱色");
+    assert.equal(await page.locator("#candMsg").innerText(), "最多打 28 个字符");
+    await compose("m".repeat(30), true); await page.waitForTimeout(50);
+    assert.equal(await page.locator("#wordCtl").inputValue(), before, "上屏超上限：这次输入不收（原有规则不变）");
+    assert.deepEqual([await count.innerText(), await visible(page, "#candRow")], ["14 / 28", true], "组字结束：计数回到框里的字，候选栏恢复");
+    // 复审补：空格里刚开始组字（框里还没有字）同词栏，不显示「0 / 28」
+    await page.locator("#wordCtl").fill(""); await page.waitForTimeout(50);
+    await compose(""); await page.waitForTimeout(50);
+    assert.deepEqual([await visible(page, "#cand"), await visible(page, "#candCount")], [true, false], "组字开始、框里没字：只留格首提示，不显示计数");
+    await compose("m"); await page.waitForTimeout(50);
+    assert.equal(await count.innerText(), "1 / 28", "打出第一个字就显示计数");
+    await compose("m", true); await page.waitForTimeout(50);
     assert.deepEqual(errors, []); await context.close();
   }
   // 9 T30：改词页保存按钮（无修改不可用 / 有修改 / 保存后留本页 + Toast）、返回三选一（Esc、点外面、放弃、保存并返回）、焦点归还
@@ -284,8 +335,8 @@ try {
     await save.click();
     await page.waitForFunction(() => document.getElementById("toast").textContent === "已保存");
     assert.equal(await visible(page, "#entry"), true, "保存后留在本页");
-    const tb = await page.evaluate(() => ({ t: document.getElementById("toast").getBoundingClientRect().top, h: document.getElementById("entryTitle").getBoundingClientRect().bottom }));
-    assert.ok(tb.t >= tb.h, "「已保存」在页面标题下方：" + JSON.stringify(tb));
+    const tb = await page.evaluate(() => ({ t: document.getElementById("toast").getBoundingClientRect().top, h: document.querySelector(".top").getBoundingClientRect().bottom }));
+    assert.ok(Math.abs(tb.t - (tb.h + 8)) <= 1, "「已保存」贴在顶栏正下方（2026-11-17 起提示位置统一）：" + JSON.stringify(tb));
     assert.equal(await save.getAttribute("aria-disabled"), "true", "保存后回到不可用");
     assert.equal(JSON.parse(await stored(page)).filler, "大寒", "已写进本设备");
     // 有修改点返回：向下展开，初始焦点在「继续编辑」；Esc 收起，焦点回上次的输入框
@@ -472,7 +523,7 @@ try {
     const { page, context, errors } = await pageFor({ draft: DAVID });
     await page.locator("#wordCtl").click(); await page.keyboard.type("david");
     const first = await page.locator("#candList li").first().innerText();
-    assert.match(first, /^David\s*大卫，戴维$/, "候选：两行，释义行放两个最常用的义项（v00.03.00）、没有（男子名）：" + first);
+    assert.match(first, /^David\s*n\. 大卫，戴维$/, "候选：两行，释义行放两个最常用的义项（v00.03.00）、没有（男子名）：" + first);
     assert.equal(await page.locator("#candNext").innerText(), "下一批", "T39：候选翻页改名「下一批」");
     await page.locator("#candList li button").first().click();
     assert.equal(await page.locator('#mirror [data-role="gloss"]').innerText(), "大卫", "卡上默认释义");
@@ -505,7 +556,7 @@ try {
       await page.evaluate(i => document.getElementById("pl-" + i).click(), i);
       await page.locator("#wordCtl").click(); await page.keyboard.type(w);
       const first = await page.locator("#candList li").first().innerText();
-      assert.equal(first.replace(/\s+/g, " "), w[0].toUpperCase() + w.slice(1) + " " + g, "候选：" + first);
+      assert.equal(first.replace(/\s+/g, " "), w[0].toUpperCase() + w.slice(1) + " n. " + g, "候选（11-19 起释义前带词性缩写）：" + first);
       await page.locator("#candList li button").first().click();
       assert.equal(await page.locator('#mirror [data-role="gloss"]').innerText(), g, "选中后卡面：" + w);
       await page.locator("#glossCtl").focus();
@@ -528,7 +579,7 @@ try {
       await page.evaluate(i => document.getElementById("pl-" + i).click(), i);
       await page.locator("#wordCtl").click(); await page.keyboard.type(w);
       const first = (await page.locator("#candList li").first().innerText()).replace(/\s+/g, " ").trim();
-      assert.equal(first, (w[0].toUpperCase() + w.slice(1) + " " + g).trim(), "候选：" + first);
+      assert.equal(first, (w[0].toUpperCase() + w.slice(1) + (g ? (w === "jo" ? " abbr. " : " n. ") + g : "")).trim(), "候选（11-19 起释义前带词性缩写）：" + first);
       await page.locator("#candList li button").first().click();
       const gloss = await page.evaluate(() => { const n = document.querySelector('#mirror [data-role="gloss"]'); return n ? n.textContent : ""; });
       assert.equal(gloss, g, "选中后卡面：" + w);
@@ -640,7 +691,7 @@ try {
     const { page, context, errors } = await pageFor();
     const wi = page.locator("#wordInput");
     await wi.fill("b2b"); assert.equal(await wi.inputValue(), "B2B", "数字自成一格，不再静默丢掉"); assert.equal(await page.locator("#wordCount").innerText(), "3 / 14 个字符");
-    await wi.fill("2024"); assert.equal(await page.locator("#wordSense").innerText(), "按读法取首字母：T（two） · O（oh） · T（two） · F（four）", "全数字：写明读法");
+    await wi.fill("2024"); assert.equal(await page.locator("#wordSense").innerText(), "", "全数字：入场页不再写读法（2026-11-17；编辑面每格的占位已说明）");
     await wi.fill("abcdefghijklmnopq"); assert.equal(await wi.inputValue(), "ABCDEFGHIJKLMN", "最多 14 个");
     await wi.fill("development");
     assert.equal(await page.locator("#splitInfo").innerText(), "分 2 张（7 + 4）· 切点 develop | ment", "自动分图：develop | ment");
@@ -682,7 +733,7 @@ try {
     const { page, context, errors } = await pageFor({ draft: B2B });
     await page.evaluate(() => document.getElementById("pl-1").click());
     await page.locator("#wordCtl").click();
-    assert.equal(await page.locator("#candLab").innerText(), "以 T 或 2 开头", "格首提示把算对的写法全列出来（v00.03.00）");
+    assert.equal(await page.locator("#candLab").innerText(), "T 开头", "格首提示只列读法首字母（v00.03.01 R03、E3）");
     assert.equal(await page.locator("#candRandom").isVisible(), true, "数字格也有「随机一个」（按读法首字母）");
     await page.keyboard.type("t");
     assert.match((await page.locator("#candList li").first().innerText()), /^T/, "候选按读法首字母 T 给");
@@ -690,7 +741,7 @@ try {
       await page.locator("#wordCtl").fill(w);
       assert.equal(await page.locator("#wordCtl").getAttribute("aria-invalid"), String(!ok), "2 格打 " + w + "：" + (ok ? "对" : "不对"));
     }
-    assert.match(await page.locator("#candMsg").innerText(), /不是以 T 或 2 开头/);
+    assert.match(await page.locator("#candMsg").innerText(), /不是以 T 开头/);
     assert.equal(await page.locator("#pl-1").innerText(), "2", "字母栏仍显示数字");
     assert.deepEqual(errors, []); await context.close();
   }

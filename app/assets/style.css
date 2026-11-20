@@ -1,5 +1,5 @@
 /* 基线：Chrome 61。不用 flex gap / inset / clamp / aspect-ratio / :focus-visible / :is()
-   方向 folio-swiss（design/folio-swiss.html 第六稿）：满版卡 × 国际主义 × 左对齐。石白 / 墨 / 朱三色，朱只标关键字母；
+   方向 folio-swiss（design/folio-swiss.html 第六稿）：满版卡 × 国际主义 × 左对齐。现行配色是四个主题（见下方 :root[data-skin]），朱色只标关键字母；
    界面元素的尺寸以 --u（母版 300px 宽稿面上的 1px = 实际宽度 / 300）度量，界面左边距 --m = 卡的 80px 页边距 × k，与卡的网格线对齐 */
 
 /* 包内字体（scripts/build-fonts.mjs 生成的子集，SIL OFL 1.1）。只有 400/700 两个字重 */
@@ -23,7 +23,7 @@
 @font-face { font-family: "BK Dansaekhwa Kai"; src: url("./fonts/ThemeDansaekhwa-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "BK Dansaekhwa Kai"; src: url("./fonts/ThemeDansaekhwa-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
 
-/* 颜色：浅 = 石白，深 = 墨黑，--red = 朱。DOM 卡直接用这些变量（D19），与 core.js 的 PALETTE 同值（npm test 核对）。
+/* 回落颜色（早期的石白 / 墨 / 朱，已退场，产品里选不到；现行配色见下方 :root[data-skin]）：浅 = 石白，深 = 墨黑，--red = 朱。DOM 卡直接用这些变量（D19），与 core.js 的 PALETTE 同值（npm test 核对）。
    <html data-theme> 由 theme.js 设：没有 = 跟随系统，light / dark = 手动。--k 由 app.js 按屏宽写在 <html> 上（卡显示宽 / 1080） */
 :root {
   --paper: #e9e8e4;
@@ -285,7 +285,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
 }
-button, input { font-family: inherit; color: inherit; }
+button, input, textarea { font-family: inherit; color: inherit; }
 button { font-size: inherit; }
 
 /* 只给读屏看的文字 / 藏起来但仍可被程序点击的 file input */
@@ -400,7 +400,8 @@ button { font-size: inherit; }
 .kbd .card .cell-hit:focus { outline: 2px solid var(--red); outline-offset: -2px; }
 
 /* 卡上单词输入框（T12）：文字透明，叠在镜像对应的字上，只露出光标和选区；位置、字号、字距由 app.js 的 renderCtl 逐次写入。
-   组字期间（.ime）输入框自己显示文字并盖住镜像，组字结束再还原，镜像不跳 */
+   组字期间输入框仍透明，镜像直接画正在组的字（app-editor.js 的 composePreview）：安卓带候选的输入法打西文全程在组字，
+   以前改由输入框自己显示，真机上组字中的字画不出来，选定候选前卡上一片空白 */
 .ctl-word, .ctl-line {
   position: absolute;
   margin: 0;
@@ -419,15 +420,17 @@ button { font-size: inherit; }
 }
 .ctl-word::selection, .ctl-line::selection { background: var(--sel); color: transparent; } /* 选区颜色跟深浅色板走（--sel） */
 .ctl-title::selection { background: var(--sel); } /* 标题字可见，只换底色，不动字色 */
-.ctl-word.ime, .ctl-line.ime, .ctl-word.own { color: var(--ink); background: var(--paper); }
+.ctl-word.own { color: var(--ink); background: var(--paper); }
 /* 折了行的词正在编辑：输入框自己显示（.own），镜像里的词先藏起来（app-editor.js 的 syncOwn） */
 .card.word-own .b-word { visibility: hidden; }
 .ctl-word:focus, .ctl-line:focus { outline: none; }
 .kbd .ctl-word:focus, .kbd .ctl-line:focus { outline: 2px solid var(--red); outline-offset: 2px; }
 /* 释义 / 配文输入框（T15）：位置、字号、点按区由 app.js 的 placeLine 写入；光标颜色同镜像字色 */
-.ctl-line { font-weight: 700; }
-.ctl-line.cap { font-weight: 400; caret-color: var(--soft); }
-.ctl-line.cap.ime { color: var(--soft); }
+.ctl-line { font-weight: 400; } /* v00.03.01 U04：释义框常规，配文框粗体（与卡面同字重，光标才对得上） */
+.ctl-line.cap { font-weight: 700; caret-color: var(--ink); }
+/* 配文框是多行的 textarea（2026-11-17 真机反馈：打字时就要看到折行）：透明叠在镜像的几行配文上，镜像按 CORE.wrapCaption 实时折行，
+   textarea 只负责光标与输入。行高 = 版式行距，宽 = 配文宽；浏览器折行点与版式偶有一字之差时，光标会差一行里的一个字，文字以镜像为准 */
+.ctl-line.cap { white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; resize: none; overflow: hidden; }
 /* 整块图版上的透明按钮（点了出配图面板）。不加 .ctl：触点起于控件内的不算横滑，图版是最大的横滑起点 */
 .hit { position: absolute; display: block; margin: 0; padding: 0; border: 0; background: none; cursor: pointer; pointer-events: auto; }
 .kbd .hit:focus { outline: 2px solid var(--red); outline-offset: -2px; }
@@ -475,7 +478,9 @@ button { font-size: inherit; }
 
 /* 词下方的栏（母版 §2-②③、§3-⑤⑥⑦）：面板底色、2px 墨线上沿、直角、无阴影。T13 候选（标签行 + 2 列 × 4 行）、T15 义项 */
 .cand { position: absolute; left: 0; right: 0; z-index: 2; padding: calc(6 * var(--u)) var(--m); background: var(--panel); border-top: 2px solid var(--ink); }
-.cand-top { position: relative; height: calc(9.5 * 1.6 * var(--u) + 1.6 * var(--fs) + 6 * var(--u)); font-size: calc(9.5 * var(--u) + var(--fs)); color: var(--mute); } /* 提示行：固定一行高，放不下省略，不换行 */
+.cand-top { position: relative; display: flex; height: calc(9.5 * 1.6 * var(--u) + 1.6 * var(--fs) + 6 * var(--u)); font-size: calc(9.5 * var(--u) + var(--fs)); color: var(--mute); } /* 提示行：固定一行高，放不下省略，不换行 */
+.cand-say { position: relative; flex: 1; min-width: 0; }
+.cand-count { flex: none; padding: calc(3 * var(--u)) 0 calc(3 * var(--u)) calc(8 * var(--u)); line-height: 1.6; } /* v00.03.01 E6：单词框计数「N / 28」，靠右，不被墨底说明盖住；两档颜色沿用 .ent-count */
 .cand-lab, .cand-msg { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.6; }
 .cand-lab { padding: calc(3 * var(--u)) 0; }
 .cand-msg { position: absolute; left: 0; right: 0; top: 0; margin: 0; padding: calc(3 * var(--u)) calc(8 * var(--u)); background: var(--ink); color: var(--paper); font-weight: 700; } /* 墨底说明占提示行的位置，不另起一行 */
@@ -500,6 +505,7 @@ button { font-size: inherit; }
 .cand-art { margin-right: calc(4 * var(--u)); font-size: calc(10 * var(--u) + var(--fs)); font-weight: 400; color: var(--mute); } /* 冠词：比词小一号、不加粗、不占固定宽度 */
 .cand-art.tight { margin-right: 0; }
 .cand-tag { color: var(--ink); } /* 开关加进来的词的类别标注 */
+.cand-pos { font-style: italic; } /* 词性缩写（用户 11-19 定）：与释义同色，只靠斜体区分，后接一个空格 */
 .cand-g { min-height: 1.4em; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.4; color: var(--mute); } /* 没有释义也占一行：同一排两项等高，分隔线对齐 */
 .sense-list { max-height: calc(120 * var(--u)); overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .sense-row { display: flex; flex-wrap: wrap; align-items: baseline; padding: calc(3 * var(--u)) 0; border-bottom: 1px solid var(--line); font-size: calc(12 * var(--u) + var(--fs)); }
@@ -704,7 +710,7 @@ button { font-size: inherit; }
 .credits-table th:first-child { width: 18%; padding-left: 0; }
 .credits-table th:last-child, .credits-table td:last-child { width: 27%; padding-right: 0; }
 .credits-table th { color: var(--ink); font-weight: 700; }
-.toast { position: fixed; z-index: 30; padding: 12px 16px; background: var(--ink); color: var(--paper); font-size: calc(14px + var(--fs)); line-height: 1.5; pointer-events: none; } /* 统一提示（T33）：left / width / top 由 app-model.js 的 placeToast 按标题位置写入 */
+.toast { position: fixed; z-index: 30; padding: 12px 16px; background: var(--ink); color: var(--paper); font-size: calc(14px + var(--fs)); line-height: 1.5; pointer-events: none; } /* 统一提示（T33）：left / width / top 由 app-model.js 的 placeToast 写入（2026-11-17 起固定在顶栏正下方） */
 .toast:empty { display: none; }
 .credits-body details { margin-top: 8px; border-top: 1px solid var(--line); padding: 8px 0; }
 .credits-body summary { min-height: 32px; cursor: pointer; color: var(--ink); }
@@ -732,6 +738,8 @@ button { font-size: inherit; }
 .ent-lab { display: flex; justify-content: space-between; align-items: baseline; margin: 0; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; color: var(--mute); }
 .ent-lab label { color: var(--ink); font-weight: 700; }
 .ent-count { white-space: nowrap; }
+.ent-count.hot { color: var(--ink); font-weight: 700; } /* v00.03.01 U03：填表人 12 字起 */
+.ent-count.full { color: var(--red); font-weight: 700; } /* 写满 */
 .ent-input {
   display: block;
   width: 100%;
@@ -818,9 +826,13 @@ button { font-size: inherit; }
 .set-lab { margin: 0 0 8px; font-size: calc(10 * var(--u) + var(--fs)); font-weight: 400; line-height: 1.5; color: var(--mute); }
 .set-seg { display: flex; }
 .set-opt { position: relative; flex: 1; min-width: 0; }
-.set-opt span { display: block; min-height: 44px; line-height: 41px; border: 1.5px solid var(--ink); text-align: center; font-size: calc(13px + var(--fs)); color: var(--ink); white-space: nowrap; cursor: pointer; }
-.set-opt + .set-opt span { border-left: 0; }
-.set-opt input:checked + span { background: var(--ink); color: var(--paper); font-weight: 700; }
+/* 2026-11-17 真机反馈：选中不再靠反色（整块墨底）区分。三格各自成框、之间留缝；选中 = 2px 墨框 + 勾 + 粗体，没选中 = 细线框、次要字色。
+   选中与否有形状（勾）、线宽、字重三重区分，不只靠颜色（WCAG 1.4.1），与主题四选一的选中写法一致 */
+.set-opt span { display: block; min-height: 44px; line-height: 42px; border: 1px solid var(--line); text-align: center; font-size: calc(13px + var(--fs)); color: var(--soft); white-space: nowrap; cursor: pointer; }
+.set-opt + .set-opt { margin-left: 8px; }
+.set-opt .set-ck { display: none; width: 16px; height: 16px; margin-right: 4px; vertical-align: -3px; fill: currentColor; }
+.set-opt input:checked + span { border: 2px solid var(--ink); line-height: 40px; color: var(--ink); font-weight: 700; }
+.set-opt input:checked + span .set-ck { display: inline-block; }
 .kbd .set-opt input:focus + span { outline: 2px solid var(--red); outline-offset: -5px; }
 /* 主题四选一（2026-11-12）：上面色样（底色 + 强调色的一条），下面名字；选中 = 2px 墨框 + 粗体，不只靠颜色。色样的颜色是各主题浅色的 paper 与 red，写死在这里（它展示的是别的主题，不能用当前主题的变量） */
 .set-ths { display: flex; margin: 0 calc(-2 * var(--u)); }
@@ -842,6 +854,10 @@ button { font-size: inherit; }
 .set-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 6px; border-top: 1px solid var(--line); font-size: calc(10 * var(--u) + var(--fs)); color: var(--mute); }
 /* 改单词清空确认（闸口 A 第 1 节 ⑤）：平直面板，列出要清空的格；两个按钮写明后果，安全选项「保留」是实心主按钮 */
 .conf-panel { height: auto; max-width: 480px; padding-bottom: calc(16px + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px))); }
+/* v00.03.01 U06（用户 11-18 定）：改单词的确认框贴在顶栏（返回按钮）正下方，从上往下展开。
+   遮罩仍盖满全屏（顶栏也在遮罩下、点不到），确认框开着时不能按返回或保存，保持模态；按钮、文案、初始焦点不变 */
+#wordConfirm { justify-content: flex-start; padding-top: calc(var(--bar) + var(--safe-area-inset-top, env(safe-area-inset-top, 0px))); }
+#wordConfirm .conf-panel { border-top: 0; border-bottom: 2px solid var(--ink); padding-bottom: 16px; }
 .conf-title { margin: 0; font-size: calc(16px + var(--fs)); font-weight: 700; color: var(--ink); }
 .conf-list { margin: 10px 0 0; padding: 0; list-style: none; font-size: calc(13px + var(--fs)); line-height: 1.6; color: var(--ink); }
 .conf-list b { display: inline-block; min-width: 1.4em; color: var(--red); }

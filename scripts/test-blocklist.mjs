@@ -10,7 +10,7 @@ for (const s of ["Fucking", "PORNHUB", "sex", "加我微信", "vx: abc", "138123
   // 绕过写法：全角、逐字母隔开、复合词、汉字/数字间插空格
   "ｓｅｘ", "ＦＵＣＫ", "１３８１２３４５６７８", "s e x", "f.u.c.k", "motherfucker", "bullshit", "傻 逼", "微 信", "138 1234 5678", "加wx"])
   assert.equal(hit(s), true, `应拦截：${s}`);
-for (const s of ["life", "class", "assess", "assassin", "grape", "Scunthorpe", "Sussex", "操作", "体操",
+for (const s of ["lust", "lusts", "色欲", "life", "class", "assess", "assassin", "grape", "Scunthorpe", "Sussex", "操作", "体操",
   "打赌", "药物", "威信", "操场", "废物", "selfie", "emoji", "gamble", "casino", "赌博", "爱情", "LOL IDK", "总之 这里有四种情况", "", undefined,
   // 归一化后不能误伤
   "I had a bad day", "new xbox", "2024-10-06", "a b c", "sniggering", "niggling", "unicorn", "Monday", "逝去，死", "肤色，情况", "皮带扣，扣子"])
