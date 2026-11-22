@@ -264,6 +264,29 @@
   --sheet-veil: rgba(0, 0, 0, 0.6);
   --paper-veil: rgba(19, 19, 18, 0.86);
 }
+/* 表格（v00.03.03 L3，用户 2026-11-20 确认）：只有深色，所以只有这一块；theme.js 选着它时固定写 data-theme="dark"。
+   不新增字体：西文 Noto Sans，中文思源宋体。--frame / --giant 只有这个主题有：没配图时卡上的图版是白框、框里的超大字母是浅灰；
+   别的主题不设这两个变量，卡上落回 --plate 与 --ink（app-view.js 的 domNode / paintBoxes）。取值与 core.js 的 PALETTES.table 同值 */
+:root[data-skin="table"] {
+  --font-latin: "Noto Sans";
+  --font-cjk: "Noto Serif SC";
+  --paper: #000000;
+  --ink: #ffffff;
+  --soft: #d9d9d9;
+  --mute: #a6a6a6;
+  --ph: #8f8f8f;
+  --dim: #8f8f8f;
+  --faint: #3d3d3d;
+  --line: #333333;
+  --plate: #1c1c1c;
+  --panel: #0f0f0f;
+  --red: #e5604f;
+  --sel: rgba(229, 96, 79, 0.4);
+  --sheet-veil: rgba(0, 0, 0, 0.6);
+  --paper-veil: rgba(0, 0, 0, 0.86);
+  --frame: #ffffff;
+  --giant: #e3e3e3;
+}
 /* 主题字体用在哪：候选栏里的词、作品页的单词和预设词、语言名的原文用主题的西文字体；页面大标题用主题的西文 + 中文。
    候选的释义、按钮、提示、说明一律是 Noto Sans SC（body 的字体）。卡上的字体由 app-view.js 按同一套写在 #card 上 */
 .cand-w b, .ent-input.word, .preset b, .lang-orig, .set-th-n[lang] { font-family: var(--font-latin), "Noto Sans", "Noto Sans SC", sans-serif; }
@@ -271,7 +294,7 @@
 /* fandom 的西文字体（Libre Baskerville 裁剪版）字形宽：预设词略收字号、不加字距，十个字母的词在 320 宽下才放得进两列按钮（scripts/test-lang-browser.mjs 四个主题逐词量） */
 :root[data-skin="fandom"] .preset b { font-size: 0.86em; letter-spacing: 0; }
 /* 只有 fandom 用小圆角（取自 AO3 的按钮）：按钮、预设词、主题卡、深浅分段。另外三个主题仍是直角 */
-:root[data-skin="fandom"] .btn, :root[data-skin="fandom"] .preset, :root[data-skin="fandom"] .skin-opt, :root[data-skin="fandom"] .set-seg, :root[data-skin="fandom"] .set-opt span { border-radius: 0.25em; }
+:root[data-skin="fandom"] .btn, :root[data-skin="fandom"] .tbtn, :root[data-skin="fandom"] .sbtn, :root[data-skin="fandom"] .prow, :root[data-skin="fandom"] .preset, :root[data-skin="fandom"] .skin-opt, :root[data-skin="fandom"] .set-seg, :root[data-skin="fandom"] .set-opt span { border-radius: 0.25em; }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 [hidden] { display: none !important; }
@@ -337,34 +360,34 @@ button { font-size: inherit; }
 }
 /* 安全区单独写：Chrome < 69 不认 env()，整条声明在计算期失效，只丢这两条，不连累上面的高度与内边距 */
 .top { min-height: calc(var(--bar) + var(--safe-area-inset-top, env(safe-area-inset-top, 0px))); padding-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px)); }
-.top-r, .views { display: flex; align-items: center; }
+.top-r, .views { display: flex; align-items: center; min-height: 44px; } /* 每组占满 44：折成两行时上下两排的点按区不叠 */
 .top-r { order: 1; }
 .top > .brand, .top > .back, .top > .views { order: 2; margin-right: auto; }
-.top button {
-  min-height: 44px;
-  margin: 0;
-  padding: 0 2px;
-  border: 0;
-  background: none;
-  line-height: 1.4;
-  color: var(--mute);
-  white-space: nowrap;
-  cursor: pointer;
-}
-.top button + button { margin-left: calc(10 * var(--u)); }
-.top .vbtn[aria-pressed="true"] { color: var(--ink); font-weight: 700; }
-.top .vbtn[aria-pressed="true"] span { border-bottom: 2px solid var(--ink); padding-bottom: 1px; }
-.top .finish { font-weight: 700; }
-.top .finish[disabled], .top .vbtn[disabled] { opacity: 0.45; cursor: default; }
-/* 图标 + 文字的按钮（设置、完成、返回、保存、全屏页关闭）：20px 图标在前，颜色跟文字走；点按区高 44px */
+/* 小按钮（v00.03.03 L4，真机反馈「按钮要看得出是按钮」）：直角 1.5px 墨框，看得见的框高 36px；::after 把点按区上下各撑出 4px，合计 44px。
+   可带 16px 图标（在字前，颜色跟字走）。用在顶栏、全屏页的「关闭」、提示行、入场页、配图面板的「关闭」、「借物与版权」。
+   .tbtn 是带图标的那几个（设置、完成、返回、保存、关闭），.sbtn 是其余的；两个名字一套样子 */
 .sprite { position: absolute; }
-.tbtn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 2px; border: 0; background: none; color: var(--ink); white-space: nowrap; cursor: pointer; }
-.top .tbtn { color: var(--ink); }
+.tbtn, .sbtn { position: relative; display: inline-flex; flex: none; align-items: center; justify-content: center; height: 36px; margin: 0; padding: 0 10px; border: 1.5px solid var(--ink); border-radius: 0; background: none; font-size: calc(11 * var(--u) + var(--fs)); font-weight: 700; line-height: 1.2; color: var(--ink); white-space: nowrap; cursor: pointer; }
+.tbtn::after, .sbtn::after { content: ""; position: absolute; top: -5.5px; right: -1.5px; bottom: -5.5px; left: -1.5px; }
+.tbtn[hidden], .sbtn[hidden] { display: none; }
+.tbtn[disabled], .sbtn[disabled] { opacity: 0.45; cursor: default; }
 .ic { display: block; flex: none; fill: currentColor; }
-.tbtn .ic { margin-right: 4px; }
-.kbd .tbtn:focus { outline: 2px solid var(--red); outline-offset: -2px; }
+.tbtn .ic, .sbtn .ic { margin-right: 4px; }
+.kbd .tbtn:focus, .kbd .sbtn:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+.top-r .tbtn + .tbtn { margin-left: 8px; }
+.top .finish { background: var(--ink); color: var(--paper); }
+/* 相连的两格（单图｜列阵）：二选一，当前格实心。两格共用中间那条线 */
+.views .vbtn + .vbtn, .lay-views .vbtn + .vbtn { margin-left: -1.5px; }
+:root[data-skin="fandom"] .vbtn { border-radius: 0; }
+.vbtn[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+/* 窄屏：容器按钮让位后（左右各 48px）屏宽不到 360、即顶栏内宽不到 264px 时，带图标的一排放不下，「设置」「完成」等只留字。
+   实测 346～359 宽带图标会折成两行，所以界线定在 360 */
+@media (max-width: 359px) { html[data-container-full] .top .tbtn .ic { display: none; } }
+:root[lang="en"] #settingsOpen span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+:root[lang="en"] #settingsOpen { position: relative; }
+:root[lang="en"] .top #settingsOpen .ic { display: inline-block; margin-right: 0; }
 /* 改词页保存（T30）：无修改 = 虚线框灰字（aria-disabled，仍可聚焦，读屏听得到）；有修改 / 重试 = 实心墨底；保存中 = 实线框灰字 */
-.top .save { min-height: 34px; padding: 0 10px; border: 1.5px dashed var(--mute); color: var(--mute); font-weight: 700; }
+.top .save { border: 1.5px dashed var(--mute); color: var(--mute); }
 .top .save { color: var(--mute); }
 .top .save.on { border: 1.5px solid var(--ink); background: var(--ink); color: var(--paper); }
 .top .save[aria-busy="true"] { border-style: solid; }
@@ -431,6 +454,9 @@ button { font-size: inherit; }
 /* 配文框是多行的 textarea（2026-11-17 真机反馈：打字时就要看到折行）：透明叠在镜像的几行配文上，镜像按 CORE.wrapCaption 实时折行，
    textarea 只负责光标与输入。行高 = 版式行距，宽 = 配文宽；浏览器折行点与版式偶有一字之差时，光标会差一行里的一个字，文字以镜像为准 */
 .ctl-line.cap { white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; resize: none; overflow: hidden; }
+/* 版式开了配文引号（v00.03.03）：镜像里的配文带引号，透明的配文框对不上。正在写配文时改由配文框自己显示（不带引号），镜像先藏起来；离开后镜像带着引号回来 */
+.ctl-line.cap.own { color: var(--ink); }
+.card.cap-own .b-caption { visibility: hidden; }
 /* 整块图版上的透明按钮（点了出配图面板）。不加 .ctl：触点起于控件内的不算横滑，图版是最大的横滑起点 */
 .hit { position: absolute; display: block; margin: 0; padding: 0; border: 0; background: none; cursor: pointer; pointer-events: auto; }
 .kbd .hit:focus { outline: 2px solid var(--red); outline-offset: -2px; }
@@ -510,6 +536,13 @@ button { font-size: inherit; }
 .sense-list { max-height: calc(120 * var(--u)); overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .sense-row { display: flex; flex-wrap: wrap; align-items: baseline; padding: calc(3 * var(--u)) 0; border-bottom: 1px solid var(--line); font-size: calc(12 * var(--u) + var(--fs)); }
 .sense-row:last-child { border-bottom: 0; }
+/* 冠词一行（v00.04.00）：按钮就是义项按钮的样子；不必二选一的那一行不带 sense-row 类，样子照抄一份 */
+.art-row { align-items: center; }
+#mirror .b-gloss, #mirror .b-gloss-ph, #mirror .b-caption-ph { border-bottom: 1.5px dashed var(--ph); } /* 真机第二轮 E2（用户定 A）：编辑面上释义、配文底下的虚线，看得出能点；导出走画布，不画 */
+.art-br { flex-basis: 100%; height: 0; } /* 冠词一行里德语的另起一行（真机第一轮 D4、D5） */
+.art-only { display: flex; flex-wrap: wrap; padding: calc(3 * var(--u)) 0; border-bottom: 1px solid var(--line); font-size: calc(12 * var(--u) + var(--fs)); }
+.art-only:last-child { border-bottom: 0; }
+.art-only .pos { min-width: calc(34 * var(--u)); padding-right: calc(6 * var(--u)); box-sizing: border-box; flex: none; margin: 0; font-style: italic; font-size: inherit; color: var(--mute); }
 .sense-row .pos { min-width: calc(34 * var(--u)); padding-right: calc(6 * var(--u)); box-sizing: border-box; flex: none; margin: 0; font-style: italic; font-size: inherit; color: var(--mute); }
 .sense { min-height: calc(24 * var(--u)); margin-right: calc(12 * var(--u)); padding: 0; border: 0; background: none; font-size: inherit; color: var(--ink); cursor: pointer; }
 .sense[aria-pressed="true"] { color: var(--red); font-weight: 700; }
@@ -532,6 +565,7 @@ button { font-size: inherit; }
   line-height: 1.2;
   color: var(--ink);
   cursor: pointer;
+  min-width: 24px; /* 窄字母（I）在 320 宽时不到 24，补到点按区的最低要求（WCAG 2.5.8） */
 }
 .pager .ls.tight { flex-wrap: nowrap; margin-left: 0; width: 100%; }
 /* T42：超过 10 格按分图分两行，行末是起止格（如 01–10 / 11–14） */
@@ -550,21 +584,12 @@ button { font-size: inherit; }
 .pl.todo span { border-bottom-style: dotted; border-bottom-color: currentColor; } /* 未填：虚下划线，不只靠颜色区分（当前格仍是朱色，虚线保留） */
 .pl.on { color: var(--red); }
 .pl.on span { border-bottom-color: var(--red); }
-/* 提示行 + 右侧「改单词 / 填表人」入口（闸口 A 第 2 节 ⑥）：入口是去入场界面的按钮，点按区 ≥ 24px（WCAG 2.5.8） */
-.hint-row { display: flex; justify-content: space-between; align-items: flex-start; margin: calc(6 * var(--u)) var(--m) 0; }
-.foot-hint { flex: 1; min-width: 0; margin: 0; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; color: var(--mute); white-space: pre-line; }
-.to-entry { flex: none; margin: -8px 0 0 calc(8 * var(--u)); padding: 8px 0; border: 0; background: none; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; color: var(--ink); font-weight: 700; text-decoration: underline; white-space: nowrap; cursor: pointer; }
-.kbd .to-entry:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+/* 提示行 + 右侧「版式」「改单词」入口（闸口 A 第 2 节 ⑥；v00.03.03 L4 起是带图标的小按钮） */
+.hint-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; margin: calc(8 * var(--u)) var(--m) 0; }
+.hint-acts { display: flex; flex: none; margin-left: auto; } /* 真机第二轮 E1：两个入口一组；提示句（按自身文字宽）与入口同排放不下时整组挪到下一行靠右，提示句不再一个词一行地折 */
+.foot-hint { flex: 1 1 auto; min-width: 0; margin: 0; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; color: var(--mute); white-space: pre-line; }
+.to-entry { margin-left: 8px; } /* 两个入口是小按钮（.sbtn）；提示句放不下时它自己折行，按钮不缩 */
 
-.link {
-  min-height: 36px;
-  padding: 6px 8px 6px 0;
-  border: 0;
-  background: none;
-  font-size: calc(14px + var(--fs));
-  color: var(--ink);
-  cursor: pointer;
-}
 /* 主操作：描边直角按钮，安静但明确 */
 .btn {
   display: inline-block;
@@ -605,7 +630,6 @@ button { font-size: inherit; }
 }
 .sheet-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 .sheet-head h2 { font-size: calc(17px + var(--fs)); font-weight: 700; }
-.sheet-head .link { padding-right: 0; }
 .img-panel .sheet-head h2, .crop-panel .sheet-head h2 { font-size: calc(11 * var(--u) + var(--fs)); }
 
 .sheet.flat { background: none; }
@@ -616,13 +640,12 @@ button { font-size: inherit; }
   /* 安全区单独写：Chrome < 69 不认 env()，整条声明在计算期失效，只丢这一边，不连累上 / 左右内边距 */
   padding-bottom: calc(22 * var(--u) + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)));
 }
-/* 配图面板（§3-③）：行式按钮，细线分隔；下半是所有格共用的默认图 */
-.plist .prow { display: block; width: 100%; min-height: 40px; padding: 6px 0; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; font-size: calc(12.5 * var(--u) + var(--fs)); color: var(--ink); cursor: pointer; }
-.plist.inline { display: flex; }
-.plist.inline .prow { width: auto; padding-right: calc(16 * var(--u)); border-bottom: 0; }
-.plab { display: flex; justify-content: space-between; align-items: baseline; margin-top: calc(8 * var(--u)); font-size: calc(11 * var(--u) + var(--fs)); color: var(--mute); }
+/* 配图面板（§3-③）：行式按钮，整行带框、高 44、行距 8（v00.03.03 L4）；下半是所有格共用的默认图 */
+.plist .prow { display: block; width: 100%; min-height: 44px; margin-top: 8px; padding: 6px 12px; border: 1.5px solid var(--ink); border-radius: 0; background: none; text-align: left; font-size: calc(12.5 * var(--u) + var(--fs)); font-weight: 700; color: var(--ink); cursor: pointer; }
+.plist .prow[hidden] { display: none; }
+.plab { display: flex; justify-content: space-between; align-items: baseline; margin-top: calc(12 * var(--u)); padding-top: calc(8 * var(--u)); border-top: 1px solid var(--line); font-size: calc(11 * var(--u) + var(--fs)); color: var(--mute); }
 .plab b { color: var(--ink); }
-.kbd .prow:focus { outline: 2px solid var(--red); outline-offset: -2px; }
+.kbd .prow:focus { outline: 2px solid var(--red); outline-offset: 2px; }
 /* 取景内框比例 920:600；外围压暗。固定深色面板在浅色主题下也保持按钮对比度。 */
 .crop-panel { --ink: #e7e5e0; --mute: #a09d97; --paper: #0b0b0a; --panel: #0b0b0a; --line: #77756f; --red: #e5674f; background: var(--paper); color: var(--ink); }
 .crop-moves, .crop-zoom { display: flex; align-items: center; margin-bottom: 12px; }
@@ -674,8 +697,7 @@ button { font-size: inherit; }
 .fin-btns .btn { flex: 1; margin-left: 8px; height: 44px; line-height: 42px; padding: 0; font-size: calc(14px + var(--fs)); }
 .fin-msg { min-height: 1.5em; margin-top: calc(10 * var(--u)); font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; color: var(--mute); }
 .fin-foot { display: flex; justify-content: space-between; align-items: center; margin-top: calc(6 * var(--u)); font-size: calc(10 * var(--u) + var(--fs)); color: var(--mute); }
-.fin-credit { min-height: 36px; padding: 6px 0; border: 0; background: none; font-size: inherit; color: var(--mute); text-decoration: underline; cursor: pointer; }
-.kbd .fin-credit:focus { outline: 2px solid var(--red); outline-offset: 0; }
+.fin-foot, .set-foot { min-height: 44px; }
 
 /* 全屏页（借物与版权、浏览器导出结果）：顶部「标题 / 关闭」，下面一条粗墨线开始正文；内容宽度与卡一致（max 480），页自己滚动 */
 .page { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 20; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--paper); }
@@ -710,6 +732,10 @@ button { font-size: inherit; }
 .credits-table th:first-child { width: 18%; padding-left: 0; }
 .credits-table th:last-child, .credits-table td:last-child { width: 27%; padding-right: 0; }
 .credits-table th { color: var(--ink); font-weight: 700; }
+:root[lang="en"] .credits-table th:first-child { width: 24%; }
+:root[lang="en"] .credits-table th:last-child, :root[lang="en"] .credits-table td:last-child { width: 25%; }
+:root[lang="en"] .credits-table th, :root[lang="en"] .credits-table td { -webkit-hyphens: auto; hyphens: auto; }
+:root[lang="en"] .credits-table span[lang], :root[lang="en"] .credits-table code { -webkit-hyphens: manual; hyphens: manual; } /* 网址、文件名里不加连字符，免得被当成地址的一部分 */
 .toast { position: fixed; z-index: 30; padding: 12px 16px; background: var(--ink); color: var(--paper); font-size: calc(14px + var(--fs)); line-height: 1.5; pointer-events: none; } /* 统一提示（T33）：left / width / top 由 app-model.js 的 placeToast 写入（2026-11-17 起固定在顶栏正下方） */
 .toast:empty { display: none; }
 .credits-body details { margin-top: 8px; border-top: 1px solid var(--line); padding: 8px 0; }
@@ -727,7 +753,7 @@ button { font-size: inherit; }
 /* ---------- 入场界面（T18，闸口 A 第 1 节） ----------
    版式沿用编辑界面：左边距 --m（= 卡的页边距），单位 --u（母版 300 宽稿面上的 1px）；只用墨 / 灰 / 朱三色，朱只标焦点与错误。
    进入入场界面时 #app 加 .entering：顶部栏只留品牌名或返回、保存与设置，卡、字母栏、提示行都不显示 */
-.app.entering .views, .app.entering .finish, .app.entering #card, .app.entering #pager, .app.entering #hintRow { display: none; }
+.app.entering .views, .app.entering .edit-h, .app.entering .finish, .app.entering #card, .app.entering #pager, .app.entering #hintRow { display: none; }
 .top .brand { padding-top: 0; line-height: 1.4; color: var(--ink); font-weight: 700; }
 .entry { padding: calc(28 * var(--u)) var(--m) 0; }
 .ent-h { margin: 0; font-size: calc(22 * var(--u) + var(--fs)); font-weight: 700; line-height: 1.25; color: var(--ink); }
@@ -737,6 +763,7 @@ button { font-size: inherit; }
 .ent-field { margin-top: calc(22 * var(--u)); }
 .ent-lab { display: flex; justify-content: space-between; align-items: baseline; margin: 0; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; color: var(--mute); }
 .ent-lab label { color: var(--ink); font-weight: 700; }
+#presetField .ent-lab { align-items: center; margin-bottom: 4px; }
 .ent-count { white-space: nowrap; }
 .ent-count.hot { color: var(--ink); font-weight: 700; } /* v00.03.01 U03：填表人 12 字起 */
 .ent-count.full { color: var(--red); font-weight: 700; } /* 写满 */
@@ -770,9 +797,8 @@ button { font-size: inherit; }
 .ent-sense { margin: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--soft); }
 .ent-line .ent-err { min-height: 0; margin: 0; }
 .ent-line .ent-err:empty { display: none; }
-/* T39：预设词标题旁的「换一组」（语言栏的「更多语言……」同款）：文字按钮，点按区 ≥ 24px 高 */
-.ent-more { min-height: 32px; margin: -8px 0; padding: 0 0 0 12px; border: 0; background: none; font-size: inherit; color: var(--ink); font-weight: 700; text-decoration: underline; cursor: pointer; }
-.kbd .ent-more:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+/* T39：预设词标题旁的「换一组」：小按钮（.sbtn） */
+.ent-more { margin-left: 12px; }
 .ent-err { min-height: 1.5em; margin: calc(4 * var(--u)) 0 0; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; color: var(--red); font-weight: 700; } /* 文字本身写明原因，不只靠颜色（WCAG 1.4.1 / 3.3.1）；T28：空着也占一行，出现 / 清除不推动下方字段 */
 /* 将得到的格：虚下划线 = 未填，实下划线 = 会保留已填的词（与编辑界面字母栏一致，不只靠颜色） */
 .ent-preview { display: flex; flex-wrap: wrap; min-height: calc((18 * var(--u) + var(--fs)) * 1.2 + 1px + 2.5 * var(--u)); margin-top: calc(8 * var(--u)); } /* T28：空着也占一行，打第一个字母时下面不往下推 */
@@ -800,7 +826,9 @@ button { font-size: inherit; }
 .lang-k { flex: none; margin-right: calc(8 * var(--u)); }
 .lang-now { flex: 1; min-width: 0; color: var(--ink); font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .lang-now .lang-st { font-weight: 400; }
-.lang-sum .ent-more { flex: none; min-height: 44px; margin: 0; }
+/* 语言栏的「更多语言……」保留成带下划线的字（第二轮真机反馈：加框后不好看，回滚）；点按区高 44 */
+.lang-more { flex: none; min-height: 44px; margin: 0; padding: 0 0 0 12px; border: 0; background: none; font-size: inherit; color: var(--ink); font-weight: 700; text-decoration: underline; cursor: pointer; }
+.kbd .lang-more:focus { outline: 2px solid var(--red); outline-offset: 2px; }
 .lang-row { display: flex; align-items: center; border-top: 1px solid var(--line); }
 .lang-opt { flex: 1; min-width: 0; display: flex; align-items: center; min-height: 44px; font-size: calc(12 * var(--u) + var(--fs)); color: var(--ink); cursor: pointer; }
 .lang-opt input, .set-opt input { position: absolute; width: 1px; height: 1px; opacity: 0; } /* 原生单选（键盘与读屏照常），外观自己画 */
@@ -828,7 +856,7 @@ button { font-size: inherit; }
 .set-opt { position: relative; flex: 1; min-width: 0; }
 /* 2026-11-17 真机反馈：选中不再靠反色（整块墨底）区分。三格各自成框、之间留缝；选中 = 2px 墨框 + 勾 + 粗体，没选中 = 细线框、次要字色。
    选中与否有形状（勾）、线宽、字重三重区分，不只靠颜色（WCAG 1.4.1），与主题四选一的选中写法一致 */
-.set-opt span { display: block; min-height: 44px; line-height: 42px; border: 1px solid var(--line); text-align: center; font-size: calc(13px + var(--fs)); color: var(--soft); white-space: nowrap; cursor: pointer; }
+.set-opt span { display: block; min-height: 44px; line-height: 42px; border: 1px solid var(--mute); text-align: center; font-size: calc(13px + var(--fs)); color: var(--soft); white-space: nowrap; cursor: pointer; }
 .set-opt + .set-opt { margin-left: 8px; }
 .set-opt .set-ck { display: none; width: 16px; height: 16px; margin-right: 4px; vertical-align: -3px; fill: currentColor; }
 .set-opt input:checked + span { border: 2px solid var(--ink); line-height: 40px; color: var(--ink); font-weight: 700; }
@@ -838,20 +866,48 @@ button { font-size: inherit; }
 .set-ths { display: flex; margin: 0 calc(-2 * var(--u)); }
 .set-th { position: relative; display: flex; flex: 1; min-width: 0; margin: 0 calc(2 * var(--u)); cursor: pointer; }
 .set-th input { position: absolute; width: 1px; height: 1px; opacity: 0; }
-.set-th-in { display: block; flex: 1; min-width: 0; min-height: 88px; padding: 5px; border: 1px solid var(--line); font-size: calc(9.5 * var(--u) + var(--fs)); line-height: 1.35; color: var(--soft); }
-.set-th input:checked + .set-th-in { border: 2px solid var(--ink); padding: 4px; color: var(--ink); font-weight: 700; }
+.set-th-in { display: block; flex: 1; min-width: 0; min-height: 88px; padding: 5px 3px; border: 1px solid var(--line); font-size: calc(9.5 * var(--u) + var(--fs)); line-height: 1.35; color: var(--soft); }
+.set-th input:checked + .set-th-in { border: 2px solid var(--ink); padding: 4px 2px; color: var(--ink); font-weight: 700; }
 .kbd .set-th input:focus + .set-th-in { outline: 2px solid var(--red); outline-offset: 2px; }
 .set-sw { display: block; height: 40px; margin-bottom: 5px; border-top: 3px solid var(--mute); border-bottom: 1px solid var(--line); }
 .set-sw.sk-fandom { background: #ffffff; border-top-color: #990000; }
 .set-sw.sk-dansaekhwa { background: #e9e6df; border-top-color: #7a4f2a; }
 .set-sw.sk-impressionism { background: #eef0ea; border-top-color: #a34732; }
 .set-sw.sk-secession { background: #f3efe2; border-top-color: #8f1d1d; }
+.set-sw.sk-table { background: #000000; border-top-color: #e5604f; }
 .set-th-n { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* v00.03.03 L3：主题从四个变五个，每格窄了一截。左右内边距 5 → 3，西文的主题名（fandom）略收字号，320 宽下各主题的字体里都放得下、不出省略号（scripts/test-layout-browser.mjs 量） */
+.set-th-n[lang] { font-size: 0.86em; letter-spacing: 0; }
+:root[lang="en"] .set-th-n:not([lang]) { font-size: 0.8em; }
 .set-th-x { display: block; font-weight: 400; color: var(--mute); }
 .set-lab2 { margin-top: 22px; }
 /* 只有浅色的主题选着时，深浅这一组停用：虚线框、灰字（另有 aria-disabled 和下面一句说明） */
 .set-seg.off .set-opt span, .set-seg.off .set-opt input:checked + span { border-style: dashed; border-color: var(--mute); background: none; color: var(--mute); font-weight: 400; cursor: default; }
 .set-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 6px; border-top: 1px solid var(--line); font-size: calc(10 * var(--u) + var(--fs)); color: var(--mute); }
+
+/* 版式页（v00.03.03 L2）：全屏页。顶上一块（小样 + 预设）跟在标题栏下面钉住，下面三组开关。分段选择沿用设置页的 .set-seg / .set-opt（选中是 2px 墨框加勾加粗体，每格 44px）。
+   基线 Chrome 61：不用 flex gap，间距都写 margin */
+.lay-top { position: -webkit-sticky; position: sticky; top: var(--bar); z-index: 1; display: flex; padding: 12px 0; border-top: 3px solid var(--ink); border-bottom: 1px solid var(--line); background: var(--paper); }
+/* 钉在标题栏下面：标题栏高 = --bar + 顶部安全区。env() 不放进 var() 的兜底里直接用：不认 env() 的内核（Chrome 61）上那样整条声明会在算值时作废，
+   top 落回 auto、小样就不钉了（外部复审 L2-A2）。先写不带 env() 的，认 env() 的内核再用 @supports 换成带 env() 的 */
+.lay-top { top: calc(var(--bar) + var(--safe-area-inset-top, 0px)); }
+@supports (top: env(safe-area-inset-top, 0px)) { .lay-top { top: calc(var(--bar) + var(--safe-area-inset-top, env(safe-area-inset-top, 0px))); } }
+.lay-left { flex: none; margin-right: 14px; }
+.lay-views { display: flex; margin-top: 6px; }
+.lay-views .vbtn { height: 30px; padding: 0 9px; font-size: calc(12px + var(--fs)); }
+.lay-views .vbtn::after { top: -8.5px; bottom: -8.5px; }
+.lay-prev canvas { display: block; outline: 1px solid var(--line); }
+.lay-side { flex: 1; min-width: 0; }
+.lay-side .set-seg { flex-direction: column; }
+.lay-side .set-opt + .set-opt { margin: 8px 0 0; }
+.lay-group { margin: 14px 0 8px; color: var(--ink); font-weight: 700; } /* 组名加粗（真机反馈 F3） */
+.lay-side .lay-group { margin-top: 0; }
+.lay-custom { margin: 16px 0 0; font-size: calc(15px + var(--fs)); font-weight: 700; line-height: 1.4; color: var(--ink); }
+.lay-tip { margin: -4px 0 8px; font-size: calc(10 * var(--u) + var(--fs)); line-height: 1.5; color: var(--mute); }
+.lay-row { display: flex; align-items: center; margin-bottom: 8px; }
+.lay-n { flex: none; width: 5em; font-size: calc(13px + var(--fs)); line-height: 1.4; color: var(--ink); }
+.lay-row .set-seg { flex: 1; min-width: 0; }
+.lay-why { margin: -2px 0 8px 5em; }
 /* 改单词清空确认（闸口 A 第 1 节 ⑤）：平直面板，列出要清空的格；两个按钮写明后果，安全选项「保留」是实心主按钮 */
 .conf-panel { height: auto; max-width: 480px; padding-bottom: calc(16px + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px))); }
 /* v00.03.01 U06（用户 11-18 定）：改单词的确认框贴在顶栏（返回按钮）正下方，从上往下展开。

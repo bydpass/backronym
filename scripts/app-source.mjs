@@ -1,6 +1,7 @@
 // 测试按页面的真实加载清单读取应用模块，不另维护一份文件列表。
 import fs from "node:fs";
 import vm from "node:vm";
+import { createRequire } from "node:module";
 
 const page = new URL("../app/index.html", import.meta.url);
 const html = fs.readFileSync(page, "utf8");
@@ -8,6 +9,8 @@ export const appSources = Array.from(html.matchAll(/<script src="(\.\/assets\/ap
   file: m[1], text: fs.readFileSync(new URL(m[1], page), "utf8"),
 }));
 if (!appSources.length || appSources[appSources.length - 1].file !== "./assets/app.js") throw new Error("应用模块必须先加载，app.js 最后启动");
+// 界面文案表（v00.04.00 批 0）：应用函数里的 STR("编号") 经它取字。定点函数测试没自己给 STR 时补上真表
+export const I18N = createRequire(import.meta.url)("../app/assets/i18n.js");
 export const appSource = appSources.map(s => s.text).join("\n");
 const modules = Array.from(appSource.matchAll(/app\.([a-z]+) = \{\};/g), m => m[1]);
 
@@ -32,6 +35,7 @@ export function loadAppFunctions(names, env) {
   if (!names.includes("lexicon") && !env.lexicon) env.lexicon = () => null; // 复审 R3-13：lookupHit 汇总漏音符候选前先看有无新词库；替身段按旧式词包处理
   if (!names.includes("formStatus") && !env.formStatus) env.formStatus = () => "";
   if (!names.includes("retryForms") && !env.retryForms) env.retryForms = () => {};
+  if (!("STR" in env)) env.STR = I18N.t;
   attachModules(env);
   vm.createContext(env);
   for (const name of names) {

@@ -24,6 +24,7 @@ let browser;
 const TTL = 64800000, KEY = "backronym-draft-v2", OLD = "acronym-draft-v1", OLD_BAK = OLD + "-bak"; // 旧键只用于核对被删除
 try {
   browser = await chromium.launch({ headless: true, ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
+  { const make = browser.newContext.bind(browser); browser.newContext = options => make({ locale: "zh-CN", ...options }); } // v00.04.00 批 1：界面语言跟随环境，无头浏览器默认报英文；本脚本测的是中文界面
   async function pageFor(age, settings = {}) {
     const context = await browser.newContext({ viewport: { width: 375, height: 812 } });
     await context.addInitScript(({ age, settings, KEY, OLD, OLD_BAK }) => {

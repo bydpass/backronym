@@ -32,6 +32,7 @@ const LIFE = mk("LIFE");
 let browser;
 try {
   browser = await chromium.launch({ headless: true, ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
+  { const make = browser.newContext.bind(browser); browser.newContext = options => make({ locale: "zh-CN", ...options }); } // v00.04.00 批 1：界面语言跟随环境，无头浏览器默认报英文；本脚本测的是中文界面
   async function pageFor({ draft = LIFE, width = 375, height = 640, touch = false } = {}) {
     const context = await browser.newContext({ viewport: { width, height }, hasTouch: touch });
     await context.addInitScript(({ draft, KEY }) => {
@@ -77,8 +78,10 @@ try {
   {
     const { page, context, errors } = await pageFor();
     const box = (sel) => page.locator(sel).evaluate(n => { const r = n.getBoundingClientRect(), ic = n.querySelector("svg").getBoundingClientRect(); return { h: r.height, iw: ic.width, ih: ic.height, text: n.innerText.trim(), hidden: n.querySelector("svg").getAttribute("aria-hidden") }; });
-    assert.deepEqual(await box("#settingsOpen"), { h: 44, iw: 20, ih: 20, text: "设置", hidden: "true" }, "设置：图标 + 文字");
-    assert.deepEqual(await box("#finish"), { h: 44, iw: 20, ih: 20, text: "完成", hidden: "true" }, "完成：图标 + 文字");
+    // v00.03.03 L4：看得见的框高 36，上下各有 4px 透明点按区（::after），合计 44
+    assert.ok(await page.locator("#settingsOpen").evaluate(n => { const r = n.getBoundingClientRect(), x = r.left + r.width / 2; return document.elementFromPoint(x, r.top - 3) === n && document.elementFromPoint(x, r.bottom + 3) === n && parseFloat(getComputedStyle(n).borderTopWidth) >= 1; }), "设置：带框，框外上下 3px 仍点得到");
+    assert.deepEqual(await box("#settingsOpen"), { h: 36, iw: 16, ih: 16, text: "设置", hidden: "true" }, "设置：图标 + 文字");
+    assert.deepEqual(await box("#finish"), { h: 36, iw: 16, ih: 16, text: "完成", hidden: "true" }, "完成：图标 + 文字");
     assert.equal(await page.locator("#themeToggle").count(), 0, "顶栏不再有深浅按钮");
     assert.deepEqual(await page.locator("#top button").evaluateAll(ns => ns.filter(n => n.offsetParent).map(n => n.id)), ["viewSingle", "viewGrid", "settingsOpen", "finish"], "编辑页顶栏 Tab 顺序：先左后右");
     // 设置页：打开时焦点在关闭，当前档位选中；换档立刻生效、存到本设备；Esc 关闭，焦点还给「设置」
@@ -88,11 +91,11 @@ try {
     assert.deepEqual((await mode()).checked, ["auto"], "默认跟随系统");
     // 四个主题（2026-11-12）：默认 fandom，只有浅色——深浅这一组停用并写明原因；换成别的主题恢复
     const skin = () => page.evaluate(() => ({ checked: [...document.querySelectorAll("#skinGroup input")].filter(n => n.checked).map(n => n.value), attr: document.documentElement.getAttribute("data-skin"), theme: document.documentElement.getAttribute("data-theme"), stored: localStorage.getItem("backronym-skin"),
-      off: document.getElementById("modeGroup").classList.contains("off"), aria: document.getElementById("modeGroup").getAttribute("aria-disabled"), disabled: [...document.querySelectorAll("#modeGroup input")].every(n => n.disabled), why: document.getElementById("modeWhy").hidden ? "" : document.getElementById("modeWhy").innerText,
+      off: document.getElementById("modeGroup").classList.contains("off"), aria: document.getElementById("modeGroup").getAttribute("aria-disabled"), disabled: [...document.querySelectorAll("#modeGroup input")].every(n => n.disabled), why: document.getElementById("modeWhy") ? "还在" : "",
       paper: getComputedStyle(document.documentElement).getPropertyValue("--paper").trim(), red: getComputedStyle(document.documentElement).getPropertyValue("--red").trim() }));
     assert.equal(await page.locator("#skinGroup").getAttribute("role"), "radiogroup");
-    assert.deepEqual(await page.locator("#skinGroup .set-th-n").allInnerTexts(), ["fandom", "单色画", "印象派", "分离派"]);
-    assert.deepEqual(await skin(), { checked: ["fandom"], attr: "fandom", theme: "light", stored: null, off: true, aria: "true", disabled: true, why: "这个主题只有浅色。系统是深色模式时，整个界面也是浅色", paper: "#ffffff", red: "#990000" }, "默认 fandom：固定浅色，深浅停用并写明");
+    assert.deepEqual(await page.locator("#skinGroup .set-th-n").allInnerTexts(), ["fandom", "单色画", "印象派", "分离派", "表格"]); // v00.03.03 L3 加「表格」
+    assert.deepEqual(await skin(), { checked: ["fandom"], attr: "fandom", theme: "light", stored: null, off: true, aria: "true", disabled: true, why: "", paper: "#ffffff", red: "#990000" }, "默认 fandom：固定浅色，深浅停用；下面那行说明已去掉（用户 11-21 定，主题格里的「仅浅色」已说明）");
     await page.locator("#skinGroup label").nth(3).click();
     assert.deepEqual(await skin(), { checked: ["secession"], attr: "secession", theme: null, stored: "secession", off: false, aria: null, disabled: false, why: "", paper: "#f3efe2", red: "#8f1d1d" }, "换成分离派：立刻生效并记住，深浅恢复（跟随系统）");
     await page.locator("#skinGroup input:checked").focus(); await page.keyboard.press("ArrowLeft");
@@ -107,15 +110,15 @@ try {
     assert.equal(await page.locator("#settings").isVisible(), false); assert.equal(await page.evaluate(() => document.activeElement.id), "settingsOpen", "Esc 关闭，焦点还给「设置」");
     await page.locator("#settingsOpen").click();
     assert.deepEqual((await mode()).checked, ["light"], "再打开：选中的是当前档");
-    assert.deepEqual(await box("#settingsClose"), { h: 44, iw: 20, ih: 20, text: "关闭", hidden: "true" }, "关闭：图标 + 文字");
+    assert.deepEqual(await box("#settingsClose"), { h: 36, iw: 16, ih: 16, text: "关闭", hidden: "true" }, "关闭：图标 + 文字");
     assert.match(await page.locator(".set-foot").innerText(), /借物与版权\s*v00\.03\.00/, "设置页底行：借物与版权、版本号");
     await page.locator("#setCredits").click();
     assert.equal(await page.locator("#creditsClose").getAttribute("aria-label"), "关闭借物与版权");
-    assert.deepEqual(await box("#creditsClose"), { h: 44, iw: 20, ih: 20, text: "关闭", hidden: "true" });
+    assert.deepEqual(await box("#creditsClose"), { h: 36, iw: 16, ih: 16, text: "关闭", hidden: "true" });
     assert.ok(await hittable(page, "#creditsClose"), "借物页盖在设置页上面");
     await page.locator("#creditsClose").click(); await page.locator("#settingsClose").click();
     await page.locator("#toEntry").click();
-    assert.deepEqual(await box("#entryBack"), { h: 44, iw: 20, ih: 20, text: "返回", hidden: "true" }, "返回：图标 + 文字");
+    assert.deepEqual(await box("#entryBack"), { h: 36, iw: 16, ih: 16, text: "返回", hidden: "true" }, "返回：图标 + 文字");
     assert.equal(await page.locator("#entryBack").getAttribute("aria-label"), "返回编辑界面");
     assert.equal((await box("#entrySave")).text, "保存");
     const order = await page.locator("#top button").evaluateAll(ns => ns.filter(n => n.offsetParent).map(n => n.id));
@@ -142,7 +145,7 @@ try {
       return { u, hint: fs("#hint"), toEntry: fs("#toEntry"), top: fs("#top"), status: fs(".draft-note") };
     });
     assert.ok(Math.abs(r.hint - (10 * r.u + 1.5)) < 0.05, width + " 宽提示行 10u + 1.5px：" + JSON.stringify(r));
-    assert.ok(Math.abs(r.toEntry - (10 * r.u + 1.5)) < 0.05 && Math.abs(r.top - (11 * r.u + 1.5)) < 0.05, width + " 宽入口与顶栏 +1.5px");
+    assert.ok(Math.abs(r.toEntry - (11 * r.u + 1.5)) < 0.05 && Math.abs(r.top - (11 * r.u + 1.5)) < 0.05, width + " 宽入口（小按钮，同顶栏 11u）与顶栏 +1.5px");
     assert.ok(Math.abs(r.status - 13.5) < 0.05, width + " 宽固定 12px 的草稿说明同加 1.5px");
     const ys = await page.locator("#pagerLetters .pl").evaluateAll(ns => [...new Set(ns.map(n => Math.round(n.getBoundingClientRect().top)))]);
     assert.equal(ys.length, 1, width + " 宽十字母字母栏单行");
@@ -265,7 +268,7 @@ try {
     await page.evaluate(() => document.documentElement.style.setProperty("--container-gutter", "84px"));
     const w = await page.evaluate(() => { const g = id => document.getElementById(id).getBoundingClientRect(), v = g("viewSingle"), s = g("settingsOpen"), f = g("finish"), t = document.querySelector(".top").getBoundingClientRect();
       return { second: v.top >= s.bottom - 1, sameRow: Math.abs(s.top - f.top) < 1, left: Math.round(v.left), right: Math.round(f.right), hs: [v.height, s.height, f.height], top: t.height, fits: document.documentElement.scrollWidth <= innerWidth, text: document.getElementById("finish").innerText.trim() }; });
-    assert.ok(w.second && w.sameRow && w.fits && w.left === 84 && w.right <= 320 - 84 && w.hs.every(h => h >= 44) && w.top >= 88 && w.text === "完成", "放不下：版式切换落到第二行、贴左；右边一组留在第一行：" + JSON.stringify(w));
+    assert.ok(w.second && w.sameRow && w.fits && w.left === 84 && w.right <= 320 - 84 && w.hs.every(h => h >= 36) && w.top >= 88 && w.text === "完成", "放不下：版式切换落到第二行、贴左；右边一组留在第一行：" + JSON.stringify(w));
     for (const sel of ["#viewGrid", "#settingsOpen", "#finish"]) assert.ok(await hittable(page, sel), "两行顶栏 " + sel + " 可点");
     assert.deepEqual(errors, []); await context.close();
   }

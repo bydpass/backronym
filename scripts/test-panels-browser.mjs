@@ -28,6 +28,7 @@ let browser;
 const word = (raw) => JSON.parse(raw).word;
 try {
   browser = await chromium.launch({ headless: true, ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
+  { const make = browser.newContext.bind(browser); browser.newContext = options => make({ locale: "zh-CN", ...options }); } // v00.04.00 批 1：界面语言跟随环境，无头浏览器默认报英文；本脚本测的是中文界面
   // draft：植入的草稿（null = 没有草稿）；slowRead：端存储读取延迟毫秒（模拟慢读取，T14）；width：视口宽；tipSeen：首次提示是否已看过
   async function pageFor({ draft = null, slowRead = 0, width = 375, height = 812, tipSeen = true } = {}) {
     const context = await browser.newContext({ viewport: { width, height } });
@@ -79,8 +80,8 @@ try {
     await page.locator("#settingsOpen").click(); await page.locator("#setCredits").click(); // v00.03.00：借物页入口在设置页底行
     await shot(page, "credits-320");
     assert.equal(await page.locator('.credits-table th[scope="col"]').count(), 3);
-    assert.equal(await page.locator('.credits-table th[scope="row"]').count(), 15); // 主题字体两行 // 2026-11-12 借物页修订：加屏蔽词表来源与主题颜色出处两行；此前：词库一行拆成六行（六语来源、辅助数据、词频、断词点、改编说明）
-    assert.match(await page.locator(".credits-table").innerText(), /维基词典[\s\S]*CC BY-SA 4\.0[\s\S]*FrequencyWords[\s\S]*CFDICT[\s\S]*HanDeDict[\s\S]*LDNOOBW/, "借物页列全六语词库和屏蔽词表的来源");
+    assert.equal(await page.locator('.credits-table th[scope="row"]').count(), 16); // v00.04.00 批 2：加「词库 · 英文释义的补充」一行 // 主题字体两行 // 2026-11-12 借物页修订：加屏蔽词表来源与主题颜色出处两行；此前：词库一行拆成六行（六语来源、辅助数据、词频、断词点、改编说明）
+    assert.match(await page.locator(".credits-table").innerText(), /维基词典[\s\S]*CC BY-SA 4\.0[\s\S]*FrequencyWords[\s\S]*CFDICT[\s\S]*HanDeDict[\s\S]*FreeDict 意英词典[\s\S]*LDNOOBW/, "借物页列全六语词库和屏蔽词表的来源");
     await page.locator("#credits summary").first().focus(); await page.keyboard.press("Enter");
     assert.equal(await page.locator("#credits details").first().getAttribute("open"), "");
     // T07：第一项是 GPL，全文展开时才读（assets/licenses.js）；开头的本项目许可段与省流三行在表格之前
@@ -401,7 +402,7 @@ try {
     await page.evaluate(() => document.getElementById("pl-0").click()); await page.locator("#plateHit").click();
     await page.locator("#cellPhoto").setInputFiles({ name: "a.png", mimeType: "image/png", buffer: await png(page) });
     await page.waitForFunction(() => !document.getElementById("cropper").hidden); await page.locator("#cropApply").click();
-    await page.waitForFunction(() => /^这台设备不支持保存配图，重开后需要重新选图；文字草稿已保存，请及时导出。/.test(document.getElementById("draftStatus").textContent));
+    await page.waitForFunction(() => /^这台设备不支持保存配图，请及时导出/.test(document.getElementById("draftStatus").textContent));
     assert.equal(await page.locator(".draft-note p").first().innerText(), "草稿存在本设备，18 小时未改动自动清除");
     assert.equal(JSON.parse(await page.evaluate(k => localStorage.getItem(k), KEY)).media, undefined, "没存成的图不进草稿");
     assert.deepEqual(errors, []); await context.close();
@@ -439,8 +440,13 @@ try {
       assert.equal(await toast.innerText(), msg, "关掉设置页：补弹");
       const tp = await page.evaluate(() => [document.getElementById("toast").getBoundingClientRect().top, document.querySelector(".top").getBoundingClientRect().bottom]);
       assert.ok(Math.abs(tp[0] - (tp[1] + 8)) <= 1, "补弹的提示也在顶栏正下方");
-      await input.focus(); // 焦点还给取色框，后面的软键盘场景照旧
+      // 关掉设置页后焦点回到「设置」按钮，标题框失焦，键盘行按设计收起（blur 晚一帧判断）。
+      // 原先直接聚焦取色框，抢在那一帧之前就通过、落在之后就一直等，偶发超时。照真实操作：先点标题让键盘行出来，再点取色框
+      await page.locator("#title").focus();
       await page.waitForFunction(() => !document.getElementById("kbRow").hidden);
+      await input.focus(); // 焦点给取色框（在键盘行里，标题失焦时这一行留着），后面的软键盘场景照旧
+      await page.waitForTimeout(50);
+      assert.equal(await page.evaluate(() => document.getElementById("kbRow").hidden), false, "取色框获焦后键盘行仍在");
     }
     await page.evaluate(() => {
       window.realViewport = window.visualViewport;

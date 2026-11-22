@@ -8,6 +8,7 @@ npm test           # 全部自检脚本串行，清单见 package.json；每个�
 npm run audit      # 只审计 app/ 的文件与体积（语法和运行行为另测），不打包
 npm run pack       # test → 审计 app/ → 打 zip → 再审计 zip 体积
 npm run pack:web   # 外链网页版 → dist/web/
+npm run pack:diag  # 只用于诊断的包 → dist/backronym-diag.zip：app/ 原样加一个打开耗时的诊断脚本（scripts/diag/diag.js），不是发布包；上传、生成预览码前要用户同意
 ```
 
 预览服务器在 `.claude/launch.json` 里叫 `app`（另有 `docs` :5174、`design` :5175）。
@@ -16,9 +17,10 @@ npm run pack:web   # 外链网页版 → dist/web/
 
 ```bash
 npm run packs      # 正式词包：从已复审的编译包（scripts/t19/build-packs.mjs 的 DEFAULT_COMPILED）生成六语 app/assets/lang/<语种>/{words,inflections}.js 与 en/phrases.js；改完跑 npm run fonts
-npm run fonts      # 字体子集。需 scripts/.cache/fonts/ 原始字体与 pyftsubset；本机用 PYFTSUBSET=$PWD/scripts/.cache/font-tools-venv/bin/pyftsubset npm run fonts
+npm run fonts      # 字体子集（扫的文件里含界面文案表 i18n.js）。需 scripts/.cache/fonts/ 原始字体与 pyftsubset；本机用 PYFTSUBSET=$PWD/scripts/.cache/font-tools-venv/bin/pyftsubset npm run fonts
 npm run licenses   # 从 LICENSES/*.txt 生成 app/LICENSES/*.html（只进网页版）与 app/assets/licenses.js；改了哪份全文就重跑，test-app 会比对
-npm run presets    # 从人工审定的表生成入场预设词 app/assets/lang/presets.js
+npm run presets    # 从人工审定的表生成入场预设词 app/assets/lang/presets.js（外语预设的英文取 review/en-gloss/，借不到的写在 review/en-gloss/presets.tsv）
+npm run en-gloss   # 生成 review/en-gloss/<语言>.tsv。先用补充表 picks/<语言>.tsv 或 Kaikki 自动对齐，再按 repairs.tsv 的义项 ID 应用完整英文和卡面短写。待挑项写入 scripts/.cache/en-gloss/pending-<语言>.json。补充词典只许脚本里 DICTS 列的（现只有 FreeDict 意英，GPL 词典不得用）。改完须对着 review/en-gloss/same-card.tsv 过自检：同词同词性、中文不同而卡面英文相同的每一组都要有裁定。保留共译须写理由，已修记录留表且不得复现；完整英文和卡面短写均检查词典格式串。依赖本机缓存 v003/stage3 与 ecdict.csv；改完跑 npm run packs、npm run presets
 npm run block      # 西文五语屏蔽词表 app/assets/lang/<语种>/block.js 与送审表 review/lexicon/block-review.tsv
 ```
 
@@ -45,7 +47,7 @@ node scripts/t19/pack-ranks.mjs <编译目录> <新排名文件> <新断词文�
 
 ## 浏览器回归
 
-不在 `npm test` 里。用已安装的 Playwright 起本地临时端口和新的浏览器上下文，不碰预览页的存储。要指定模块与浏览器路径，例如本机：
+不在 `npm test` 里。用已安装的 Playwright 起本地临时端口和新的浏览器上下文，不碰预览页的存储。无头浏览器默认报英文环境，测中文界面的脚本都在启动后把上下文固定成 `zh-CN`。要指定模块与浏览器路径，例如本机：
 
 ```bash
 PLAYWRIGHT_MODULE=/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules/playwright CHROMIUM_PATH=$HOME/Library/Caches/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-mac-arm64/chrome-headless-shell node scripts/test-draft-browser.mjs
@@ -59,10 +61,13 @@ PLAYWRIGHT_MODULE=/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node
 | `test-panels-browser.mjs` | 借物表与折叠、取景（按钮、方向键、拖动、双指）与导出一致、自选色与对比度提示 |
 | `test-caption-browser.mjs` | 配文折行与写满、填表人上限、信息行字号、深浅三档选中样式。加 `SHOT_DIR=<目录>` 存截图 |
 | `test-shell-browser.mjs` | 固定顶栏、图标与点按区、读屏名、触屏横滑 |
+| `test-layout-browser.mjs` | 版式页（预设、十个开关、小样、320 宽、键盘的 Tab 圈与空格恢复预设）、卡跟着版式变、版式随草稿保存恢复与坏字段、草稿到期时版式页收起、配文引号、非默认版式导出、图版三档比例下取景框与卡面、导出取同一块、只有深色的「表格」主题、标题里墨色与自选白字按选区分开、自选色等于墨色也不跟主题变、「图在下」时候选栏跟着上移、改单词后默认图取景沿用 |
+| `test-diag-browser.mjs` | 诊断包（`npm run pack:diag`）：只比 `app/` 多一个脚本和一行引用、过收包规则；诊断牌子与展开的面板、各时间点的先后、逐个文件的耗时、连开几次的记录、后加载的词包、320 宽 |
 | `test-batch8-browser.mjs` | 主题对比度、分图高度、全屏顶栏让位、IndexedDB 缺席 |
 | `test-backend-absence-browser.mjs` | 文件系统能力缺席时改字保存，能力恢复后配图引用不丢 |
 | `test-lang-browser.mjs` | 语言栏、换语言确认、格首提示、冠词块与两性二选一、长词折行；页面里顺带跑 `check-dom-layout.js` |
 | `test-t19-app-browser.mjs` | 用包内正式词包走主编辑器：候选、查词、词形、冠词、随机、草稿恢复 |
+| `test-uilang-browser.mjs` | 界面语言（v00.04.00 批 1、2）：批 2 起候选栏、义项栏、入场页、预设也不许剩中文（只放行用户写的卡面释义）；英文界面打开法语草稿看英文释义、类别标注与中英界面来回的自动释义，英语的词只标词性；英文环境出英文、中文环境不变；英文界面各状态在 320、360 宽不横滚、不剩中文界面字；设置页「界面语言」三档与主题英文名；换语言后重新载入、草稿还在 |
 
 `test-entry-browser` 与 `test-lang-browser` 只测界面行为，词包请求由旧词包应答（`scripts/legacy-packs.mjs` 按固定提交从 git 取到系统临时目录）。
 
@@ -102,7 +107,8 @@ node scripts/design-system/render.mjs <project 目录> <输出目录> EntryScree
 ```bash
 node scripts/public-manifest.mjs <来源> > <清单>           # 1 生成文件清单（只读）；加 --diff 改为对照本地 public 分支列出增减
 git worktree add <临时目录> refs/heads/public               # 2 把 public 分支检出到临时目录
-# 以下 3～6 在 <临时目录> 里执行
+# 以下在 <临时目录> 里执行，直到第 6 步
+git switch public                                           # 2b 切到 public 分支本身；上一步得到的是游离状态，不切的话提交不会落在分支上（会提示名字有歧义，可忽略）
 git rm -rq -- . ':!scripts/fixtures/legacy-packs'           # 3 清空旧文件，留下旧词包夹具
 git --literal-pathspecs checkout <来源> --pathspec-from-file=<清单>   # 4 按清单取出新文件
 npm test                                                    # 5 验证：再跑 npm run audit、node scripts/build-web.mjs --out <别处>
@@ -114,6 +120,33 @@ git worktree remove <临时目录>                              # 9 收尾
 ```
 
 发版本时在第 6 步后给快照提交打 tag `vxx.xx.xx`，另推 `git push public refs/tags/vxx.xx.xx`。
+
+### 示例：2026-11-20 的一次更新
+
+来源是开发分支 `dev/v00.03.02` 上的 `db23cb2b`，临时目录用 `/tmp/pubwt`，清单放 `/tmp/manifest.txt`。照抄时只换这三样。
+
+```bash
+node scripts/public-manifest.mjs db23cb2b > /tmp/manifest.txt     # 打印「清单共 1210 个文件」
+node scripts/public-manifest.mjs db23cb2b --diff                  # 可选：这次比上一版少 174 个、多 6 个
+git worktree add /tmp/pubwt refs/heads/public
+cd /tmp/pubwt
+git switch public
+git rm -rq -- . ':!scripts/fixtures/legacy-packs'                 # 之后 git ls-files 只剩 7 个夹具
+git --literal-pathspecs checkout db23cb2b --pathspec-from-file=/tmp/manifest.txt   # 取出 1210 个，合计 1217
+npm test                                                          # 退出码 0，其中两项打印「跳过」
+npm run audit                                                     # PASS，带一条体积提示属正常
+node scripts/build-web.mjs --out /tmp/pubweb
+git grep -lIE '<自己的邮箱或用户名>|/Users/[a-z]+'                # 应无输出
+git add -A .
+git commit -m "快照更新：词包缩小到 7.59 MB、词库返工与文档整理（来源 db23cb2b）"   # 得到 43823dc3
+cd <主仓库>
+git merge-base --is-ancestor refs/heads/dev/v00.03.02 refs/heads/public   # 退出码 1，通过
+git ls-remote public                                              # 远端 main 应是新快照的父提交，这样是普通快进
+git push public refs/heads/public:refs/heads/main                 # c02b2619..43823dc3  public -> main
+git worktree remove /tmp/pubwt
+```
+
+这次没有打 tag（v00.03.02 还没出包）。扫密钥样式时词包曾误报：词形门控的 base64 数据里碰巧有 `AKIA` 开头的串，不是密钥（v00.03.04 起词包不带门控，这条误报随之消失）。
 
 `scripts/fixtures/legacy-packs/` 的七个文件只存在于 `public` 分支：快照没有提交历史，`scripts/legacy-packs.mjs` 取不到固定提交时改读这里，所以第 3 步要留下它。
 

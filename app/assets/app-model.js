@@ -2,6 +2,7 @@
 window.Backronym = {};
 (function (app) {
   "use strict";
+  var STR = window.I18N.t; // 界面文案到 i18n.js 取，代码里只写编号（v00.04.00 批 0）
   app.model = {};
 
   // 纯逻辑在 core.js（window.CORE，index.html 里先于本文件加载）；这里只取别名，函数体不在 app.js
@@ -17,6 +18,7 @@ window.Backronym = {};
     glossAuto: [], // 每个位置的释义是否仍是自动带出的（用户一动就 false；D7，CORE.nextGloss）
     captions: [],  // 每个位置的配文（只在单图视图里用）
     poss: [],      // V003-B4-R7：每格选中的义项的词性（自动带出的释义 = 词条第一个词性；点义项栏 = 那一行的词性；自己写的释义不改它）
+    artOwn: [],    // v00.04.00：用户另选的冠词（每格一个字符串，没选为空），只能是这门语言的定冠词单数；选了就盖过词库给的和 arts 选的，换词即清
     arts: [],      // v00.03.00 T22：两性名词由用户选的冠词（每格一个字符串，没选为空）；换词即清
     keys: [],      // 每个位置的关键字母下标，T17 起恒为 0（朱红词首字母）；字段留着只为草稿格式不变
     split: null,   // T42：超过 10 格时手动调过的分界（前一张的格数）；null = 自动（CORE.autoSplit）
@@ -25,6 +27,7 @@ window.Backronym = {};
     crops: [],     // 每个位置的取景 {z, x, y} 或 null（默认居中、不放大）
     image: null,   // 顶部上传的默认图，没单独配图的格子用它
     view: "single",  // single 单图视图（默认，1080×1440 竖图） / grid 列阵视图（5 个字母以内是横图）
+    layout: CORE.layoutOf(), // v00.03.03 L2：这份作品的版式（CORE.LAYOUT_VALUES 的各项），跟草稿走；新开作品回到「对开」
     filler: "",    // 填表人（在入场界面改，卡顶右上只显示；留空不导出）
     focus: 0,      // 当前格（卡上正在编辑的那一格）
     imgIndex: -1,  // 配图面板正在改的格
@@ -42,13 +45,15 @@ window.Backronym = {};
     viewSingle: $("viewSingle"), viewGrid: $("viewGrid"), finish: $("finish"),
     // 配图面板 / 取景面板（T15）
     imgPanel: $("imgPanel"), imgTitle: $("imgTitle"), imgClose: $("imgClose"), cellPhoto: $("cellPhoto"), imgPick: $("imgPick"), imgAdjust: $("imgAdjust"), imgRemove: $("imgRemove"),
-    photo: $("photo"), defPick: $("defPick"), defRemove: $("defRemove"),
+    photo: $("photo"), defPick: $("defPick"), defAdjust: $("defAdjust"), defRemove: $("defRemove"),
     cropper: $("cropper"), cropTitle: $("cropTitle"), cropCanvas: $("cropCanvas"),
     cropMoves: $("cropMoves"), cropMinus: $("cropMinus"), cropPlus: $("cropPlus"), cropZoom: $("cropZoom"), cropReset: $("cropReset"), cropCancel: $("cropCancel"), cropApply: $("cropApply"), cropScope: $("cropScope"),
     // 卡顶标题框（T16），键盘上方一行
     title: $("title"), kbRow: $("kbRow"), kbText: $("kbText"), kbTools: $("kbTools"), kbNote: $("kbNote"), tcolorCustom: $("tcolorCustom"),
+    // 版式页（v00.03.03 L2）：提示行「版式」进；小样、预设、三组开关
+    toLayout: $("toLayout"), layoutPage: $("layoutPage"), layoutClose: $("layoutClose"), layPrev: $("layPrev"), layViewSingle: $("layViewSingle"), layViewGrid: $("layViewGrid"), layBase: $("layBase"), layBaseWhy: $("layBaseWhy"), layRows: $("layRows"),
     // 设置页（v00.03.00）：顶栏「设置」进；深浅三档单选；底行借物与版权
-    settingsOpen: $("settingsOpen"), settings: $("settings"), settingsClose: $("settingsClose"), modeGroup: $("modeGroup"), skinGroup: $("skinGroup"), modeWhy: $("modeWhy"), setCredits: $("setCredits"), entrySaveText: $("entrySaveText"), finishText: $("finishText"),
+    settingsOpen: $("settingsOpen"), settings: $("settings"), settingsClose: $("settingsClose"), modeGroup: $("modeGroup"), skinGroup: $("skinGroup"), uiLangGroup: $("uiLangGroup"), setCredits: $("setCredits"), entrySaveText: $("entrySaveText"), finishText: $("finishText"),
     // 语言栏（T20）
     langNow: $("langNow"), langMore: $("langMore"), langList: $("langList"), langRule: $("langRule"), langWait: $("langWait"), presetField: $("presetField"),
     // 入场界面（T18）：单词、预设、填表人、主按钮；顶部栏的品牌名 / 返回箭头；改单词清空确认
@@ -78,7 +83,7 @@ window.Backronym = {};
 
   // 按新单词重建格子（D18）：同位置字母没变的格保留，其余清空。首次输入、改单词、恢复草稿都走这里；调用方负责接着 changed()
   function setLetters(text) {
-    var prev = state.letters;
+    var prev = state.letters, defKeep = sharedCrop();
     state.letters = CORE.normalizeWord(text).split("").filter(Boolean);
     state.picks = keepSame(prev, state.picks, null);
     state.glossAuto = keepSame(prev, state.glossAuto, true);
@@ -86,12 +91,34 @@ window.Backronym = {};
     state.captions = keepSame(prev, state.captions, "");
     state.keys = keepSame(prev, state.keys, 0);
     state.arts = keepSame(prev, state.arts || [], "");
+    state.artOwn = keepSame(prev, state.artOwn || [], "");
     state.pickLangs = keepSame(prev, state.pickLangs || [], "");
     state.poss = keepSame(prev, state.poss || [], "");
     state.images = keepSame(prev, state.images, null);
     state.defaultCrops = keepSame(prev, state.defaultCrops || [], null);
     state.crops = keepSame(prev, state.crops, null);
+    // v00.03.03 真机反馈（LIFE 改成 LIFTHOUSE）：默认图是各格共用的，它的取景不该跟着字母清掉。
+    // 新出现的格、字母变了的格沿用默认图原来的取景；各格单独调过的不算，取原来最常见的那一份（从「默认图」那里调的取景各格都相同）
+    if (defKeep) {
+      var copy = function (c) { return { z: c.z, x: c.x, y: c.y }; };
+      state.defaultCrops = state.letters.map(function (l, i) { return state.defaultCrops[i] || copy(defKeep); });
+      state.crops = state.letters.map(function (l, i) { return state.crops[i] || (state.images[i] ? null : copy(state.defaultCrops[i])); });
+    }
     state.focus = firstOpen(0); // 格子初始为空（D6），不再随机填满
+  }
+  // 默认图各格共用的那一份取景（没有默认图或没调过 = null）。改单词时新格与字母变了的格沿用它（setLetters），
+  // 所以它不算「会被清空」的内容（app-entry 的 lostCells 用同一份判断）
+  function sharedCrop() { return state.image ? commonCrop(state.defaultCrops) : null; }
+  // 一组取景里出现次数最多的那一份（并列取先出现的）；都没有返回 null
+  function commonCrop(list) {
+    var best = null, top = 0, seen = {};
+    (list || []).forEach(function (c) {
+      if (!c) return;
+      var k = c.z + "|" + c.x + "|" + c.y;
+      seen[k] = (seen[k] || 0) + 1;
+      if (seen[k] > top) { top = seen[k]; best = c; }
+    });
+    return best;
   }
 
   // ---- T42：分图 ----
@@ -165,6 +192,7 @@ window.Backronym = {};
     if (state.pickLangs) state.pickLangs[i] = item ? lang || itemLang(item) || "" : "";
     // 冠词的选择跟着词走：换了词就清；同一个词（词库迟到后重查）且选项里还有它才留着
     if (!was || !item || was[0] !== item[0] || CORE.articleOptions(item).indexOf(state.arts[i]) < 0) state.arts[i] = "";
+    if (state.artOwn && (!was || !item || was[0] !== item[0])) state.artOwn[i] = ""; // 自己写的冠词只跟词走：同一个词重查不清
     state.picks[i] = item;
     var g = CORE.nextGloss(state.glosses[i], state.glossAuto[i], item);
     state.glosses[i] = g.gloss;
@@ -189,8 +217,8 @@ window.Backronym = {};
   }
 
   // 给读屏的词性全称（“adj.” 会被逐个字母念出来）
-  var POS_NAME = { "adj.": "形容词", "n.": "名词", "v.": "动词", "adv.": "副词", "prep.": "介词", "conj.": "连词",
-    "pron.": "代词", "int.": "感叹词", "num.": "数词", "art.": "冠词", "aux.": "助动词", "abbr.": "缩写" };
+  var POS_NAME = { "adj.": STR("pos.adj"), "n.": STR("pos.n"), "v.": STR("pos.v"), "adv.": STR("pos.adv"), "prep.": STR("pos.prep"), "conj.": STR("pos.conj"),
+    "pron.": STR("pos.pron"), "int.": STR("pos.int"), "num.": STR("pos.num"), "art.": STR("pos.art"), "aux.": STR("pos.aux"), "abbr.": STR("pos.abbr") };
   // 词性缩写（v00.03.01 第六轮真机建议，用户 11-19 选定写法；设计系统 CandidateBar「词性缩写」）：候选栏、义项栏用各语言词典自己的写法，
   // 名词在法西意按义项带阴阳性（词包 lexicon.genders：m / f / b 两性同形）；德语的性由 der/die/das 表示，拉丁语暂不标性。英语与没列的词性照原样
   var POS_ABBR = {
@@ -200,7 +228,7 @@ window.Backronym = {};
     de: { "n.": "Subst.", "v.": "V.", "adj.": "Adj.", "adv.": "Adv.", "pron.": "Pron.", "num.": "Num." },
     la: { "n.": "subst.", "v.": "verb.", "adj.": "adi." }
   };
-  var GENDER_NAME = { m: "阳性", f: "阴性", b: "两性" };
+  var GENDER_NAME = { m: STR("gender.m"), f: STR("gender.f"), b: STR("gender.b") };
   // 一组义项（CORE.senseGroups 的一组）的阴阳性。item = 候选或已选的词条（[显示词, 释义, 冠词, 备注]）。
   // 沿用查词命中的义项身份（复审 R3-17）：按 item 的写法重查，取释义串相同的那组命中，再看这组释义对应的名词义项；
   // 打的是词形（livres、médica）时按词形的性别资料定，见 formGender。几个义项不一致或查不到就不标（""）。
@@ -233,16 +261,68 @@ window.Backronym = {};
     if (m.number === "sg" || m.gender === base) return m.gender;
     return Object.keys(forms).some(function (f) { return forms[f].number === "sg" && forms[f].gender === m.gender; }) ? m.gender : base;
   }
+  // 英文界面的释义（v00.04.00 批 2）：义项记录上带着词包里的英文（lexicon-store 解包时挂的 record.en = [原文, 短写]）。
+  // 按 item 的写法重查（同 senseGender），取释义串相同的那组，再找中文对得上这个义项的记录。英语的词一律给空（用户定：只标词性）；
+  // 找不到英文也给空，不退回中文（用户定）。full = 要原文（义项栏按钮），否则给短写（卡面、候选栏、入场页）。
+  // 结果按「语言、词条、义项」缓存：候选栏每次重画都要问；词包还没到的不记，到了重画时再查
+  var enCache = Object.create(null);
+  function enGloss(item, g, sn, full) {
+    if (!item || !sn) return "";
+    var source = itemLang(item), group = CORE.senseId(g), codes = source ? [source] : state.langs.slice();
+    for (var k = 0; k < codes.length; k++) {
+      var code = codes[k], key = code + "\u0001" + item[0] + "\u0001" + item[1] + "\u0001" + group + "\u0001" + sn, hit = enCache[key];
+      if (hit === undefined) {
+        hit = inLang(code, function () {
+          var c = lexicon(), lx = c && c.lx;
+          if (!lx) return undefined;
+          var groups = window.LEXICON_STORE.packLookups(lx, String(item[0] || ""), { exact: CORE.LANG.exactKey, fold: CORE.LANG.fold, blocked: function () { return false; } });
+          var same = groups.filter(function (h) { return h.entry[1] === item[1]; }), rec = null;
+          if (same.length) same.some(function (h) {
+            var id = h.senseIds[group];
+            return h.matches.some(function (m) { if (m.record.sense_id === id) { rec = m.record; return true; } return false; });
+          });
+          // 候选词的义项经过筛选，编号可能与全词条不同。只在词性和释义唯一对上时取字。
+          else {
+            var matching = [];
+            groups.forEach(function (h) {
+              CORE.senseGroups(h.entry).forEach(function (s) {
+                if (s.pos !== g.pos || s.senses.indexOf(sn) < 0) return;
+                var id = h.senseIds[CORE.senseId(s)];
+                var match = h.matches.find(function (m) { return m.record.sense_id === id; });
+                if (match && matching.indexOf(match.record) < 0) matching.push(match.record);
+              });
+            });
+            if (matching.length === 1) rec = matching[0];
+          }
+          if (!rec) return null;
+          return !rec.en ? ["", ""] : rec.en; // 英语的词只有专业、历史文化词带英文（真机第一轮 D6），其余没有，照旧留空
+        });
+        if (hit) enCache[key] = hit;
+      }
+      if (hit) return full ? hit[0] : hit[1];
+    }
+    return "";
+  }
+  var UI_EN = window.I18N.lang() === "en";
+  // 英文界面：显示与填写都换成英文。中文界面：显示照旧是中文（行为与批 2 之前相同），只装「另一种写法」，恢复时认得英文界面留下的自动释义
+  if (UI_EN) CORE.setGlossText(enGloss, function (item, g, sn) { return sn; });
+  else CORE.setGlossText(null, function (item, g, sn) { return enGloss(item, g, sn, false); });
+  // 候选栏、义项栏的语言标记：中文界面「[法]」；英文界面英语的词不标，其余写两个字母「[Fr]」（用户 11-21 定）
+  var LANG_MARK = { fr: "Fr", de: "De", es: "Es", it: "It", la: "La" };
+  function langMark(code) {
+    if (!UI_EN) return langName(code).charAt(0);
+    return LANG_MARK[code] || "";
+  }
   // 显示用的缩写与读屏名：posAbbr("fr", "n.", "f") → "n. f."；posSpoken 同参数 → "阴性名词"
   function posAbbr(code, pos, gender) {
     var a = (POS_ABBR[code] || {})[pos];
     if (!a) return pos;
     return Array.isArray(a) ? a[{ m: 1, f: 2, b: 3 }[gender] || 0] : a;
   }
-  function posSpoken(pos, gender) { return (pos === "n." && GENDER_NAME[gender] || "") + posName(pos); }
+  function posSpoken(pos, gender) { var g = pos === "n." && GENDER_NAME[gender] || ""; return g ? STR("pos.gendered", { gender: g, pos: posName(pos) }) : posName(pos); }
   function posName(pos) {
     if (!pos) return "";
-    return POS_NAME[pos] || (pos.charAt(0) === "[" ? pos.slice(1, -1) + "领域" : pos);
+    return POS_NAME[pos] || (pos.charAt(0) === "[" ? STR("pos.domain", { d: pos.slice(1, -1) }) : pos);
   }
 
   // 按单词从词库里找回最新条目（草稿里存的可能是旧格式；卡上打的词首字母大写，词库全小写，所以不分大小写）；找不到就是自定义词
@@ -330,29 +410,68 @@ window.Backronym = {};
     }
     return c;
   }
-  // 只对可能的词形发起读取。每门语言独立于切换语言的 loader；异步结束只重画当前作品。
+  // 词形表（inflections.js）没到就读（v00.03.04 去掉了词形门控：以前先用门控猜这个词可能不可能是变形，现在不猜）。
+  // 每门语言独立于切换语言的 loader；异步结束只重画当前作品。word 为空（warmForms 的预读）也读。
+  // 平时等不到打字：语言就绪后 warmForms 在空闲时先读好，这里只管预读还没到的那一小段
   function formStatus(word) {
     var loading = false, failed = false;
     state.langs.forEach(function (code) {
       inLang(code, function () {
         var c = lexicon();
         if (!c || !(c.pack.v >= 2) || c.sidecar) return; // v1 的词形在主包里，不另读
-        var key = c.lx.key(String(word || "").trim());
-        if (!window.LEXICON_STORE.mayHaveForm(c.pack.formGate, key)) return;
         if (c.failed) { failed = true; return; }
         loading = true;
         if (c.pending) return;
+        if (!loaded()) { warmForms(); return; } // 页面还没 load 完（恢复草稿时就会查词）：先不发请求，load 之后由预读去读，免得拖住 load
         c.pending = window.LANGPACK.loader().load(code, ["inflections"]).then(function (result) {
           c.pending = null;
           c.failed = !result.ok;
-          if (state.langs.indexOf(code) < 0) return;
-          if (result.ok) app.draft.quietly(refreshPicks);
-          app.entry.renderEntry();
-          app.view.renderShell();
+          // 重画会重建字母栏等按钮：手指正按着的时候重建，这一下点按就丢了（按下与抬起落在两个不同的节点上）。等抬起再画
+          whenReleased(function () {
+            if (state.langs.indexOf(code) < 0) return;
+            // 词形表到了多半什么都不用改（卡上的词本来就认得）：只有重核后词条、释义、冠词真的变了才整页重摆。
+            // 每次都整页重摆的话，正在打字的人会碰上页面高度一跳、字母栏被重建（v00.03.04 起每门语言都会到一次，不再是少数词才到）
+            var was = JSON.stringify([state.picks, state.glosses, state.arts, state.pickLangs, state.artOwn]);
+            // 读失败也要重核（复审 G-A1）：失败的语言从此不再挡着别的语言认词，可这一刻没人再来触发重核——
+            // 最后到的那门若是失败，旧稿里等着认的词就一直不补冠词与释义，重新输入才出现
+            app.draft.quietly(refreshPicks);
+            if (app.entry.entryFrom) app.entry.renderEntry(); // 只在入场页开着时画它（同 prepareLang）
+            if (!result.ok || was !== JSON.stringify([state.picks, state.glosses, state.arts, state.pickLangs, state.artOwn])) app.view.renderShell();
+            else if (app.editor.focusKind) {
+              // 候选栏要重画（「词形索引加载中」换掉，候选里补上靠词形才查得到的词）。但这不是用户的动作，不该动锁高：
+              // renderCand 开头会按此刻（栏已展开）的高度重新锁，页面就比用户开始输入时高出一截，随后去点字母栏会点空（回归里抓到的）。画完把锁高还原
+              var mh = el.app.style.minHeight;
+              app.editor.renderCand();
+              el.app.style.minHeight = mh;
+            }
+
+          });
         });
       });
     });
-    return loading ? "词形索引加载中" : failed ? "词形索引未能加载" : "";
+    return loading ? FORMS_LOADING : failed ? STR("forms.failed") : "";
+  }
+  // 预读：选中的语言里词包已到、词形表还没到的，等浏览器空闲时读。不占打开到可用那一段（挂载词形表是主线程上最重的一步）。
+  // 没有 requestIdleCallback 的内核（Chrome 61 有，iOS 的 WebKit 没有）退回定时器。
+  // 一定等页面 load 之后：load 之前插进去的脚本会把 load 事件拖到它读完，容器若等 load 才算打开完成就被拖慢了
+  var FORMS_LOADING = STR("forms.loading");
+  var pressing = false;
+  if (document.addEventListener) ["mousedown", "touchstart"].forEach(function (t) { document.addEventListener(t, function () { pressing = true; }, true); });
+  if (document.addEventListener) ["mouseup", "touchend", "touchcancel", "click"].forEach(function (t) { document.addEventListener(t, function () { pressing = false; }, true); });
+  function whenReleased(fn, tries) {
+    if (!pressing || tries > 25) { fn(); return; } // 最多等 3 秒：抬起事件丢了（手指滑出窗口）也不会一直不画
+    setTimeout(function () { whenReleased(fn, (tries || 0) + 1); }, 120);
+  }
+  var warmTimer = 0;
+  function loaded() { return document.readyState !== "loading" && document.readyState !== "interactive"; }
+  function warmForms() {
+    if (warmTimer) return;
+    var run = function () { warmTimer = 0; formStatus(""); };
+    // 先让出 1 秒再等空闲：load 刚过时字体还在到、草稿还在摆，量过紧跟着挂载会把「到可用」拖慢约 50 毫秒（桌面降速 6 倍）
+    var idle = function () { warmTimer = setTimeout(function () { if (window.requestIdleCallback) window.requestIdleCallback(run, { timeout: 3000 }); else run(); }, 1000); };
+    if (loaded()) { idle(); return; }
+    warmTimer = -1; // 占位：等 load 期间不重复挂监听
+    window.addEventListener("load", idle);
   }
   // 每个写法用可推荐义项的最高权重。同形的查询专用义不参与抽样。
   function randomWords(dictionary, letter) {
@@ -467,7 +586,7 @@ window.Backronym = {};
   // 候选栏开关打开后才出的词（专业、历史文化）：与 words 同形，每条多一列类别标注；没有就当空
   function moreWords() { return langData("more") || NO_WORDS; }
   // 六门作品语言：[代码, 中文名, 原文名]（语言栏、确认框、提示文案共用）
-  var LANGS = [["en", "英语", "English"], ["fr", "法语", "Français"], ["de", "德语", "Deutsch"], ["es", "西班牙语", "Español"], ["it", "意大利语", "Italiano"], ["la", "拉丁语", "Latina"]];
+  var LANGS = [["en", STR("lang.en"), "English"], ["fr", STR("lang.fr"), "Français"], ["de", STR("lang.de"), "Deutsch"], ["es", STR("lang.es"), "Español"], ["it", STR("lang.it"), "Italiano"], ["la", STR("lang.la"), "Latina"]];
   function langName(code) { for (var k = 0; k < LANGS.length; k++) if (LANGS[k][0] === code) return LANGS[k][1]; return code; }
   // 一门语言能不能用来填格：规则、屏蔽词表、词库都到了（英语随包加载，恒为真）
   function langReady(code) { var r = window.LANGPACK.ready(code); return r.rules && r.block && r.words; }
@@ -500,6 +619,7 @@ window.Backronym = {};
   function prepareLang(code) {
     return loaderOf(code).load(code).then(function (r) {
       if (!r.stale && state.langs.indexOf(r.code) >= 0) {
+        if (r.ok && app.model.warmForms) app.model.warmForms(); // 词包到了：空闲时把它的词形表也读好
         if (r.ok) app.draft.quietly(refreshPicks); // V003-B4-R8：词库到了，各格的词条按词库补齐（冠词等），不算编辑
         if (r.ok && app.publish.finishLag === r.code) app.publish.finishNote = app.publish.finishLag = ""; // V003-B4-R11：点「完成」时说过这门语言还没加载好，现在到了，提示清掉
         app.view.renderShell();
@@ -529,7 +649,7 @@ window.Backronym = {};
     state.picks.forEach(function (p, i) {
       if (!p) return;
       if (state.arts[i] && CORE.articleOptions(p).indexOf(state.arts[i]) < 0) state.arts[i] = "";
-      if (state.glossAuto[i]) {
+      if (state.glossAuto[i] && (!window.LANGPACK || (state.pickLangs[i] ? window.LANGPACK.has(state.pickLangs[i], "words") : state.langs.every(function (code) { return window.LANGPACK.has(code, "words"); })))) {
         state.glosses[i] = CORE.savedAutoGloss(p, state.glosses[i]);
         if (!state.poss[i]) state.poss[i] = defaultSense(p);
       }
@@ -549,10 +669,13 @@ window.Backronym = {};
         if (!window.LANGPACK.has(c, "words")) return false;
         if (!status) return true;
         var cache = lexCaches[c];
-        return !cache || cache.sidecar || !window.LEXICON_STORE.mayHaveForm(cache.pack.formGate,cache.lx.key(text));
+        return !cache || cache.sidecar || cache.failed; // 词形表读失败的语言不再等：等不来，一直挡着反而让别的语言永远认不了这个词
       };
+      // 复审 G-A2：这一格记着的语言词形表读失败了——它自己的词形（法语 ira = aller 的变形）此刻查不到，查到的只会是别的语言的同形词
+      // （意语名词 Ira「愤怒」）。与 R11 同理：认定以后不改，原样留着；重试成功后再核。「读失败的语言不再等」只对没记语言的格成立
+      var ownCache = status && own ? lexCaches[own] : null, ownLost = !!(ownCache && ownCache.failed && !ownCache.sidecar); // 词形表都到齐（status 为空）时不看缓存，同 here
       h = lookupHit(text, own, previous);
-      if (h && h.lang !== own && !state.langs.every(here)) h = null; // 记着的语言没到时它查不到，查到的必是别的语言，这里一并挡下
+      if (h && h.lang !== own && (ownLost || !state.langs.every(here))) h = null; // 记着的语言没到时它查不到，查到的必是别的语言，这里一并挡下
     } else h = lookupHit(text, own, previous);
     var hit = h ? h.entry : null;
     if (hit || !previous) text = spellingFor(text, h);
@@ -577,12 +700,72 @@ window.Backronym = {};
     var p = state.picks[i];
     if (!p || !p[0]) return "empty";
     if (!CORE.containsLetter(p[0], state.letters[i])) return "bad";
+    if (ownArticle(i)) return "ok"; // 另选了冠词就不必再二选一
     return CORE.articleOf(p, (state.arts || [])[i], (state.poss || [])[i]).pending ? "art" : "ok"; // art = 两性名词还没选冠词（草稿照存，点「完成」会被拦下）
   }
   // 卡上冠词位写什么（没有冠词为空串）；二选一没选时写全
   function articleText(i) {
     var p = state.picks[i];
+    if (p && p[0] && ownArticle(i)) return ownArticle(i);
     return p && p[0] ? CORE.articleOf(p, (state.arts || [])[i], (state.poss || [])[i]).text : "";
+  }
+  // 这一格的冠词能从哪几个里另选：定冠词单数（用户 2026-11-21 定，只给 le / la / der 这一类，不让自己写）。
+  // 真机第一轮 D4、D5（用户 11-21 定）：范围按作品已选的外语，不只这个词那一门（ira 西语收了、意语没收，也能选 il / lo）；
+  // 词库里没有的词同样列全部已选外语的。英语、拉丁语的词照旧没有。排法固定：la le el il l’ lo 一行，der die das 另起一行（ARTICLE_ORDER）
+  var ARTICLE_ORDER = ["la", "le", "el", "il", "l\u2019", "lo", "der", "die", "das"];
+  function sortArticles(list) {
+    var at = function (a) { var k = ARTICLE_ORDER.indexOf(a); return k < 0 ? ARTICLE_ORDER.length : k; };
+    return list.slice().sort(function (a, b) { return at(a) - at(b); });
+  }
+  // 这一格的词算哪门语言：只认作品已选的语言（旧稿里记着、但已不在已选语言里的归属不算，Sol 复审 D4/D5）
+  function cellLang(i) {
+    var p = state.picks[i], own = (state.pickLangs || [])[i] || (p ? itemLang(p) : "") || "";
+    return state.langs.indexOf(own) >= 0 ? own : "";
+  }
+  // 这个冠词按哪门语言读（按钮的 lang）：这个词那门有就用它，否则取已选外语里第一门有它的
+  function articleLang(i, a) {
+    var own = cellLang(i);
+    if (own && CORE.articlesOf(own).indexOf(a) >= 0) return own;
+    for (var k = 0; k < state.langs.length; k++) if (CORE.articlesOf(state.langs[k]).indexOf(a) >= 0) return state.langs[k];
+    return own || state.lang;
+  }
+  function articleChoices(i) {
+    var p = state.picks[i];
+    if (!p || !p[0]) return [];
+    var groups = CORE.senseGroups(p), selected = (state.poss || [])[i];
+    var group = groups.find(function (g) { return CORE.senseId(g) === selected; });
+    if (group ? group.pos && group.pos !== "n." : groups.some(function (g) { return g.pos && g.pos !== "n."; })) return [];
+    var own = cellLang(i);
+    if (own && !CORE.articlesOf(own).length) return []; // 英语、拉丁语的词照旧没有
+    var out = [];
+    (own ? [own] : []).concat(state.langs).forEach(function (code) { CORE.articlesOf(code).forEach(function (a) { if (out.indexOf(a) < 0) out.push(a); }); });
+    return sortArticles(out);
+  }
+  function takesArticle(i) { return articleChoices(i).length > 0; }
+  // 这一格另选的冠词：不在表里的（旧稿里自己写的字、换了语言）一律不认
+  function ownArticle(i) {
+    var a = (state.artOwn || [])[i] || "";
+    return a && articleChoices(i).indexOf(a) >= 0 ? a : "";
+  }
+  // 这一格原属的语言已不在已选语言里、剩下的语言也没认回这个词：词库带来的冠词列属于那门语言，一并去掉（词、释义、配文照留）。
+  // 卡面与义项栏都从这一列取冠词，只清另选的不够（Sol 复审 D4/D5：意语 ragazzo 取消意语后仍画 il）。改的是词条副本，存进草稿后重开也不再带回
+  function dropLangArticles(cells) {
+    cells.forEach(function (i) {
+      var p = state.picks[i];
+      if (!p || !p[0] || state.pickLangs[i] || !p[2]) return;
+      var q = p.slice(); q[2] = ""; state.picks[i] = q;
+      if (state.arts) state.arts[i] = "";
+    });
+  }
+  // 另选的冠词在这个词那门、已选外语里都没有了（取消了那门语言、旧稿）就清掉，不只是读时不认：否则再勾回那门语言会把旧选择带回来（Sol 复审 D4/D5）。
+  // 只按语言判断，不看词库与词性，词库没到时也不会误清
+  function pruneArtOwn() {
+    (state.artOwn || []).forEach(function (a, i) {
+      if (!a) return;
+      var own = cellLang(i);
+      var ok = (own ? [own] : []).concat(state.langs).some(function (code) { return CORE.articlesOf(code).indexOf(a) >= 0; });
+      if (!ok) state.artOwn[i] = "";
+    });
   }
   // 这个词的标准断词点（当前语言的断词表，按整词查；长度对不上的不用）。没有为 null
   function hyphOf(word, i) {
@@ -609,11 +792,11 @@ window.Backronym = {};
   // 生成前把所有用户文字过一遍屏蔽器，返回第一个有问题的位置 [名称, 文字, 元素 id, 格序号或 -1]
   function findBlocked() {
     // 单词本身也查：它会印在海报上、写进笔记正文
-    var fields = [["单词", state.letters.join(""), "wordInput", -1], ["标题", app.title.titleText(), "title", -1], ["填表人", state.filler, "fillerCtl", -1]];
+    var fields = [[STR("field.word"), state.letters.join(""), "wordInput", -1], [STR("field.title"), app.title.titleText(), "title", -1], [STR("field.filler"), state.filler, "fillerCtl", -1]];
     state.letters.forEach(function (l, i) { // 词 / 释义 / 配文都是卡上的控件（当前格才有，调用方先 setFocus 到那一格）
-      var n = "第 " + (i + 1) + " 格";
-      fields.push([n + "的词", state.picks[i] ? state.picks[i][0] : "", "wordCtl", i], [n + "的释义", state.glosses[i], "glossCtl", i]);
-      if (state.view === "single") fields.push([n + "的配文", state.captions[i], "capCtl", i]);
+      var n = { n: i + 1 };
+      fields.push([STR("field.cellWord", n), state.picks[i] ? state.picks[i][0] : "", "wordCtl", i], [STR("field.cellGloss", n), state.glosses[i], "glossCtl", i]);
+      if (state.view === "single") fields.push([STR("field.cellCaption", n), state.captions[i], "capCtl", i]);
     });
     for (var i = 0; i < fields.length; i++) if (blocked(fields[i][1])) return fields[i];
     return null;
@@ -682,7 +865,7 @@ window.Backronym = {};
 
   // 全屏页（设置、借物与版权）开着时，页面背后的路由（读完草稿、到期重载）不能把焦点抢到被遮住的输入框上（V003-B4-R6）：
   // 那样键盘和读屏会落到看不见的地方，Esc / Tab 也不再归这张页管。开着就不动焦点；页关闭时焦点照旧还给打开它的按钮
-  function pageOpen() { return !el.settings.hidden || !el.credits.hidden; }
+  function pageOpen() { return !el.settings.hidden || !el.credits.hidden || !el.layoutPage.hidden; }
   function focusBehind(node) { if (node && !pageOpen()) node.focus(); }
 
   // ---------- 弹层通用：Esc 关闭、Tab 不跑出弹层、点遮罩关闭 ----------
@@ -695,7 +878,13 @@ window.Backronym = {};
         sheet.querySelectorAll("button, input, [tabindex='0']"),
         function (n) { return !n.disabled && n.type !== "file" && n.offsetParent !== null; });
       if (!nodes.length) return;
-      var first = nodes[0], last = nodes[nodes.length - 1];
+      // 一组单选里 Tab 只停在选中的那个：首尾若是单选，换成它那一组里选中的（否则选中的不在末位时，Tab 会从这一组漏到被盖住的页面上）
+      var stop = function (n) {
+        if (n.type !== "radio" || !n.name) return n;
+        for (var i = 0; i < nodes.length; i++) if (nodes[i].type === "radio" && nodes[i].name === n.name && nodes[i].checked) return nodes[i];
+        return n;
+      };
+      var first = stop(nodes[0]), last = stop(nodes[nodes.length - 1]);
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     });
@@ -712,7 +901,7 @@ window.Backronym = {};
     setLetters: setLetters,
     itemFor: itemFor,
     refreshPicks: refreshPicks,
-    formStatus: formStatus, retryForms: retryForms,
+    formStatus: formStatus, warmForms: warmForms, sharedCrop: sharedCrop, retryForms: retryForms,
     autoCut: autoCut,
     cutOf: cutOf,
     sheets: sheets,
@@ -736,7 +925,7 @@ window.Backronym = {};
     capitalize: capitalize,
     cellState: cellState,
     rankOf: rankOf,
-    articleText: articleText,
+    articleText: articleText, takesArticle: takesArticle, articleChoices: articleChoices, sortArticles: sortArticles, articleLang: articleLang, ownArticle: ownArticle, pruneArtOwn: pruneArtOwn, dropLangArticles: dropLangArticles,
     hyphOf: hyphOf,
     make: make,
     setFocus: setFocus,
@@ -744,6 +933,9 @@ window.Backronym = {};
     defaultGloss: defaultGloss,
     posName: posName,
     posAbbr: posAbbr,
+    enGloss: enGloss,
+    langMark: langMark,
+    uiEn: UI_EN,
     posSpoken: posSpoken,
     senseGender: senseGender,
     defaultPos: defaultPos,

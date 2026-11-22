@@ -2,7 +2,7 @@
 //   node scripts/t19/build-packs.mjs [编译包目录] [输出的 lang 目录]
 // 每个词包两部分：
 //   words   旧四列格式 [显示词, 释义组, 冠词, 说明]，按首字母分组；只含可默认推荐的义项（日用、创作，且未标只供查询）。候选与随机用它。
-//   more    同样的四列词条再加第五列类别标注（专业 / 历史文化）：默认不进候选、用户在候选栏打开开关后才出的词；显示词已在 words 里的不重复收。
+//   more    同样的四列词条再加第五列类别代码（pro 专业 / hist 历史文化，界面字在 i18n.js）：默认不进候选、用户在候选栏打开开关后才出的词；显示词已在 words 里的不重复收。
 //   lexicon 全部准入义项（义项 ID 是 3 位短 ID，见 shortIds）、中文同义别名、防误借与人名元数据（中文反查表不进包，运行时由 core.js 从中文栏现建，批 S3）；词形和名词性数另存 inflections.js，每行引用义项下标，词形多的行拆成「词干 + 词尾串下标」（批 S2）。手动查词用它（app-model.js 经 LEXICON_STORE 查）。
 // 排序：同一首字母内先按类别权重，再按混合频率，旧语料快照仅作回退，最后按显示词。
 import fs from 'node:fs';
@@ -14,7 +14,7 @@ import {fileURLToPath} from 'node:url';
 const require=createRequire(import.meta.url);
 const store=require('../../app/assets/lexicon-store.js'),policy=require('../../app/assets/lexicon-policy.js');
 export const DEFAULT_COMPILED='review/t19-batches/rebuild-20261119/compiled';
-const EXPAND=['professional-humanities','professional-natural','historical-cultural'],TAG={'professional-humanities':'专业','professional-natural':'专业','historical-cultural':'历史文化'};
+const EXPAND=['professional-humanities','professional-natural','historical-cultural'],TAG={'professional-humanities':'pro','professional-natural':'pro','historical-cultural':'hist'}; // 第五列存代码（v00.04.00 批 2）：界面上按界面语言取字（中文「专业」「历史文化」，英文 Tec / HisCul）
 const LANGS=['en','fr','de','es','it','la'],NAMES={en:'English',fr:'French',de:'German',es:'Spanish',it:'Italian',la:'Latin'};
 const fold=s=>String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ß/g,'ss').replace(/œ/g,'oe').replace(/æ/g,'ae');
 const exact=s=>String(s).normalize('NFC').toLowerCase();
@@ -26,6 +26,9 @@ const MIXED_SOURCES='- Universal Dependencies PUD r2.16 百科选句（CC BY-SA 
 // 第三次重建（2026-11-19）选词来源：法语 Lexique，西意德英用 ParlaMint 的原形与词性占比
 const LEXIQUE='- Lexique 4.10（法语按原形与词性分开的字幕频次，仅用于筛选，未随包分发其内容），CC BY-SA 4.0，Boris New、Christophe Pallier 等：www.lexique.org';
 const PARLAMINT=part=>`- ParlaMint 4.1 带标注议会语料 ${part} 分库（把词频按原形与词性拆分，仅用于筛选，未随包分发其内容），CC BY 4.0，Tomaž Erjavec 等 ParlaMint 项目，CLARIN.SI：hdl.handle.net/11356/1911`;
+// 批 2：kaikki 里挑不出英文的少数义项，从补充词典里抄一段（scripts/t19/en-gloss.mjs 的 dict:*）。
+// V0400-A6（用户 2026-11-21 定）：只留许可能并进 CC BY-SA 4.0 的意英一本；Ding 与 FreeDict 法、西、拉英是 GPL，不能改标，那些义项改为机翻
+const EXTRA_EN=(name,lic,who,site)=>`- ${name}（kaikki 里挑不出时补少数英文释义），${lic}，${who}：${site}`;
 const NAMES_SRC='- ECDICT（人名的中文译写），MIT，© 2025 Linwei：github.com/skywind3000/ECDICT';
 const HYPH={fr:'Daniel Flipo、Bernard Gaulle、Arthur Reutenauer',de:'2013-2024 Stephan Hennig, Werner Lemberg, Günter Milde, Sander van Geloven, Georg Pfeiffer, Gisbert W. Selke, Tobias Wendorf, Keno Wehr（作者署名：Deutschsprachige Trennmustermannschaft）',es:'Javier Bezos、CervanTeX',it:'Claudio Beccari',la:'Claudio Beccari'};
 const SOURCES={
@@ -33,14 +36,14 @@ const SOURCES={
  fr:[NAMES_SRC,FREQ,LEXIQUE,'- CFDICT（早期选词与释义的参考），CC BY-SA 3.0，David Houstin 创办、Chine Informations：chine.in'],
  de:[NAMES_SRC,FREQ,PARLAMINT('AT（奥地利）'),'- HanDeDict（早期选词与释义的参考），CC BY-SA 3.0，Gábor L Ugray 与原始团队：handedict.zydeo.net'],
  es:[NAMES_SRC,FREQ,PARLAMINT('ES')],
- it:[NAMES_SRC,FREQ,PARLAMINT('IT')],
+ it:[EXTRA_EN('FreeDict 意英词典 ita-eng（FreeDict+WikDict）','CC BY-SA 3.0 Unported','Karl Bartel 与 FreeDict、WikDict 项目','freedict.org'),NAMES_SRC,FREQ,PARLAMINT('IT')],
  la:['- Dickinson College Commentaries 拉丁语核心词表（选词用的频序，仅用于筛选），CC BY-SA 3.0 Unported，Dickinson College（Christopher Francese 主持）：dcc.dickinson.edu','- Whitaker\'s Words（早期选词的参考，仅用于筛选，未随包分发其内容），William A. Whitaker，作者的许可原句「Permission is hereby freely given for any and all use of program and data. You can sell it as your own, but at least tell me.」：github.com/mk270/whitakers-words'],
 };
 function header(file,lang,source){
  const lines=(lang==='en'?[]:[KAIKKI(lang)]).concat(SOURCES[lang]);
  if (['fr','de','es','it'].includes(lang) && source.includes('rebuild')) lines.push(MIXED_SOURCES);
  if(HYPH[lang])lines.push(`- 断词点：TeX hyph-utf8 的 hyph-${lang==='de'?'de-1996':lang} 连字符模式，MIT${lang==='it'?'（来源是 MIT 或 LPPL 1.3 及更高版本双许可，这里取 MIT）':lang==='la'?'（来源是 MIT 或 LPPL 1 及更高版本双许可，这里取 MIT）':''}，© ${HYPH[lang]}：github.com/hyphenation/tex-hyphen`);
- return `/* 词库由 scripts/t19/build-packs.mjs 从 ${source} 生成（T19 新范围），勿手改。语种：${NAMES[lang]}\n数据来源与许可（与借物页一致；来源地址为纯文本）：\n${lines.join('\n')}\n改编说明：已改编——据上述数据选词、合并词形、去掉不属于本词的词形${lang==='en'?'；中文释义与用法说明逐条核写':'，翻译为中文并人工审核；中文释义、冠词与用法说明逐条核写'}${lang==='en'?'。本文件随来源按 MIT 许可':'（核对时查阅过别的词典，未收录其文字）。改编后的本文件整体按 CC BY-SA 4.0 发布，许可原文：creativecommons.org/licenses/by-sa/4.0/legalcode'}。\n*/\n`;
+ return `/* 词库由 scripts/t19/build-packs.mjs 从 ${source} 生成（T19 新范围），勿手改。语种：${NAMES[lang]}\n数据来源与许可（与借物页一致；来源地址为纯文本）：\n${lines.join('\n')}\n改编说明：已改编——据上述数据选词、合并词形、去掉不属于本词的词形${lang==='en'?'；中文释义与用法说明逐条核写':'，翻译为中文并人工审核；中文释义、冠词与用法说明逐条核写；英文释义按义项取自上述维基词典的英文释义，有删节，'+(lang==='it'?'少数取自上列补充词典或为机器翻译':'少数为机器翻译')}${lang==='en'?'。本文件随来源按 MIT 许可':'（核对时查阅过别的词典，未收录其文字）。改编后的本文件整体按 CC BY-SA 4.0 发布，许可原文：creativecommons.org/licenses/by-sa/4.0/legalcode'}。\n*/\n`;
 }
 // 候选行只包含同写法的原形义项。提前分组，避免逐词扫描所有词形。
 function byDisplay(records) {
@@ -68,6 +71,18 @@ export async function shortIds(compiled=DEFAULT_COMPILED){
  const all=[];
  for(const lang of LANGS)for(const r of await store.load(compiled,lang,read))all.push(r.sense_id);
  return assignShortIds(all);
+}
+// 英文释义表 review/en-gloss/<语言>.tsv 由 scripts/t19/en-gloss.mjs 生成；表里的义项必须都还在词库里，词库里的非人名义项没有英文时记 0
+export const EN_GLOSS='review/en-gloss';
+function enGlosses(lang,senses){
+ const file=path.join(EN_GLOSS,lang+'.tsv');
+ if(!fs.existsSync(file))return undefined;
+ const [head,...lines]=fs.readFileSync(file,'utf8').replace(/\n+$/,'').split('\n'),cols=head.split('\t'),at=c=>cols.indexOf(c);
+ assert.ok(at('sense_id')>=0&&at('en')>=0&&at('short')>=0,file+' 表头');
+ const byId=new Map(lines.map(l=>l.split('\t')).map(c=>[c[at('sense_id')],[c[at('en')],c[at('short')]]]));
+ const ids=new Set(senses.map(s=>s[0]));
+ for(const id of byId.keys())assert.ok(ids.has(id),file+' 有词库里没有的义项 '+id);
+ return senses.map(s=>{const g=byId.get(s[0]);if(!g||!g[0])return 0;return g[1]&&g[1]!==g[0]?[g[0],g[1]]:g[0];});
 }
 export async function buildPack(compiled,lang,ranks,shortOf){
  assert.ok(shortOf instanceof Map,'buildPack 要传 shortIds() 的结果（六语统一的短 ID）');
@@ -112,7 +127,7 @@ export async function buildPack(compiled,lang,ranks,shortOf){
  }).sort((a,b)=>a[0]<b[0]?-1:1);
  // 词形按义项 ID 分开存；在原形包里只留判定是否要加载它的小型过滤表。
  const aliases=JSON.parse(fs.readFileSync(new URL('../../review/lexicon-rebuild-20261118/zh-aliases.json',import.meta.url),'utf8'));
- const entries=[], formKeys=new Set(),byId=new Map(records.map(r=>[r.sense_id,r]));
+ const entries=[],byId=new Map(records.map(r=>[r.sense_id,r]));
  // 词形拆干（批 S2）：词形不少于 SPLIT_MIN 个的行写成「词干 + 词尾串下标」，词干 = 全部词形的最长公共前缀；相同词尾串只在 tails 里存一份。
  // 没有公共前缀的行不拆（西、意因重音移位常见）。先后不变，解码后与拆前逐项相同
  const tails=new Map();
@@ -130,17 +145,19 @@ export async function buildPack(compiled,lang,ranks,shortOf){
     if(!tails.has(tail))tails.set(tail,tails.size);
     entries.push([i,stem,tails.get(tail),...extra]);
    }else entries.push([i,list,...extra]);   // 行首是义项在 senses 里的下标（S1）
-   for(const form of list.split(' '))if(exact(form)!==exact(display))formKeys.add(fold(form.replace(/[’ʼ‘`´]/g,"'")));
   }
   row[7]=source.evidence.frequency_rank||0;
  }
- const formGate=store.buildFormGate(formKeys);
+ // v00.03.04：不再算词形门控（formGate）。词形表改成语言就绪后空闲时预读，打字时没到就直接读
  // 义项阴阳性（11-19，候选栏与义项栏的词性缩写用）：与 senses 逐行对齐的字符串，m 阳 / f 阴 / b 两性同形 / - 不标。只有法西意带
  const G={m:'m',f:'f',mf:'b'},genders=['fr','es','it'].includes(lang)?senses.map(row=>G[byId.get(row[0]).evidence.gender?.g]||'-').join(''):undefined;
+ // 英文释义（v00.04.00 批 2，英文界面用）：与 senses 逐行对齐，0 = 没有；短写与原文相同只存一个字符串，不同存 [原文, 短写]。人名不给；
+ // 英语只有专业、历史文化词有（真机第一轮 D6），其余记 0
+ const en=enGlosses(lang,senses);
  // 全部按哈希排好、对齐之后才换成短 ID
  for(const row of senses){const id=shortOf.get(row[0]);assert.ok(id,row[1]+' 没有短 ID');row[0]=id;}
  for(const row of names)row[0]=shortOf.get(row[0]);
- return {words:sorted,more:sortedMore,inflections:{v:3,entries,tails:[...tails.keys()]},lexicon:Object.assign({v:4,senses,names,guards:Object.keys(records.guards||{}).sort(),formGate,aliases},genders?{genders}:{}),count:{words:rows.size,more:extra.size,senses:senses.length}};
+ return {words:sorted,more:sortedMore,inflections:{v:3,entries,tails:[...tails.keys()]},lexicon:Object.assign({v:4,senses,names,guards:Object.keys(records.guards||{}).sort(),aliases},genders?{genders}:{},en?{en}:{}),count:{words:rows.size,more:extra.size,senses:senses.length}};
 }
 export async function buildAll(compiled=DEFAULT_COMPILED,out='app/assets/lang'){
  const batchPoints=path.join(path.dirname(compiled),'pack-hyphenation.json');

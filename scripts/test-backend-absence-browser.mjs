@@ -28,6 +28,7 @@ let browser;
 const word = (raw) => JSON.parse(raw).word;
 try {
   browser = await chromium.launch({ headless: true, ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
+  { const make = browser.newContext.bind(browser); browser.newContext = options => make({ locale: "zh-CN", ...options }); } // v00.04.00 批 1：界面语言跟随环境，无头浏览器默认报英文；本脚本测的是中文界面
   // draft：植入的草稿（null = 没有草稿）；slowRead：端存储读取延迟毫秒（模拟慢读取，T14）；width：视口宽；tipSeen：首次提示是否已看过
   async function pageFor({ draft = null, slowRead = 0, width = 375, height = 812, tipSeen = true, init = "", phraseDelay = 0 } = {}) {
     const context = await browser.newContext({ viewport: { width, height } });

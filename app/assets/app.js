@@ -1,6 +1,7 @@
 /* 藏头 - Backronym：事件绑定与启动。ES2017 经典脚本。 */
 (function (app) {
   "use strict";
+  var STR = window.I18N.t; // 界面文案到 i18n.js 取，代码里只写编号（v00.04.00 批 0）
   var state = app.model.state, el = app.model.el, CORE = app.model.CORE;
 
   // ---------- 绑定 ----------
@@ -84,21 +85,23 @@
     document.addEventListener(type, function (e) { if (!el.leavePop.hidden && !el.leavePop.contains(e.target) && !el.entryBack.contains(e.target)) app.entry.stayEntry(); }, true);
   });
   el.toEntry.addEventListener("click", function () { app.entry.openEntry("edit"); });
+  app.layout.init(); // 版式页（v00.03.03 L2）：提示行「版式」进，绑定都在 app-layout.js
   el.confKeep.addEventListener("click", app.entry.keepWord);
   el.confClear.addEventListener("click", app.entry.clearAndApply);
   app.model.trapKeys(el.wordConfirm, app.entry.keepWord);
   el.langMore.addEventListener("click", app.entry.toggleLang); // 语言栏（T20）：展开 / 收起六个单选
   // 设置页（v00.03.00）：顶栏「设置」进，关闭后焦点还给「设置」；深浅三档立刻生效并存到本设备，标题的色值跟着重建
   var modeRadios = Array.prototype.slice.call(el.modeGroup.querySelectorAll("input")), skinRadios = Array.prototype.slice.call(el.skinGroup.querySelectorAll("input"));
+  var uiLangRadios = Array.prototype.slice.call(el.uiLangGroup.querySelectorAll("input"));
   var closeSettings = function () { el.settings.hidden = true; el.settingsOpen.focus(); app.model.flushToast(); };
-  // 主题四选一 + 深浅三档。只有浅色的主题（fandom）选着时深浅这一组停用并写明原因；换回别的主题恢复原来的档位
+  // 主题五选一 + 深浅三档。只有一套的主题（fandom 只有浅色、表格只有深色）选着时深浅这一组停用（原因由主题格里的「仅浅色」「仅深色」说明，用户 11-21 定去掉下面那行字）；换回别的主题恢复原来的档位
   var syncSettings = function () {
-    var off = window.THEME.lightOnly();
+    var only = window.THEME.only(), off = !!only;
     skinRadios.forEach(function (r) { r.checked = r.value === window.THEME.skin(); });
     modeRadios.forEach(function (r) { r.checked = r.value === window.THEME.mode(); r.disabled = off; });
     el.modeGroup.classList.toggle("off", off);
     if (off) el.modeGroup.setAttribute("aria-disabled", "true"); else el.modeGroup.removeAttribute("aria-disabled");
-    el.modeWhy.hidden = !off;
+    uiLangRadios.forEach(function (r) { r.checked = r.value === window.I18N.pref(); });
   };
   var reskin = function () { app.title.rethemeTitle(); app.view.renderShell(); app.view.applySkinFont(); };
   el.settingsOpen.addEventListener("click", function () {
@@ -110,13 +113,39 @@
   el.settingsClose.addEventListener("click", closeSettings);
   app.model.trapKeys(el.settings, closeSettings);
   modeRadios.forEach(function (r) {
-    r.addEventListener("change", function () { if (!r.checked) return; window.THEME.setMode(r.value); reskin(); el.live.textContent = "外观：" + window.THEME.LABEL[r.value]; });
+    r.addEventListener("change", function () { if (!r.checked) return; window.THEME.setMode(r.value); reskin(); el.live.textContent = STR("set.modeSaid", { name: STR(window.THEME.LABEL[r.value]) }); });
+  });
+  // 界面语言（v00.04.00 批 1）：跟随系统 / 中文 / English，只存本机。各模块的字是载入时取好的，所以换语言后先把草稿落盘、再重新载入页面。
+  // 等落盘最多 8 秒（真机第一轮 D1，华为 Mate 60 Pro：原来 2.5 秒不够，第一次点总报没改成、第二次才切过去；容器每次存储调用最多等 1.5 秒，一次落盘要好几次）
+  var changingUiLang = false;
+  uiLangRadios.forEach(function (r) {
+    r.addEventListener("change", function () {
+      if (!r.checked || changingUiLang) return;
+      changingUiLang = true;
+      uiLangRadios.forEach(function (opt) { opt.disabled = true; });
+      var done = function (saved) {
+        changingUiLang = false;
+        uiLangRadios.forEach(function (opt) { opt.disabled = false; });
+        if (saved === true && !el.settings.hidden) {
+          window.I18N.setPref(r.value);
+          if (window.I18N.pref() === r.value) { window.location.reload(); return; }
+        }
+        syncSettings();
+        if (saved !== true) {
+          if (!el.settings.hidden) closeSettings();
+          var msg = STR(saved === "none" ? "set.langNeedsNoImage" : "draft.unconfirmedExport"); // 存不了图的设备：等也没用，说明为什么没换
+          app.model.showToast(msg, 5000);
+          el.live.textContent = msg;
+        }
+      };
+      app.draft.within(app.draft.persistForReload(), 8000).then(done, function () { done(false); });
+    });
   });
   skinRadios.forEach(function (r) {
     r.addEventListener("change", function () {
       if (!r.checked) return;
       window.THEME.setSkin(r.value); syncSettings(); reskin();
-      for (var k = 0; k < CORE.SKINS.length; k++) if (CORE.SKINS[k][0] === r.value) el.live.textContent = "主题：" + CORE.SKINS[k][1];
+      for (var k = 0; k < CORE.SKINS.length; k++) if (CORE.SKINS[k][0] === r.value) el.live.textContent = STR("set.skinSaid", { name: CORE.SKINS[k][1] });
     });
   });
   var darkMq = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
@@ -164,6 +193,7 @@
   el.imgRemove.addEventListener("click", app.media.removeCellPhoto);
   el.cellPhoto.addEventListener("change", app.media.onCellPhoto);
   el.defPick.addEventListener("click", function () { app.media.syncPickAccept(); el.photo.click(); });
+  el.defAdjust.addEventListener("click", function () { app.media.openCropper(state.imgIndex, "def", state.image, state.defaultCrops[state.imgIndex]); });
   el.defRemove.addEventListener("click", app.media.clearPhoto);
   el.photo.addEventListener("change", app.media.onPhoto);
   app.model.trapKeys(el.imgPanel, app.media.closeImagePanel);
@@ -230,7 +260,7 @@
       if (!d.open) return;
       var pre = d.querySelector("pre");
       pre.lang = "zh-CN";
-      pre.textContent = "全文读取失败。请在浏览器里打开 " + LICENSE_URL[d.getAttribute("data-license")] + " 查看；收起再展开会再读一次，不一定成功。";
+      pre.textContent = STR("lic.failed", { url: LICENSE_URL[d.getAttribute("data-license")] });
     });
   };
   eachLicense(function (d) {
@@ -238,7 +268,7 @@
       if (!d.open) return;
       if (window.LICENSES) return fillLicenses();
       if (licenseWait) return;
-      eachLicense(function (o) { if (o.open) { var pre = o.querySelector("pre"); pre.lang = "zh-CN"; pre.textContent = "读取中……"; } });
+      eachLicense(function (o) { if (o.open) { var pre = o.querySelector("pre"); pre.lang = "zh-CN"; pre.textContent = STR("lic.loading"); } });
       var s = licenseWait = document.createElement("script");
       s.src = "assets/licenses.js";
       s.onload = function () { if (licenseWait === s) endLicenseLoad(); else fillLicenses(); }; // 超时之后才到：已经报过失败，这里把全文补上
@@ -269,6 +299,7 @@
   // 字体到位后重排一次：此前用的是回退字体的字宽和基线比例
   fontsUp.then(function () { /* applySkinFont 里已在字体到位后重画 */ });
   app.draft.restoreDraft();
+  app.model.warmForms(); // 英语词包随页面就到：空闲时预读它的词形表（别的语言在词包到时各自预读，见 prepareLang）
   // T38：短语 / 合成词补充表（约 1.7 MiB）在首屏之后才加载，不拖慢启动；加载完若正在打词或在入场页，按新数据刷新一次
   // T05 起经语言包加载器（lang/en/phrases.js）；失败不重试也不提示，没加载完时 phraseHit 当查不到（与原来一致）
   setTimeout(function () {

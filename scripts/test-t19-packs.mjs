@@ -52,6 +52,7 @@ function shorten(records) {
 for (const lang of LANGS) {
   assert.ok(C.useLang(lang));
   const words = P.get(lang, 'words'), pack = P.get(lang, 'lexicon');
+  assert.ok(!('formGate' in pack), lang + ' 词包不再带词形门控（v00.03.04）');
   assert.ok(words && pack && P.ready(lang).words, lang + ' 词包就绪');
   assert.match(fs.readFileSync(`app/assets/lang/${lang}/words.js`, 'utf8').slice(0, 900), /build-packs\.mjs[\s\S]*(CC BY-SA|MIT)/, lang + ' 文件头写明生成脚本与许可');
   const compiled = shorten(await store.load(DEFAULT_COMPILED, lang, read)), byId = new Map(compiled.map(r => [r.sense_id, r]));
@@ -126,7 +127,6 @@ for (const lang of LANGS) {
     // 每个词形都能查到结果（预筛后的快速路径）；每 29 个抽一个，再加上经过同形复核的义项的全部词形，与全量查询逐项比对。
     const reviewed = !!r.evidence.form_homographs;
     for (const f of compiled.formsBySense[r.sense_id]) {
-      if (opts.exact(f)!==opts.exact(r.display)) assert.ok(store.mayHaveForm(pack.formGate,lx.key(f)),lang+' '+f+' 词形必须触发按需加载');
       const groups = store.packLookups(lx, f, opts);
       assert.ok(groups.some(group => Object.values(group.senseIds).includes(r.sense_id)), lang + ' ' + f + ' 缺 ' + r.display + ' 的本义');
       const hit = groups[0];
@@ -149,7 +149,7 @@ for (const lang of LANGS) {
   }
   assert.deepEqual([...seen].sort(), [...recommendable].sort(), lang + ' 可推荐的词都在候选里');
   // 开关打开才出的词（more）：正好是「默认不可推荐、展开后可推荐、显示词不在 words 里」的那些；第五列是类别标注；人名、数词、只供查询的孤例不在其中。
-  const more = P.get(lang, 'more'), ALL = ['professional-humanities', 'professional-natural', 'historical-cultural'], TAGS = {'professional-humanities': '专业', 'professional-natural': '专业', 'historical-cultural': '历史文化'};
+  const more = P.get(lang, 'more'), ALL = ['professional-humanities', 'professional-natural', 'historical-cultural'], TAGS = {'professional-humanities': 'pro', 'professional-natural': 'pro', 'historical-cultural': 'hist'};
   const expandable = new Map(); for (const r of compiled) if (!recommendable.has(r.display) && policy.eligible(r, {mode: 'expanded', expanded: ALL})) (expandable.get(r.display) || expandable.set(r.display, []).get(r.display)).push(r);
   const seenMore = new Set();
   for (const [letter, rows] of Object.entries(more)) for (const row of rows) {
@@ -174,7 +174,7 @@ for (const lang of LANGS) {
     picks: [['Terre', ''], ['Treeee', '']], glosses: ['', '手填'], glossAuto: [true, false]});
   C.useLangs(d.langs);
   const state = {...d, arts: ['', ''], poss: ['', '']};
-  const model = loadAppFunctions(['refreshPicks','itemFor','lookupHit','inLang','lookupIn','lexiconHit','lexiconGroups','lexicon','langData','articleText','hyphOf'], {
+  const model = loadAppFunctions(['refreshPicks','itemFor','lookupHit','inLang','lookupIn','lexiconHit','lexiconGroups','lexicon','langData','articleText','ownArticle','hyphOf'], {
     CORE: C, window: {...env.window, LEXICON_STORE: store}, state, lexCaches: Object.create(null), defaultSense: C.defaultSense
   });
   model.refreshPicks();
@@ -311,7 +311,7 @@ for (const [lang, text] of [['fr', 'tjr'], ['fr', 'mtn'], ['de', 'vllt'], ['es',
 for (const [lang, text, zh] of [['es', 'quioscos', 'n.售货亭'], ['es', 'quiosco', 'n.售货亭'], ['de', 'Xylofone', 'n.木琴'], ['de', 'Xylofons', 'n.木琴'], ['de', 'Xylofonen', 'n.木琴'], ['de', 'Xylofon', 'n.木琴'], ['fr', 'yogourts', 'n.酸奶'], ['fr', 'yogourt', 'n.酸奶'], ['fr', 'wagons', 'n.车厢']]) assert.equal(ask(lang, text)[1], zh, lang + ' ' + text);
 for (const [lang, text] of [['es', 'unas'], ['es', 'kiosko'], ['es', 'kco'], ['la', 'zephirum']]) assert.equal(ask(lang, text), null, lang + ' ' + text + ' 不应查到');
 assert.deepEqual(ask('fr', 'wagon'), ['wagon', 'n.车厢', 'le', '火车的车厢；严格说 wagon 指货车车厢，客车车厢叫 voiture，口语常混用。']); assert.equal(ask('es', 'yacer')[1], 'v.躺卧|v.长眠');
-C.useLang('la'); for (const w of ['xenium', 'kalendae']) { assert.ok(!Object.values(P.get('la', 'words')).flat().some(r => r[0] === w), w + ' 不进默认候选'); assert.ok(Object.values(P.get('la', 'more')).flat().some(r => r[0] === w && r[4] === '历史文化'), w + ' 在展开候选里'); }
+C.useLang('la'); for (const w of ['xenium', 'kalendae']) { assert.ok(!Object.values(P.get('la', 'words')).flat().some(r => r[0] === w), w + ' 不进默认候选'); assert.ok(Object.values(P.get('la', 'more')).flat().some(r => r[0] === w && r[4] === 'hist'), w + ' 在展开候选里'); }
 assert.deepEqual(ask('fr', 'lumieres').slice(0, 3), ['lumières', 'n.光', ''], '漏音符候选显示带音符的拼写');
 assert.equal(ask('fr', "age d'or")[0], 'âge d’or'); assert.equal(ask('fr', 'agedor')[0], 'âge d’or', '词组可不带空格与撇号输入');
 assert.equal(ask('en', 'goldenage')[0], 'golden age'); assert.equal(ask('en', 'Golden Age')[0], 'golden age');
@@ -320,7 +320,7 @@ assert.equal(ask('la', 'alba')[1], 'adj.白色', '可推荐的白色义排在孤
 for (const [text, zh] of [['cubitus', '卧榻'], ['papa', '食物'], ['harpa', '竖琴'], ['legit', '阅读'], ['Olympus', '奥林匹斯山']]) { C.useLang('la'); assert.ok(store.packLookups(lookups.get('la'), text, {exact:C.LANG.exactKey,fold:C.LANG.fold,blocked:()=>false}).some(g=>g.entry[1].includes(zh)), text); }
 assert.equal(ask('fr', 'Antoine')[1], 'n.安托万', '人名只在精确输入时查到'); assert.equal(ask('fr', 'Antoin'), null);
 assert.equal(ask('fr', 'deux')[1], 'num.二');
-for (const w of ['cubitus', 'pāpa', 'alba']) assert.ok(!Object.values(P.get('la', 'more')).flat().some(r => r[0] === w), w + ' 孤例不进展开候选'); assert.ok(P.get('la', 'more').h.some(r => r[0] === 'harpa' && r[4] === '历史文化'));
+for (const w of ['cubitus', 'pāpa', 'alba']) assert.ok(!Object.values(P.get('la', 'more')).flat().some(r => r[0] === w), w + ' 孤例不进展开候选'); assert.ok(P.get('la', 'more').h.some(r => r[0] === 'harpa' && r[4] === 'hist'));
 C.useLang('la'); for (const w of ['cubitus', 'pāpa', 'animātus', 'asserviō', 'alba', 'harpa', 'albus']) assert.ok(!Object.values(P.get('la', 'words')).flat().some(r => r[0] === w), w + ' 不进拉丁默认候选');
 C.useLang('fr'); for (const w of ['Antoine', 'deux', 'genre']) assert.ok(!(P.get('fr', 'words')[C.LANG.fold(w)[0]] || []).some(r => r[0] === w && /安托万|num\.|生物分类/.test(r[1])), w);
 console.log(`T19 packs ok: ${senses} 条义项与编译包一致，${formChecks} 个词形可查（其中 ${compared} 个与全量查询逐项比对）、${rowCount} 条候选词条、${moreCount} 条展开词条、${nameRows.length} 条人名四列负载通过；重新生成逐字节相同；负例与点名回归通过。`);

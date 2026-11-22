@@ -5,6 +5,9 @@
 (function (root) {
   "use strict";
 
+  // 界面文案一律到 i18n.js 取（v00.04.00 批 0）。用到时才取：只装 core.js、不碰带字的函数的自检不必装文案表
+  function STR(id, params) { return root.I18N.t(id, params); }
+
   // app.js 的 FONT 取自这里
   var FONT_BASE = '"Noto Sans","Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif';
   var FONT = FONT_BASE;
@@ -15,7 +18,8 @@
     fandom: { latin: "BK Fandom Serif", cjk: "Noto Serif SC" },
     dansaekhwa: { latin: "Gowun Batang", cjk: "BK Dansaekhwa Kai" },
     impressionism: { latin: "Cormorant Garamond", cjk: "" },
-    secession: { latin: "BK Secession Display", cjk: "Noto Serif SC" }
+    secession: { latin: "BK Secession Display", cjk: "Noto Serif SC" },
+    table: { latin: "Noto Sans", cjk: "Noto Serif SC" } // 表格（v00.03.03）：不新增字体，西文 Noto Sans、中文思源宋体
   };
   function useSkinFont(skin) {
     var f = Object.prototype.hasOwnProperty.call(SKIN_FONTS, skin) ? SKIN_FONTS[skin] : null;
@@ -25,7 +29,7 @@
 
   // D19：卡 / 导出图两套色板（取自 design/folio-swiss.html 的 .card / .card.dark）。ph 只用于编辑面占位
   // T40 / U14：所有屏蔽词触发的提示统一成这一句（入场页单词 / 填表人、义项行、候选栏、点「完成」被拦）；不复述被拦的词，不点名平台（网页版也有屏蔽器）
-  var BLOCKED_MSG = "填入内容不适合发布，换一个吧";
+  function blockedMsg() { return STR("core.blocked"); } // CORE.BLOCKED_MSG 读它（文件末尾）
 
   var PALETTE = {
     light: { bg: "#e9e8e4", ink: "#1c1c1b", red: "#b0301c", plate: "#dfded9", mute: "#5f5d58", soft: "#3b3a38", ph: "#69665f" },
@@ -39,11 +43,14 @@
     dansaekhwa: { light: { bg: "#e9e6df", ink: "#2b2b2b", red: "#7a4f2a", plate: "#dcd8ce", mute: "#605d56", soft: "#44423e", ph: "#69655d" }, dark: { bg: "#1e1d1b", ink: "#e9e6df", red: "#d2a273", plate: "#2f2d2a", mute: "#a39e93", soft: "#cfcac0", ph: "#938e85" } },
     impressionism: { light: { bg: "#eef0ea", ink: "#2a3350", red: "#a34732", plate: "#dfe4e4", mute: "#5a6280", soft: "#3f4867", ph: "#626a85" }, dark: { bg: "#171b2b", ink: "#eef0ea", red: "#e99a8a", plate: "#272d45", mute: "#9aa3bd", soft: "#cdd2e0", ph: "#838cab" } },
     secession: { light: { bg: "#f3efe2", ink: "#151515", red: "#8f1d1d", plate: "#e6e0cf", mute: "#62625d", soft: "#3a3936", ph: "#6b6b66" }, dark: { bg: "#131312", ink: "#f3efe2", red: "#c6a24a", plate: "#242320", mute: "#a7a294", soft: "#d6d1c2", ph: "#8d887b" } },
+    // 表格（v00.03.03 L3）：只有深色。frame = 没配图时图版的底（白框），giant = 白框里的超大字母；别的主题没有这两个键，沿用 plate 与 ink
+    table: { dark: { bg: "#000000", ink: "#ffffff", red: "#e5604f", plate: "#1c1c1c", mute: "#a6a6a6", soft: "#d9d9d9", ph: "#8f8f8f", frame: "#ffffff", giant: "#e3e3e3" } },
   };
-  var SKINS = [["fandom", "fandom"], ["dansaekhwa", "单色画"], ["impressionism", "印象派"], ["secession", "分离派"]]; // [id, 设置页里的名字]
+  var SKIN_IDS = ["fandom", "dansaekhwa", "impressionism", "secession", "table"];
+  function skins() { return SKIN_IDS.map(function (id) { return [id, id === "fandom" ? "fandom" : STR("core.skin." + id)]; }); } // CORE.SKINS 读它（文件末尾） // [id, 设置页里的名字]
   function paletteOf(skin, dark) {
     var p = Object.prototype.hasOwnProperty.call(PALETTES, skin) ? PALETTES[skin] : PALETTE;
-    return dark && p.dark ? p.dark : p.light;
+    return dark && p.dark ? p.dark : p.light || p.dark; // 只有一套的主题（fandom 只有浅、表格只有深）：两种情况都给那一套
   }
 
   // WCAG 相对亮度；原生选色器提供六位 sRGB 十六进制色值。
@@ -65,7 +72,8 @@
     INFO: { base: 96, size: 50, minFiller: 26 },                       // 左页码、右填表人（右对齐到 M + CW）；2026-11-17 真机反馈后 26 → 34；v00.03.01 U01（用户 11-18 定）34 → 50
     RULE: { y: 120, h: 3 },
     TITLE: { base: 236, size: 76, track: -1, size2: 60, base2: [204, 274] }, // 76 → 60 单行 → 60 两行
-    PLATE: { y: 290, h: 600 },
+    PLATE: { y: 290, h: 600, w: { "1:1": 600, "3:4": 450 } }, // w：收窄后的图版宽（v00.03.03）；3:2 不在表里，占满 CW
+    FLIP: { dy: -616, plateY: 780 },                      // 图在下（v00.03.03）：词、墨条、释义、配文整体上移 dy，图版改放 plateY
     GIANT: { dx: 48, base: 834, size: 620, track: -8 },  // 无配图时图版里的超大关键字母
     WORD: { base: 1036, size: 120, track: -2, min: 56, step: 4, lead: 64, artMin: 26 }, // lead = 折行后的行距；artMin = 冠词字号下限（v00.03.00）
     BAR: { y: 1068, w: 140, h: 10 },
@@ -84,6 +92,39 @@
     BAR: { dy: 508, w: 60, h: 6 },
     GLOSS: { dbase: 560, size: 28 },
   };
+
+  // ---------- 版式（v00.03.03 L1） ----------
+  // 版式 = 十个开关的取值，跟着作品走；layoutCard / layoutGrid 从 data.layout 读，缺省是「对开」：改版前唯一的排法，只是格子进度默认不显示（v00.03.03 真机反馈 F4，没存版式的旧草稿也跟着变）。
+  //   text 词与释义的位置；cap 配文的位置；title 单图标题的位置；ratio 图版比例（高度不变，只收宽度）；
+  //   plateX 图版左右（3:2 占满宽度，不起作用）；order 图版在文字上面（plate）还是下面（text）；
+  //   prog 格子进度（单图「01 / 04」，列阵「4 格」「01–07 / 11」）；filler 填表人；deco 墨线与墨条；quote 配文加不加引号。
+  // 隐去的元素留白，不重排；只有 order 会换文字和图版的上下位置。
+  // 列阵只认 text、title、prog、filler、deco：不满的一行、每格的词与释义跟 text 走，顶上的标题跟 title 走（F8）。
+  var LAYOUT_VALUES = {
+    text: ["left", "center", "right"], cap: ["left", "center", "right"], title: ["left", "center"],
+    ratio: ["3:2", "1:1", "3:4"], plateX: ["left", "center", "right"], order: ["plate", "text"],
+    prog: [true, false], filler: [true, false], deco: [true, false], quote: [false, true],
+    base: ["folio", "center"], // 最后一次选的是哪个预设（L2）：只给版式页看，排版不读它
+  };
+  var LAYOUTS = {
+    folio: { text: "left", cap: "left", title: "left", ratio: "3:2", plateX: "left", order: "plate", prog: false, filler: true, deco: true, quote: false, base: "folio" },
+    center: { text: "center", cap: "center", title: "left", ratio: "3:2", plateX: "center", order: "plate", prog: false, filler: true, deco: false, quote: true, base: "center" },
+  };
+  // 两份版式的十个开关是否相同（不比 base）；版式页用它判断「在预设上调过没有」，草稿用它判断要不要写这个字段
+  function sameLayout(a, b) {
+    var x = layoutOf(a), y = layoutOf(b);
+    return Object.keys(LAYOUT_VALUES).every(function (k) { return k === "base" || x[k] === y[k]; });
+  }
+  // 配文排版时实际用的字：开了引号就连引号一起折行、一起算写没写满（layoutCard 与卡上配文框的限长共用）
+  function captionText(text, layout) { return layoutOf(layout).quote ? "“" + text + "”" : text; }
+  // 预设名、版式对象或缺省 → 各项齐全的版式；缺的项、认不得的值都落回「对开」
+  function layoutOf(v) {
+    var src = typeof v === "string" ? (Object.prototype.hasOwnProperty.call(LAYOUTS, v) ? LAYOUTS[v] : null) : v, out = {};
+    Object.keys(LAYOUT_VALUES).forEach(function (k) { out[k] = src && LAYOUT_VALUES[k].indexOf(src[k]) >= 0 ? src[k] : LAYOUTS.folio[k]; });
+    return out;
+  }
+  // 宽 w 的东西放进宽 room 的位置里，按对齐方式算左端的偏移；靠左恒为 0
+  function alignDx(align, room, w) { return align === "center" ? (room - w) / 2 : align === "right" ? room - w : 0; }
 
   var PAGE_SIZE = 8;   // 候选每批 8 个（D16，2 列 × 4 行）
   var POOL_SIZE = 200; // 随机一个的池子大小（D6）
@@ -104,6 +145,7 @@
       wordChar: /[A-Za-zÀ-ÖØ-öø-ɏ0-9'’ \-一-鿿]/,  // 单词框允许的字符（汉字只用来检索；T41 起含数字：2nd、4ever；R07 起含带变音符的字母）
       customWord: /^[a-zß-öø-ɏ0-9][a-zß-öø-ɏ0-9'’ -]{0,27}$/i, // 词典外自定义词的写法（上限同 wordMax）
       compose: true, // 格里的词先把「字母 + 组合变音符」合成一个字（NFC）再过滤、计数（V003-B4-R9；R07 起英语同西文）
+      articles: [], // 冠词一行能点的定冠词单数（v00.04.00）：英语、拉丁语没有；法德西意在各自的规则里
       wordMax: 28, // 格里的词最多几个字符（v00.03.00 T28 放进各语言规则；v00.03.01 E2 起英语也是 28，六门一致，只剩英语时不会再有放不下的词）
       // 词库释义里的名字说明（T37 / B3-R2，只用于显示层）：别名「等于Arabella」、外文残片「Isabella」、义项上挂的别名括号「（等于Diana」、英文括号人名标签「(Sethe)人名」
       // T41 / U16 / U19：数字格按英文读法取首字母（0 读作 oh → O）；词以读法首字母或该数字本身开头都算对
@@ -154,6 +196,8 @@
   }
   function activeLangs() { return ACTIVE.map(function (r) { return r.code; }); }
   // 注册一门语言的规则（语言包调用）。缺的字段沿用英语的（只覆盖需要不同的部分）；code 以注册的键为准
+  // 某门语言冠词一行能点的冠词（没有这门语言或它不带冠词为空）
+  function articlesOf(code) { var r = RULES[code]; return r && r.articles ? r.articles.slice() : []; }
   function addLang(code, rules) {
     var r = {};
     Object.keys(RULES.en).forEach(function (k) { r[k] = RULES.en[k]; });
@@ -179,10 +223,11 @@
   function setPresets(code, pairs) {
     var r = RULES[code];
     if (!r || !Array.isArray(pairs)) return false;
-    var gloss = {};
-    pairs.forEach(function (p) { gloss[r.fold(r.letters(p[0]))] = p[1]; });
+    var gloss = {}, glossEn = {};
+    pairs.forEach(function (p) { gloss[r.fold(r.letters(p[0]))] = p[1]; if (p[2]) glossEn[r.fold(r.letters(p[0]))] = p[2]; }); // 第三列：英文界面用的英文命题释义（批 2）
     r.presets = code === "en" ? undefined : pairs.map(function (p) { return p[0]; });
     r.presetGloss = gloss;
+    r.presetGlossEn = glossEn;
     return true;
   }
   function pickPresets(n, rand, avoid) {
@@ -213,7 +258,7 @@
   function presetInfo(cells) {
     for (var k = 0; k < ACTIVE.length; k++) {
       var g = (ACTIVE[k].presetGloss || {})[ACTIVE[k].fold(cells)];
-      if (g) return { gloss: g, lang: ACTIVE[k].code };
+      if (g) return { gloss: g, glossEn: (ACTIVE[k].presetGlossEn || {})[ACTIVE[k].fold(cells)] || "", lang: ACTIVE[k].code };
     }
     return null;
   }
@@ -360,14 +405,23 @@
   // 恢复自动释义时认回旧词库形容词。用户手填的释义保持原样。
   function savedAutoGloss(item, old) {
     if (!old) return defaultGloss(item);
-    var groups = displayGroups(item);
-    if (groups.some(function (g) { return g.senses.indexOf(old) >= 0; })) return old;
+    var groups = displayGroups(item), found = null;
+    // 认出旧稿里的自动释义是哪个义项，按现在的界面语言重写（中文界面原样；英文界面里中文的义项换成英文短写，反过来也认）
+    groups.forEach(function (g) { g.senses.forEach(function (sn) { if (found === null && (old === sn || old === glossText(item, g, sn) || (glossAlt && old === glossAlt(item, g, sn)))) found = glossText(item, g, sn); }); });
+    if (found !== null) return found;
     var matched = "";
     groups.forEach(function (g) {
-      if (g.pos === "adj.") g.senses.forEach(function (sn) { if (sameSavedAdj(old, sn)) matched = sn; });
+      if (g.pos === "adj.") g.senses.forEach(function (sn) { if (sameSavedAdj(old, sn)) matched = glossText(item, g, sn); });
     });
     return matched || old;
   }
+
+  // 释义的显示文字（v00.04.00 批 2）：义项在数据里一律是中文，界面上显示、填进卡面的字经这里换。
+  // 中文界面不装 fn，原样返回；英文界面由 app-model.js 装上（外语的词给英文短写，英语的词给空）。full = 要完整英文（义项栏按钮用）。
+  // alt = 另一种界面语言下的写法，只用来在恢复草稿时认出自动释义（在英文界面写的草稿回到中文界面，卡上的 book 认得是「书」）
+  var glossHook = null, glossAlt = null;
+  function setGlossText(fn, alt) { glossHook = typeof fn === "function" ? fn : null; glossAlt = typeof alt === "function" ? alt : null; }
+  function glossText(item, g, sn, full) { return glossHook ? glossHook(item, g, sn, !!full) : sn; }
 
   function senseList(item) {
     return senseGroups(item).reduce(function (all, g) { return all.concat(g.senses); }, []);
@@ -376,7 +430,7 @@
   // 默认释义：第一组（通常是形容词或名词）的第一个义项（T35 / U9：默认一个，要两个就手输；只影响新选的词，已存草稿原样）
   function defaultGloss(item) {
     var g = displayGroups(item)[0];
-    return g ? g.senses[0] : "";
+    return g ? glossText(item, g, g.senses[0]) : "";
   }
 
   // 统一词条视图：旧两/三列兼容；冠词不参与拼写、搜索或藏头匹配。
@@ -442,7 +496,7 @@
     return heads.concat(words).join("/");
   }
   // 读屏用的写法（用户 11-19 定）：屏幕上的斜线读屏软件会念成「斜线」，读屏名改用「或」——「É 或 E」「O 或 U 或 E 或 won」
-  function startSpoken(letter) { return startText(letter).split("/").join(" 或 "); }
+  function startSpoken(letter) { return startText(letter).split("/").join(STR("core.or")); }
   // 一格的「首字母」：字母格就是它自己；数字格是读法的首字母（2 → t，0 → o）。候选、随机池按它取词
   function cellInitial(letter) {
     return LANG.fold(LANG.isDigit.test(letter) ? LANG.digitNames[+letter] : letter).charAt(0); // T21：É → e、Œ → o；数字格读法也去变音符
@@ -704,15 +758,22 @@
     return { size: size, artSize: artOf(size), col: col, artW: article ? measure(fontOf(400, artOf(size)), article) : 0, lines: lines };
   }
   // 词块 → 框：冠词一框（mute、不加粗、与词共用基线），词每行一框（第一行带关键字母；后面的行带 line）
+  // o.align / o.maxW（v00.03.03）：词在宽 maxW 的位置里靠左、居中还是靠右；不给就是靠左。
+  //   靠左：每行都从冠词块右边起排。居中、靠右：冠词连同第一行算作一行来对齐，后面的行各自对齐
   function wordBoxes(measure, blk, o) {
-    var out = [];
+    var out = [], left = !o.align || o.align === "left";
+    var ws = blk.lines.map(function (t) { return trackedWidth(measure, fontOf(700, blk.size), t, o.track); });
     // 法、西、意：冠词贴着词（块内右对齐）；德语从块的左端起。省音冠词（l’）本来就紧贴词，块宽就是它自己
     // 按冠词本身判断（语言多选后一张卡上可以有几门语言的词）：der / die / das 是德语的，其余带冠词的是法、西、意
-    var artX = o.article && !ART.left.test(o.article) && !elided(o.article) ? o.x + blk.col - Math.round(blk.artSize * ART.gap) - blk.artW : o.x;
+    var artRight = o.article && !ART.left.test(o.article) && !elided(o.article);
+    // 居中、靠右按看得见的宽度对齐：块内右对齐的冠词（la 比 der 窄）左边那段空白不算（QA 11-20）
+    var pad = artRight ? blk.col - Math.round(blk.artSize * ART.gap) - blk.artW : 0;
+    var x0 = left ? o.x : o.x + alignDx(o.align, o.maxW, blk.col - pad + ws[0]) - pad;
+    var artX = artRight ? x0 + blk.col - Math.round(blk.artSize * ART.gap) - blk.artW : x0;
     if (o.article) out.push({ role: "article", i: o.i, x: artX, baseline: o.base, w: blk.artW, size: blk.artSize, weight: 400, color: "mute", text: o.article, align: "left" });
     blk.lines.forEach(function (t, k) {
       var wb = {
-        role: "word", i: o.i, x: o.x + blk.col, baseline: o.base + k * o.lead, w: trackedWidth(measure, fontOf(700, blk.size), t, o.track), size: blk.size, weight: 700, color: "ink", text: t, track: o.track, align: "left",
+        role: "word", i: o.i, x: left || !k ? x0 + blk.col : o.x + alignDx(o.align, o.maxW, ws[k]), baseline: o.base + k * o.lead, w: ws[k], size: blk.size, weight: 700, color: "ink", text: t, track: o.track, align: "left",
         keyAt: o.ok && !k ? 0 : -1,
       };
       if (!o.ok) wb.invalid = true;
@@ -789,11 +850,14 @@
   function layoutCard(data, measure) {
     var C = CARD, i = data.i, n = data.letters.length, letter = data.letters[i];
     var boxes = [];
+    // 版式（v00.03.03）：缺省「对开」时下面每个框都和改版前一样。tx = 词、释义这一组按 L.text 摆时的左端；ty = 图在下时文字整体上移的量
+    var L = layoutOf(data.layout), flip = L.order === "text", ty = flip ? C.FLIP.dy : 0;
+    var tx = function (w) { return C.M + alignDx(L.text, C.CW, w); };
+    var P = C.PLATE, pw = P.w[L.ratio] || C.CW, px = C.M + alignDx(L.plateX, C.CW, pw), py = flip ? C.FLIP.plateY : P.y;
     if (!n) { // 首次进入还没有单词（D18 first）：只出空卡骨架给 DOM 卡用；导出按钮在没单词时不可用，走不到这里
-      boxes.push({ role: "rule", x: C.M, y: C.RULE.y, w: C.CW, h: C.RULE.h, color: "ink" });
-      boxes.push({ role: "plate", i: 0, x: C.M, y: C.PLATE.y, w: C.CW, h: C.PLATE.h, color: "plate" });
-      boxes.push({ role: "empty", i: 0, x: C.M, baseline: C.WORD.base, size: C.EMPTY.firstSize, weight: 400, color: "ph", text: "格子会在你输入单词后出现", align: "left" });
-      boxes.push({ role: "ul", x: C.M, y: C.EMPTY.lineY, w: C.EMPTY.lineW, h: 3, color: "ph" });
+      if (L.deco) boxes.push({ role: "rule", x: C.M, y: C.RULE.y, w: C.CW, h: C.RULE.h, color: "ink" });
+      boxes.push({ role: "plate", i: 0, x: px, y: py, w: pw, h: P.h, color: "plate" });
+      boxes.push({ role: "ul", x: tx(C.EMPTY.lineW), y: C.EMPTY.lineY + ty, w: C.EMPTY.lineW, h: 3, color: "ph" });
       return { W: C.W, H: C.H, boxes: boxes };
     }
     var label = function (role, x, align, text, size) {
@@ -802,61 +866,67 @@
     };
     // 信息栏：左页码、右填表人（留空不画）；墨线
     var folio = label("info-folio", C.M, "left", pad2(i + 1) + " / " + pad2(n));
-    boxes.push(folio);
-    var filler = (data.filler || "").trim();
+    if (L.prog) boxes.push(folio);
+    var filler = L.filler ? (data.filler || "").trim() : "";
     if (filler) {
       // v00.03.01（用户 11-18 定）：信息行 50 后长的填表人放不下时只给它缩字号（每次减 2，下限 INFO.minFiller），页码不变；到下限仍放不下才截断
-      var fw = C.CW - folio.w - C.INFO.size, fs = C.INFO.size, ft = "填表人 " + filler;
+      var fw = L.prog ? C.CW - folio.w - C.INFO.size : C.CW, fs = C.INFO.size, ft = filler; // 不画页码时整行都归它。只写名字，不带「填表人」三个字（v00.03.03 真机反馈 F13）
       while (fs > C.INFO.minFiller && measure(fontOf(400, fs), ft) > fw) fs -= 2;
       boxes.push(label("info-filler", C.M + C.CW, "right", ellipsize(measure, fontOf(400, fs), ft, fw), fs));
     }
-    boxes.push({ role: "rule", x: C.M, y: C.RULE.y, w: C.CW, h: C.RULE.h, color: "ink" });
+    if (L.deco) boxes.push({ role: "rule", x: C.M, y: C.RULE.y, w: C.CW, h: C.RULE.h, color: "ink" });
 
     // 标题：留空用单词；放不下缩字号 / 折两行，图版位置不动
     var T = C.TITLE, fit = fitTitle(measure, exportTitleRuns(data.titleRuns, data.word || data.letters.join("")), C.CW);
     fit.lines.forEach(function (line, k) {
-      var x = C.M, base = fit.lines.length > 1 ? T.base2[k] : T.base;
-      line.forEach(function (r) {
-        var font = runFont(r, fit.size), w = measure(font, r.t) + textUnits(r.t).length * T.track; // 前进宽度：CSS letter-spacing 每字之后都加
-        boxes.push({ role: "title", x: x, baseline: base, w: w, size: fit.size, weight: r.b ? 700 : 400, italic: !!r.i, color: r.c || "ink", text: r.t, track: T.track, align: "left" });
-        x += w;
+      var ws = line.map(function (r) { return measure(runFont(r, fit.size), r.t) + textUnits(r.t).length * T.track; }); // 前进宽度：CSS letter-spacing 每字之后都加
+      // 居中按看得见的宽度算（runsWidth：最后一个字后面的字距不计），与列阵标题同口径
+      var x = C.M + alignDx(L.title, C.CW, L.title === "left" ? 0 : runsWidth(measure, line, fit.size, T.track)), base = fit.lines.length > 1 ? T.base2[k] : T.base;
+      line.forEach(function (r, j) {
+        boxes.push({ role: "title", x: x, baseline: base, w: ws[j], size: fit.size, weight: r.b ? 700 : 400, italic: !!r.i, color: r.c || "ink", text: r.t, track: T.track, align: "left" });
+        x += ws[j];
       });
     });
 
-    // 图版：有图 = 图；没图 = 超大关键字母（左 48、基线在图版底上 56）
-    var P = C.PLATE;
-    boxes.push({ role: "plate", i: i, x: C.M, y: P.y, w: C.CW, h: P.h, color: "plate" });
-    if (data.hasImage(i)) boxes.push({ role: "image", i: i, x: C.M, y: P.y, w: C.CW, h: P.h });
-    else boxes.push({ role: "giant", i: i, x: C.M + C.GIANT.dx, baseline: C.GIANT.base, size: C.GIANT.size, weight: 700, color: "ink", text: letter, track: C.GIANT.track, align: "left", clip: [C.M, P.y, C.CW, P.h] });
+    // 图版：有图 = 图；没图 = 超大关键字母（左 48、基线在图版底上 56）。高度不变；1:1、3:4 只收宽度，再按 L.plateX 靠左、居中或靠右
+    boxes.push({ role: "plate", i: i, x: px, y: py, w: pw, h: P.h, color: "plate" });
+    if (data.hasImage(i)) boxes.push({ role: "image", i: i, x: px, y: py, w: pw, h: P.h });
+    else boxes.push({ role: "giant", i: i, x: px + C.GIANT.dx, baseline: C.GIANT.base + py - P.y, size: C.GIANT.size, weight: 700, color: "ink", text: letter, track: C.GIANT.track, align: "left", clip: [px, py, pw, P.h] });
 
     var word = wordForLayout(data, i);
     if (!word) { // 没打词：占位文字 + 灰线
-      boxes.push({ role: "empty", i: i, x: C.M, baseline: C.WORD.base, size: C.EMPTY.size, weight: 400, color: "ph", text: startText(letter) + " 开头", align: "left" }); // v00.03.01 E3：占位只写「X 开头」
-      boxes.push({ role: "ul", x: C.M, y: C.EMPTY.lineY, w: C.EMPTY.lineW, h: 3, color: "ph" });
+      var et = STR("common.startsWith", { s: startText(letter) }); // v00.03.01 E3：占位只写「X 开头」
+      boxes.push({ role: "empty", i: i, x: L.text === "left" ? C.M : tx(measure(fontOf(400, C.EMPTY.size), et)), baseline: C.WORD.base + ty, size: C.EMPTY.size, weight: 400, color: "ph", text: et, align: "left" });
+      boxes.push({ role: "ul", x: tx(C.EMPTY.lineW), y: C.EMPTY.lineY + ty, w: C.EMPTY.lineW, h: 3, color: "ph" });
       return { W: C.W, H: C.H, boxes: boxes };
     }
     // 词里没有该字母（D6 不合法）：照样排出用户打的字，不高亮、带 invalid 标记（编辑面画波浪线；导出前会被拦下）
     // v00.03.00：词前可有冠词块；缩到下限仍放不下折行（最多三行），词下面的墨条、释义、配文跟着下移，图版不动
     var W = C.WORD, ok = containsLetter(word, letter), article = (data.articles && data.articles[i]) || "";
     var blk = wordBlock(measure, word, article, W, C.CW, data.hyph ? data.hyph(word, i) : null), dy = (blk.lines.length - 1) * W.lead;
-    wordBoxes(measure, blk, { i: i, x: C.M, base: W.base, lead: W.lead, track: W.track, ok: ok, article: article }).forEach(function (b) { boxes.push(b); });
-    boxes.push({ role: "bar", x: C.M, y: C.BAR.y + dy, w: C.BAR.w, h: C.BAR.h, color: "ink" });
+    wordBoxes(measure, blk, { i: i, x: C.M, base: W.base + ty, lead: W.lead, track: W.track, ok: ok, article: article, align: L.text, maxW: C.CW }).forEach(function (b) { boxes.push(b); });
+    if (L.deco) boxes.push({ role: "bar", x: tx(C.BAR.w), y: C.BAR.y + ty + dy, w: C.BAR.w, h: C.BAR.h, color: "ink" }); // 墨条跟着词走
     // 释义单行；输入框限长后放得下，超长的旧草稿保险起见加「…」。配文可折行（wrapCaption）
     var gloss = (data.glosses[i] || "").trim();
     if (gloss) {
-      var gf = fontOf(400, C.GLOSS.size), gt = ellipsize(measure, gf, gloss, C.CW);
-      boxes.push({ role: "gloss", i: i, x: C.M, baseline: C.GLOSS.base + dy, w: measure(gf, gt), size: C.GLOSS.size, weight: 400, color: "soft", text: gt, align: "left" });
+      var gf = fontOf(400, C.GLOSS.size), gt = ellipsize(measure, gf, gloss, C.CW), gw = measure(gf, gt);
+      boxes.push({ role: "gloss", i: i, x: tx(gw), baseline: C.GLOSS.base + ty + dy, w: gw, size: C.GLOSS.size, weight: 400, color: "soft", text: gt, align: "left" });
     } else if (data.edit) { // 仅编辑面（data.edit）：空释义 / 空配文画灰色占位；导出不传 edit，不出这两个框
-      boxes.push({ role: "gloss-ph", i: i, x: C.M, baseline: C.GLOSS.base + dy, w: measure(fontOf(400, C.GLOSS.size), "释义"), size: C.GLOSS.size, weight: 400, color: "ph", text: "释义", align: "left" });
+      var gph = STR("core.glossPh"), gpw = measure(fontOf(400, C.GLOSS.size), gph);
+      boxes.push({ role: "gloss-ph", i: i, x: tx(gpw), baseline: C.GLOSS.base + ty + dy, w: gpw, size: C.GLOSS.size, weight: 400, color: "ph", text: gph, align: "left" });
     }
     var cap = (data.captions[i] || "").trim();
     if (cap) {
-      var cf = fontOf(700, C.CAPTION.size), cw = wrapCaption(measure, cap, dy);
+      // 引号连同配文一起折行（captionText）。卡上配文框的限长按同一份字算，所以新写的配文不会把后引号挤掉；
+      // 开引号之前就已经写满的配文会被截断，后引号连同末尾一起变成「…」
+      var cf = fontOf(700, C.CAPTION.size), cw = wrapCaption(measure, captionText(cap, L), dy);
       cw.lines.forEach(function (ct, ln) {
-        boxes.push({ role: "caption", i: i, line: ln, x: C.M, baseline: C.CAPTION.base + dy + ln * C.CAPTION.lead, w: measure(cf, ct), size: C.CAPTION.size, weight: 700, color: "ink", text: ct, align: "left" });
+        var lw = measure(cf, ct);
+        boxes.push({ role: "caption", i: i, line: ln, x: C.M + alignDx(L.cap, C.CW, lw), baseline: C.CAPTION.base + ty + dy + ln * C.CAPTION.lead, w: lw, size: C.CAPTION.size, weight: 700, color: "ink", text: ct, align: "left" });
       });
     } else if (data.edit) {
-      boxes.push({ role: "caption-ph", i: i, x: C.M, baseline: C.CAPTION.base + dy, w: measure(fontOf(400, C.CAPTION.size), "配文（选填）"), size: C.CAPTION.size, weight: 400, color: "ph", text: "配文（选填）", align: "left" });
+      var cph = STR("core.captionPh"), cpw = measure(fontOf(400, C.CAPTION.size), cph);
+      boxes.push({ role: "caption-ph", i: i, x: C.M + alignDx(L.cap, C.CW, cpw), baseline: C.CAPTION.base + ty + dy, w: cpw, size: C.CAPTION.size, weight: 400, color: "ph", text: cph, align: "left" });
     }
     return { W: C.W, H: C.H, boxes: boxes };
   }
@@ -941,7 +1011,8 @@
     return { cols: cols, rows: rows, W: Math.max(cols * G.PW + (cols - 1) * G.GAP + 2 * G.M, G.MIN_W), H: G.TOP + rows * G.ROW + G.FOOT };
   }
 
-  // 列阵：信息栏（「N 格」+ 右上填表人，留空不画）、墨线、标题（留空用单词）、n 个格；每行一律从左起排
+  // 列阵：信息栏（「N 格」+ 右上填表人，留空不画）、墨线、标题（留空用单词）、n 个格；缺省每行从左起排
+  // 版式（v00.03.03）：data.layout 的 text 管不满的一行和每格的词与释义靠哪边，title 管标题靠哪边；prog、filler、deco 管左上的格数、填表人、墨线与墨条画不画
   // 框的 role：info-count / info-filler / rule / title（每段一框）/ plate / image | giant / word / bar / gloss（没词的格只出图版与超大字母；不合法词同单图：照排、keyAt = -1、invalid）
   // T42：sheet = [起, 止)（分图时只排这一张的格；格的 i 仍是在整个单词里的位置）；缺省 = 全部格。分图时信息栏写「01–07 / 11」
   function layoutGrid(data, measure, sheet) {
@@ -953,16 +1024,17 @@
       return { role: role, x: x, baseline: G.INFO.base, w: measure(fontOf(400, G.INFO.size), text), size: G.INFO.size, weight: 400, color: "mute", text: text, align: align };
     };
     var two = function (k) { return (k < 10 ? "0" : "") + k; };
-    var count = label("info-count", G.M, "left", n === total ? n + " 格" : two(from + 1) + "–" + two(to) + " / " + total);
-    boxes.push(count);
-    var filler = (data.filler || "").trim();
-    if (filler) boxes.push(label("info-filler", sh.W - G.M, "right", ellipsize(measure, fontOf(400, G.INFO.size), "填表人 " + filler, sh.W - 2 * G.M - count.w - G.INFO.size)));
-    boxes.push({ role: "rule", x: G.M, y: G.RULE.y, w: sh.W - 2 * G.M, h: G.RULE.h, color: "ink" });
+    var L = layoutOf(data.layout), room = sh.W - 2 * G.M;
+    var count = label("info-count", G.M, "left", n === total ? STR("core.cells", { n: n }) : two(from + 1) + "–" + two(to) + " / " + total);
+    if (L.prog) boxes.push(count);
+    var filler = L.filler ? (data.filler || "").trim() : "";
+    if (filler) boxes.push(label("info-filler", sh.W - G.M, "right", ellipsize(measure, fontOf(400, G.INFO.size), filler, L.prog ? sh.W - 2 * G.M - count.w - G.INFO.size : room)));
+    if (L.deco) boxes.push({ role: "rule", x: G.M, y: G.RULE.y, w: sh.W - 2 * G.M, h: G.RULE.h, color: "ink" });
 
     // 标题：单行，放不下每次 −4、下限 20。ponytail: 母版没画列阵长标题，要两行再补
     var T = G.TITLE, runs = exportTitleRuns(data.titleRuns, data.word || data.letters.join("")), size = T.size;
     while (size > T.min && runsWidth(measure, runs, size, T.track) > sh.W - 2 * G.M) size -= 4;
-    var x = G.M;
+    var x = G.M + alignDx(L.title, room, L.title === "left" ? 0 : runsWidth(measure, runs, size, T.track)); // 标题听「标题」开关（F8）；不满的一行与格里的字仍听 text
     runs.forEach(function (r) {
       var w = measure(runFont(r, size), r.t) + textUnits(r.t).length * T.track; // 前进宽度：CSS letter-spacing 每字之后都加
       boxes.push({ role: "title", x: x, baseline: T.base, w: w, size: size, weight: r.b ? 700 : 400, italic: !!r.i, color: r.c || "ink", text: r.t, track: T.track, align: "left" });
@@ -970,7 +1042,8 @@
     });
 
     data.letters.slice(from, to).forEach(function (letter, j) {
-      var i = from + j, cx = G.M + (j % sh.cols) * (G.PW + G.GAP), cy = G.TOP + Math.floor(j / sh.cols) * G.ROW;
+      var row = Math.floor(j / sh.cols), inRow = Math.min(sh.cols, n - row * sh.cols); // 这一行有几格：不满的一行按 L.text 整体靠左、居中或靠右
+      var i = from + j, cx = G.M + alignDx(L.text, room, inRow * G.PW + (inRow - 1) * G.GAP) + (j % sh.cols) * (G.PW + G.GAP), cy = G.TOP + row * G.ROW;
       boxes.push({ role: "plate", i: i, x: cx, y: cy, w: G.PW, h: G.PH, color: "plate" });
       if (data.hasImage(i)) boxes.push({ role: "image", i: i, x: cx, y: cy, w: G.PW, h: G.PH });
       else boxes.push({ role: "giant", i: i, x: cx + G.GIANT.dx, baseline: cy + G.GIANT.dbase, size: G.GIANT.size, weight: 700, color: "ink", text: letter, align: "left", clip: [cx, cy, G.PW, G.PH] });
@@ -978,10 +1051,10 @@
       if (!word) return;
       var W = G.WORD, ok = containsLetter(word, letter), article = (data.articles && data.articles[i]) || ""; // 同单图：不合法词照排、不高亮；冠词块与折行同一套
       var blk = wordBlock(measure, word, article, W, G.PW, data.hyph ? data.hyph(word, i) : null), dy = (blk.lines.length - 1) * W.lead;
-      wordBoxes(measure, blk, { i: i, x: cx, base: cy + W.dbase, lead: W.lead, track: W.track, ok: ok, article: article }).forEach(function (b) { boxes.push(b); });
-      boxes.push({ role: "bar", x: cx, y: cy + G.BAR.dy + dy, w: G.BAR.w, h: G.BAR.h, color: "ink" });
-      var gf = fontOf(400, G.GLOSS.size), gt = ellipsize(measure, gf, (data.glosses[i] || "").trim(), G.PW);
-      if (gt) boxes.push({ role: "gloss", i: i, x: cx, baseline: cy + G.GLOSS.dbase + dy, w: measure(gf, gt), size: G.GLOSS.size, weight: 400, color: "soft", text: gt, align: "left" });
+      wordBoxes(measure, blk, { i: i, x: cx, base: cy + W.dbase, lead: W.lead, track: W.track, ok: ok, article: article, align: L.text, maxW: G.PW }).forEach(function (b) { boxes.push(b); });
+      if (L.deco) boxes.push({ role: "bar", x: cx + alignDx(L.text, G.PW, G.BAR.w), y: cy + G.BAR.dy + dy, w: G.BAR.w, h: G.BAR.h, color: "ink" });
+      var gf = fontOf(400, G.GLOSS.size), gt = ellipsize(measure, gf, (data.glosses[i] || "").trim(), G.PW), gw = gt ? measure(gf, gt) : 0;
+      if (gt) boxes.push({ role: "gloss", i: i, x: cx + alignDx(L.text, G.PW, gw), baseline: cy + G.GLOSS.dbase + dy, w: gw, size: G.GLOSS.size, weight: 400, color: "soft", text: gt, align: "left" });
     });
     return { W: sh.W, H: sh.H, boxes: boxes };
   }
@@ -1319,7 +1392,7 @@
   // ---------- 草稿（D8） ----------
 
   // 草稿里已知的字段；其余是「未知字段」，迁移时原样带过去（app.js 写草稿时也原样写回），不丢作者的数据
-  var DRAFT_FIELDS = ["v", "t", "word", "titleRuns", "filler", "view", "picks", "glosses", "glossAuto", "captions", "keys", "split", "media", "crops", "lang", "arts", "poss", "langs", "pickLangs"];
+  var DRAFT_FIELDS = ["v", "t", "word", "titleRuns", "filler", "view", "picks", "glosses", "glossAuto", "captions", "keys", "split", "media", "crops", "lang", "arts", "artOwn", "poss", "langs", "pickLangs", "layout"];
 
   // T45：配图文件名 = 「m + 编码长度（36 进制）- 16 位十六进制内容哈希 . png / jpg」（media.js 生成）。草稿只引用这种名字；清理也只删这种名字
   var MEDIA_NAME = /^m[0-9a-z]{1,10}-[0-9a-f]{16}\.(png|jpg)$/;
@@ -1363,6 +1436,8 @@
     out.lang = lang;
     out.word = word;
     out.view = obj.view === "grid" ? "grid" : "single";
+    // 版式（v00.03.03 L2）：没有这个字段的旧稿不补（打开就是「对开」）；有就逐项规整，缺项、坏值落回「对开」
+    if (Object.prototype.hasOwnProperty.call(obj, "layout")) out.layout = layoutOf(obj.layout && typeof obj.layout === "object" && !Array.isArray(obj.layout) ? obj.layout : null);
     // 填表人：输入框 maxlength 16（2026-11-17 起），恢复时同样留 16 个 UTF-16 单元；原来截到 12，13～16 字的填表人一刷新就丢尾巴（v00.03.01 批 B 复审）。不从代理对中间切开
     out.filler = String(obj.filler == null ? "" : obj.filler).slice(0, FILLER_MAX).replace(/[\ud800-\udbff]$/, "");
     out.picks = letters.map(function (l, i) {
@@ -1378,6 +1453,9 @@
     // v00.03.00 T22：用户给两性名词选的冠词（每格一个字符串，没选为空）。旧稿没有这个字段：不猜，保持没有
     if (Array.isArray(obj.arts)) out.arts = letters.map(function (l, i) { var a = obj.arts[i]; return typeof a === "string" ? a.slice(0, 8) : ""; });
     else delete out.arts;
+    // 自己写的冠词（v00.04.00）：同样每格一个短字符串
+    if (Array.isArray(obj.artOwn)) out.artOwn = letters.map(function (l, i) { var a = obj.artOwn[i]; return typeof a === "string" ? a.slice(0, 8) : ""; });
+    else delete out.artOwn;
     // V003-B4-R7：每格选中的义项的词性（"n." / "adj." …，没记为空）。同样是可选字段
     if (Array.isArray(obj.poss)) out.poss = letters.map(function (l, i) { var q = obj.poss[i]; return typeof q === "string" ? q.slice(0, 12) : ""; });
     else delete out.poss;
@@ -1455,16 +1533,16 @@
   }
 
   root.CORE = {
-    SKIN_FONTS: SKIN_FONTS, useSkinFont: useSkinFont, BLOCKED_MSG: BLOCKED_MSG, PALETTE: PALETTE, PALETTES: PALETTES, SKINS: SKINS, paletteOf: paletteOf, contrastRatio: contrastRatio, CARD: CARD, GRID: GRID, PAGE_SIZE: PAGE_SIZE, POOL_SIZE: POOL_SIZE,
+    SKIN_FONTS: SKIN_FONTS, useSkinFont: useSkinFont, PALETTE: PALETTE, PALETTES: PALETTES, paletteOf: paletteOf, contrastRatio: contrastRatio, CARD: CARD, GRID: GRID, PAGE_SIZE: PAGE_SIZE, POOL_SIZE: POOL_SIZE,
     resolveEntry: resolveEntry,
     blocked: blocked,
     filterWords: filterWords, filterTiers: filterTiers, uniqueHan: uniqueHan, customWord: customWord, wordUnits: wordUnits,
-    entryData: entryData, senseGroups: senseGroups, senseList: senseList, defaultGloss: defaultGloss, defaultPos: defaultPos, defaultSense: defaultSense, senseId: senseId, capitalize: capitalize,
-    containsLetter: containsLetter, resolveKeyAt: resolveKeyAt, rewriteWord: rewriteWord, useLang: useLang, useLangs: useLangs, withLang: withLang, activeLangs: activeLangs, presetInfo: presetInfo, digitInitials: digitInitials, addLang: addLang, hasLang: hasLang, PRESETS: PRESETS, pickPresets: pickPresets, setPresets: setPresets,
+    entryData: entryData, senseGroups: senseGroups, glossText: glossText, setGlossText: setGlossText, senseList: senseList, defaultGloss: defaultGloss, defaultPos: defaultPos, defaultSense: defaultSense, senseId: senseId, capitalize: capitalize,
+    containsLetter: containsLetter, resolveKeyAt: resolveKeyAt, rewriteWord: rewriteWord, useLang: useLang, useLangs: useLangs, withLang: withLang, activeLangs: activeLangs, presetInfo: presetInfo, digitInitials: digitInitials, addLang: addLang, articlesOf: articlesOf, hasLang: hasLang, PRESETS: PRESETS, pickPresets: pickPresets, setPresets: setPresets,
     wrapCaption: wrapCaption, FILLER_MAX: FILLER_MAX, CAPTION_MAX: 160, swipeDir: swipeDir, swipeAllowed: swipeAllowed, swipeTarget: swipeTarget, SWIPE: SWIPE, WORD_MAX: WORD_MAX,
     domColor: domColor, domBox: domBox,
     textUnits: textUnits, fontOf: fontOf, trackedWidth: trackedWidth, charX: charX, fitTitle: fitTitle, fitWord: fitWord, exportTitleRuns: exportTitleRuns, runColor: runColor,
-    layoutCard: layoutCard, gridShape: gridShape, layoutGrid: layoutGrid,
+    layoutCard: layoutCard, gridShape: gridShape, layoutGrid: layoutGrid, LAYOUTS: LAYOUTS, LAYOUT_VALUES: LAYOUT_VALUES, layoutOf: layoutOf, sameLayout: sameLayout, captionText: captionText,
     cellInitial: cellInitial, startText: startText, startSpoken: startSpoken, SPLIT: SPLIT, splitRange: splitRange, autoSplit: autoSplit, sheetsOf: sheetsOf,
     letterTiers: letterTiers, candidates: candidates, pageOf: pageOf, randomPool: randomPool, familyOf: familyOf, properName: properName,
     displayGroups: displayGroups, stripNameLabel: stripNameLabel,
@@ -1473,6 +1551,9 @@
     nextGloss: nextGloss, savedAutoGloss: savedAutoGloss, savedSense: savedSense, migrateDraft: migrateDraft, DRAFT_FIELDS: DRAFT_FIELDS, mediaName: mediaName, mediaNames: mediaNames, cropOf: cropOf, titleOrWord: titleOrWord, noteTitle: noteTitle, titleModeOf: titleModeOf, normalizeWord: normalizeWord, keepSame: keepSame, titleEditKept: titleEditKept, pasteFitLength: pasteFitLength, MAX_LETTERS: MAX_LETTERS,
   };
   // CORE.LANG 读当前规则（useLang 之后跟着变；不能是加载时的快照）
+  // 带界面文字的两项读的时候才取文案
+  Object.defineProperty(root.CORE, "BLOCKED_MSG", { get: blockedMsg, enumerable: true });
+  Object.defineProperty(root.CORE, "SKINS", { get: skins, enumerable: true });
   Object.defineProperty(root.CORE, "LANG", { get: function () { return LANG; }, enumerable: true });
   // CORE.FONT 读当前字体串（useSkinFont 之后跟着变）
   Object.defineProperty(root.CORE, "FONT", { get: function () { return FONT; }, enumerable: true });

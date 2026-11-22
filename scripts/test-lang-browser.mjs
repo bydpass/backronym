@@ -35,6 +35,7 @@ const KEY = "backronym-draft-v2";
 let browser;
 try {
   browser = await chromium.launch({ headless: true, ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
+  { const make = browser.newContext.bind(browser); browser.newContext = options => make({ locale: "zh-CN", ...options }); } // v00.04.00 批 1：界面语言跟随环境，无头浏览器默认报英文；本脚本测的是中文界面
   async function pageFor({ draft = null, width = 360, height = 720, noMedia = false, setup = null } = {}) {
     const context = await browser.newContext({ viewport: { width, height } });
     await context.addInitScript(({ draft, KEY }) => {
@@ -214,7 +215,7 @@ try {
     await pick(page, "it");
     await page.waitForFunction(() => /意大利语正在加载/.test(document.getElementById("langNow").innerText));
     assert.equal(await page.locator("#entryStart").isDisabled(), true);
-    assert.equal(await page.locator("#langWait").innerText(), "意大利语词库还在加载，加载完就能开始");
+    assert.equal(await page.locator("#langWait").innerText(), "意大利语词库正在加载");
     assert.deepEqual(await langsOf(page), ["en", "es", "it"]);
     release(); await loaded(page, "it"); await page.waitForFunction(() => !document.getElementById("entryStart").disabled);
     assert.equal(await page.locator("#langWait").innerText(), "");
@@ -344,7 +345,7 @@ try {
       assert.equal(await page.evaluate(() => document.activeElement.id), "glossCtl", "焦点落到释义框，义项栏打开");
       const row = page.locator("#senseList .art-row");
       assert.equal(await row.getAttribute("aria-label"), "冠词（还没选）");
-      assert.deepEqual(await row.locator("button").evaluateAll(ns => ns.map(n => [n.textContent, n.getAttribute("aria-pressed")])), [["el", "false"], ["la", "false"]], "两个选项，不预选");
+      assert.deepEqual(await row.locator("button").evaluateAll(ns => ns.map(n => [n.textContent, n.getAttribute("aria-pressed")])), [["la", "false"], ["el", "false"]], "两个选项，不预选；按固定排法 la 在 el 前（真机第一轮 D4、D5）");
       assert.equal(await page.evaluate(k => localStorage.getItem(k), KEY), raw0, "没选之前草稿不变");
       await row.locator("button", { hasText: "la" }).click();
       assert.equal(await boxes(page, "article").innerText(), "la", "选了：冠词位只写选中的");
@@ -551,8 +552,9 @@ try {
       await page.keyboard.press("Enter");
       assert.deepEqual([await art(page), await page.locator("#glossCtl").inputValue()], [["le"], "书"], "默认：书，le");
       await page.locator("#glossCtl").click();
-      assert.deepEqual(await page.locator("#senseList .sense-row .pos").allInnerTexts(), ["n. le", "n. la"], "两组名词义项，行首各写冠词");
-      assert.equal(await page.locator("#senseList .art-row").count(), 0, "各组只有一个冠词：不用选");
+      assert.deepEqual(await page.locator("#senseList .sense-row:not(.art-row) .pos").allInnerTexts(), ["n. le", "n. la"], "两组名词义项，行首各写冠词");
+      // v00.04.00：冠词一行现在总有；这一组只有一个冠词，所以它排第一、已亮着，后面是法语其余的定冠词单数（可另选，不让自己写）
+      assert.deepEqual(await page.evaluate(() => [Array.from(document.querySelectorAll("#senseList .art-row .sense"), b => b.textContent + ":" + b.getAttribute("aria-pressed")), document.querySelectorAll("#senseList .art-row input").length, document.querySelector("#senseList .art-row").getAttribute("aria-label")]), [["la:false", "le:true", "l’:false"], 0, "冠词"], "这一组只有一个冠词：不用选，已亮着（按固定排法 la le l’）");
       await page.locator("#senseList button", { hasText: "磅" }).click();
       assert.deepEqual(await art(page), ["la"], "选「磅」：冠词跟着变成 la");
       await page.locator("#senseList button", { hasText: "书籍" }).click();

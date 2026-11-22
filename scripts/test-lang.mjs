@@ -302,7 +302,7 @@ const fr = { letters: (t) => String(t || "").toUpperCase().replace(/[^A-ZÀ-ÖØ
     return Promise.resolve();
   };
   let quiet = 0;
-  const e = loadAppFunctions(["langData", "words", "moreWords", "rankOf", "autoCut", "renderWordBar", "cellState", "prepareLang", "refreshPicks", "spellingFor", "itemFor"], {
+  const e = loadAppFunctions(["langData", "words", "moreWords", "rankOf", "autoCut", "renderWordBar", "cellState", "ownArticle", "prepareLang", "refreshPicks", "spellingFor", "itemFor"], {
     preserveWordCase: () => false, quietly: (fn) => { quiet++; fn(); }, defaultSense: CORE.defaultSense,
     CORE, window: env.window, state, NO_WORDS: {}, cutMemo: { word: "", W: null, hyph: null, cut: null }, rankIndex: null, rankSrc: null,
     candPage: 0, candKey: "", candQuiet: false, candMemo: { key: "", list: [] },

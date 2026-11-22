@@ -26,6 +26,7 @@ const SHOTS = process.env.SHOT_DIR || "";
 let browser;
 try {
   browser = await chromium.launch({ headless: true, ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
+  { const make = browser.newContext.bind(browser); browser.newContext = options => make({ locale: "zh-CN", ...options }); } // v00.04.00 批 1：界面语言跟随环境，无头浏览器默认报英文；本脚本测的是中文界面
   for (const width of [320, 393]) {
     const context = await browser.newContext({ viewport: { width, height: 852 } });
     const page = await context.newPage();
@@ -68,6 +69,9 @@ try {
     const cardBox = () => page.evaluate(() => document.getElementById("card").getBoundingClientRect().toJSON());
 
     // 信息行字号 50（× k；v00.03.01 U01 用户定 34 → 50）：页码与填表人不重叠
+    // v00.03.03 F4 起格子进度默认隐藏：先在版式页拨成显示，再量
+    await page.click("#toLayout"); await page.locator("#lay-prog label").first().click(); await page.keyboard.press("Escape");
+    await page.waitForFunction(() => document.querySelector("#mirror .b-info-folio"));
     const info = await page.evaluate(() => { const k = document.getElementById("card").getBoundingClientRect().width / 1080; const f = document.querySelector("#mirror .b-info-folio"), g = document.querySelector("#mirror .b-info-filler"); return { size: parseFloat(getComputedStyle(f).fontSize) / k, fr: f.getBoundingClientRect().right, gl: g.getBoundingClientRect().left, gr: g.getBoundingClientRect().right, card: document.getElementById("card").getBoundingClientRect().right }; });
     assert.ok(Math.abs(info.size - 50) < 0.6, "信息行字号 50：" + info.size);
     assert.ok(info.fr < info.gl && info.gr <= info.card + 1, "16 字填表人不压页码、不出卡：" + JSON.stringify(info));

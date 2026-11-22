@@ -17,6 +17,7 @@
     wordChar: /[A-Za-z\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u024f0-9'\u2019 \-\u4e00-\u9fff]/,
     customWord: /^[a-z\u00df-\u00f6\u00f8-\u024f0-9][a-z\u00df-\u00f6\u00f8-\u024f0-9'\u2019 -]{0,27}$/i, // 格内上限 28（Q11 / T28）；含 ß 与扩展 B
     wordMax: 28,
+    articles: ["el", "la"], // 冠词一行能点的：定冠词单数（v00.04.00，用户定）
     digitNames: ["cero","uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve"], // Q6：0 的读法
     digitSounds: [[], [], [], [], [], [], [], [], [], []],
     commonSplits: {}, prefixes: [], suffixes: [], derivSuffixes: [], latinTails: [], latinPrefixes: []

@@ -137,9 +137,9 @@ function ctl(over = {}) {
     state: { letters: [], images: [], crops: [], image: null }, el: { draftStatus: status },
     prevMedia: { word: "", def: null, cells: [], crops: [] }, mediaMissing: "", mediaUnsure: false, mediaQueue: Promise.resolve(), mediaJobs: 0, sweeping: false,
     SAVED: "草稿已保存。", MEDIA_MSG: {
-      write: "配图没能保存：草稿仍保留上一次的配图和取景；这次换的图只在本次打开期间有效，请及时导出。",
-      space: "设备空间不够，配图没有保存；文字草稿已保存，请及时导出。",
-      none: "这台设备不支持保存配图，重开后需要重新选图；文字草稿已保存，请及时导出。",
+      write: "配图没能保存，请及时导出",
+      space: "设备空间不够，请及时导出",
+      none: "这台设备不支持保存配图，请及时导出",
     },
     draftNotice: "草稿已保存。", draftSavedAt: 0, draftEpoch: 0, draftLoaded: true, draftWrite: 0, draftAcceptedWrite: 0, draftGuard: null, sideGuard: null,
     entryFrom: "", saveDraft() { saves.push(1); },
@@ -233,11 +233,11 @@ const img = (seed, ext) => ({ b64: B64(seed), ext });
   assert.equal(b.puts, 1, "排队中重复触发不重复写"); assert.equal(e.mediaJobs, 0);
   assert.match(e.status.textContent, /^草稿和配图已保存。/);
   const f = img("f"); S.images = [f]; b.failPut = true; e.syncMedia(); await e.mediaQueue; await flush();
-  assert.equal(f.bkFail, "write"); assert.match(e.status.textContent, /^配图没能保存：草稿仍保留上一次的配图和取景/); assert.equal(e.saves.length, 1, "没存成不写草稿");
+  assert.equal(f.bkFail, "write"); assert.match(e.status.textContent, /^配图没能保存，请及时导出/); assert.equal(e.saves.length, 1, "没存成不写草稿");
   b.failPut = false; e.syncMedia(); await e.mediaQueue; assert.equal(f.bkName, undefined, "30 秒内不重试");
   now += 30001; e.syncMedia(); await e.mediaQueue; await flush(); assert.ok(f.bkName, "过 30 秒再试，成功");
   b.space = 1; const s2 = img("s2"); S.images = [s2]; e.syncMedia(); await e.mediaQueue; await flush();
-  assert.match(e.status.textContent, /^设备空间不够，配图没有保存；文字草稿已保存/); b.space = null;
+  assert.match(e.status.textContent, /^设备空间不够，请及时导出/); b.space = null;
   // 状态行只有一条：文字草稿本身有警告时先说那条
   e.draftNotice = "未确认保存成功，请及时导出。"; e.renderDraftStatus(); assert.match(e.status.textContent, /^未确认保存成功/);
   e.draftNotice = "草稿已保存。";
@@ -250,7 +250,7 @@ const img = (seed, ext) => ({ b64: B64(seed), ext });
   // 没有后端：状态行写明不支持，且不再重试
   const n = ctl({ mediaStore: null, mediaReady: Promise.resolve() }); n.state.letters = ["L"]; const x = img("x"); n.state.images = [x];
   n.syncMedia(); await n.mediaQueue; await flush();
-  assert.equal(x.bkFail, "none"); assert.match(n.status.textContent, /^这台设备不支持保存配图，重开后需要重新选图/);
+  assert.equal(x.bkFail, "none"); assert.match(n.status.textContent, /^这台设备不支持保存配图，请及时导出/);
   now += 1e9; n.syncMedia(); assert.equal(x.bkBusy, false, "不支持就不再试");
 }
 {

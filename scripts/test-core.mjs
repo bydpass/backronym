@@ -8,6 +8,7 @@ const LEGACY = legacyDir(); // 旧管线词包：T19 接入后不再随包，从
 globalThis.window = {};
 const load = (rel) => new Function(fs.readFileSync(new URL(rel, import.meta.url), "utf8"))();
 load("../app/assets/block/core.js"); load("../app/assets/lang/en/block.js"); // core.js 的 blocked() 经 window.BLOCK；先装上，和小红书版一致
+load("../app/assets/i18n.js"); // 界面文案表（v00.04.00 批 0）：core.js 版式里的字经 window.I18N 取
 load("../app/assets/core.js");
 const C = window.CORE;
 assert.ok(C, "core.js 没有暴露 window.CORE");
@@ -156,20 +157,29 @@ const fm = (font, text) => {
 const LONG_CAP = "这是一段很长的配文用来测试折行与省略号，需要超过两行才能触发末尾的截断逻辑，所以再多写一些字让它够长够长够长够长够长";
 const LONG_GLOSS = "国际化，使国际化的一个相当长的释义用来测试截断省略号功能";
 const WORDS = ["lake", "internationalization", "fire", "echo", "bold", "apple", "cat", "king", "river", "ocean"];
-const ldata = (n, withImage, over) => Object.assign({
+// v00.03.03 真机反馈 F4：对开默认不再画格子进度。这里的旧断言量的是「画格子进度时」的几何，所以没写 prog 的一律补成显示；
+// 默认隐藏另有断言（见「缺省 = 对开」那一段）。写了预设名的（"center"、"folio"）不动
+const withProg = (d) => {
+  if (d.layout === undefined) d.layout = { prog: true };
+  else if (d.layout && typeof d.layout === "object" && !("prog" in d.layout)) d.layout = Object.assign({ prog: true }, d.layout);
+  return d;
+};
+const ldata = (n, withImage, over) => withProg(Object.assign({
   letters: "ABCDEFGHIJ".slice(0, n).split(""), i: 0,
   picks: WORDS.slice(0, n).map((w) => [w, ""]),
   glosses: WORDS.slice(0, n).map((w, k) => (k % 3 === 1 ? LONG_GLOSS : k % 3 === 2 ? "" : "湖泊，池塘")),
   captions: WORDS.slice(0, n).map((w, k) => (k % 3 === 1 ? LONG_CAP : k % 3 === 2 ? "" : "短配文")),
   titleRuns: [{ t: "总之 这里有", b: true, i: false, c: null }, { t: "几种", b: true, i: true, c: "#b0301c" }, { t: "情况", b: false, i: false, c: null }],
   filler: "小满", hasImage: () => withImage,
-}, over);
+}, over));
 // 框的外接矩形：矩形类直接取；文字类取 [基线 − 0.86 字号, 基线 + 0.25 字号]（与母版 top = 基线 − 0.86 × 字号 同口径）；center / right 按锚点换算
 const rectOf = (b) => {
   if (b.h !== undefined) return [b.x, b.y, b.x + b.w, b.y + b.h];
   const w = b.w !== undefined ? b.w : fm(C.fontOf(b.weight, b.size, b.italic), b.text); // giant 没有 w
   const x0 = b.align === "center" ? b.x - w / 2 : b.align === "right" ? b.x - w : b.x;
-  return [x0, b.baseline - 0.86 * b.size, x0 + w, b.baseline + 0.25 * b.size];
+  const r = [x0, b.baseline - 0.86 * b.size, x0 + w, b.baseline + 0.25 * b.size];
+  // 带 clip 的框（图版里的超大字母）只画裁切框以内的部分
+  return b.clip ? [Math.max(r[0], b.clip[0]), Math.max(r[1], b.clip[1]), Math.min(r[2], b.clip[0] + b.clip[2]), Math.min(r[3], b.clip[1] + b.clip[3])] : r;
 };
 const OVERLAY = new Set(["image", "giant"]); // 叠在图版上，本来就和 plate 重叠
 const checkLayout = (L, what) => {
@@ -189,6 +199,161 @@ for (let n = 1; n <= 10; n++) {
   for (const img of [true, false]) {
     checkLayout(C.layoutGrid(ldata(n, img), fm), `列阵 n=${n} 图=${img}`);
     for (let i = 0; i < n; i++) checkLayout(C.layoutCard(ldata(n, img, { i }), fm), `单图 n=${n} i=${i} 图=${img}`);
+  }
+}
+
+// v00.03.03 L1：版式参数（data.layout）。不传、「对开」预设、认不得的值，排出来都和改版前一样；其余取值不越界、不重叠
+{
+  const F = C.LAYOUTS.folio, role = (L, r) => L.boxes.filter((b) => b.role === r), near = (a, b) => Math.abs(a - b) < 1e-6;
+  assert.deepEqual(plainOf(C.layoutOf()), plainOf(F), "缺省 = 对开");
+  { // F4：对开默认不画格子进度（单图的页码、列阵的格数）；F8：列阵标题听 title，不满的一行与格里的字听 text
+    const raw = (over) => { const d = ldata(4, true, over); delete d.layout; return Object.assign(d, over && over.layout !== undefined ? { layout: over.layout } : {}); };
+    assert.equal(F.prog, false);
+    assert.equal(role(C.layoutCard(raw(), fm), "info-folio").length + role(C.layoutGrid(raw(), fm), "info-count").length, 0, "不存版式的作品不画格子进度");
+    assert.equal(role(C.layoutCard(raw({ layout: { prog: true } }), fm), "info-folio").length, 1, "拨成显示就画");
+    const gt = (layout) => { const L = C.layoutGrid(raw({ layout, word: "AB", titleRuns: [] }), fm), t = role(L, "title"); return [t[0].x, t[t.length - 1].x + t[t.length - 1].w - t[0].track, L.W]; };
+    const a = gt({ text: "right", title: "left" }), b = gt({ text: "left", title: "center" });
+    assert.equal(a[0], 100, "词与释义靠右、标题靠左：列阵标题仍从左边起");
+    assert.ok(near((b[0] + b[1]) / 2, b[2] / 2), "词与释义靠左、标题居中：列阵标题居中");
+  }
+  assert.deepEqual(plainOf(C.layoutOf("center")), plainOf(C.LAYOUTS.center));
+  assert.deepEqual(plainOf(C.layoutOf("constructor")), plainOf(F), "认不得的预设名落回对开");
+  assert.deepEqual(plainOf(C.layoutOf({ text: "right", cap: "up", ratio: "16:9", prog: "no", quote: true })), plainOf(Object.assign({}, F, { text: "right", quote: true })), "认不得的值逐项落回对开");
+  assert.notEqual(C.layoutOf("folio"), F, "每次给新对象，改它不动预设");
+  for (const n of [1, 4, 7, 10]) for (const img of [true, false]) for (const layout of ["folio", F, {}, { text: "weird" }, null]) {
+    assert.deepEqual(plainOf(C.layoutGrid(Object.assign(ldata(n, img), { layout }), fm)), plainOf(C.layoutGrid(ldata(n, img, { layout: null }), fm)), `列阵 n=${n}：缺省等价`);
+    for (let i = 0; i < n; i++) assert.deepEqual(plainOf(C.layoutCard(Object.assign(ldata(n, img, { i, edit: true }), { layout }), fm)), plainOf(C.layoutCard(ldata(n, img, { i, edit: true, layout: null }), fm)), `单图 n=${n} i=${i}：缺省等价`);
+  }
+  // 十个开关的取值组合：都在画布内、互不重叠（i=1 是折成两行的长词，带冠词时是 la；i=2 没有释义与配文）
+  const A3 = ["left", "center", "right"], ARTS = ["der", "la", "l’", "il", "das", "", "le", "", "die", ""];
+  const FOLD = [["lake", ""], ["bodenseedampfschifffahrtsgesellschaftskapitaen", ""], ["fire", ""], ["echo", ""]]; // internationalization 在假测量下缩字号就放得下，不折行
+  for (const text of A3) for (const cap of A3) for (const title of ["left", "center"]) for (const ratio of ["3:2", "1:1", "3:4"]) for (const plateX of A3) for (const order of ["plate", "text"]) for (const flag of [true, false]) {
+    const layout = { text, cap, title, ratio, plateX, order, prog: flag, filler: flag, deco: flag, quote: !flag };
+    for (let i = 0; i < 4; i++) checkLayout(C.layoutCard(ldata(4, flag, { i, layout, edit: i === 2, articles: flag ? ARTS : null, picks: FOLD }), fm), `单图 ${JSON.stringify(layout)} i=${i}`);
+  }
+  for (const text of A3) for (const flag of [true, false]) for (let n = 1; n <= 10; n++) {
+    checkLayout(C.layoutGrid(ldata(n, flag, { layout: { text, prog: flag, filler: flag, deco: flag }, articles: flag ? ARTS : null }), fm), `列阵 ${text} n=${n}`);
+  }
+
+  // 居中预设：不画页码、墨线、墨条，填表人保留；词、释义、配文各自居中，配文带引号；单图标题仍靠左
+  let L = C.layoutCard(ldata(4, true, { layout: "center" }), fm);
+  for (const r of ["info-folio", "rule", "bar"]) assert.equal(role(L, r).length, 0, `居中预设不画 ${r}`);
+  assert.equal(role(L, "info-filler").length, 1);
+  for (const r of ["word", "gloss", "caption"]) for (const b of role(L, r)) assert.ok(near(b.x + b.w / 2, 540), `${r} 居中`);
+  assert.equal(role(L, "caption")[0].text, "“短配文”");
+  assert.equal(role(L, "title")[0].x, 80);
+  assert.equal(role(C.layoutCard(ldata(4, true, { layout: "folio" }), fm), "caption")[0].text, "短配文", "对开不加引号");
+  // 折行的长词：每一行各自居中
+  L = C.layoutCard(ldata(4, true, { i: 1, layout: "center", picks: [["lake", ""], ["bodenseedampfschifffahrtsgesellschaftskapitaen", ""], ["fire", ""], ["echo", ""]] }), fm);
+  assert.ok(role(L, "word").length > 1, "长词折行");
+  for (const b of role(L, "word")) assert.ok(near(b.x + b.w / 2, 540), "折行后每行居中");
+  // 冠词连同第一行一起对齐
+  L = C.layoutCard(ldata(4, true, { articles: ["der", "", "", ""], layout: "center" }), fm);
+  { const a = role(L, "article")[0], w = role(L, "word")[0]; assert.ok(a.x < w.x && near((a.x + w.x + w.w) / 2, 540), "冠词与词合起来居中"); }
+  // 块内右对齐的冠词（la 比 der 窄）：按看得见的冠词左沿居中，靠右时右沿仍在 1000（QA 11-20）
+  for (const art of ["la", "el (la)", "l’"]) {
+    L = C.layoutCard(ldata(4, true, { articles: [art, "", "", ""], layout: "center" }), fm);
+    { const a = role(L, "article")[0], w = role(L, "word")[0]; assert.ok(a.x + a.w <= w.x && near((a.x + w.x + w.w) / 2, 540), `冠词 ${art} 与词合起来居中`); }
+    L = C.layoutCard(ldata(4, true, { articles: [art, "", "", ""], layout: { text: "right" } }), fm);
+    assert.ok(near(role(L, "word")[0].x + role(L, "word")[0].w, 1000), `冠词 ${art} 靠右`);
+  }
+  // 靠右：右沿都在 1000；墨条跟着词走。文字与配文是两个开关
+  L = C.layoutCard(ldata(4, true, { layout: { text: "right", cap: "right" } }), fm);
+  for (const r of ["word", "gloss", "caption", "bar"]) for (const b of role(L, r)) assert.ok(near(b.x + b.w, 1000), `${r} 靠右`);
+  L = C.layoutCard(ldata(4, true, { layout: { text: "center", cap: "left" } }), fm);
+  assert.ok(near(role(L, "gloss")[0].x + role(L, "gloss")[0].w / 2, 540) && role(L, "caption")[0].x === 80, "词与释义居中、配文靠左");
+  // 标题居中：各段合起来的一整行居中
+  L = C.layoutCard(ldata(4, true, { layout: { title: "center" } }), fm);
+  // 框宽是前进宽度（每个字后面都带字距），看得见的右端要减掉最后一个字距
+  { const t = role(L, "title"), last = t[t.length - 1]; assert.ok(t.length === 3 && near(t[0].x + last.x + last.w - last.track, 1080), "标题整行居中"); }
+  // 图版：高度不变只收宽度；1:1、3:4 分靠左、居中、靠右，3:2 占满宽度不分
+  const plate = (layout) => { const p = role(C.layoutCard(ldata(4, true, { layout }), fm), "plate")[0]; return [p.x, p.y, p.w, p.h]; };
+  assert.deepEqual(plate({ ratio: "1:1" }), [80, 290, 600, 600]);
+  assert.deepEqual(plate({ ratio: "3:4", plateX: "center" }), [315, 290, 450, 600]);
+  assert.deepEqual(plate({ ratio: "3:4", plateX: "right" }), [550, 290, 450, 600]);
+  assert.deepEqual(plate({ ratio: "3:2", plateX: "right" }), [80, 290, 920, 600]);
+  L = C.layoutCard(ldata(4, false, { layout: { ratio: "3:4", plateX: "right" } }), fm);
+  assert.deepEqual(plainOf(role(L, "giant")[0].clip), [550, 290, 450, 600], "大字母的裁切框跟着图版");
+  assert.equal(role(L, "giant")[0].x, 550 + C.CARD.GIANT.dx);
+  L = C.layoutCard(ldata(4, true, { layout: { ratio: "1:1", plateX: "right" } }), fm);
+  assert.deepEqual([role(L, "image")[0].x, role(L, "image")[0].w, role(L, "word")[0].x], [400, 600, 80], "图靠右、字靠左，互不牵连");
+  // 图在下：图版放到 780，词、墨条、释义、配文整体上移 616，标题不动
+  {
+    const up = C.layoutCard(ldata(4, false, { layout: { order: "text" } }), fm), dn = C.layoutCard(ldata(4, false), fm);
+    assert.equal(role(up, "plate")[0].y, 780);
+    assert.equal(role(up, "giant")[0].baseline, role(dn, "giant")[0].baseline + 490);
+    for (const r of ["word", "gloss", "caption"]) assert.equal(role(up, r)[0].baseline, role(dn, r)[0].baseline - 616, r + " 上移");
+    assert.equal(role(up, "bar")[0].y, role(dn, "bar")[0].y - 616);
+    assert.equal(role(up, "title")[0].baseline, role(dn, "title")[0].baseline);
+  }
+  // 页码不画时，长填表人可以用整行
+  {
+    const long = "一个名字特别特别特别长的填表人";
+    const a = role(C.layoutCard(ldata(4, true, { filler: long }), fm), "info-filler")[0], b = role(C.layoutCard(ldata(4, true, { filler: long, layout: { prog: false } }), fm), "info-filler")[0];
+    assert.ok(b.size > a.size && b.w <= 920, "不画页码时填表人字号更大、仍不越界");
+  }
+  // 没打词的格：占位字与灰线各自跟着 text 对齐（QA 11-20 补）
+  for (const [text, at] of [["center", (b) => b.x + b.w / 2 - 540], ["right", (b) => b.x + b.w - 1000]]) {
+    L = C.layoutCard(ldata(4, true, { picks: [["", ""], ["", ""], ["", ""], ["", ""]], layout: { text } }), fm);
+    const e = role(L, "empty")[0];
+    assert.ok(near(at({ x: e.x, w: fm(C.fontOf(e.weight, e.size), e.text) }), 0) && near(at(role(L, "ul")[0]), 0), `没打词的占位 ${text}`);
+  }
+  assert.equal(role(C.layoutCard(ldata(4, true, { layout: { filler: false } }), fm), "info-filler").length, 0);
+
+  // 列阵：居中预设不画格数、墨线、墨条；标题听「标题」开关；不满的一行整体居中；每格的词与释义在图框下居中
+  L = C.layoutGrid(ldata(7, true, { layout: "center" }), fm);
+  assert.equal(role(L, "info-count").length + role(L, "rule").length + role(L, "bar").length, 0);
+  assert.equal(role(L, "info-filler").length, 1);
+  {
+    const p = role(L, "plate"), t = role(L, "title"), last = t[t.length - 1];
+    assert.equal(p[0].x, 100, "满的一行不动");
+    assert.equal(p[4].x, (L.W - (3 * 300 + 2 * 48)) / 2, "不满的一行整体居中");
+    assert.equal(t[0].x, 100, "居中预设的「标题」开关是靠左，列阵标题跟它（F8），不跟词与释义");
+    for (const r of ["word", "gloss"]) for (const b of role(L, r)) assert.ok(near(b.x + b.w / 2, p.find((q) => q.i === b.i).x + 150), `列阵 ${r} 在图框下居中`);
+  }
+  L = C.layoutGrid(ldata(7, true, { layout: { text: "right" } }), fm);
+  {
+    const p = role(L, "plate"), t = role(L, "title"), last = t[t.length - 1];
+    assert.equal(p[4].x, L.W - 100 - (3 * 300 + 2 * 48), "不满的一行靠右");
+    assert.equal(t[0].x, 100, "词与释义靠右时列阵标题不跟着靠右（F8）");
+    for (const r of ["word", "gloss"]) for (const b of role(L, r)) assert.ok(near(b.x + b.w, p.find((q) => q.i === b.i).x + 300), `列阵 ${r} 靠右`);
+    for (const b of role(L, "bar")) assert.ok(p.some((q) => near(q.x + 300, b.x + b.w)), "列阵墨条靠右");
+  }
+  // 分两张时的「01–05 / 10」也跟格子进度走
+  assert.equal(role(C.layoutGrid(ldata(10, true), fm, [0, 5]), "info-count")[0].text, "01–05 / 10");
+  assert.equal(role(C.layoutGrid(ldata(10, true, { layout: { prog: false } }), fm, [0, 5]), "info-count").length, 0);
+  assert.equal(role(C.layoutGrid(ldata(4, true, { layout: { filler: false } }), fm), "info-filler").length, 0);
+  { // 列阵不画格数时，填表人可用整行：同一个长名字，画格数时被截断、不画时完整（QA 11-20 补）
+    const long = "名".repeat(37), f = (prog) => role(C.layoutGrid(ldata(4, true, { filler: long, layout: { prog } }), fm), "info-filler")[0].text;
+    assert.ok(/…$/.test(f(true)) && f(false) === long, "列阵不画格数时填表人用整行");
+  }
+
+  // v00.03.03 L2：预设名（base）、两份版式是否相同、配文实际排的字、草稿字段
+  assert.equal(C.layoutOf("center").base, "center"); assert.equal(C.layoutOf({ base: "nope" }).base, "folio");
+  assert.ok(C.sameLayout("folio", {}) && C.sameLayout(null, C.LAYOUTS.folio) && C.sameLayout({ base: "center" }, "folio"), "只换 base 不算改了版式");
+  assert.ok(!C.sameLayout("folio", "center") && !C.sameLayout("folio", { quote: true }));
+  assert.equal(C.captionText("短配文", "center"), "“短配文”"); assert.equal(C.captionText("短配文", "folio"), "短配文"); assert.equal(C.captionText("短配文"), "短配文");
+  // 配文限长与排版同一份字：不加引号时刚好写满的配文，加了引号就算写过头（卡上配文框据此不再收字）
+  {
+    let s = "字";
+    while (!C.wrapCaption(fm, s + "字", 0).cut) s += "字";
+    assert.ok(!C.wrapCaption(fm, C.captionText(s, "folio"), 0).cut && C.wrapCaption(fm, C.captionText(s, "center"), 0).cut, "引号占配文的地方");
+  }
+  // 草稿：没有 layout 字段的旧稿不补；有就逐项规整，坏值、缺项落回对开；不是对象的整个当成没设
+  const dbase = { v: 2, word: "LIFE" };
+  assert.ok(!("layout" in C.migrateDraft(dbase)), "旧稿不补版式字段");
+  assert.deepEqual(plainOf(C.migrateDraft(Object.assign({ layout: { text: "center", cap: "sideways", quote: true, base: "center", extra: 1 } }, dbase)).layout), plainOf(Object.assign({}, F, { text: "center", quote: true, base: "center" })));
+  for (const bad of [null, 7, "center", [], true]) assert.deepEqual(plainOf(C.migrateDraft(Object.assign({ layout: bad }, dbase)).layout), plainOf(F), "损坏的版式字段落回对开：" + JSON.stringify(bad));
+  assert.ok(C.DRAFT_FIELDS.indexOf("layout") >= 0);
+  // 还没输入单词时的空卡骨架也读版式（复审 L1-A2）；缺省仍与改版前一样
+  {
+    const empty = (layout) => C.layoutCard({ letters: [], i: 0, picks: [], glosses: [], captions: [], titleRuns: [], filler: "", hasImage: () => false, layout }, fm);
+    assert.deepEqual(plainOf(empty("folio")), plainOf(empty()));
+    assert.deepEqual(empty().boxes.map((b) => b.role), ["rule", "plate", "ul"]); // 空卡的提示字 11-21 去掉
+    const e = empty({ text: "center", deco: false, ratio: "1:1", plateX: "right", order: "text" });
+    assert.deepEqual(e.boxes.map((b) => b.role), ["plate", "ul"]);
+    assert.deepEqual([e.boxes[0].x, e.boxes[0].y, e.boxes[0].w], [400, 780, 600]);
+    assert.ok(near(e.boxes[1].x + e.boxes[1].w / 2, 540)); // 提示字去掉后，那条线是第二个框
   }
 }
 // T08：列阵 D14
@@ -219,7 +384,7 @@ for (let n = 1; n <= 10; n++) {
   const L4 = C.layoutGrid(ldata(4, false, { word: "ABCD", titleRuns: [] }), fm);
   const info = byRole(L4, "info-count")[0], fil = byRole(L4, "info-filler")[0];
   assert.deepEqual([info.text, info.x, info.baseline, info.size, info.color, info.align], ["4 格", 100, 80, 34, "mute", "left"]);
-  assert.deepEqual([fil.text, fil.x, fil.baseline, fil.align], ["填表人 小满", 1544 - 100, 80, "right"]);
+  assert.deepEqual([fil.text, fil.x, fil.baseline, fil.align], ["小满", 1544 - 100, 80, "right"]);
   assert.deepEqual(byRole(L4, "rule")[0], { role: "rule", x: 100, y: 104, w: 1544 - 200, h: 3, color: "ink" });
   assert.deepEqual(byRole(L4, "title").map((b) => [b.text, b.x, b.baseline, b.size, b.track, b.weight]), [["ABCD", 100, 230, 96, -1.5, 700]], "标题留空用单词");
   assert.equal(C.layoutGrid(ldata(4, false, { filler: "  " }), fm).boxes.some((b) => b.role === "info-filler"), false, "填表人留空不画");
@@ -290,11 +455,11 @@ for (let n = 1; n <= 10; n++) {
   let L = base();
   assert.deepEqual([L.W, L.H], [1080, 1440]);
   same(one(L, "info-folio"), { x: 80, baseline: 96, size: 50, weight: 400, color: "mute", text: "02 / 04", align: "left" }, "页码（v00.03.01 U01：34 → 50）");
-  same(one(L, "info-filler"), { x: 1000, baseline: 96, size: 50, weight: 400, color: "mute", text: "填表人 小满", align: "right" }, "填表人");
+  same(one(L, "info-filler"), { x: 1000, baseline: 96, size: 50, weight: 400, color: "mute", text: "小满", align: "right" }, "填表人：只写名字，不带「填表人」三个字（F13）");
   { // v00.03.01（用户 11-18 定）：16 字的填表人放不下时只给它缩字号（下限 26），页码仍 50，16 个字都在、不截断
     const LF = base({ filler: "一二三四五六七八九十一二三四五六" }), f = one(LF, "info-filler"), fo = one(LF, "info-folio");
     assert.ok(f.size < 50 && f.size >= 26 && fo.size === 50, "填表人缩字号：" + f.size);
-    assert.equal(f.text, "填表人 一二三四五六七八九十一二三四五六", "缩到放得下，不截断");
+    assert.equal(f.text, "一二三四五六七八九十一二三四五六", "放得下，不截断");
     assert.ok(f.x - f.w > fo.x + fo.w, "不压页码"); }
   same(one(L, "rule"), { x: 80, y: 120, w: 920, h: 3, color: "ink" }, "墨线");
   same(one(L, "title"), { x: 80, baseline: 236, size: 76, weight: 700, track: -1, color: "ink", text: "总之 这里有四种情况", align: "left" }, "标题");
@@ -548,10 +713,8 @@ for (let n = 1; n <= 10; n++) {
   // 空卡（首次进入）：不抛错，没有页码 / 填表人 / 标题 / 单词，占位文字 44px
   {
     const L = bases[3][1], roles = L.boxes.map((b) => b.role);
-    assert.deepEqual(roles, ["rule", "plate", "empty", "ul"]);
+    assert.deepEqual(roles, ["rule", "plate", "ul"], "空卡不再写提示（用户 11-21 定），只留图版与一条线");
     assert.deepEqual([L.W, L.H], [1080, 1440]);
-    const e = L.boxes.find((b) => b.role === "empty");
-    assert.deepEqual([e.text, e.size, e.baseline, e.color], ["格子会在你输入单词后出现", 44, 1036, "ph"]);
   }
   // 框数值不随 k 改变版式：同一份框列表，k 变了只有 domBox 的结果变（DOM 与 Canvas 共用同一份框）
   {
@@ -609,15 +772,20 @@ for (let n = 1; n <= 10; n++) {
       assert.equal(manual[names[role]], C.PALETTE.dark[role], `手动深色 --${names[role]}`);
     }
     // 四个主题（2026-11-12）：:root[data-skin] 的浅色块、系统深色块、手动深色块都与 PALETTES 同值；fandom 只有浅色；每套的对比度达标
-    assert.deepEqual(Object.keys(C.PALETTES), ["fandom", "dansaekhwa", "impressionism", "secession"]); assert.deepEqual(C.SKINS.map(x => x[0]), Object.keys(C.PALETTES));
+    assert.deepEqual(Object.keys(C.PALETTES), ["fandom", "dansaekhwa", "impressionism", "secession", "table"]); assert.deepEqual(C.SKINS.map(x => x[0]), Object.keys(C.PALETTES));
     assert.equal(C.PALETTES.fandom.dark, undefined, "fandom 只有浅色");
+    assert.equal(C.PALETTES.table.light, undefined, "表格只有深色（v00.03.03 L3）");
     for (const skin of Object.keys(C.PALETTES)) {
       const esc = `:root\\[data-skin="${skin}"\\]`;
-      const lightS = vars(new RegExp(esc + "\\s*\\{([^}]*)\\}"), skin + " 浅色块");
-      for (const role of Object.keys(names)) assert.equal(lightS[names[role]], C.PALETTES[skin].light[role], `${skin} 浅色 --${names[role]}`);
+      // 只有一套的主题（fandom 只有浅、表格只有深）：那一套就写在不带 data-theme 的这一块里
+      const one = C.PALETTES[skin].light || C.PALETTES[skin].dark;
+      const lightS = vars(new RegExp(esc + "\\s*\\{([^}]*)\\}"), skin + " 基本块");
+      for (const role of Object.keys(names)) assert.equal(lightS[names[role]], one[role], `${skin} 基本块 --${names[role]}`);
+      // 白图框与框里的大字母：只有表格有这两个键，样式里的 --frame / --giant 与它同值；别的主题两边都没有
+      for (const extra of ["frame", "giant"]) assert.equal(lightS[extra], one[extra], `${skin} --${extra} 与色板一致（没有就都没有）`);
       const veil = css.match(new RegExp(esc + "\\s*\\{[^}]*--paper-veil:\\s*rgba\\((\\d+), (\\d+), (\\d+), 0\\.86\\)"));
-      assert.equal("#" + veil.slice(1, 4).map(n => (+n).toString(16).padStart(2, "0")).join(""), C.PALETTES[skin].light.bg, skin + " 大图页的底是 paper 加透明度");
-      if (C.PALETTES[skin].dark) {
+      assert.equal("#" + veil.slice(1, 4).map(n => (+n).toString(16).padStart(2, "0")).join(""), one.bg, skin + " 大图页的底是 paper 加透明度");
+      if (C.PALETTES[skin].light && C.PALETTES[skin].dark) {
         const sysS = vars(new RegExp('@media \\(prefers-color-scheme: dark\\)\\s*\\{\\s*' + esc + ':not\\(\\[data-theme="light"\\]\\)\\s*\\{([^}]*)\\}'), skin + " 系统深色块");
         const manS = vars(new RegExp(esc + '\\[data-theme="dark"\\]\\s*\\{([^}]*)\\}'), skin + " 手动深色块");
         for (const role of Object.keys(names)) { assert.equal(sysS[names[role]], C.PALETTES[skin].dark[role], `${skin} 系统深色 --${names[role]}`); assert.equal(manS[names[role]], C.PALETTES[skin].dark[role], `${skin} 手动深色 --${names[role]}`); }
@@ -629,6 +797,8 @@ for (let n = 1; n <= 10; n++) {
     }
     assert.equal(C.paletteOf("secession", true), C.PALETTES.secession.dark); assert.equal(C.paletteOf("fandom", true), C.PALETTES.fandom.light, "只有浅色的主题：深色也给浅色那套");
     assert.equal(C.paletteOf("nope", true), C.PALETTE.dark, "不认识的主题落回石白 / 墨");
+    assert.equal(C.paletteOf("table", false), C.PALETTES.table.dark, "只有深色的主题：浅色也给深色那套"); assert.equal(C.paletteOf("table", true), C.PALETTES.table.dark);
+    assert.ok(C.contrastRatio(C.PALETTES.table.dark.red, "#0f0f0f") >= 4.5 && C.contrastRatio(C.PALETTES.table.dark.mute, "#0f0f0f") >= 4.5, "表格的强调色与次要字在面板底上也达标");
     // 四个主题的字体（2026-11-12）：core 的字体表、样式里的 @font-face 与字体变量、包内文件三处对得上；没有主题时字体串不变
     assert.deepEqual(Object.keys(C.SKIN_FONTS), Object.keys(C.PALETTES));
     const base = C.FONT; assert.equal(base.indexOf('"Noto Sans"'), 0);
@@ -915,7 +1085,7 @@ for (let n = 1; n <= 10; n++) {
     assert.equal(C.migrateDraft({ v: 2, word: "development", split: 5.5 }).split, null, "草稿里的小数分界作废");
     assert.equal(C.migrateDraft({ v: 2, word: "development", split: NaN }).split, null, "草稿里的 NaN 分界作废");
     // 列阵按张排：信息栏写「01–07 / 11」，只排这一张的格，格号仍是整个单词里的位置；不分图时与原来一样
-    const ldata = (word) => ({ letters: word.split(""), word, picks: word.split("").map(() => null), glosses: [], captions: [], titleRuns: null, filler: "", hasImage: () => false });
+    const ldata = (word) => ({ layout: { prog: true }, letters: word.split(""), word, picks: word.split("").map(() => null), glosses: [], captions: [], titleRuns: null, filler: "", hasImage: () => false });
     const m = (f, t) => String(t).length * 50, D = ldata("DEVELOPMENT");
     const g1 = C.layoutGrid(D, m, [0, 7]), g2 = C.layoutGrid(D, m, [7, 11]);
     assert.equal(g1.boxes.find((b) => b.role === "info-count").text, "01–07 / 11");

@@ -49,7 +49,7 @@ npm run dict       # 旧管线：重新生成英语词库（需 scripts/.cache/e
 npm run fonts      # 重新生成字体子集（需原始字体 + pyftsubset）
 ```
 
-`npm test` 里的 `test-t19-store` 要读 `scripts/.cache/ecdict.csv`（ECDICT 的词表，约 66 MB，不进仓库），新克隆的副本需先自行放好，否则这一项会失败；其余各项不需要它。
+新克隆的副本可以直接跑 `npm test`。其中两项要读 `scripts/.cache/ecdict.csv`（ECDICT 的词表，约 63 MB，不进仓库），没有这个文件时会跳过并打印一句说明，不算失败。
 
 改版式或绘制代码前后，在 `127.0.0.1:5173` 的控制台运行 `scripts/export-hash.js`（52 张导出图的哈希）和 `scripts/check-dom-layout.js`（DOM 卡与版式数值的偏差）对照。
 

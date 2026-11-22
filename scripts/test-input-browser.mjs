@@ -30,6 +30,7 @@ const LIFE = { v: 2, word: "LIFE", filler: "小满", view: "single", titleRuns: 
 let browser;
 try {
   browser = await chromium.launch({ headless: true, ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
+  { const make = browser.newContext.bind(browser); browser.newContext = options => make({ locale: "zh-CN", ...options }); } // v00.04.00 批 1：界面语言跟随环境，无头浏览器默认报英文；本脚本测的是中文界面
   async function pageFor({ draft = LIFE, width = 375, height = 812 } = {}) {
     const context = await browser.newContext({ viewport: { width, height } });
     await context.addInitScript(({ draft, KEY }) => {

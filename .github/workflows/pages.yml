@@ -1,0 +1,44 @@
+# 外链网页版（国际版）部署到 GitHub Pages：公开仓库的 main 一更新就重建、重发。
+# 产物与 `npm run pack:web` 本地得到的 dist/web/ 是同一份；国内版服务器发的也是这一份。
+# 只在公开仓库 bydpass/backronym 上跑：私有的完整历史仓库也带着这个文件，那边不部署。
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只部署一次；正在部署的不取消，免得线上停在半新半旧
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.repository == 'bydpass/backronym'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      # 不装依赖：项目没有 npm 依赖，构建只是复制 app/ 并核对屏蔽器在不在
+      - run: npm run pack:web
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

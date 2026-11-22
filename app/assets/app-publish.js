@@ -1,6 +1,7 @@
 /* 藏头 - Backronym：端能力、完成面板与导出。ES2017 经典脚本。 */
 (function (app) {
   "use strict";
+  var STR = window.I18N.t; // 界面文案到 i18n.js 取，代码里只写编号（v00.04.00 批 0）
   app.publish = {};
   var CORE = app.model.CORE, state = app.model.state, el = app.model.el;
 
@@ -15,7 +16,7 @@
   async function viaTool(promise, ms) {
     var settled = false;
     var r = await app.draft.within(Promise.resolve(promise).then(function (v) { settled = true; return v; }), ms);
-    if (!settled) throw { errMsg: "等了很久没有响应，请稍后再试" };
+    if (!settled) throw { errMsg: STR("pub.timeout") };
     return r;
   }
 
@@ -47,10 +48,10 @@
         done++;
       }
       if (epoch !== app.draft.draftEpoch) return;
-      result("已保存 " + done + " 张到相册");
+      result(STR("pub.saved", { n: done }));
     } catch (e) {
       if (epoch !== app.draft.draftEpoch) return;
-      result("保存了 " + done + " 张后失败：" + ((e && e.errMsg) || "请检查相册权限"));
+      result(STR("pub.savedPartial", { n: done, why: (e && e.errMsg) || STR("pub.checkPerm") }));
     }
     setBusy(false);
   }
@@ -76,7 +77,7 @@
       }), 30000);
     } catch (e) {
       if (epoch !== app.draft.draftEpoch) return;
-      result("没能打开发布页：" + ((e && e.errMsg) || "请稍后再试"));
+      result(STR("pub.postFail", { why: (e && e.errMsg) || STR("pub.later") }));
     }
     if (epoch === app.draft.draftEpoch) setBusy(false);
   }
@@ -99,7 +100,7 @@
   function setBusy(on) {
     app.publish.busy = on;
     el.finish.disabled = on;
-    el.finishText.textContent = on ? "保存中…" : "完成";
+    el.finishText.textContent = on ? STR("common.saving") : STR("pub.finish");
     el.finish.setAttribute("aria-busy", String(on));
     syncFinishBtns();
   }
@@ -125,20 +126,20 @@
   function onFinish() {
     if (app.draft.checkDraftExpiry() || app.publish.busy || !el.finishPanel.hidden) return;
     var n = state.letters.length, why = "", at = -1, left = 0, art = false;
-    if (!n) why = "先输入一个单词";
+    if (!n) why = STR("common.needWord");
     for (var i = 0; i < n; i++) {
       var st = app.model.cellState(i);
       if (st === "ok") continue;
       left++;
-      if (at < 0 && st === "art") { at = i; art = true; why = "第 " + (i + 1) + " 格的冠词还没选：在下面的「冠词」一行选一个"; }
-      if (at < 0) { at = i; why = "第 " + (i + 1) + " 格" + (st === "empty" ? "还没有词：打一个以 " + CORE.startText(state.letters[i]) + " 开头的词" : "的词不是以 " + CORE.startText(state.letters[i]) + " 开头，改一下再完成"); }
+      if (at < 0 && st === "art") { at = i; art = true; why = STR("pub.artPending", { n: i + 1 }); }
+      if (at < 0) { at = i; why = STR(st === "empty" ? "pub.cellEmpty" : "pub.cellBad", { n: i + 1, s: CORE.startText(state.letters[i]) }); }
     }
-    if (left > 1) why += "（共 " + left + " 格未完成）"; // 一次说清总数，先带去第一格
+    if (left > 1) why += STR("pub.leftMore", { n: left }); // 一次说清总数，先带去第一格
     if (at >= 0) { app.model.setFocus(at); app.model.focusId(art ? "glossCtl" : "wordCtl"); } // 冠词在义项栏里选：焦点落到释义框，栏随之打开
     else if (!n) app.draft.focusEntry();
     else if (window.LANGPACK && state.langs.some(function (c) { return !(window.LANGPACK.has(c, "block") && window.LANGPACK.has(c, "words")); })) { // 加载契约 ①：屏蔽词表没就绪不能导出 / 发布；词库没到时不知道哪些词要选冠词，同样先不放行（R8）
       var lag = state.langs.filter(function (c) { return !(window.LANGPACK.has(c, "block") && window.LANGPACK.has(c, "words")); })[0]; // 选了几门语言：有一门没就绪就先不放行，写明是哪一门
-      why = app.model.langName(lag) + "的" + (window.LANGPACK.has(lag, "words") ? "屏蔽词表" : "词库") + "还没加载好，稍后再点「完成」";
+      why = STR(window.LANGPACK.has(lag, "words") ? "pub.blockNotReady" : "pub.wordsNotReady", { lang: app.model.langName(lag) });
       app.entry.loadLang(lag);
     } else {
       var bad = app.model.findBlocked();
@@ -164,7 +165,7 @@
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); // 收键盘
     state.outputs = [];
     var sheets = app.model.sheets().length; // T42：超过 10 格的列阵分两张导出
-    el.finTitle.textContent = "导出 " + (single ? n + " 张单图" : "列阵" + (sheets > 1 ? "（" + sheets + " 张）" : "")) + (window.THEME && window.THEME.isDark() ? "（深色）" : "");
+    el.finTitle.textContent = STR("fin.title", { what: single ? STR("fin.singles", { n: n }) : sheets > 1 ? STR("fin.gridN", { n: sheets }) : STR("fin.grid"), dark: window.THEME && window.THEME.isDark() ? STR("fin.dark") : "" });
     showProgress(0, single ? n : sheets);
     el.finMsg.textContent = "";
     resetPreview();
@@ -181,11 +182,11 @@
       if (epoch !== app.draft.draftEpoch) return;
       state.outputs = urls;
       renderThumbs(urls);
-      say(el.finMsg, "已导出 " + urls.length + " 张"); // T43（U15：不强制先看）；T49：浏览器里的长按 / 右键说明在导出结果页
+      say(el.finMsg, STR("pub.exported", { n: urls.length })); // T43（U15：不强制先看）；T49：浏览器里的长按 / 右键说明在导出结果页
     } catch (e) {
       if (epoch !== app.draft.draftEpoch) return;
       state.outputs = [];
-      say(el.finMsg, "导出失败，可能是手机内存不够：少放几张配图或换短一点的单词再试");
+      say(el.finMsg, STR("pub.exportFail"));
     }
     setBusy(false);
     if (urls.length) (el.save.hidden ? el.exportView.hidden ? el.post : el.exportView : el.save).focus(); // 导出完把焦点交给第一个可用的按钮
@@ -205,7 +206,7 @@
     await app.view.ensureFonts();
     for (var k = 0; k < jobs.length; k++) {
       await new Promise(function (ok) { setTimeout(ok, 20); }); // 让进度先画出来再开始下一张
-      if (epoch !== app.draft.draftEpoch || app.draft.checkDraftExpiry()) throw new Error("草稿已过期");
+      if (epoch !== app.draft.draftEpoch || app.draft.checkDraftExpiry()) throw new Error(STR("pub.errExpired"));
       // 先按 EXPORT_SCALE 画；内存不够（抛错，或 toDataURL 只返回 "data:," 这类空图）时自动、静默退回 1 倍再画这一张（用户 11-18 定）
       var url = "";
       for (var s = 0; s < 2 && url.length < 1000; s++) {
@@ -213,7 +214,7 @@
         try { canvas = jobs[k](s ? 1 : EXPORT_SCALE); url = canvas.toDataURL("image/jpeg", 0.92); } catch (e) { url = ""; if (s) throw e; }
         if (canvas) canvas.width = canvas.height = 0;
       }
-      if (url.length < 1000) throw new Error("空白图"); // 1 倍也画不出来：照旧报错
+      if (url.length < 1000) throw new Error(STR("pub.errBlank")); // 1 倍也画不出来：照旧报错
       urls.push(url);
       onProgress(k + 1, jobs.length);
     }
@@ -232,16 +233,16 @@
   // 导出图的替代文字（导出结果页、缩略图、大图共用）
   function altFor(k) {
     var n = state.letters.length;
-    if (state.view === "single") return app.title.titleOrWord() + "，第 " + (k + 1) + "/" + n + " 张：" + app.view.caseText(k);
+    if (state.view === "single") return STR("alt.sheet", { title: app.title.titleOrWord(), k: k + 1, n: n, text: app.view.caseText(k) });
     var sh = app.model.sheets(), r = sh[k] || [0, n], cells = [];
     for (var j = r[0]; j < r[1]; j++) cells.push(app.view.caseText(j));
-    return app.title.titleOrWord() + (sh.length > 1 ? "，第 " + (k + 1) + "/" + sh.length + " 张" : "") + "：" + cells.join("；");
+    return sh.length > 1 ? STR("alt.sheet", { title: app.title.titleOrWord(), k: k + 1, n: sh.length, text: cells.join(STR("sep.semi")) }) : STR("alt.one", { title: app.title.titleOrWord(), text: cells.join(STR("sep.semi")) });
   }
   // 缩略图下的字：单图写字母；列阵写「列阵」，分图时写起止格（T42：「01–07」）
   function shotName(k) {
     if (state.view === "single") return state.letters[k];
     var sh = app.model.sheets(), two = function (x) { return (x < 10 ? "0" : "") + x; };
-    return sh.length > 1 ? two(sh[k][0] + 1) + "–" + two(sh[k][1]) : "列阵";
+    return sh.length > 1 ? two(sh[k][0] + 1) + "–" + two(sh[k][1]) : STR("fin.grid");
   }
 
   // T43：导出完成后的缩略图条。直接用 state.outputs 里的 data URL（不另画一遍），CSS 缩小显示
@@ -251,7 +252,7 @@
     urls.forEach(function (url, k) {
       var li = app.model.make("li"), b = app.model.make("button", "thumb"), img = document.createElement("img");
       b.type = "button";
-      b.setAttribute("aria-label", "第 " + (k + 1) + " 张" + (state.view === "single" ? "，字母 " + state.letters[k] : shotName(k) === "列阵" ? "，列阵" : "，列阵第 " + shotName(k) + " 格") + "，点开看大图");
+      b.setAttribute("aria-label", STR("thumb.label", { k: k + 1, what: state.view === "single" ? STR("thumb.letter", { letter: state.letters[k] }) : shotName(k) === STR("fin.grid") ? STR("fin.grid") : STR("thumb.gridRange", { range: shotName(k) }) }));
       img.src = url; img.alt = "";
       b.appendChild(img);
       b.appendChild(app.model.make("span", null, (k + 1) + " " + shotName(k)));
@@ -274,7 +275,7 @@
     viewAt = (k + n) % n;
     el.viewImg.src = urls[viewAt];
     el.viewImg.alt = altFor(viewAt);
-    el.viewTitle.textContent = "第 " + (viewAt + 1) + " / " + n + " 张 · " + shotName(viewAt);
+    el.viewTitle.textContent = STR("viewer.title", { k: viewAt + 1, n: n, name: shotName(viewAt) });
     el.viewPrev.disabled = el.viewNext.disabled = n < 2;
     Array.prototype.forEach.call(el.finThumbs.querySelectorAll(".thumb"), function (b, i) { b.classList.toggle("seen", i === viewAt); });
   }
@@ -304,10 +305,10 @@
       img.src = url;
       img.alt = altFor(k);
       fig.appendChild(img);
-      fig.appendChild(app.model.make("figcaption", null, (k + 1) + " / " + urls.length + (k === 0 && urls.length > 1 ? "　向下滚动看其余 " + (urls.length - 1) + " 张" : "")));
+      fig.appendChild(app.model.make("figcaption", null, (k + 1) + " / " + urls.length + (k === 0 && urls.length > 1 ? STR("res.scrollMore", { n: urls.length - 1 }) : "")));
       el.resList.appendChild(fig);
     });
-    el.resCount.textContent = "　" + urls.length + " 张";
+    el.resCount.textContent = STR("res.count", { n: urls.length });
     el.results.hidden = false;
     el.results.scrollTop = 0;
     el.resClose.focus();

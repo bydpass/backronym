@@ -2,6 +2,8 @@
 (function(root){
   'use strict';
   const P=typeof module==='object'&&module.exports?require('./lexicon-policy.js'):root.LEXICON_POLICY;
+  // 出错提示到文案表取；用到才取，自检单独装本文件时不必有文案表
+  function STR(id){return (typeof module==='object'&&module.exports?require('./i18n.js'):root.I18N).t(id);}
   function check(ok,message){if(!ok)throw new Error(message);}
   async function load(base,language,read){
     check(/^(en|fr|de|es|it|la)$/.test(language),'unknown language');
@@ -43,9 +45,9 @@
     return async function(url){
       const e=environment;
       check(e&&typeof e.fetch==='function'&&typeof e.TextDecoder==='function'&&e.crypto&&e.crypto.subtle&&typeof e.crypto.subtle.digest==='function',
-        '当前环境不支持安全读取词库，请在本机 localhost 或 HTTPS 浏览器中打开');
+        STR('lex.insecure'));
       const response=await e.fetch(url,{cache:'no-store'});
-      check(response.ok,'无法读取类别包');
+      check(response.ok,STR('lex.readFail'));
       const bytes=await response.arrayBuffer(),hash=await e.crypto.subtle.digest('SHA-256',bytes);
       return {value:JSON.parse(new e.TextDecoder().decode(bytes)),sha256:Array.from(new Uint8Array(hash),v=>v.toString(16).padStart(2,'0')).join('')};
     };
@@ -61,10 +63,10 @@
       try{
         const result=await Promise.race([
           Promise.all([prepare(code),load(base,code,read)]),
-          new Promise((resolve,reject)=>{timer=setTimeout(()=>reject(Error('词库加载超时')),timeout);})
+          new Promise((resolve,reject)=>{timer=setTimeout(()=>reject(Error(STR('lex.timeout'))),timeout);})
         ]);
         if(mine!==serial||result[0].stale)return {code,ok:false,stale:true,records:null};
-        check(result[0].ok&&ready(code),'语言包或屏蔽器未就绪');
+        check(result[0].ok&&ready(code),STR('lex.notReady'));
         return {code,ok:true,stale:false,records:result[1]};
       }catch(error){return {code,ok:false,stale:mine!==serial,records:null,error};}
       finally{clearTimeout(timer);}
@@ -208,21 +210,6 @@
   const QUERY_ONLY={reason:'compiled',source:'compiled',reviewer:'compiled'},DEMOTED=QUERY_ONLY;
   const apostrophes=s=>String(s).replace(/[\u2019\u02BC\u2018\u0060\u00B4]/g,"'");
   // 每个去重词形约 16 bit，两次散列；允许偶尔提前加载，真正的词形始终命中。
-  const alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-  function formBits(text,size){
-    let a=2166136261,b=5381;
-    for(let i=0;i<text.length;i++){a=Math.imul(a^text.charCodeAt(i),16777619);b=Math.imul(b,33)^text.charCodeAt(i);}
-    return [(a>>>0)%size,(b>>>0)%size];
-  }
-  function buildFormGate(keys){
-    if(!keys.size)return '';
-    const bits=new Uint8Array(Math.ceil(keys.size*16/6));
-    for(const key of keys)for(const bit of formBits(key,bits.length*6))bits[Math.floor(bit/6)]|=1<<(bit%6);
-    return Array.from(bits,n=>alphabet[n]).join('');
-  }
-  function mayHaveForm(gate,key){
-    return !!gate&&formBits(key,gate.length*6).every(bit=>(alphabet.indexOf(gate[Math.floor(bit/6)])&(1<<(bit%6)))!==0);
-  }
   // 词形包一行里的词形表（v00.03.02 批 S2）。v3 把词形多的行拆成「词干 + 词尾串」，相同的词尾串在 sidecar.tails 里只存一份：
   // [义项下标, 词干, 词尾串下标, 名词性数?]；没拆的行仍是 [义项下标, "词形 词形 …", 名词性数?]。先后与拆前相同
   function rowForms(sidecar,row){
@@ -276,6 +263,9 @@
     for(const n of pack.names){check(Array.isArray(n)&&n.length===3&&typeof n[0]==='string'&&(n[1]==='m'||n[1]==='f')&&/^[a-z]{2,3}$/.test(n[2])&&!named[n[0]],'invalid pack name');named[n[0]]=n;}
     // 可选的义项阴阳性（11-19，法西意）：与 senses 逐行对齐，m 阳 / f 阴 / b 两性同形 / - 不标；只给候选栏、义项栏的词性缩写用
     check(pack.genders===undefined||(typeof pack.genders==='string'&&pack.genders.length===pack.senses.length&&/^[mfb-]*$/.test(pack.genders)),'invalid pack genders');
+    // 可选的英文释义（v00.04.00 批 2，英文界面用）：与 senses 逐行对齐，0 = 没有，字符串 = 原文（也是短写），[原文, 短写]
+    const isEn=e=>e===0||(typeof e==='string'&&e!=='')||(Array.isArray(e)&&e.length===2&&e.every(x=>typeof x==='string'&&x));
+    check(pack.en===undefined||(Array.isArray(pack.en)&&pack.en.length===pack.senses.length&&pack.en.every(isEn)),'invalid pack en');
     let nameCount=0;
     const key=s=>fold(apostrophes(s)),records=[],forms=Object.create(null),index=Object.create(null),compact=Object.create(null),guards=Object.create(null),seen=new Set();
     const note=(k,i)=>{const a=index[k]||(index[k]=[]);if(a[a.length-1]!==i)a.push(i);};
@@ -295,6 +285,7 @@
       const record={sense_id:s[0],language,display:s[1],pos:s[2],zh:s[3],article:s[4],note:s[5],category:s[6],evidence,
         review:COMPILED,adverb_relation:{state:'no-adjective',evidence:'compiled'},latin_use:{state:'literary',evidence:'compiled'},name_payload:payload};
       if(pack.genders&&pack.genders[i]!=='-')record.gender=pack.genders[i];
+      if(pack.en&&pack.en[i])record.en=typeof pack.en[i]==='string'?[pack.en[i],pack.en[i]]:pack.en[i];
       check(!P.admission(record),'pack sense fails admission');
       records.push(record);
       const list=forms[s[0]]=pack.v===1&&s[7]?s[7].split(' '):[];
@@ -327,5 +318,5 @@
   function packLookup(lx,text,options){
     return packLookups(lx,text,options)[0]||null;
   }
-  const api={load,browserReader,createLoader,select,sample,queryEntries,buildFormGate,mayHaveForm,attachForms,rowForms,fromPack,packLookup,packLookups};if(typeof module==='object'&&module.exports)module.exports=api;else root.LEXICON_STORE=api;
+  const api={load,browserReader,createLoader,select,sample,queryEntries,attachForms,rowForms,fromPack,packLookup,packLookups};if(typeof module==='object'&&module.exports)module.exports=api;else root.LEXICON_STORE=api;
 })(typeof window!=='undefined'?window:this);

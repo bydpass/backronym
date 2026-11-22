@@ -1,6 +1,7 @@
 /* 藏头 - Backronym：绘制、测量、DOM 卡与外壳。ES2017 经典脚本。 */
 (function (app) {
   "use strict";
+  var STR = window.I18N.t; // 界面文案到 i18n.js 取，代码里只写编号（v00.04.00 批 0）
   app.view = {};
   var CORE = app.model.CORE, state = app.model.state, el = app.model.el;
 
@@ -50,6 +51,7 @@
     }
     return {
       edit: !!edit, // 编辑面：空释义 / 空配文画灰色占位（CORE.layoutCard）；导出不传
+      layout: state.layout, // v00.03.03 L2：这份作品的版式；编辑面、导出、版式页的小样都从这里拿
       letters: state.letters, i: i, picks: picks, glosses: glosses, captions: captions,
       // 显示用的词（按格内命中的词条显示）。组字预览中的这一格按预览的词算，大小写规则同 displayWord
       displayWords: state.letters.map(function (l, k) {
@@ -69,7 +71,7 @@
     var g = (state.glosses[i] || "").trim();
     var c = state.view === "single" ? (state.captions[i] || "").trim() : "";
     var a = app.model.articleText(i);
-    return (a ? a + (/[\u2019']$/.test(a) ? "" : " ") : "") + app.model.displayWord(i) + (g ? "（" + g + "）" : "") + (c ? "，配文：" + c : "");
+    return (a ? a + (/[\u2019']$/.test(a) ? "" : " ") : "") + app.model.displayWord(i) + (g ? STR("view.caseGloss", { g: g }) : "") + (c ? STR("view.caseCaption", { c: c }) : "");
   }
 
   // canvas 不会等 @font-face 下载，画之前必须先把要用的字体加载好，否则第一次生成会用系统字体
@@ -106,7 +108,7 @@
     var col = function (c) { return palette[c] || c; };
     layout.boxes.forEach(function (b) {
       if (b.role === "plate" || b.role === "bar" || b.role === "rule" || b.role === "ul") {
-        ctx.fillStyle = col(b.color);
+        ctx.fillStyle = b.role === "plate" && palette.frame ? palette.frame : col(b.color); // 表格主题：图版是白框（有配图时会被图盖住）
         ctx.fillRect(b.x, b.y, b.w, b.h);
       } else if (b.role === "image") {
         app.media.drawCover(ctx, app.model.cellImage(b.i), b.x, b.y, b.w, b.h, state.crops[b.i]);
@@ -114,8 +116,9 @@
         ctx.font = CORE.fontOf(b.weight, b.size, b.italic);
         ctx.save();
         if (b.clip) { ctx.beginPath(); ctx.rect(b.clip[0], b.clip[1], b.clip[2], b.clip[3]); ctx.clip(); }
+        var own = b.role === "giant" && palette.giant ? palette.giant : col(b.color); // 表格主题：白框里的超大字母用浅灰
         if (!b.track && !(b.keyAt >= 0)) {
-          ctx.fillStyle = col(b.color);
+          ctx.fillStyle = own;
           ctx.textAlign = b.align || "left";
           ctx.fillText(b.text, b.x, b.baseline);
         } else {
@@ -123,7 +126,7 @@
           var font = ctx.font, track = b.track || 0, chars = CORE.textUnits(b.text);
           ctx.textAlign = "left";
           for (var j = 0; j < chars.length; j++) {
-            ctx.fillStyle = col(j === b.keyAt ? "red" : b.color);
+            ctx.fillStyle = j === b.keyAt ? col("red") : own;
             ctx.fillText(chars[j], b.x + CORE.charX(measure, font, b.text, j, track), b.baseline);
           }
         }
@@ -215,7 +218,7 @@
     n.className = "b b-" + b.role + (b.invalid ? " invalid" : "");
     st = n.style;
     if (d.kind === "rect") {
-      if (b.role !== "image") st.backgroundColor = d.color;
+      if (b.role !== "image") st.backgroundColor = b.role === "plate" ? "var(--frame, " + d.color + ")" : d.color; // 表格主题的白框；别的主题没有 --frame，落回原色
       st.width = d.width + "px";
       st.height = d.height + "px";
       n.setAttribute("data-y", String(b.y));
@@ -225,7 +228,7 @@
       st.fontWeight = String(d.weight);
       st.fontStyle = d.italic ? "italic" : "normal";
       st.letterSpacing = d.letterSpacing + "px";
-      st.color = d.color;
+      st.color = b.role === "giant" ? "var(--giant, " + d.color + ")" : d.color; // 表格主题白框里的浅灰大字母
       n.setAttribute("data-size", String(b.size));
       n.setAttribute("data-baseline", String(b.baseline));
       if (b.keyAt >= 0) { // 关键字母朱红
@@ -283,7 +286,7 @@
       hit.style.top = b.y * k + "px";
       hit.style.width = b.w * k + "px";
       hit.style.height = (CORE.GRID.GLOSS.dbase + 30) * k + "px"; // 图版 + 单词 + 释义
-      hit.setAttribute("aria-label", "编辑第 " + (b.i + 1) + " 格 " + state.letters[b.i]);
+      hit.setAttribute("aria-label", STR("view.editCell", { n: b.i + 1, letter: state.letters[b.i] }));
       hit.addEventListener("click", function () { openSingle(b.i); });
       frag.appendChild(hit);
     });
@@ -338,13 +341,14 @@
     el.pagerLetters.classList.toggle("tight", n > 8);
     el.pagerLetters.classList.toggle("rows", split); // T42：超过 10 格按分图分两行，行末标起止格（320 宽单行放不下 14 个 24px 点按区）
     el.pager.hidden = grid || !n;
+    el.toLayout.hidden = !n; // 有了单词才有卡可排
     // T42：列阵分图时的页签（换张入口，横滑也可以）
     el.sheetTabs.textContent = "";
     el.sheetTabs.hidden = !(grid && split);
     if (grid && split) {
       var on = app.model.sheetOf(state.focus);
       sh.forEach(function (r, k) {
-        var t = app.model.make("button", "sheet-tab", two(r[0] + 1) + "–" + two(r[1]) + " 第 " + (k + 1) + " 张");
+        var t = app.model.make("button", "sheet-tab", STR("view.sheetTab", { range: two(r[0] + 1) + "–" + two(r[1]), k: k + 1 }));
         t.type = "button"; t.id = "sheet-" + k;
         t.setAttribute("role", "tab"); t.setAttribute("aria-selected", String(k === on));
         t.addEventListener("click", function () { // 换张：停在那一张的第一格；焦点交给重画后的同一个页签（不走 focusId：它会把列阵切回单图）
@@ -362,7 +366,7 @@
       b.appendChild(app.model.make("span", null, letter));
       b.type = "button";
       b.id = "pl-" + i;
-      b.setAttribute("aria-label", "第 " + (i + 1) + " 格 " + letter + "，" + (st === "ok" ? "已选 " + app.model.displayWord(i) : st === "bad" ? "词不是以 " + CORE.startSpoken(letter) + " 开头" : "还没选"));
+      b.setAttribute("aria-label", STR("view.pagerCell", { n: i + 1, letter: letter, state: st === "ok" ? STR("view.pagerOk", { word: app.model.displayWord(i) }) : st === "bad" ? STR("view.pagerBad", { s: CORE.startSpoken(letter) }) : STR("view.pagerEmpty") }));
       if (i === cur) b.setAttribute("aria-current", "step");
       b.addEventListener("click", function () { app.model.setFocus(i, "pl-" + i); });
       (row || el.pagerLetters).appendChild(b);
@@ -372,7 +376,7 @@
     // T49：只留下一步要做的事。「左右滑动…」「先打一个…候选才会出现」不再说（字母栏可点、卡上占位已说明）；没填的格与首字母不对的格并成「还差 N 格」，
     // 具体哪一格由字母栏的虚线与读屏名、点「完成」被拦下时的定位说明（finishNote）给出
     var left = sts.filter(function (t) { return t !== "ok"; }).length;
-    el.hint.textContent = app.publish.finishNote ? app.publish.finishNote : !n || grid ? "" : left ? "还差 " + left + " 格" : ""; // 2026-11-12：列阵的「点一格编辑」删去
+    el.hint.textContent = app.publish.finishNote ? app.publish.finishNote : !n || grid ? "" : left ? STR("view.left", { n: left }) : ""; // 2026-11-12：列阵的「点一格编辑」删去
   }
 
   // 把 <html> 上的 --k 设成卡显示宽 / 1080：界面尺寸（--u）和左边距（--m = 80 × k）跟着变，与卡的网格线对齐
@@ -399,7 +403,7 @@
     var a = document.activeElement;
     return !!a && (a.tagName === "TEXTAREA" || !!a.isContentEditable || (a.tagName === "INPUT" && !/^(file|range|color|checkbox|radio|button)$/.test(a.type)));
   }
-  function panelOpen() { return !el.imgPanel.hidden || !el.cropper.hidden || !el.credits.hidden || !el.finishPanel.hidden || !el.results.hidden || !el.viewer.hidden || !el.settings.hidden; }
+  function panelOpen() { return !el.imgPanel.hidden || !el.cropper.hidden || !el.credits.hidden || !el.finishPanel.hidden || !el.results.hidden || !el.viewer.hidden || !el.settings.hidden || !el.layoutPage.hidden; }
 
   // T32：卡之外，字母栏与提示行也收横滑（opts.blockOn = 起点在这些元素里不算：字母按钮 U3、「改单词 / 填表人」入口）。
   // 这些区域不设 pan-y（放大后的用户要能横向平移），有 touch 事件就用 touch——不因浏览器接手滚动而被 pointercancel 取消；没有 touch 才用 pointer（电脑鼠标）

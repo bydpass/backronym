@@ -1,6 +1,7 @@
 /* 藏头 - Backronym：草稿控制、恢复闸门与期限调度。ES2017 经典脚本。 */
 (function (app) {
   "use strict";
+  var STR = window.I18N.t; // 界面文案到 i18n.js 取，代码里只写编号（v00.04.00 批 0）
   app.draft = {};
   var CORE = app.model.CORE, state = app.model.state, el = app.model.el;
 
@@ -31,7 +32,7 @@
   var draftNotice = "", cleanupFailed = false;
   // 提示的状态码（T13）：noticeTag = { text, retire, readFail }，retire = 清理成功后可替换的期限 / 清理类提示，readFail = 带「部分存储读取失败」后缀。
   // 只在 text 仍等于当前 draftNotice 时有效：提示被别的回调改写后自动作废。改文案不会再改坏判断
-  var noticeTag = null, READ_FAIL_NOTICE = "读取失败，暂不保存，请及时导出。";
+  var noticeTag = null, READ_FAIL_NOTICE = STR("draft.readFail");
   function tagNotice(retire, readFail) {
     noticeTag = { text: draftNotice, retire: retire, readFail: readFail };
   }
@@ -68,7 +69,10 @@
     if (m) { p.media = m.media; p.crops = m.crops; }
     // 词条带冠词的作品才记各格义项的词性（冠词有没有、要不要选都看它）；英语作品没有这个字段
     if ((state.poss || []).length && state.picks.some(function (x) { return CORE.articleOptions(x).length > 0; })) p.poss = state.letters.map(function (l, i) { return state.poss[i] || ""; }); else delete p.poss;
-    if ((state.arts || []).some(Boolean)) p.arts = state.letters.map(function (l, i) { return state.arts[i] || ""; }); else delete p.arts; // 没人选过冠词就不写这个字段：旧稿打开后内容不变
+    // 版式（v00.03.03 L2）：和「对开」不一样才写这个字段，没动过版式的作品（含旧稿）打开后内容不变
+    if (CORE.sameLayout(state.layout, "folio")) delete p.layout; else p.layout = CORE.layoutOf(state.layout);
+    if ((state.artOwn || []).some(Boolean)) p.artOwn = state.letters.map(function (l, i) { return state.artOwn[i] || ""; }); else delete p.artOwn; // 没人自己写过冠词就不写这个字段
+    if ((state.arts || []).some(Boolean)) p.arts =state.letters.map(function (l, i) { return state.arts[i] || ""; }); else delete p.arts; // 没人选过冠词就不写这个字段：旧稿打开后内容不变
     // 语言多选（2026-11-12）：选了不止一门才写 langs 和各格的词来自哪门；只选一门的作品不写这两个字段（旧稿打开后内容不变）。lang 仍写定字母规则的那一门，旧版本读得懂
     if (state.langs.length > 1) { p.langs = state.langs.slice(); p.pickLangs = state.letters.map(function (l, i) { return state.pickLangs[i] || ""; }); } else { delete p.langs; delete p.pickLangs; }
     return p;
@@ -90,11 +94,11 @@
   var mediaHeld = emptyMedia();
   var mediaUnsure = false; // 恢复时有图读失败（判断不了它在不在）：本次打开不清理配图
   var mediaQueue = Promise.resolve(), mediaJobs = 0, sweeping = false;
-  var SAVED = "草稿已保存。";
+  var SAVED = STR("draft.saved");
   var MEDIA_MSG = {
-    write: "配图没能保存：草稿仍保留上一次的配图和取景；这次换的图只在本次打开期间有效，请及时导出。",
-    space: "设备空间不够，配图没有保存；文字草稿已保存，请及时导出。",
-    none: "这台设备不支持保存配图，重开后需要重新选图；文字草稿已保存，请及时导出。",
+    write: STR("draft.imgWrite"),
+    space: STR("draft.imgSpace"),
+    none: STR("draft.imgNone"),
   };
   function emptyMedia() { return { word: "", def: null, cells: [], crops: [] }; }
 
@@ -269,10 +273,10 @@
     if (out.held.def) media.cells.forEach(function (n, i) { if (n && !out.held.cells[i]) out.held.crops[i] = (media.defaultCrops || [])[i] || null; });
     // B7-S1：有默认图时，缺图的格实际显示默认图，文案照实说；读失败（unsure）不说「找不回」，提示稍后重开再试
     var n = (lostDef ? 1 : 0) + lostCells.length, parts = [];
-    if (lostDef) parts.push("默认图");
-    if (lostCells.length) parts.push("第 " + lostCells.join("、") + " 格");
-    if (n) out.lost = "有 " + n + " 张配图" + (out.unsure ? "暂时读不出来" : "没能找回") + "（" + parts.join("、") + "），" +
-      (lostCells.length && out.def ? "缺图的格先用默认图" : "已留空") + "，" + (out.unsure ? "请及时导出或稍后重开再试。" : "请重新选图。");
+    if (lostDef) parts.push(STR("draft.lostDef"));
+    if (lostCells.length) parts.push(STR("draft.lostCells", { list: lostCells.join(STR("sep.list")) }));
+    if (n) out.lost = STR("draft.lost", { n: n, what: out.unsure ? STR("draft.lostUnsure") : STR("draft.lostGone"), where: parts.join(STR("sep.list")),
+      then: lostCells.length && out.def ? STR("draft.lostUseDef") : STR("draft.lostBlank"), todo: out.unsure ? STR("draft.lostTodoUnsure") : STR("draft.lostTodoGone") });
     return out;
   }
 
@@ -318,7 +322,7 @@
 
   function renderDraftStatus() {
     var note = mediaNote(), text = draftNotice;
-    if (note === "ok") { if (draftNotice === SAVED) text = "草稿和配图已保存。"; }
+    if (note === "ok") { if (draftNotice === SAVED) text = STR("draft.savedWithImg"); }
     else if (note && (draftNotice === SAVED || !draftNotice)) text = note;
     el.draftStatus.textContent = text; // 2026-11-12：「预计清除：时间」删去，和页脚固定说明重复
     if (app.entry.entryFrom === "edit") app.entry.renderSave(); // T30：保存状态变了，改词页的保存按钮跟着变
@@ -361,18 +365,18 @@
       prevMedia = snapMedia(payload); if (!heldAny()) mediaMissing = ""; // T45：这一版的配图引用已落盘；恢复时缺图的说明由新状态替换（还有暂未读回的图时保留）
       if (JSON.stringify([prevMedia.def, prevMedia.cells]) !== was) setTimeout(sweepMedia, 0); // 换图 / 移除已落盘：旧图可能没人引用了，本次就清（B7-R5）
       settleWaiters(write, { ok: true });
-      draftNotice = sideGuard ? (sideMsg || (sideRead ? sideNotice(false) : "正在保存草稿…")) : cleanupFailed ? "部分存储清理未完成，将重试。" : write === draftWrite ? "草稿已保存。" : "新修改尚未确认保存。";
+      draftNotice = sideGuard ? (sideMsg || (sideRead ? sideNotice(false) : STR("draft.saving"))) : cleanupFailed ? STR("draft.cleanupPending") : write === draftWrite ? STR("draft.saved") : STR("draft.unconfirmed");
       if (!sideGuard && cleanupFailed) tagNotice(true, false);
       renderDraftStatus();
       scheduleExpiry();
     };
     if (ticket.localOK) accept();
-    else { draftNotice = "正在保存草稿…"; renderDraftStatus(); }
+    else { draftNotice = STR("draft.saving"); renderDraftStatus(); }
     ticket.remote.then(function (ok) {
       if (epoch !== app.draft.draftEpoch) return;
       if (ok) accept();
       else if (!ticket.localOK && write === draftWrite) {
-        draftNotice = "未确认保存成功，请及时导出。";
+        draftNotice = STR("draft.unconfirmedExport");
         draftTarget = null; // 最新一次没写进：同样内容下次要重写，不能被去重挡掉
         renderDraftStatus();
         settleWaiters(write, { ok: false, reason: "write" });
@@ -396,10 +400,10 @@
         if (r.empty) return { ok: true };
         raws = r.raws || [r.raw]; bad = badSides(r.bad); // 重读时读到了原文：每一份都走保全流程
       }
-      for (var i = 0; i < raws.length; i++) if (!(await draftStore.preserve(raws[i]))) return { ok: false, notice: "原稿无法保全，暂不保存，请及时导出。" };
+      for (var i = 0; i < raws.length; i++) if (!(await draftStore.preserve(raws[i]))) return { ok: false, notice: STR("draft.guardFail") };
       return { ok: true, bad: bad };
     } catch (e) {
-      return { ok: false, notice: "原稿无法保全，暂不保存，请及时导出。" };
+      return { ok: false, notice: STR("draft.guardFail") };
     }
   }
 
@@ -426,7 +430,7 @@
   // 侧闸门检查（T23）：重读此前读失败、或存着不同原文的那一侧。读到的每份未到期原文（与恢复稿同字节的除外）都先存进恢复副本再放行；
   // 仍读失败或保全失败 → 这一侧不覆盖，另一侧照常写
   function sideNotice(unsaved) {
-    return unsaved ? "有一处存储里的原稿无法保全，暂不覆盖它，请及时导出。" : "有一处存储读取失败，暂不覆盖它，请及时导出。";
+    return unsaved ? STR("draft.sideGuard") : STR("draft.sideRead");
   }
 
   async function sideCheck(sides) {
@@ -479,6 +483,18 @@
       writeDraft();
     });
   }
+
+  // 重新载入会丢掉内存里的图，等图片与引用都确认落盘再离开当前页面。
+  // 返回 true = 可以离开；false = 没确认存好；"none" = 这台设备存不了配图（再等也不会好，调用方给另一句提示）
+  async function persistForReload() {
+    if (!app.draft.draftLoaded) return true; // 草稿还在读取，作品控件尚不能编辑
+    syncMedia();
+    await mediaQueue;
+    var loose = liveImages().filter(function (img) { return !img.bkName; });
+    if (loose.length) return loose.every(function (img) { return img.bkFail === "none"; }) ? "none" : false;
+    var result = await persistNow();
+    return result.ok && !unsavedNow() && liveImages().every(function (img) { return !!img.bkName; });
+  }
   // 当前作品是否还有没确认写进本设备的修改（T30：改词页「保存」按钮的「未保存」状态）
   // 程序自己对数据做的整理（词库迟到后补齐词条）不算编辑：整理前没有未保存的改动，整理后也不算有——不触发保存、不续期、离开时不问
   function quietly(fn) {
@@ -530,13 +546,15 @@
     sideGuard = null; sideKeep = ""; sideRead = false; sideMsg = "";
     prevMedia = emptyMedia(); mediaHeld = emptyMedia(); mediaMissing = ""; mediaUnsure = false;
     state.letters = []; state.picks = []; state.glosses = []; state.glossAuto = [];
-    state.captions = []; state.keys = []; state.arts = []; state.poss = []; state.pickLangs = []; state.images = []; state.crops = []; state.defaultCrops = [];
+    state.captions = []; state.keys = []; state.arts = []; state.artOwn = []; state.poss = []; state.pickLangs = []; state.images = []; state.crops = []; state.defaultCrops = [];
     app.model.setLang("en"); // 新作品回到默认语言
     state.image = null; state.outputs = []; state.filler = ""; state.focus = 0;
     state.view = "single"; state.imgIndex = state.cropIndex = -1; state.split = null; state.retitle = false;
+    state.layout = CORE.layoutOf(); // 新作品回到默认版式「对开」
     el.title.textContent = "";
     [el.wordInput, el.wordCtl, el.glossCtl, el.capCtl, el.fillerCtl].forEach(function (c) { c.value = ""; c.classList.remove("ime"); });
     [el.finishPanel, el.results, el.imgPanel, el.cropper].forEach(function (p) { p.hidden = true; });
+    app.layout.dismiss(); // 版式页是这份作品的：作品清掉了就收起，不留旧小样、也不让人往空作品里写版式（设置、借物页与作品无关，照旧留着）
     app.publish.resetPreview(); // T43 / B4-S2：缩略图、大图与预览状态不留
     el.resList.textContent = "";
     el.cropCanvas.width = el.cropCanvas.height = 0;
@@ -561,7 +579,7 @@
   function pendingWarning() {
     if (draftGuard && guardMsg) return guardMsg;
     if (sideGuard && sideMsg) return sideMsg;
-    return unsavedNow() ? "新修改尚未确认保存。" : ""; // 有写入在途也算（B2-R1）
+    return unsavedNow() ? STR("draft.unconfirmed") : ""; // 有写入在途也算（B2-R1）
   }
 
   async function cleanExpiredDrafts() {
@@ -572,11 +590,11 @@
     var pending = pendingWarning();
     var tag = noticeTag && noticeTag.text === draftNotice ? noticeTag : null;
     if (!ok) {
-      draftNotice = pending ? pending + " 部分存储清理未完成，将重试。" : "部分存储清理未完成，将重试。";
+      draftNotice = pending ? pending + " " + STR("draft.cleanupPending") : STR("draft.cleanupPending");
       tagNotice(true, !!(tag && tag.readFail) || pending === READ_FAIL_NOTICE || pending === sideNotice(false)); // 清理成功不代表恢复时的读取失败已解决，保留其状态。
     }
     // 空稿清理成功不另外提示（11-04 用户定）。只替换期限 / 清理类提示；读取失败是另一回事，保留它，不能说成「已清除」。有未落盘的警告时恢复那条警告
-    else if (tag && tag.retire) draftNotice = (pending || (draftSavedAt ? "草稿已保存。" : "")) + (tag.readFail ? " 部分存储读取失败。" : "");
+    else if (tag && tag.retire) draftNotice = (pending || (draftSavedAt ? STR("draft.saved") : "")) + (tag.readFail ? " " + STR("draft.partReadFail") : "");
     renderDraftStatus();
     scheduleExpiry(); // 清理完成后重算：空稿可停，失败/未到期副本继续。
   }
@@ -615,7 +633,7 @@
     app.draft.draftLoaded = true;
     draftGuard = guardFor(ctx); guardMsg = "";
     sideGuard = ctx.sides || null; sideKeep = ctx.keep || ""; sideRead = !!ctx.sideRead; sideMsg = "";
-    draftNotice = "草稿无法恢复，已从空白开始。";
+    draftNotice = STR("draft.unrecoverable");
     try { draftContent = JSON.stringify(draftPayload()); } catch (e) { /* 取不到就留空：只是编辑前不会误判成无改动 */ }
     el.wordInput.disabled = false;
     el.finish.disabled = false;
@@ -652,8 +670,8 @@
     ctx.sides = (got || blindOnly) && (rem || loc) ? { remote: rem, local: loc } : null;
     ctx.keep = ctx.raw; ctx.sideRead = !!(fl.remote || fl.local);
     sideGuard = ctx.sides; sideKeep = ctx.keep; sideRead = ctx.sideRead; sideMsg = "";
-    draftNotice = result.expired ? "超过 18 小时或时间无效的草稿已失效。" : "";
-    if (result.error) draftNotice += " 部分存储读取失败。";
+    draftNotice = result.expired ? STR("draft.expired") : "";
+    if (result.error) draftNotice += " " + STR("draft.partReadFail");
     tagNotice(!!result.expired, !!result.error);
     if (d) Object.keys(d).forEach(function (k) { if (CORE.DRAFT_FIELDS.indexOf(k) < 0) draftExtra[k] = d[k]; });
     app.draft.draftLoaded = true;
@@ -670,6 +688,7 @@
     // 标题和填表人与单词分开存（D18）：旧草稿可能清空了单词却留着它们，照样放回界面，不然约 400ms 后主键会被空值覆盖。
     // 没有单词时处于 first 模式，这两样等输入单词后才显示
     state.filler = d.filler;
+    state.layout = CORE.layoutOf(d.layout); // 版式随草稿走；没有这个字段的旧稿是「对开」（migrateDraft 已逐项规整）
     if (d.titleRuns) app.title.setTitleRuns(d.titleRuns);
     state.image = media.def;
     mediaMissing = media.lost; mediaUnsure = media.unsure; mediaHeld = media.held || emptyMedia();
@@ -681,14 +700,21 @@
     // 迁移后各数组都与单词等长（CORE.migrateDraft）：词库词换成当前格式的条目（卡上打的词首字母大写，词库全小写，所以不分大小写），未命中的自定义词保留原条目与元数据；
     // 不是以该字母开头的词也保留，由 cellState 标成不合法（D8）。keys 恒为 0，glossAuto 缺了的迁移时已补齐
     // 每格的词来自哪门语言：草稿记了就用；只选一门的作品（含旧稿）就是那一门；其余留空，itemFor 按选中语言的先后去找
-    state.pickLangs = state.letters.map(function (l, i) { return d.picks[i] ? (d.pickLangs && d.pickLangs[i]) || (d.langs.length === 1 ? d.langs[0] : "") : ""; });
+    state.pickLangs = state.letters.map(function (l, i) { var c = d.picks[i] && d.pickLangs && d.pickLangs[i]; return d.picks[i] ? (c && d.langs.indexOf(c) >= 0 ? c : "") || (d.langs.length === 1 ? d.langs[0] : "") : ""; }); // 记着的语言已不在作品所选语言里（旧稿）就不认，按已选语言重找（Sol 复审 D4/D5）
     state.picks = d.picks.map(function (p, i) { return p ? app.model.itemFor(p[0], p, i) : null; });
     state.keys = d.keys.slice();
     var wordsHere = !window.LANGPACK || d.langs.every(function (c) { return window.LANGPACK.has(c, "words"); });
     state.poss = state.letters.map(function (l, i) { var q = d.poss && d.poss[i]; return CORE.savedSense(d.picks[i], state.picks[i], q) || (d.glossAuto[i] && state.picks[i] ? CORE.defaultSense(state.picks[i]) : ""); }); // 没记：自动带出的释义按词条第一个词性，自己写的不猜
     state.arts = state.letters.map(function (l, i) { var a = d.arts && d.arts[i]; return a && (!wordsHere || CORE.articleOptions(state.picks[i]).indexOf(a) >= 0) ? a : ""; }); // 选项里已经没有的旧选择不沿用；词库还没到时先留着，到了由 refreshPicks 再核（R8）
+    state.artOwn = state.letters.map(function (l, i) { var a = d.artOwn && d.artOwn[i]; return state.picks[i] && typeof a === "string" ? a : ""; }); // 自己写的冠词：有词才留（长度在草稿迁移时已截过）
+    // 那门语言的冠词不留的格：记着未选语言的；或几门语言的草稿里明确没有归属的（旧版取消语言时只清了归属、冠词列还留着——
+    // 几门语言时词库认出的词都记了归属，没归属却带冠词列的只能是这种遗留，Sol 最终复审）。已选语言重新认回的格不动（dropLangArticles 里判断）
+    var multi = Array.isArray(d.pickLangs) && d.langs.length > 1;
+    app.model.dropLangArticles(state.letters.map(function (l, i) { var c = d.pickLangs && d.pickLangs[i]; return (c ? d.langs.indexOf(c) < 0 : multi && d.picks[i]) ? i : -1; }).filter(function (i) { return i >= 0; }));
+    app.model.pruneArtOwn(); // 已选外语里都没有的（旧稿、取消语言后没存上）重开时清掉
     state.glosses = d.glosses.map(function (g, i) {
-      return d.glossAuto[i] && state.picks[i] ? CORE.savedAutoGloss(state.picks[i],g) : g;
+      var code = state.pickLangs[i], ready = wordsHere || code && window.LANGPACK.has(code, "words");
+      return d.glossAuto[i] && state.picks[i] && ready ? CORE.savedAutoGloss(state.picks[i], g) : g;
     });
     state.glossAuto = d.glossAuto.slice();
     state.captions = d.captions.slice();
@@ -725,6 +751,7 @@
     guardDraftEvent: guardDraftEvent,
     flushDraft: flushDraft,
     persistNow: persistNow,
+    persistForReload: persistForReload,
     releaseHeld: releaseHeld,
     quietly: quietly,
     heldAt: heldAt,

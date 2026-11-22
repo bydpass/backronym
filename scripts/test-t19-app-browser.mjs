@@ -24,8 +24,13 @@ const D = (lang, word, picks) => ({ v: 2, lang, word, filler: "", view: "single"
 let browser;
 try {
   browser = await chromium.launch({ headless: true, ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
-  async function pageFor(draft, width = 375) {
+  { const make = browser.newContext.bind(browser); browser.newContext = options => make({ locale: "zh-CN", ...options }); } // v00.04.00 批 1：界面语言跟随环境，无头浏览器默认报英文；本脚本测的是中文界面
+  // hold（可选）= 要扣住词形表的语言：v00.03.04 起词形表在语言就绪后空闲时就预读，拦截必须在开页之前设好，否则请求早已过去。
+  // 返回的 forms.release() 放行，forms.hits 是被扣住的请求数
+  async function pageFor(draft, width = 375, hold) {
     const context = await browser.newContext({ viewport: { width, height: 812 } });
+    let release; const held = new Promise(ok => { release = ok; }), forms = { hits: 0, release };
+    for (const c of hold || []) await context.route(`**/lang/${c}/inflections.js`, async route => { forms.hits++; await held; await route.continue(); });
     await context.addInitScript(({ draft, KEY }) => {
       if (!sessionStorage.getItem("seeded")) { if (draft) localStorage.setItem(KEY, JSON.stringify({ ...draft, t: Date.now() - 5000 })); localStorage.setItem("backronym-tip-seen", "1"); sessionStorage.setItem("seeded", "1"); }
     }, { draft, KEY });
@@ -34,7 +39,7 @@ try {
     await page.goto(url);
     await page.waitForFunction(() => !document.getElementById("wordInput").disabled);
     if (draft) await page.waitForFunction(l => window.LANGPACK.has(l, "words") && window.LANGPACK.has(l, "block") && !!window.LANGPACK.get(l, "lexicon"), draft.lang);
-    return { page, context, errors };
+    return { page, context, errors, forms };
   }
   const cell = (page, i) => page.evaluate(i => document.getElementById("pl-" + i).click(), i);
   const type = async (page, text) => { await page.locator("#wordCtl").click(); await page.locator("#wordCtl").fill(""); await page.keyboard.type(text); await page.waitForFunction(() => !document.getElementById("candLab").textContent.includes("词形索引加载中")); };
@@ -63,10 +68,18 @@ try {
     assert.deepEqual(errors, []); await context.close();
   }
   {
-    const { page, context, errors } = await pageFor(null);
-    let release;
-    const gate = new Promise(ok => { release = ok; });
-    await page.route("**/lang/en/inflections.js", async route => { await gate; await route.continue(); });
+    { // v00.03.04：没有词形门控。不打字，词形表也会在 load 之后空闲时自己读好；法语草稿的词包到了，它的词形表同样预读
+      const a = await pageFor(null);
+      assert.equal(await a.page.evaluate(() => document.readyState), "complete");
+      await a.page.waitForFunction(() => window.LANGPACK.has("en", "inflections"), null, { timeout: 10000 });
+      assert.deepEqual(a.errors, []); await a.context.close();
+      const b = await pageFor(D("fr", "PA"));
+      await b.page.waitForFunction(() => window.LANGPACK.has("fr", "inflections"), null, { timeout: 10000 });
+      assert.deepEqual(b.errors, []); await b.context.close();
+    }
+    // 词形表被扣住时页面照样 load 完（pageFor 里的 goto 等的就是 load）：预读不在 load 之前发请求
+    const { page, context, errors, forms } = await pageFor(null, 375, ["en"]);
+    const release = forms.release;
     await page.locator("#wordInput").fill("DOORS");
     await page.waitForFunction(() => document.getElementById("wordSense").textContent === "词形索引加载中");
     release();
@@ -111,7 +124,7 @@ try {
     { const { page, context, errors, c } = await look(D("fr", "LIVRE"), "livre", "Livre", "le");
       assert.equal(c.line, "n. m. 书；n. f. 磅", "同一个词按义项标阴阳"); assert.match(c.label, /阳性名词，书；阴性名词，磅/);
       await page.locator("#candList .cand-it").filter({ hasText: "n. m. 书" }).first().click(); await page.locator("#glossCtl").focus();
-      assert.deepEqual(await page.locator("#senseList .sense-row .pos").allInnerTexts(), ["n. m.", "n. f."], "义项栏行首也换成阴阳性，不再写 n. le / n. la");
+      assert.deepEqual(await page.locator("#senseList .sense-row:not(.art-row) .pos").allInnerTexts(), ["n. m.", "n. f."], "义项栏行首也换成阴阳性，不再写 n. le / n. la（冠词一行另算，v00.04.00 起总有）");
       assert.deepEqual(errors, []); await context.close(); }
     { const { context, errors, c } = await look(D("fr", "HOMME"), "homme", "Homme", "l’"); assert.equal(c.line, "n. m. 人，男人", "l’ 看不出的阴阳性写进缩写"); assert.deepEqual(errors, []); await context.close(); }
     { const { context, errors, c } = await look(D("es", "AGUA"), "agua", "Agua", "el"); assert.equal(c.line, "s. f. 水", "el agua 是阴性"); assert.deepEqual(errors, []); await context.close(); }
@@ -145,7 +158,7 @@ try {
       const { page, context, errors } = await pageFor({ ...D("es", "M", [["mar", "n.海", "el / la"]]), arts: ["la"], poss: ["n."], glosses: ["我的海"], glossAuto: [false] });
       assert.equal(await article(page), "la", "上一版草稿里明确选的 la 恢复后仍是 la");
       await cell(page, 0); await page.locator("#glossCtl").focus();
-      assert.deepEqual(await artRow(page), ["el", "la*"], "义项栏两个冠词都在，亮的是已选的 la");
+      assert.deepEqual(await artRow(page), ["la*", "el"], "义项栏两个冠词都在，亮的是已选的 la（固定排法 la 在 el 前）");
       await page.locator("#glossCtl").fill("我的大海");
       await saved(page, "d.glosses[0] === '我的大海' && d.arts && d.arts[0] === 'la'");
       assert.equal(await article(page), "la", "只改释义：冠词不变");
@@ -160,7 +173,7 @@ try {
       const { page, context, errors } = await pageFor({ ...D("es", word[0].toUpperCase(), [[word, "n." + zh, "el / la"]]), arts: ["la"], poss: ["n."], glosses: ["旧释义"], glossAuto: [false] });
       assert.equal(await article(page), "la", "旧稿 la " + word + " 恢复后仍是 la");
       await cell(page, 0); await page.locator("#glossCtl").focus();
-      assert.deepEqual(await artRow(page), ["el", "la*"], word + "：两个冠词都在，亮的是已选的 la");
+      assert.deepEqual(await artRow(page), ["la*", "el"], word + "：两个冠词都在，亮的是已选的 la（固定排法 la 在 el 前）");
       await page.locator("#glossCtl").fill("新释义");
       await saved(page, "d.glosses[0] === '新释义' && d.arts && d.arts[0] === 'la'");
       await page.reload(); await page.waitForFunction(() => !document.getElementById("wordInput").disabled && window.LANGPACK.has("es", "words") && !!window.LANGPACK.get("es", "lexicon"));
@@ -173,7 +186,7 @@ try {
       await type(page, "mar");
       assert.equal(await article(page), "el", "新选的 mar：用通用语推荐的 el");
       await page.locator("#glossCtl").focus();
-      assert.deepEqual(await artRow(page), ["el*", "la"], "没选时亮推荐的 el，la 可选");
+      assert.deepEqual(await artRow(page), ["la", "el*"], "没选时亮推荐的 el，la 可选（固定排法 la 在 el 前）");
       await page.locator("#glossCtl").blur();
       assert.equal(await finished(page), true, "有推荐冠词：不用选也能完成");
       assert.deepEqual(errors, []); await context.close();
@@ -185,17 +198,16 @@ try {
     }
   }
   { // 用原生 Delete / Backspace 在词中及词首删改，再从草稿重开。
-    const { page, context, errors } = await pageFor(D("de", "ES"));
+    const { page, context, errors, forms } = await pageFor(D("de", "ES"), 375, ["de"]);
     const input = page.locator("#wordCtl");
     // 词形索引在打字中途才加载完（app-model refreshPicks 换掉内容没变的词条对象，essen 删改后会被写回 Essen）：扣住 de 的 inflections.js，
     // 删成 esen（触发加载）后放行、等加载完再补回 s，保证每次都走到这个时序（2026-11-19 复审：原写法靠运气，变异检验三次只抓到一次）
-    let release; const held = new Promise(r => { release = r; });
-    let heldHits = 0; await page.route("**/lang/de/inflections.js", async route => { heldHits++; await held; await route.continue(); });
+    const release = forms.release;
     await type(page, "essen");
     await input.evaluate(n => n.setSelectionRange(1, 1));
     await input.press("Delete");
     release(); await page.waitForFunction(() => window.LANGPACK.has("de", "inflections")); await page.waitForTimeout(100);
-    await page.unroute("**/lang/de/inflections.js"); assert.equal(heldHits, 1, "de 词形索引确实是在打字中途才到（请求被扣住过一次；否则这段测不到时序）");
+    assert.equal(forms.hits, 1, "de 词形索引确实是在打字中途才到（请求被扣住过一次；否则这段测不到时序）");
     await input.pressSequentially("s");
     assert.equal(await input.inputValue(), "essen");
     assert.equal(await gloss(page), "吃");
@@ -349,7 +361,7 @@ try {
   {
     const { page, context, errors } = await pageFor(D("fr", "LE", [["lumière", ""], ["étoile", ""]]));
     await cell(page, 0); await page.locator("#glossCtl").focus();
-    assert.deepEqual(await page.locator("#senseList button").allInnerTexts(), ["光"], "草稿里的词按新词库补齐义项（已存的释义不动）"); await page.locator("#glossCtl").blur();
+    assert.deepEqual(await page.locator("#senseList .sense-row button").allInnerTexts(), ["光"], "草稿里的词按新词库补齐义项（已存的释义不动；冠词一行另算）"); await page.locator("#glossCtl").blur();
     assert.deepEqual(await page.locator('#mirror [data-role="article"]').allInnerTexts(), ["la"]);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, "无横向滚动");
     assert.deepEqual(errors, []); await context.close();
@@ -485,16 +497,15 @@ try {
     assert.deepEqual(errors, []); await context.close();
   }
   { // 批 A 复审（R04）：卡面 Pierre，单词框仍放存下的 pierre——回到这格改一个字再删掉，词义不能从「石头」变成人名「皮埃尔」
-    const { page, context, errors } = await pageFor({ ...D("fr", "PA", [["pierre", "n.石头", "la"], null]), glosses: ["石头", ""], pickLangs: ["fr", ""] });
+    const { page, context, errors, forms } = await pageFor({ ...D("fr", "PA", [["pierre", "n.石头", "la"], null]), glosses: ["石头", ""], pickLangs: ["fr", ""] }, 375, ["fr"]);
     await cell(page, 1); await cell(page, 0);
     assert.equal(await page.evaluate(() => [...document.querySelectorAll('#mirror [data-role="word"]')].map(n => n.textContent).join("")), "Pierre", "卡面首字母大写");
     assert.equal(await page.locator("#wordCtl").inputValue(), "pierre", "框里是存下的拼写");
     // 扣住 fr 的 inflections.js：打 s 成 pierres（触发加载），等加载完再删回，保证每次都走到「词形索引中途到达」的时序（2026-11-19 返工）
-    let release; const held = new Promise(r => { release = r; });
-    let heldHits = 0; await page.route("**/lang/fr/inflections.js", async route => { heldHits++; await held; await route.continue(); });
+    const release = forms.release;
     await page.locator("#wordCtl").click(); await page.keyboard.press("End"); await page.keyboard.type("s");
     release(); await page.waitForFunction(() => window.LANGPACK.has("fr", "inflections")); await page.waitForTimeout(100);
-    await page.unroute("**/lang/fr/inflections.js"); assert.equal(heldHits, 1, "fr 词形索引确实是在打字中途才到（请求被扣住过一次；否则这段测不到时序）");
+    assert.equal(forms.hits, 1, "fr 词形索引确实是在打字中途才到（请求被扣住过一次；否则这段测不到时序）");
     await page.keyboard.press("Backspace");
     assert.equal(await gloss(page), "石头", "改字再删回：仍是石头");
     await page.locator("#wordCtl").blur(); await page.waitForTimeout(600); // 等草稿写盘
@@ -573,13 +584,72 @@ try {
       assert.equal((await finish(page)).panel, true);
       await context.close();
     }
+    // 复审 G-A1（v00.03.04）：西、意旧稿，M 格只存了 mar（没记语言、没有释义）。意语的词形表读失败时，西语照样要把冠词与释义补上，不用重新输入。
+    // 两种到达顺序都测：意语最后失败（复审复现的那一种）、意语先失败西语后到；另测手填的释义不被盖掉
+    for (const [what, order, over, want] of [
+      ["意语词形表最后失败", "fail-last", { glosses: [""], glossAuto: [true] }, "海"],
+      ["意语词形表先失败、西语后到", "fail-first", { glosses: [""], glossAuto: [true] }, "海"],
+      ["意语词形表最后失败，手填的释义保留", "fail-last", { glosses: ["我的海"], glossAuto: [false] }, "我的海"],
+    ]) {
+      let failNow, passNow, asked = { it: 0, es: 0 };
+      const failGate = new Promise(ok => { failNow = ok; }), passGate = new Promise(ok => { passNow = ok; });
+      const { page, context, errors } = await open(M(["es", "it"], "M", ["mar", ""], { pickLangs: [""], ...over }), async c => {
+        await c.route("**/lang/it/inflections.js", async r => { asked.it++; await failGate; await r.abort(); });
+        await c.route("**/lang/es/inflections.js", async r => { asked.es++; await passGate; await r.continue(); });
+      });
+      await ready(page, ["es", "it"]);
+      for (let k = 0; k < 100 && !(asked.it && asked.es); k++) await page.waitForTimeout(100);
+      assert.ok(asked.it && asked.es, what + "：两门词形表的请求都被扣住（否则这段空跑）");
+      assert.equal(await article(page), "", what + "：词形表都没到，先不认");
+      if (order === "fail-last") { passNow(); await page.waitForFunction(() => window.LANGPACK.has("es", "inflections")); await page.waitForTimeout(300); assert.equal(await article(page), "", what + "：意语还没结论，仍在等"); failNow(); }
+      else { failNow(); await page.waitForTimeout(500); assert.equal(await article(page), "", what + "：西语还没到，仍在等"); passNow(); }
+      await page.waitForFunction(() => { const n = document.querySelector('#mirror [data-role="article"]'); return n && n.innerText === "el"; }, null, { timeout: 8000 }).catch(() => { throw new Error(what + "：没有自动补上西语冠词 el"); });
+      assert.equal(await gloss(page), want, what + "：释义");
+      assert.equal(await langOf(page, 0), "es", what + "：这一格记成西语");
+      assert.deepEqual(errors.filter(e => !/inflections|ERR_FAILED|Failed to load/i.test(e)), [], what + "：除了那次被掐掉的请求没有别的报错");
+      await context.close();
+    }
+    // 复审 G-A2（v00.03.04）：法、意旧稿，I 格是已选的法语 ira（aller 的变形，「去」）。法语词形表读失败时这一格查不到自己的词形，
+    // 不能被意语的同形名词 Ira「愤怒」（冠词 l’）顶替：词条、语言、冠词、释义原样留着。失败先到、后到各一遍；之后只改配文再重载也不变
+    for (const [what, order] of [["法语词形表最后失败", "fail-last"], ["法语词形表先失败、意语后到", "fail-first"]]) {
+      let failNow, passNow, asked = { fr: 0, it: 0 };
+      const failGate = new Promise(ok => { failNow = ok; }), passGate = new Promise(ok => { passNow = ok; });
+      const { page, context, errors } = await open(M(["fr", "it"], "I", ["ira", "v.去", ""], { pickLangs: ["fr"], glosses: ["去"], glossAuto: [true], poss: ["v."] }), async c => {
+        await c.route("**/lang/fr/inflections.js", async r => { asked.fr++; await failGate; await r.abort(); });
+        await c.route("**/lang/it/inflections.js", async r => { asked.it++; await passGate; await r.continue(); });
+      });
+      await ready(page, ["fr", "it"]);
+      // 前提：法语主包里没有词头 ira（只在词形表里），意语主包里有——否则这段测不到顶替
+      assert.deepEqual(await page.evaluate(() => ["fr", "it"].map(c => Object.keys(window.LANGPACK.get(c, "words")).some(k => window.LANGPACK.get(c, "words")[k].some(w => w[0].toLowerCase() === "ira")))), [false, true], what + "：前提");
+      for (let k = 0; k < 100 && !(asked.fr && asked.it); k++) await page.waitForTimeout(100);
+      assert.ok(asked.fr && asked.it, what + "：两门词形表的请求都被扣住（否则这段空跑）");
+      const snap = () => page.evaluate(() => { const s = window.__B.model.state; return [s.pickLangs[0], s.picks[0].slice(0, 3), s.glosses[0], (s.arts || [])[0] || ""]; });
+      const keep = ["fr", ["ira", "v.去", ""], "去", ""];
+      if (order === "fail-last") { passNow(); await page.waitForFunction(() => window.LANGPACK.has("it", "inflections")); await page.waitForTimeout(300); assert.deepEqual(await snap(), keep, what + "：法语还没结论，原样"); failNow(); }
+      else { failNow(); await page.waitForTimeout(500); assert.deepEqual(await snap(), keep, what + "：意语还没到，原样"); passNow(); await page.waitForFunction(() => window.LANGPACK.has("it", "inflections")); }
+      await page.waitForTimeout(800); // 两门都有了结论，重核已经跑过
+      assert.deepEqual(await snap(), keep, what + "：都有结论后，仍是法语的 ira「去」");
+      assert.deepEqual([await article(page), await gloss(page)], ["", "去"], what + "：卡面没有冠词，释义不变");
+      // 只改配文：保存的草稿里语言与词条不变；重载（法语词形表仍失败）后也不变
+      await cell(page, 0); await page.locator("#capCtl").waitFor({ state: "visible" }); await page.locator("#capCtl").focus(); await page.keyboard.type("on y va");
+      await page.waitForFunction(k => { const d = JSON.parse(localStorage.getItem(k) || "{}"); return (d.captions || [])[0] === "on y va"; }, KEY, { timeout: 8000 });
+      const saved = await page.evaluate(k => { const d = JSON.parse(localStorage.getItem(k)); return [d.pickLangs[0], d.picks[0].slice(0, 3), d.glosses[0]]; }, KEY);
+      assert.deepEqual(saved, ["fr", ["ira", "v.去", ""], "去"], what + "：改配文后落盘的仍是法语词条");
+      await page.reload({ waitUntil: "domcontentloaded" }); await page.waitForFunction(() => !document.getElementById("wordInput").disabled);
+      await ready(page, ["fr", "it"]); await page.waitForFunction(() => window.LANGPACK.has("it", "inflections"), null, { timeout: 10000 }); await page.waitForTimeout(800);
+      assert.deepEqual(await snap(), keep, what + "：重载后仍是法语的 ira「去」");
+      assert.deepEqual(errors.filter(e => !/inflections|ERR_FAILED|Failed to load/i.test(e)), [], what + "：除了被掐掉的请求没有别的报错");
+      await context.close();
+    }
     { // V003-B4-R12：没记语言的自定义词（英语里没有 mar；西、意都有）——意语先到不认走，到齐后按语言栏的先后认成西语
       const { page, context, errors } = await open(M(["en", "es", "it"], "M", ["mar", ""], { pickLangs: [""], glosses: ["我的海"], glossAuto: [false] }), slow("es", 4000));
       await ready(page, ["it"]); await page.waitForTimeout(200);
       assert.equal(await has(page, "es"), false, "此刻西语确实还没到");
       assert.equal(await article(page), "", "意语先到：先不认");
       assert.equal(await langOf(page, 0), "", "这一格还没记成任何语言（意语没有冠词，只看冠词分不出来）");
-      await ready(page, ["es"]); await page.waitForTimeout(300);
+      await ready(page, ["es"]);
+      // v00.03.04：没有词形门控，「到齐」要等三门语言的词形表也到（以前门控直接判 mar 不是变形，不用等），所以等它而不是固定等 300ms
+      await page.waitForFunction(() => ["en", "es", "it"].every(c => window.LANGPACK.has(c, "inflections")), null, { timeout: 10000 }); await page.waitForTimeout(300);
       assert.equal(await article(page), "el", "到齐后认成西语（mar 推荐 el，见复审 R3-18、R3-19；两性待选的拦截由上面 mártir 一例覆盖）");
       assert.equal(await langOf(page, 0), "es");
       assert.equal(await gloss(page), "我的海", "用户自己写的释义不动");
@@ -702,16 +772,17 @@ try {
       let release, heldHits = 0; const held = new Promise(r => { release = r; });
       for (const c of ["fr", "es"]) await page.route(`**/lang/${c}/inflections.js`, async route => { heldHits++; await held; await route.continue(); });
       await page.reload({ waitUntil: "domcontentloaded" }); await page.waitForFunction(() => !document.getElementById("wordInput").disabled); await both();
-      await cell(page, 0); await page.waitForTimeout(300);
+      await cell(page, 0);
+      // v00.03.04：词形表不在 load 之前请求，load 后再让出 1 秒才预读，所以等到请求真的发出来（最多 8 秒），不是固定等 300ms
+      for (let k = 0; k < 80 && !heldHits; k++) await page.waitForTimeout(100);
       assert.ok(heldHits > 0, "词形请求确被扣住（否则这段空跑）");
       release(); await page.waitForTimeout(800);
       await cell(page, 0); assert.equal(await gloss(page), "", "词形请求扣住后放行：仍留空");
       assert.deepEqual(errors, []); await context.close();
     }
     { // 词形索引迟到：先以唯一的漏音符候选带出的义项，索引到达后不被精确变位顶替；候选补齐
-      const { page, context, errors } = await pageFor(D("es", "P"));
-      let release; const held = new Promise(r => { release = r; });
-      await page.route("**/lang/es/inflections.js", async route => { await held; await route.continue(); });
+      const { page, context, errors, forms } = await pageFor(D("es", "P"), 375, ["es"]);
+      const release = forms.release;
       await page.locator("#wordCtl").click(); await page.locator("#wordCtl").fill(""); await page.keyboard.type("publico");
       assert.equal(await gloss(page), "公众", "索引未到：público 是唯一候选，自动带出");
       release(); await page.waitForFunction(() => window.LANGPACK.has("es", "inflections")); await page.waitForTimeout(150);

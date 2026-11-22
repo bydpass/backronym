@@ -31,6 +31,13 @@ const KEEP = [
   "review/lexicon/de/supplement.tsv",
   "review/presets-20261112b/",
   "review/presets-approved.txt",
+  // 英文释义校验、词包重建与预设英文命题释义所用的表。
+  ...["de", "en", "es", "fr", "it", "la"].flatMap(lang => [ // en：英语专业、历史文化词的英文（真机第一轮 D6）
+    `review/en-gloss/${lang}.tsv`, `review/en-gloss/picks/${lang}.tsv`,
+  ]),
+  "review/en-gloss/presets.tsv",
+  "review/en-gloss/repairs.tsv",
+  "review/en-gloss/same-card.tsv",
 
   "review/t19-batches/t19-batch5-20261111/compiled/",
   // 交付 63 的 compiled/ 已在 406cf8e 整理 review/ 时删除，没有脚本再读它。

@@ -33,7 +33,7 @@ const appFiles = fs.readdirSync(path.join(root, "app/assets")).filter(name => /^
 // v00.03.00 T03：各语言的词库 / 补充表在 app/assets/lang/<语种>/，逐个扫描；packs.js 是加载器（界面提示也算）
 const langFiles = fs.readdirSync(path.join(root, "app/assets/lang"), { withFileTypes: true }).filter(d => d.isDirectory())
   .flatMap(d => ["words.js", "phrases.js"].map(n => "app/assets/lang/" + d.name + "/" + n)).filter(f => fs.existsSync(path.join(root, f)));
-for (const f of langFiles.concat(["app/assets/lang/packs.js", "app/assets/lang/presets.js", "app/index.html", "app/assets/core.js", "app/assets/theme.js", "app/assets/style.css"].concat(appFiles))) {
+for (const f of langFiles.concat(["app/assets/lang/packs.js", "app/assets/lang/presets.js", "app/index.html", "app/assets/i18n.js", "app/assets/core.js", "app/assets/theme.js", "app/assets/style.css"].concat(appFiles))) {
   for (const c of fs.readFileSync(path.join(root, f), "utf8")) {
     const cp = c.codePointAt(0);
     if (cp > 0x2000) chars.add(c);

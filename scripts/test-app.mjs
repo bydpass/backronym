@@ -14,12 +14,16 @@ const mediaDefaults = () => ({
   mediaHeld: { word: "", def: null, cells: [], crops: [] }, heldAny: () => false, releaseHeld() {}, heldAt: () => ({ img: false, crop: null }),
   // T04：恢复 / 新作品经 app.model.setLang 设语言（替身照真实规则：只认已注册的语种）
   setLang(code) { if (!this.CORE || !this.CORE.useLang(code)) return false; if (this.state) this.state.lang = code; return true; },
+  // Sol 复审 D4/D5：重开草稿时清掉已选外语里都没有的另选冠词；清理本身由 test-uilang-browser 覆盖，这里补空替身
+  pruneArtOwn() {},
+  dropLangArticles() {},
 });
 // 语言多选（2026-11-12）：itemFor / setPick 经 lookupHit、tagLang、itemLang 记每格的词来自哪门语言。没自己提供的测试段补上按 lookup 推出来的默认替身
 const load = (names, env) => { const d = mediaDefaults(); for (const k in d) if (!(k in env)) env[k] = d[k];
   if (!("setLangs" in env)) env.setLangs = function (codes) { if (!this.CORE || !this.CORE.useLangs(codes)) return false; if (this.state) { this.state.langs = codes.slice(); this.state.lang = this.CORE.LANG.code; } return true; };
   return loadAppFunctions(names, env); };
 const core = { window: {} };
+vm.runInNewContext(fs.readFileSync(new URL("../app/assets/i18n.js", import.meta.url), "utf8"), core); // 界面文案表（v00.04.00 批 0），core.js 的文字经它取
 vm.runInNewContext(fs.readFileSync(new URL("../app/assets/core.js", import.meta.url), "utf8"), core);
 const CORE = core.window.CORE;
 {
@@ -38,7 +42,8 @@ const CORE = core.window.CORE;
 const key = "backronym-draft-v2";
 const now = 2000000000000;
 const good = { v: 2, t: now, word: "LIFE", filler: "作者", extra: { kept: true } };
-const html = fs.readFileSync(new URL("../app/index.html", import.meta.url), "utf8");
+// v00.04.00 批 0：页面元素多了文案编号（data-i18n*）。下面按原样标签写的断言照旧，读进来时先把编号去掉；编号本身由 test-i18n.mjs 核对
+const html = fs.readFileSync(new URL("../app/index.html", import.meta.url), "utf8").replace(/ data-i18n(?:-html|-attrs|-skip)?(?:="[^"]*")?/g, "");
 for (const id of ["wordInput", "finish"]) assert.match(html, new RegExp('<[^>]+id="' + id + '"[^>]+disabled'));
 assert.match(html, /id="draftStatus"[^>]*role="status"/);
 let resolveRead;
@@ -341,7 +346,7 @@ for (const mode of ["读取抛错", "读取一侧失败无原文"]) {
 {
   assert.doesNotMatch(html, /kdots/, "index.html 没有 #kdots");
   assert.doesNotMatch(source, /kdot|letterPositions|pickKeyAt|点圆圈/, "app.js 里没有圆圈高亮的残留");
-  const c = load(["cellState", "setPick"], { CORE, state: { letters: ["I", "I", "E"], picks: [["idea", ""], ["live", ""], null], glosses: ["", "", ""], glossAuto: [true, true, true], keys: [0, 0, 0], arts: ["", "", ""] } });
+  const c = load(["cellState", "ownArticle", "setPick"], { CORE, state: { letters: ["I", "I", "E"], picks: [["idea", ""], ["live", ""], null], glosses: ["", "", ""], glossAuto: [true, true, true], keys: [0, 0, 0], arts: ["", "", ""] } });
   assert.deepEqual([0, 1, 2].map((i) => c.cellState(i)), ["ok", "bad", "empty"], "idea 在 I 格 ok；live 放在 I 格 bad（i 只在词中）；没打 empty");
   // v00.03.00 T22：两性名词的冠词由用户选——没选是 art（点「完成」会被拦下），选了 ok；换词即清，同一个词重查时选项里还有才留着
   c.setPick(0, ["idea", "观念", "el / la"]); assert.equal(c.cellState(0), "art", "二选一还没选");
@@ -351,7 +356,7 @@ for (const mode of ["读取抛错", "读取一侧失败无原文"]) {
   c.state.arts[0] = "la"; c.setPick(0, ["ideal", "理想", "el / la"]); assert.equal(c.state.arts[0], "", "换了词：清掉");
   c.setPick(0, ["idea", "", "la"]); assert.equal(c.cellState(0), "ok", "单一冠词不用选");
   // V003-B4-R7：setPick 记下自动带出的释义的词性；保留着用户自己的释义时，同一个词沿用、换了词不确定
-  const m = load(["cellState", "setPick"], { CORE, defaultSense: CORE.defaultSense, state: { letters: ["J"], picks: [null], glosses: [""], glossAuto: [true], keys: [0], arts: [""], poss: [""] } });
+  const m = load(["cellState", "ownArticle", "setPick"], { CORE, defaultSense: CORE.defaultSense, state: { letters: ["J"], picks: [null], glosses: [""], glossAuto: [true], keys: [0], arts: [""], poss: [""] } });
   const JEUNE = ["jeune", "adj.年轻的|n.年轻人", "le / la"];
   m.setPick(0, JEUNE); assert.deepEqual([m.state.poss[0], m.cellState(0)], ["adj.", "ok"], "自动带出形容词义项：不用选冠词");
   m.state.poss[0] = "n."; m.state.glossAuto[0] = false; m.state.glosses[0] = "年轻人"; assert.equal(m.cellState(0), "art", "名词义项：要选");
@@ -701,7 +706,7 @@ for (const mode of ["读取抛错", "读取一侧失败无原文"]) {
   vm.runInNewContext(fs.readFileSync(new URL(LEGACY + "/en/words.js", import.meta.url), "utf8"), real);
   const RC = real.window.CORE;
   const bars = [], listed = [];
-  const b = load(["renderWordBar", "cellState"], {
+  const b = load(["renderWordBar", "cellState", "ownArticle"], {
     CORE: RC, window: { WORDS: real.window.WORDS }, words: () => real.window.WORDS, moreWords: () => ({}), capitalize: RC.capitalize, blocked: RC.blocked,
     state: { letters: ["H", "L"], picks: [["Live", ""], ["Lov", ""]] },
     candPage: 0, candKey: "", candQuiet: false, candMemo: { key: "", list: [] },
@@ -733,7 +738,7 @@ for (const mode of ["读取抛错", "读取一侧失败无原文"]) {
   const env = vm.createContext({
     window: {}, document: {getElementById: id => id === "wordCtl" ? input : null}
   });
-  for (const name of ["core.js", "lexicon-policy.js", "lexicon-store.js", "lang/packs.js",
+  for (const name of ["i18n.js", "core.js", "lexicon-policy.js", "lexicon-store.js", "lang/packs.js",
     "lang/en/words.js", "lang/de/rules.js", "lang/de/words.js", "lang/fr/rules.js", "lang/fr/words.js", "lang/es/rules.js", "lang/es/words.js", "lang/en/inflections.js", "lang/de/inflections.js", "lang/fr/inflections.js", "lang/es/inflections.js", "app-model.js", "app-editor.js"]) {
     const url = new URL("../app/assets/" + name, import.meta.url);
     vm.runInContext(fs.readFileSync(url, "utf8"), env, {filename: name});
@@ -906,7 +911,7 @@ for (const mode of ["读取抛错", "读取一侧失败无原文"]) {
 }
 // 同形推荐行只提供类别标注，精确候选完整保留义项；其他原形组和其他语言照常出现。
 {
-  const recommended = ["Sein", "n.存在", "das", "", "专业"];
+  const recommended = ["Sein", "n.存在", "das", "", "pro"];
   const verb = ["sein", "v.是"];
   const noun = ["Sein", "n.存在|n.生存", "das|das", ""];
   const alternative = ["Sein", "adj.自己的"];
@@ -924,7 +929,7 @@ for (const mode of ["读取抛错", "读取一侧失败无原文"]) {
     document: {createDocumentFragment: () => ({items: [], appendChild(n) { this.items.push(n); }})}
   });
   e.renderWordBar(0);
-  assert.equal(JSON.stringify(shown), JSON.stringify([[...noun, "专业"], alternative, verb]));
+  assert.equal(JSON.stringify(shown), JSON.stringify([[...noun, "pro"], alternative, verb]));
   assert.equal(noun.length, 4, "类别标注不写回精确查词结果");
 }
 // 交付57复审（2026-11-12）：还没打字时，开关的「+N」按这一格能拿到的展开词数算。数字格按读法首字母（2 → two → T），不能拿「2」当关键词去匹配
@@ -932,7 +937,7 @@ for (const mode of ["读取抛错", "读取一侧失败无原文"]) {
   const cur = { window: {} };
   for (const f of ["lang/en/words.js", "block/core.js", "lang/en/block.js", "core.js"]) vm.runInNewContext(fs.readFileSync(new URL("../app/assets/" + f, import.meta.url), "utf8"), cur);
   const CC = cur.window.CORE, M = cur.window.WORDS_MORE, extras = [];
-  const c = load(["renderWordBar", "cellState"], {
+  const c = load(["renderWordBar", "cellState", "ownArticle"], {
     CORE: CC, window: cur.window, words: () => cur.window.WORDS, moreWords: () => M, capitalize: CC.capitalize, blocked: CC.blocked,
     state: { letters: ["2", "A"], picks: [["", ""], ["", ""]] },
     candPage: 0, candKey: "", candQuiet: false, candMemo: { key: "", list: [] },
@@ -1134,7 +1139,7 @@ checkNames(htmlNames, htmlTexts, "index.html 初始");
 {
   const mk = id => ({ id, hidden: false, textContent: panelBtn[id] ? panelBtn[id].text : "", label: panelBtn[id] ? panelBtn[id].label : "", setAttribute(k, v) { this.label = v; } });
   const P = load(["renderImgPanel"], {
-    el: { imgTitle: mk("imgTitle"), imgPick: mk("imgPick"), imgAdjust: mk("imgAdjust"), imgRemove: mk("imgRemove"), defPick: mk("defPick"), defRemove: mk("defRemove") },
+    el: { imgTitle: mk("imgTitle"), imgPick: mk("imgPick"), imgAdjust: mk("imgAdjust"), imgRemove: mk("imgRemove"), defPick: mk("defPick"), defAdjust: mk("defAdjust"), defRemove: mk("defRemove") },
     state: { imgIndex: 0, letters: ["L"], images: [], image: null }, cellImage: i => P.state.images[i] || P.state.image,
   });
   const snap = () => {
@@ -1239,11 +1244,11 @@ assert.equal(clean.draftNotice, " 部分存储读取失败。");
   const calls = [];
   const mkState = () => ({ letters: ["L", "I", "F", "E"], picks: [["love", ""], ["ice", ""], null, ["echo", ""]], glosses: ["爱", "", "", ""], glossAuto: [false, true, true, true],
     captions: ["", "冰的配文", "", ""], keys: [0, 0, 0, 0], images: [null, null, "img-F", null], crops: [null, null, null, null], filler: "小满", focus: 0, view: "single" });
-  const env = load(["lostCells", "cropEdited", "applyEntry", "submitEntry", "validateEntry", "entryValues", "setLetters", "keepSame", "firstOpen", "bumpImg", "focusEntry", "focusBehind", "pageOpen"], {
+  const env = load(["lostCells", "cropEdited", "sharedCrop", "commonCrop", "applyEntry", "submitEntry", "validateEntry", "entryValues", "setLetters", "keepSame", "firstOpen", "bumpImg", "focusEntry", "focusBehind", "pageOpen"], {
     langBlock: () => "", // T20：语言已就绪（英语随包加载）
     CORE, state: mkState(), imgSeq: {}, entryFrom: "edit", draftLoaded: true, splits: Object.create(null), splitFor: () => null, /* T42 */ BLOCKED_WORD: "词被拦", BLOCKED_FILLER: "名被拦",
     capitalize: CORE.capitalize, blocked: (t) => /SEX|微信/i.test(t), checkDraftExpiry: () => false, displayWord: i => CORE.capitalize(env.state.picks[i][0]),
-    el: { wordInput: { value: "", focus() { calls.push("focus:word"); } }, fillerCtl: { value: "", focus() { calls.push("focus:filler"); } }, toEntry: { focus() { calls.push("focus:toEntry"); } }, settings: { hidden: true }, credits: { hidden: true } },
+    el: { wordInput: { value: "", focus() { calls.push("focus:word"); } }, fillerCtl: { value: "", focus() { calls.push("focus:filler"); } }, toEntry: { focus() { calls.push("focus:toEntry"); } }, settings: { hidden: true }, credits: { hidden: true }, layoutPage: { hidden: true } },
     setEntryErr(f, m) { if (m) calls.push("err:" + f + ":" + m); }, showConfirm(w, f, lost) { calls.push("confirm:" + w + ":" + lost.map(c => c.letter).join("")); },
     saveEntry(back) { calls.push("save:" + back); },
     closeEntry() { calls.push("close"); env.entryFrom = ""; }, openEntry(from) { calls.push("open:" + from); env.entryFrom = from; }, renderEntry() {}, changed() { calls.push("changed"); },
@@ -1271,6 +1276,18 @@ assert.equal(clean.draftNotice, " 部分存储读取失败。");
   env.state.crops[2] = { z: 2, x: 0.5, y: 0.5 };
   assert.deepEqual(j(env.lostCells("LOVE")).map(c => [c.letter, c.parts.join("·")]), [["I", "词·配文"], ["F", "取景"]], "改过的取景列为「取景」");
   env.state.crops[2] = { z: 1, x: 0.3, y: 0.5 }; assert.equal(j(env.lostCells("LOVE")).length, 2, "只平移也算改过");
+  { // 复审 L4-A1：各格共用的默认图取景改词后会沿用，不列进清空项；在默认图上单独调过、与共用那份不同的才算会丢
+    const z2 = () => ({ z: 2, x: 0.5, y: 0.5 }), keep = { image: env.state.image, defaultCrops: env.state.defaultCrops, crops: env.state.crops };
+    env.state.image = "img-default"; env.state.defaultCrops = [z2(), z2(), z2(), z2()]; env.state.crops = [z2(), z2(), z2(), z2()];
+    assert.deepEqual(j(env.lostCells("LOVE")).map(c => [c.letter, c.parts.join("·")]), [["I", "词·配文"]], "共用的默认图取景不算会丢：F 格只有它，不列；I 格只列词与配文");
+    env.state.crops[2] = { z: 3, x: 0.5, y: 0.5 };
+    assert.deepEqual(j(env.lostCells("LOVE")).map(c => [c.letter, c.parts.join("·")]), [["I", "词·配文"], ["F", "取景"]], "这一格单独调过、与共用那份不同：会丢，列出");
+    env.state.crops[2] = z2(); env.state.images[2] = "img-F";
+    assert.deepEqual(j(env.lostCells("LOVE"))[1].parts, ["配图", "取景"], "有单独配图的格：配图与取景都会丢");
+    env.state.images[2] = null; env.state.image = null;
+    assert.deepEqual(j(env.lostCells("LOVE")).map(c => c.letter), ["I", "F"], "没有默认图时没有可沿用的取景：照旧列出");
+    Object.assign(env.state, keep);
+  }
   env.state.crops[2] = null; env.state.images[2] = "img-F";
   // submitEntry（首次进入）：空、屏蔽词（单词 / 填表人）、会清空 → 确认；否则直接应用。改词页里回车 = 保存并返回（T30）
   env.entryFrom = "boot";
@@ -1406,9 +1423,9 @@ assert.deepEqual(inserts, ["👨‍👩‍👧‍👦"], "截短粘贴保留完�
   let img = { width: 1600, height: 1000 };
   const focused = []; let saves = 0;
   const node = (id) => ({ id, hidden: false, focus() { focused.push(id); } });
-  const e = load(["cropRect", "blankCrop", "copyCrop", "workImage", "currentCrop", "cropPreviewFrame", "drawCropPreview", "clampCrop", "panCrop", "setZoom", "moveCrop", "onCropKey", "cropEdited",
+  const e = load(["cropRect", "blankCrop", "copyCrop", "workImage", "currentCrop", "cropFrame", "cropPreviewFrame", "drawCropPreview", "clampCrop", "panCrop", "setZoom", "moveCrop", "onCropKey", "cropEdited",
     "openCropper", "applyCrop", "cancelCrop", "resetCrop", "leaveCropper"], {
-    CORE, FRAME: { single: [920, 600] }, state: { crops: [], letters: ["L"], cropIndex: 0, imgIndex: 0, images: [], image: null }, work: null,
+    CORE, state: { crops: [], letters: ["L"], cropIndex: 0, imgIndex: 0, images: [], image: null }, work: null,
     el: { cropCanvas: canvas, cropZoom: {}, cropTitle: {}, cropScope: {}, imgPanel: node("imgPanel"), cropper: node("cropper"), imgAdjust: node("imgAdjust"), imgPick: node("imgPick") },
     cellImage: () => img, draftEpoch: 0, checkDraftExpiry: () => false, renderImgPanel() {}, changed() { saves++; },
   });
@@ -1440,6 +1457,33 @@ assert.deepEqual(inserts, ["👨‍👩‍👧‍👦"], "截短粘贴保留完�
     assert.equal(stopped, true); near(e.currentCrop().z, 1.1);
   }
   assert.equal(sizeWrites, 2, "预览反复绘制，只首次设置宽高");
+  // v00.03.03 外部复审 L2-A1：取景框跟这份作品的图版比例走（3:2 → 920:600，1:1 → 600:600，3:4 → 450:600），预览里露出来的就是卡上、导出里的那一块
+  assert.deepEqual(Array.from(e.cropFrame()), [920, 600], "没设版式：图版 3:2");
+  assert.deepEqual((({ x, y, w, h }) => [x, y, w, h])(e.cropPreviewFrame()), [24, (300 - 312 * 600 / 920) / 2, 312, 312 * 600 / 920], "3:2 的预览框与改前逐值相同");
+  for (const [ratio, pw] of [["1:1", 600], ["3:4", 450], ["3:2", 920]]) {
+    e.state.layout = CORE.layoutOf({ ratio }); img = { width: 1600, height: 1000 }; e.state.crops = [];
+    assert.deepEqual(Array.from(e.cropFrame()), [pw, 600], ratio + "：取景框 = 图版");
+    e.openCropper(0);
+    const f = e.cropPreviewFrame();
+    near(f.w / f.h, pw / 600);
+    assert.ok(f.x >= 24 - 1e-9 && f.y >= 24 - 1e-9 && f.x + f.w <= 336 + 1e-9 && f.y + f.h <= 276 + 1e-9, ratio + "：预览框在画布里，四周留 24");
+    near(f.x + f.w / 2, 180); near(f.y + f.h / 2, 150);
+    e.setZoom(1.5); e.panCrop(-7, 5);
+    const r = e.cropRect(img, pw, 600, e.currentCrop()); // 卡上、导出用图版的宽高取这一块（app-view.js 的 drawCover）
+    near((f.x - drawn[1]) / (drawn[3] / img.width), r.sx);
+    near((f.y - drawn[2]) / (drawn[4] / img.height), r.sy);
+    near(f.w / (drawn[3] / img.width), r.vw);
+    near(f.h / (drawn[4] / img.height), r.vh);
+    e.panCrop(1e6, 1e6); // 拖到头：停在图的左上角，不露出图外
+    const edge = e.cropRect(img, pw, 600, e.currentCrop());
+    near(edge.sx, 0); near(edge.sy, 0);
+    near(e.currentCrop().x, edge.vw / 2 / img.width); near(e.currentCrop().y, edge.vh / 2 / img.height);
+    e.panCrop(-1e6, -1e6);
+    const far = e.cropRect(img, pw, 600, e.currentCrop());
+    near(far.sx + far.vw, img.width); near(far.sy + far.vh, img.height);
+    e.cancelCrop();
+  }
+  delete e.state.layout;
   // T44：取景只改工作副本。取消 = 作品里的图与取景都不动；应用才写入并保存
   const A = { width: 1600, height: 1000, name: "A" }, B = { width: 1200, height: 900, name: "B" }, Dimg = { width: 900, height: 1200, name: "D" };
   e.state.letters = ["L", "I", "F", "E"]; e.state.images = [A, null, null, null]; e.state.image = null; e.state.crops = [{ z: 2, x: 0.4, y: 0.5 }, null, null, null];
@@ -1502,12 +1546,17 @@ assert.deepEqual(inserts, ["👨‍👩‍👧‍👦"], "截短粘贴保留完�
 }
 // T20：保留语义表头。版权原文对照已作为一次性交付核对完成。
 assert.equal((html.match(/scope="col"/g) || []).length, 3);
-assert.equal((html.match(/scope="row"/g) || []).length, 15); // 主题字体两行（西文、中文）// 2026-11-12 借物页修订：加屏蔽词表来源（LDNOOBW）与主题颜色的出处两行 // 此前：词库来源拆成六行 // v00.03.00：借物表加了「图标」一行（Phosphor Icons，MIT）
+assert.equal((html.match(/scope="row"/g) || []).length, 16); // v00.04.00 批 2：加「词库 · 英文释义的补充」一行（V0400-A6 起只剩 FreeDict 意英）// 主题字体两行（西文、中文）// 2026-11-12 借物页修订：加屏蔽词表来源（LDNOOBW）与主题颜色的出处两行 // 此前：词库来源拆成六行 // v00.03.00：借物表加了「图标」一行（Phosphor Icons，MIT）
 assert.match(html, /Phosphor Icons/); assert.match(html, /Copyright \(c\) 2023 Phosphor Icons/);
 // 2026-11-12 借物页修订：许可逐个对过来源原文。屏蔽词表的外部词表要署名（CC BY 4.0）；断词模式写明 MIT 与各语言的版权人；没写版本号的不替来源补
 assert.match(html, /LDNOOBW[\s\S]*Shutterstock, Inc\.[\s\S]*CC BY 4\.0/); assert.match(html, /creativecommons\.org\/licenses\/by\/4\.0/);
 for (const who of ["Daniel Flipo", "Stephan Hennig, Werner Lemberg, Günter Milde, Sander van Geloven, Georg Pfeiffer, Gisbert W. Selke, Tobias Wendorf, Keno Wehr", "Javier Bezos", "Claudio Beccari"]) assert.ok(html.split(who).length >= 3, who + "：表格与 MIT 许可全文里都署名");
-assert.match(html, /CFDICT：CC BY-SA 3\.0；/); assert.match(html, /HanDeDict：CC BY-SA 3\.0/); assert.match(html, /核心词表 <span lang="en">CC BY-SA 3\.0 Unported<\/span>/);
+assert.match(html, /CFDICT：CC BY-SA 3\.0；/); assert.match(html, /FreeDict 意英词典[\s\S]{0,400}?CC BY-SA 3\.0/, "批 2 的补充词典署名带许可"); assert.doesNotMatch(html, /Ding|GPL 2\.0/, "V0400-A6：GPL 许可的补充词典不再用，借物页不再列");
+{ // 复审补：英文借物页在文案表里，以前只查了中文页面
+  const credits = fs.readFileSync(new URL("../app/assets/i18n.js", import.meta.url), "utf8").split("\n").filter(l => /^\s*"h\.credits\./.test(l));
+  assert.ok(credits.length >= 40, "文案表里中英两套借物页条目都读到了");
+  for (const l of credits) assert.doesNotMatch(l, /\bDing\b|GPL 2\.0|FreeDict (French|Spanish|Latin)|FreeDict (法|西|拉)/, "V0400-A6：文案表的借物页条目不得再列 GPL 词典：" + l.trim().slice(0, 24));
+} assert.match(html, /HanDeDict：CC BY-SA 3\.0/); assert.match(html, /核心词表 <span lang="en">CC BY-SA 3\.0 Unported<\/span>/);
 assert.doesNotMatch(html, /未写版本号/, "T07-R1：CFDICT 与 DCC 的版本号写在来源原文里（3.0），不再写「未写版本号」");
 // T07-R1（2026-11-13 复审退回后）：每个外来源按它自己的许可标注
 assert.match(html, /David Houstin 创办/, "CFDICT 写明作者");
@@ -1523,7 +1572,12 @@ assert.match(html, /霞鹜、霞鶩、落霞孤鹜、落霞孤鶩、LXGW 是保�
   // 样式和 app/assets 下的全部脚本（语言包除外）：去掉注释后不得再出现保留字样（不分大小写——CSS 的字体名不分大小写）
   const dirA = new URL("../app/assets/", import.meta.url);
   const srcs = [["style.css", fs.readFileSync(new URL("style.css", dirA), "utf8").replace(/\/\*[\s\S]*?\*\//g, "")]]
-    .concat(fs.readdirSync(dirA).filter(f => f.endsWith(".js") && f !== "licenses.js").map(f => [f, fs.readFileSync(new URL(f, dirA), "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "")]));
+    .concat(fs.readdirSync(dirA).filter(f => f.endsWith(".js") && f !== "licenses.js").map(f => [f, fs.readFileSync(new URL(f, dirA), "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "")]
+      // v00.04.00 批 0：借物页写霞鹜文楷署名的那一格在文案表里也有一份（h.credits.td17），那是署名不是字体名，比之前先拿掉这一条。
+      // 只豁免这一条（复审：按整个 h.credits. 前缀放行太宽）；拿掉的必须正好一条，条目改了编号或别处又出现保留字样都会在这里报出来
+      .map((t, k) => k === 1 && f === "i18n.js" ? t.replace(/^\s*"h\.credits\.td17":[^\n]*$/gm, "") : t)));
+  assert.equal((srcs.find(x => x[0] === "i18n.js")[1].match(/"h\.credits\.td17"/g) || []).length, 0, "文案表里的署名条目已拿掉");
+  assert.match(fs.readFileSync(new URL("i18n.js", dirA), "utf8"), /^\s*"h\.credits\.td17": "[^\n]*霞鹜文楷/m, "被豁免的那一条确实是霞鹜文楷的署名");
   assert.ok(srcs.length >= 10);
   for (const [name, text] of srcs) assert.doesNotMatch(text, /LXGW|WenKai|霞鹜|霞鶩|落霞/i, name + " 里不再用保留字体名当字体名");
   assert.deepEqual(fs.readdirSync(new URL("../app/assets/fonts/", import.meta.url)).filter(f => /lxgw|wenkai/i.test(f)), [], "包里没有以保留字体名命名的字体文件");
@@ -1534,13 +1588,18 @@ assert.match(html, /署名可写「版式：藏头 - Backronym（BeyondPassenger
   const ofl = fs.readFileSync(new URL("../LICENSES/OFL-1.1.txt", import.meta.url), "utf8");
   assert.match(ofl, /LXGW WenKai: Copyright 2021-2026 LXGW[^\n]*\[ADDITIONAL PERMISSION\][^\n]*solely for web font delivery[^\n]*Copyright 2020 The Klee Project Authors/, "霞鹜文楷的版权声明带着附加许可原文");
   // 各门 words.js 文件头：来源都在借物页出现；西文五门写明已改编与改编后的许可
-  const SRC = { "Universal Dependencies": /Universal Dependencies Parallel UD 2\.16/, "Lexique": /Lexique 4\.10/, "ParlaMint": /ParlaMint 4\.1/, "维基词典": /维基词典/, "kaikki.org": /kaikki\.org/, "FrequencyWords": /FrequencyWords/, "CFDICT": /CFDICT/, "HanDeDict": /HanDeDict/, "Dickinson College Commentaries": /Dickinson College Commentaries/, "Whitaker's Words": /Whitaker's Words/, "ECDICT": /ECDICT/, "TeX hyph-utf8": /TeX hyph-utf8/ };
+  const SRC = { "Ding": /Ding 德英词典/, "FreeDict": /FreeDict/, "Universal Dependencies": /Universal Dependencies Parallel UD 2\.16/, "Lexique": /Lexique 4\.10/, "ParlaMint": /ParlaMint 4\.1/, "维基词典": /维基词典/, "kaikki.org": /kaikki\.org/, "FrequencyWords": /FrequencyWords/, "CFDICT": /CFDICT/, "HanDeDict": /HanDeDict/, "Dickinson College Commentaries": /Dickinson College Commentaries/, "Whitaker's Words": /Whitaker's Words/, "ECDICT": /ECDICT/, "TeX hyph-utf8": /TeX hyph-utf8/ };
   for (const lang of ["en", "fr", "de", "es", "it", "la"]) {
     const text = fs.readFileSync(new URL("../app/assets/lang/" + lang + "/words.js", import.meta.url), "utf8"), head = text.slice(0, text.indexOf("*/"));
     const named = head.split("\n").filter(l => l.startsWith("- "));
     assert.ok(named.length >= 1, lang + " 文件头列了来源");
     for (const line of named) { const hit = Object.keys(SRC).filter(k => line.includes(k)); assert.ok(hit.length, lang + " 文件头有认不出的来源：" + line.slice(0, 30)); for (const k of hit) assert.match(html, SRC[k], lang + " 文件头的来源没在借物页出现：" + k); }
     assert.doesNotMatch(head, /未写版本号|随来源许可。/, lang + " 文件头不再有没核对的写法");
+    // 复审补（V0400-A6）：GPL 词典不得回到任何一门的文件头；FreeDict 只许意语列，且是 CC BY-SA 3.0 的意英
+    assert.doesNotMatch(head, /\bDing\b|GPL/, lang + " 文件头不得列 GPL 来源");
+    const fd = named.filter(l => l.includes("FreeDict"));
+    assert.equal(fd.length, lang === "it" ? 1 : 0, lang + " 文件头的 FreeDict 行数");
+    for (const l of fd) assert.match(l, /意英[\s\S]*CC BY-SA 3\.0/, "意语文件头的补充词典是意英、带许可");
     assert.match(head, /改编说明：已改编/);
     if (lang !== "en") assert.match(head, /改编后的本文件整体按 CC BY-SA 4\.0 发布/, lang);
     if (["fr", "de", "es", "it"].includes(lang)) assert.match(head, /ECDICT（人名的中文译写），MIT/, lang);
@@ -1603,6 +1662,17 @@ assert.doesNotMatch(html, /见来源项目/, "不再有「见来源项目」这�
   assert.deepEqual(inline, ["MIT", "OFL-1.1"].map(k => fs.readFileSync(new URL(k + ".txt", dir), "utf8")), "借物页里的 MIT、OFL 全文与 LICENSES 下的文件同文");
   assert.equal(JSON.parse(fs.readFileSync(new URL("../package.json", import.meta.url), "utf8")).license, "GPL-3.0-or-later AND CC-BY-SA-4.0");
 }
+// G7：版本号以 package.json 为准。页面上四处（完成面板、设置页、借物页两处）与文案表中英各一处手写，漏改一处就在这里报。
+// 页面注释里的版本号是改动记录，不算；页面写 v01.00.00，平台表单填 1.0.0，是同一版的两种写法。
+{
+  const want = "v" + JSON.parse(fs.readFileSync(new URL("../package.json", import.meta.url), "utf8")).version.split(".").map(n => n.padStart(2, "0")).join(".");
+  const VER = /v\d\d\.\d\d\.\d\d/g;
+  const shown = html.replace(/<!--[\s\S]*?-->/g, "").match(VER) || [];
+  assert.equal(shown.length, 4, "页面上的版本号应有四处");
+  const table = [...fs.readFileSync(new URL("../app/assets/i18n.js", import.meta.url), "utf8").matchAll(/^\s*"h\.credits\.td1": "(.*)",?$/gm)].map(m => (m[1].match(VER) || [""])[0]);
+  assert.equal(table.length, 2, "文案表里「本工具」一行应有中英两条");
+  assert.deepEqual(shown.concat(table), Array(6).fill(want), "版本号与 package.json 不一致");
+}
 // T19/T21a：这些符号已核对包内字形；防止重新引入依赖系统字体的箭头。
 {
   const symbols = Array.from(html.matchAll(/<(?:span|button)[^>]*(?:class="(?:crop-arrow|custom-mark)"|id="crop(?:Minus|Plus)")[^>]*>([^<]+)</g), m => m[1]).join("");
@@ -1614,7 +1684,7 @@ assert.doesNotMatch(html, /见来源项目/, "不再有「见来源项目」这�
   let tight = false;
   const e = load(["renderPager"], {
     state: { letters: [], view: "single", focus: 0 },
-    el: { pagerLetters: { textContent: "", classList: { toggle(name, on) { if (name === "tight") tight = on; } }, appendChild() {} }, pager: {}, tip: {}, hint: {}, sheetTabs: {} },
+    el: { pagerLetters: { textContent: "", classList: { toggle(name, on) { if (name === "tight") tight = on; } }, appendChild() {} }, pager: {}, tip: {}, hint: {}, sheetTabs: {}, toLayout: {} },
     make: () => ({ appendChild() {}, setAttribute() {}, addEventListener() {} }),
     tipOn: () => false, cellState: () => "empty", finishNote: "",
     sheets: () => [[0, e.state.letters.length]], sheetOf: () => 0, CORE: { startText: (l) => l }, // T42：不超过 10 格只有一张
@@ -1629,7 +1699,7 @@ console.log("app regressions ok");
 {
   const registry = { window: {}, document: { getElementById: () => ({}) } };
   vm.createContext(registry);
-  for (const file of ["core.js", "lang/packs.js", "draft.js"]) vm.runInContext(fs.readFileSync(new URL("../app/assets/" + file, import.meta.url), "utf8"), registry);
+  for (const file of ["i18n.js", "core.js", "lang/packs.js", "draft.js"]) vm.runInContext(fs.readFileSync(new URL("../app/assets/" + file, import.meta.url), "utf8"), registry);
   for (const module of appSources.slice(0, -1)) vm.runInContext(module.text, registry, { filename: module.file });
   const app = registry.window.Backronym;
   assert.ok(app.model.state && app.model.el, "作品状态与 DOM 引用只有一份");

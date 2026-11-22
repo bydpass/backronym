@@ -1,0 +1,310 @@
+lang	display	pos	kind	card	zh	status	note
+de	Aussicht	noun	clash	scenery	前景／景色／视野	已修	前景 → prospect；景色 → scenery；视野 → view。
+de	austreten	verb	clash	to leave	离开／退出	已修	复核后：退出 → to withdraw from a group（卡面 to withdraw）；离开 → to step out or leave（卡面 to step out）。
+de	Band	noun	clash	tape	带子／缎带	已修	复核后：带子 → band or strip of material（卡面 strip of material）；缎带 → ribbon。
+de	Band	noun	clash	ribbon	带子／缎带	已修	复核后：带子 → band or strip of material（卡面 strip of material）；缎带 → ribbon。
+de	Bank	noun	clash	bench	长凳／长椅	保留	词典 bench 指供人坐的长座，两种中文都指这种座具。
+de	Begehren	noun	clash	desire	渴望／要求	已修	要求 → demand。
+de	Berührung	noun	clash	touch	接触／触碰	已修	复核后：接触 → physical contact；触碰 → a touch（卡面 touch）。
+de	Boden	noun	clash	ground	土壤／地面	已修	土壤 → soil。 同组「地面」的完整英文核为 ground。
+de	Boden	noun	clash	floor	地板／底部	已修	底部 → bottom。
+de	durchbrennen	verb	clash	to run away	私奔／逃跑	已修	私奔 → to elope。 同组「逃跑」的完整英文核为 to run away。
+de	dürsten	verb	clash	to thirst	口渴／渴望	已修	口渴 → to be thirsty；渴望 → to thirst for something。
+de	Ehrgeiz	noun	clash	ambition	抱负／雄心	保留	词典 ambition 指追求成就的抱负，与雄心同义。
+de	Energie	noun	clash	energy	精力／能量	已修	复核后：能量 → energy；精力 → physical or mental vigour（卡面 vigour）。
+de	entschlafen	verb	clash	to fall asleep	入睡／安逝	已修	安逝 → to pass away peacefully。 同组「入睡」的完整英文核为 to fall asleep。
+de	Erfahrung	noun	clash	experience	经历／经验	已修	复核后：经验 → knowledge or skill gained through experience（卡面 practical experience）；经历 → something a person has experienced（卡面 past experience）。
+de	fahren	verb	clash	to drive	乘车去／驾驶	已修	复核后：乘车去 → to ride in a vehicle to a destination（卡面 to ride in a vehicle）；驾驶 → to drive a vehicle。
+de	Fahrer	noun	clash	agent noun of fahren	司机／驾驶员	已修	司机 → driver；驾驶员 → driver。词典同时明确给 driver；司机和驾驶员都是同一从业义。
+de	Fahrer	noun	clash	driver	司机／驾驶员	保留	词典同时明确给 driver；司机和驾驶员都是同一从业义。
+de	Geburt	noun	clash	birth	分娩／诞生	已修	分娩 → childbirth。
+de	gern	adv	clash	willingly	乐意／乐意地	保留	乐意和乐意地只是助词「地」的差别，共用 willingly 或 gladly。
+de	Gnade	noun	clash	grace	怜悯／恩典	已修	怜悯 → mercy。 同组「恩典」的完整英文核为 grace。
+de	Gott	noun	clash	god	上帝／神	已修	上帝 → God；神 → a deity。
+de	Harmonie	noun	clash	harmony	和声／和谐	已修	复核后：和谐 → harmony；和声 → musical harmony。
+de	Herz	noun	clash	heart	内心／心脏	已修	复核后：内心 → inner feelings or thoughts（卡面 inner feelings）；心脏 → heart (the organ)（卡面 heart (organ)）。
+de	kehren	verb	clash	to sweep	扫／清扫	保留	词典的扫除义为 to sweep，「扫」及「清扫」都适用。
+de	können	verb	clash	to know how to do	会／能够	已修	能够 → to be able。 同组「会」的完整英文核为 to know how to do something。
+de	Kontinent	noun	clash	continent	大洲／大陆	保留	词典指 continent；大洲与大陆在该词条只作洲际陆块的两种说法。
+de	lehnen	verb	clash	to lean	倚靠／靠	保留	词典 to lean 表示倚靠支撑，两种中文均适用。
+de	Lied	noun	clash	song	歌／歌曲	保留	词典 song 指带声乐的音乐作品，歌与歌曲等义。
+de	Los	noun	clash	lot	命运／签	已修	命运 → fate；签 → a lot drawn by chance。Duden §1a 与 §1b 分列抽签用的签及彩票。https://www.duden.de/rechtschreibung/Los
+de	Lust	noun	clash	desire	兴致／欲望	已修	兴致 → inclination。 同组「欲望」的完整英文核为 desire。
+de	Mär	noun	clash	tale	故事／童话	已修	复核后：童话 → fairy tale；故事 → tale or story（卡面 tale）。
+de	Meister	noun	clash	master	大师／师傅	已修	复核后：师傅 → master craftsman；大师 → master。
+de	Ministerium	noun	clash	ministry	部／部委	保留	词典 ministry 指政府部级机关，部与部委共用。
+de	missgönnen	verb	clash	to grudge	不愿别人得到／嫉妒	已修	原裁定保留：词典的 begrudge 表示不乐见别人得到好处，兼含嫉妒，不能理解为泛妒。 三轮复核（2026-11-21，Claude）：不愿别人得到 → to begrudge；嫉妒 → to envy, to resent (someone something)（卡面 to envy）。
+de	Mittag	noun	clash	noon	中午／正午	已修	中午 → midday。 同组「正午」的完整英文核为 noon。
+de	nachjagen	verb	clash	to pursue	追求／追赶	已修	追赶 → to chase。 同组「追求」的完整英文核为 to pursue。
+de	nachtrauern	verb	clash	to mourn	惋惜／追念	已修	惋惜 → to regret a loss；追念 → to mourn what is lost。
+de	offenstehen	verb	clash	to stay open	开放／敞开	已修	复核后：敞开 → to stay physically open（卡面 to stay open）；开放 → to be open or available to someone（卡面 to be available）。
+de	Ort	noun	clash	place	地方／地点	已修	复核后：地点 → location；地方 → place。
+de	Paradies	noun	clash	paradise	乐园／天堂	已修	复核后：天堂 → heaven, paradise（卡面 heaven）；乐园 → paradise (place of delight)（卡面 paradise）。
+de	Partner	noun	clash	partner	伙伴／伴侣	已修	复核后：伴侣 → life partner；伙伴 → partner or associate in an activity（卡面 partner）。
+de	Regie	noun	clash	direction	导演／导演工作	保留	词典限定电影和戏剧的导演工作，中文「导演」在此是活动，非人称。
+de	reisen	verb	clash	to travel	旅行／游历	已修	原裁定保留：词典 to travel，同时涵盖旅行与游历。 三轮复核（2026-11-21，Claude）：游历 → to travel around, to tour（卡面 to tour）；旅行仍为 to travel。
+de	rennen	verb	clash	to run	奔跑／赛跑	已修	赛跑 → to race。 同组「奔跑」的完整英文核为 to run。
+de	Rest	noun	clash	rest	余数／剩余	已修	余数 → remainder。 同组「剩余」的完整英文核为 what is left。
+de	schicken	verb	clash	to send	寄／寄送	保留	词典 to send 指送出信件等物，寄与寄送同义。
+de	Schluss	noun	clash	end	结尾／结论	已修	结论 → conclusion。 同组「结尾」的完整英文核为 end。
+de	Schnurrbart	noun	clash	moustache	上唇胡须／小胡子	保留	词典 moustache 指上唇胡须，「小胡子」是同一胡须的常用叫法。
+de	Schreiben	noun	clash	writing	写作／函件	已修	函件 → letter。 同组「写作」的完整英文核为 writing。
+de	Schüler	noun	clash	pupil	学生／门生	已修	门生 → disciple。
+de	Sehnsucht	noun	clash	yearning	思念／渴望	已修	复核后：思念 → longing for someone absent（卡面 longing）；渴望 → yearning for something desired（卡面 yearning）。
+de	setzen	verb	clash	to sit down	使坐下／坐下	已修	使坐下 → to seat someone。
+de	Sieger	noun	clash	agent noun of siegen	胜利者／胜者	已修	胜利者 → winner；胜者 → winner。词典给 winner 与 victor；两个中文同指获胜者。
+de	Sieger	noun	clash	winner	胜利者／胜者	保留	词典给 winner 与 victor；两个中文同指获胜者。
+de	umschauen	verb	clash	to look around	寻找／环顾	已修	寻找 → to look around for something。
+de	verborgen	adj	clash	hidden	秘密／隐蔽	已修	复核后：秘密 → kept secret（卡面 secret）；隐蔽 → hidden。
+de	verlangen	verb	clash	to ask for	渴望／要求	已修	渴望 → to long for；要求 → to demand。
+de	Verlierer	noun	clash	agent noun of verlieren	失败者／输家	已修	失败者 → loser；输家 → loser。词典给 loser；失败者和输家是该义的两种中文表达。
+de	Verlierer	noun	clash	loser	失败者／输家	保留	词典给 loser；失败者和输家是该义的两种中文表达。
+de	Vorkommen	noun	clash	occurrence	存在／矿藏	已修	存在 → presence；矿藏 → mineral deposit。
+de	Wahrheit	noun	clash	truth	真理／真相	已修	复核后：真理 → truth as a general principle（卡面 truth）；真相 → the truth of the matter（卡面 the facts）。
+de	weich	adj	clash	soft	柔软／温和	已修	温和 → gentle。
+de	zusammengehen	verb	clash	to converge	汇合／联手	已修	联手 → to join forces。
+de	beigehen	verb	form	synonym of drangehen	来到	已修	来到 → to come over (regional)。Duden §2a 确认南德来到义。https://www.duden.de/rechtschreibung/beigehen
+de	mitkriegen	verb	form	synonym of mitbekommen	察觉	已修	察觉 → to notice。顺查 Kaikki mitbekommen，选察觉义。
+es	abandonar	verb	clash	to abandon	放弃／离开	已修	复核后：放弃 → to abandon；离开 → to leave。
+es	abrigo	noun	clash	overcoat	外套／大衣	已修	复核后：大衣 → overcoat；外套 → coat。
+es	alegría	noun	clash	joy	喜悦／快乐	已修	复核后：喜悦 → joy；快乐 → happiness。
+es	armonía	noun	clash	harmony	协调／和声	已修	复核后：协调 → harmony；和声 → musical harmony。
+es	ausentar	verb	clash	to absent oneself	使缺席／离开	已修	使缺席 → to make someone leave；离开 → to leave。
+es	cáliz	noun	clash	chalice	圣餐杯／高脚杯	已修	高脚杯 → goblet。 同组「圣餐杯」的完整英文核为 chalice。
+es	capitán	noun	clash	captain	上尉／船长／队长	已修	复核后：船长 → ship's captain；队长 → team captain；上尉 → army captain (military rank)（卡面 army captain）。
+es	civil	adj	clash	civil	公民／平民／民事	已修	公民 → civic；平民 → civilian；民事 → civil (noncriminal)。
+es	columna	noun	clash	column	专栏／圆柱／纵队／表格列	已修	复核后：纵队 → column of people or troops（卡面 column of troops）；圆柱 → cylindrical pillar（卡面 pillar）；专栏 → newspaper or magazine column（卡面 newspaper column）；表格列 → column in a table（卡面 table column）。
+es	comer	noun	clash	eating	吃／食物	已修	食物 → food (archaic)。 同组「吃」的完整英文核为 eating。
+es	composición	noun	clash	composition	作文／作曲／构图／组成	已修	作文 → written composition；作曲 → musical composition；构图 → visual composition；组成 → makeup。
+es	confianza	noun	clash	confidence	信任／信心	已修	信任 → trust。 同组「信心」的完整英文核为 confidence。
+es	confidencia	noun	clash	confidence	亲密信赖／私密话	已修	亲密信赖 → close trust；私密话 → confidential remark。
+es	convento	noun	clash	convent	修道院／女修道会	已修	修道院 → monastery。 同组「女修道会」的完整英文核为 convent。
+es	décimo	noun	clash	tenth	十分之一／十分之一张彩票	已修	十分之一张彩票 → one-tenth lottery ticket。
+es	decrépito	adj	clash	decrepit	破败／老迈体弱	已修	复核后：老迈体弱 → decrepit with age（卡面 decrepit）；破败 → dilapidated。
+es	despedida	noun	clash	valediction	信尾客套话／告别	已修	信尾客套话 → complimentary close；告别 → farewell。
+es	director	noun	clash	director	导演／负责人	已修	导演 → film director。
+es	dispensar	verb	clash	to excuse	免除／原谅	已修	免除 → to exempt。
+es	do	noun	clash	do	唱名多／多	保留	词典 do 指唱名，中文「多」「唱名多」都是同一个音节。
+es	doctor	noun	clash	doctor	医生／博士	已修	医生 → physician。 同组「博士」的完整英文核为 PhD holder。
+es	emblema	noun	clash	emblem	徽章／象征	已修	复核后：象征 → symbol or emblem（卡面 symbol）；徽章 → badge or emblem（卡面 badge）。
+es	entonces	adv	clash	then	于是／那时	已修	复核后：那时 → at that time；于是 → and so, as a consequence（卡面 and so）。
+es	espectral	adj	clash	spectral	光谱／幽灵般	已修	复核后：幽灵般 → ghostly；光谱 → relating to a spectrum（卡面 spectral）。
+es	excursión	noun	clash	excursion	短途游／远足	已修	复核后：短途游 → excursion or short trip（卡面 excursion）；远足 → hike or walking excursion（卡面 hike）。
+es	existencial	adj	clash	existential	存在／存在主义	已修	复核后：存在 → existential (relating to existence)（卡面 existential）；存在主义 → existential (in existentialist philosophy)（卡面 existential philosophy）。西语词头与中文「存在主义」的归属仍由词库侧确认。
+es	favor	noun	clash	favor/favour	好意／帮忙	已修	复核后：帮忙 → favor；好意 → kindness。
+es	fe	noun	clash	faith	信仰／信任	已修	复核后：信任 → trust；信仰 → faith。
+es	fraude	noun	clash	fraud	欺诈／欺骗	已修	复核后：欺骗 → deception or deceit（卡面 deception）；欺诈 → fraud。
+es	frialdad	noun	clash	frigidity	冷漠／寒冷	已修	冷漠 → emotional coldness；寒冷 → coldness。
+es	género	noun	clash	genre	体裁／类型	已修	类型 → kind。
+es	gira	noun	clash	tour	巡游／巡演	已修	复核后：巡演 → a tour by a performing group（卡面 performance tour）；巡游 → tour through several places（卡面 tour）。
+es	habla	noun	clash	speech	语言能力／说话	已修	说话 → speaking。
+es	imagen	noun	clash	image	图像／意象	已修	复核后：图像 → picture or visual image（卡面 picture）；意象 → imagery or a literary image（卡面 imagery）。
+es	impartir	verb	clash	to impart	传授／给予	已修	给予 → to give。
+es	insulto	noun	clash	insult	侮辱／辱骂	已修	复核后：辱骂 → verbal abuse；侮辱 → insult。
+es	juventud	noun	clash	youth	青少年／青春	已修	青少年 → young people。
+es	lástima	noun	clash	pity	怜悯／遗憾	已修	遗憾 → a shame。
+es	ligero	adj	clash	light	轻微／重量轻	已修	轻微 → slight。
+es	límite	noun	clash	limit	极限／边界	已修	复核后：极限 → limit；边界 → boundary。
+es	lontananza	noun	clash	background	绘画远景／远方	已修	远方 → the distance。
+es	modal	adj	clash	modal	情态／情态相关	保留	词典 modal 为「有关情态的」，两项中文同为一个形容词义。
+es	parabólico	adj	clash	parabolic	寓言／抛物线形	已修	寓言 → allegorical。
+es	pensar	verb	clash	to think	思考／认为	已修	思考 → to ponder。 同组「认为」的完整英文核为 to think that。
+es	poste	noun	clash	post	杆／柱子	已修	杆 → pole。 同组「柱子」的完整英文核为 upright post。
+es	razón	noun	clash	reason	理性／理由	已修	复核后：理由 → reason or grounds（卡面 reason）；理性 → reason as a faculty of thought（卡面 rationality）。
+es	reducción	noun	clash	reduction	减少／还原	已修	还原 → chemical reduction。
+es	respuesta	noun	clash	reply	反应／回答	已修	反应 → response。 同组「回答」的完整英文核为 reply。
+es	salida	noun	clash	exit	出口／出路	已修	出路 → way out。 同组「出口」的完整英文核为 exit。
+es	senado	noun	clash	senate	元老院／参议院	已修	元老院 → Roman Senate。
+es	soma	noun	clash	soma	体细胞／身体	已修	体细胞 → somatic cells；身体 → body。
+es	suelto	adj	clash	free	松散／松的	已修	松散 → loose；松的 → loose。词典并列 free 和 loose；两条均指未紧系或不紧密，改为共用 loose。
+es	suelto	adj	clash	loose	松散／松的	保留	词典并列 free 和 loose；两条均指未紧系或不紧密，改为共用 loose。
+es	sujeto	noun	clash	subject	主语／主题	已修	主语 → grammatical subject；主题 → topic。
+es	táctico	adj	clash	tactical	战术／战术相关	保留	词典 tactical 是有关战术的，两项中文在形容词词性下是同义改写。
+es	telar	noun	clash	loom	织机／装订架	已修	装订架 → bookbinding sewing frame。RAE DLE §2 指装订时缝合书帖所用的架具。https://dle.rae.es/telar
+es	tenaz	adj	clash	tenacious	坚韧／难以去除	已修	复核后：难以去除 → hard to remove or dislodge（卡面 hard to remove）；坚韧 → tenacious or persistent（卡面 tenacious）。
+es	tomar	verb	clash	to take	喝／拿	已修	喝 → to drink。
+es	tono	noun	clash	tone	色调／语气／音调	已修	色调 → color tone；语气 → tone of voice；音调 → pitch。
+es	tris	noun	clash	crack	咔嚓声／片刻	已修	片刻 → an instant。
+es	uña	noun	clash	claw	爪／蹄	已修	蹄 → hoof。 同组「爪」的完整英文核为 claw。
+es	variación	noun	clash	variation	变奏／变更	已修	变奏 → musical variation。
+es	viaje	noun	clash	journey	旅程／旅行	已修	复核后：旅行 → trip or travel（卡面 trip）；旅程 → journey。
+es	acabo	noun	form	synonym of acabamiento	完成	已修	完成 → completion。顺查 Kaikki acabamiento，取完成义。
+es	cerrado	noun	form	synonym of cercado	菜圃	已修	菜圃 → enclosed garden plot。顺查 Kaikki cercado，取围起来的菜圃义。
+es	purgatorio	adj	form	synonym of purgativo	净化	已修	净化 → purgative。顺查 Kaikki purgativo 的形容词义，有通便净化作用。
+fr	ambitieux	adj	clash	ambitious	有野心／雄心勃勃	保留	词典 ambitious 表示渴求成就或权力，英文可同样含褒义或贬义。
+fr	aspiration	noun	clash	aspiration	向往／吸气	已修	吸气 → inhalation。 同组「向往」的完整英文核为 aspiration for a goal。
+fr	assoiffé	adj	clash	very thirsty	口渴／渴望	已修	渴望 → eager for。
+fr	attraction	noun	clash	attraction	引力／景点	已修	景点 → visitor attraction。 同组「引力」的完整英文核为 force of attraction。
+fr	bande	noun	clash	band	带子／条带	已修	复核后：条带 → a narrow strip（卡面 strip）；带子 → band or strap（卡面 strap）。
+fr	brumeux	adj	clash	misty	有雾／朦胧	已修	复核后：朦胧 → hazy or indistinct（卡面 hazy）；有雾 → foggy, misty（卡面 foggy）。
+fr	calice	noun	clash	chalice	圣餐杯／花萼	已修	花萼 → calyx。TLFi II.A 明列植物学花萼义。https://www.cnrtl.fr/definition/Calice
+fr	campagne	noun	clash	country	乡村／乡间	保留	词典 country 明确指与城市相对的乡村地区，两个中文均属该义。
+fr	chaud	adj	clash	warm	暖和／热的	已修	热的 → hot。 同组「暖和」的完整英文核为 warm。
+fr	circuit	noun	clash	circuit	电路／赛道	已修	复核后：赛道 → racetrack or racing circuit（卡面 racetrack）；电路 → electrical circuit。
+fr	connaître	verb	clash	to know	经历／认识	已修	经历 → to experience。 同组「认识」的完整英文核为 to be acquainted with。
+fr	consul	noun	clash	consul	执政官／领事	已修	执政官 → Roman consul。 同组「领事」的完整英文核为 consul (diplomatic officer)。
+fr	contamination	noun	clash	contamination	感染／污染	已修	感染 → infection。
+fr	contexte	noun	clash	context	背景／语境	已修	复核后：背景 → background or circumstances（卡面 background）；语境 → linguistic context（卡面 context）。
+fr	contracter	verb	clash	to engage via a formal or informal contract	收缩／缔结	已修	收缩 → to contract a muscle。
+fr	crime	noun	clash	category of severe offences within french law	罪行／重罪	已修	罪行 → crime；重罪 → felony under French law。
+fr	départ	noun	clash	departure	开端／离开	已修	开端 → start。 同组「离开」的完整英文核为 departure。
+fr	dépendre	verb	clash	to depend	依赖／取决于	已修	依赖 → to rely on。
+fr	envier	verb	clash	to envy	嫉妒／羡慕	已修	复核后：嫉妒 → to be jealous of or to begrudge（卡面 to be jealous of）；羡慕 → to envy。
+fr	évolution	noun	clash	evolution	演变／进化	已修	复核后：进化 → evolution (biology)（卡面 evolution）；演变 → development or change over time（卡面 development）。
+fr	falloir	verb	clash	to need	必须／需要	已修	必须 → to have to。 同组「需要」的完整英文核为 to need。
+fr	flux	noun	clash	flow	流／流动	保留	词典 flow 为流或流动，两条都用作名词。
+fr	foule	noun	clash	crowd	一群人／人群	保留	词典 crowd 指聚集的人群，一群人与人群等义。
+fr	grâce	noun	clash	grace	优雅／恩典	已修	恩典 → divine grace。
+fr	harmonie	noun	clash	harmony	和声／和谐	已修	复核后：和声 → musical harmony；和谐 → harmony。
+fr	hilarant	adj	clash	hilarious	令人发笑／令人捧腹	保留	词典 hilarious 指非常好笑，发笑和捧腹均是这一义。
+fr	imaginer	verb	clash	to imagine	想象／虚构	已修	虚构 → to make up。
+fr	immigration	noun	clash	immigration	移民／移民入境	保留	词典 immigration 指迁入异国的行为，移民在此为动作名词，与移民入境同义。
+fr	intégrité	noun	clash	integrity	完整／正直	已修	复核后：正直 → moral integrity（卡面 integrity）；完整 → wholeness or completeness（卡面 wholeness）。
+fr	intercepter	verb	clash	to intercept	截获／拦截	保留	词典 to intercept 指途中阻截，拦截与截获均可用。
+fr	jeunesse	noun	clash	youth	青年人／青春	已修	青年人 → young people。
+fr	lassé	adj	clash	tired	厌倦／疲倦	已修	厌倦 → fed up。
+fr	limite	noun	clash	limit	期限／极限	已修	期限 → deadline。 同组「极限」的完整英文核为 mathematical limit。
+fr	mesure	noun	clash	measure	措施／测量	已修	测量 → measurement。
+fr	mine	noun	clash	mine	矿／矿井	保留	「矿」在此指采矿地点，与「矿井」均可用 mine。
+fr	mirage	noun	clash	mirage	幻象／海市蜃楼	已修	复核后：幻象 → illusion；海市蜃楼 → optical mirage（卡面 mirage）。
+fr	nature	noun	clash	nature	大自然／天性	已修	天性 → inborn nature。 同组「大自然」的完整英文核为 the natural world。
+fr	nostalgie	noun	clash	nostalgia	乡愁／怀旧	已修	乡愁 → homesickness。
+fr	oncle	noun	clash	uncle	叔叔／舅舅	已修	复核后：舅舅 → mother's brother（卡面 maternal uncle）；叔叔 → father's brother（卡面 paternal uncle）。
+fr	opérationnel	adj	clash	operational	可投入使用／运作	已修	复核后：可投入使用 → operational and ready for use（卡面 ready for use）；运作 → functioning or in operation（卡面 functioning）。
+fr	patrie	noun	clash	homeland	故乡／祖国	已修	故乡 → home country。 同组「祖国」的完整英文核为 native country。
+fr	phénoménal	adj	clash	phenomenal	惊人／现象	已修	现象 → pertaining to phenomena。
+fr	port	noun	clash	port	港／港口	保留	词典 port、harbour 指船舶停靠处，「港」与「港口」在此为同一地点。
+fr	précipice	noun	clash	precipice	悬崖／深渊	已修	复核后：深渊 → abyss or deep chasm（卡面 abyss）；悬崖 → precipice or steep cliff（卡面 precipice）。
+fr	prêtre	noun	clash	priest	神父／祭司	已修	复核后：祭司 → priest who performs sacrifices and rites in an ancient or non-Christian religion（卡面 sacrificial priest）；神父 → ordained priest in the Catholic Church（卡面 Catholic priest）。
+fr	promesse	noun	clash	promise	希望／诺言	已修	希望 → prospect。TLFi 的引申义指带来未来希望的征兆。https://www.cnrtl.fr/definition/promesse 同组「诺言」的完整英文核为 promise。
+fr	radical	noun	clash	radical	根式／词根	已修	词根 → word root。 同组「根式」的完整英文核为 radical expression。
+fr	récit	noun	clash	account	叙述／故事	已修	故事 → story。 同组「叙述」的完整英文核为 account。
+fr	réviser	verb	clash	to revise	复习／温习	保留	词典 to revise、review 指复习所学内容，复习与温习同义。
+fr	sénat	noun	clash	senate	元老院／参议院	已修	元老院 → Roman Senate。
+fr	somme	noun	clash	sum	总和／总数	已修	复核后：总和 → sum；总数 → total。
+fr	symbole	noun	clash	symbol	符号／象征	已修	复核后：象征 → symbol representing an idea（卡面 symbol）；符号 → sign or symbolic mark（卡面 sign）。
+fr	terre	noun	clash	earth	地球／大地／泥土	已修	地球 → Earth (the planet)；大地 → land；泥土 → soil。
+fr	transmission	noun	clash	transmission	传动／传递	已修	传动 → power transmission。 同组「传递」的完整英文核为 passing something on。
+fr	vague	adj	clash	vague	含糊／模糊	保留	词典 vague 指不清楚，含糊和模糊在此都不是光学失焦。
+fr	vieux	adj	clash	old	年老／旧的	已修	复核后：年老 → elderly；旧的 → old。
+fr	vital	adj	clash	vital	生命／至关重要	已修	生命 → necessary for life。 同组「至关重要」的完整英文核为 essential。
+fr	zénith	noun	clash	zenith	天顶／巅峰	已修	巅峰 → peak。 同组「天顶」的完整英文核为 zenith (astronomy)。
+fr	burger	noun	form	synonym of hamburger	汉堡	已修	汉堡 → burger。顺查 Kaikki hamburger，取食物义。
+fr	lâcher	noun	form	synonym of lâchage	释放	已修	释放 → release。顺查 Kaikki lâchage，取松开或释放义。
+it	adeguato	adj	clash	fit	适合／适当	已修	适合 → suitable；适当 → suitable。词典并列 fit、suitable 和 appropriate；两条都指符合用途，改为更自然的 suitable。
+it	adeguato	adj	clash	suitable	适合／适当	已修	复核后：适合 → suitable；适当 → appropriate。
+it	adottare	verb	clash	to adopt	选择／采用	已修	选择 → to choose。 同组「采用」的完整英文核为 to adopt。
+it	affamato	adj	clash	hungry	渴望／饥饿	已修	渴望 → eager for。
+it	affascinare	verb	clash	to charm	使着迷／迷住	保留	词典并列 charm 和 fascinate，两种中文都指使人着迷。
+it	affido	noun	clash	synonym of affidamento (“custody”)	儿童监护／寄养	已修	儿童监护 → child custody；寄养 → foster care。
+it	alito	noun	clash	breath	口气／呼吸	已修	复核后：口气 → breath as smelled from the mouth（卡面 breath odor）；呼吸 → air breathed out（卡面 exhaled breath）。
+it	animo	noun	clash	spirit	勇气／心情／心灵	已修	勇气 → courage；心情 → mood；心灵 → spirit。
+it	appassionato	adj	clash	passionate	充满热情／热情	保留	词典 passionate、ardent 描述充满热情，两个中文条目是同义措辞。
+it	bravo	adj	clash	good	能干／行为端正	已修	能干 → skilful；行为端正 → well-behaved。
+it	cammino	noun	clash	walk	旅程／步行	已修	旅程 → journey。 同组「步行」的完整英文核为 walking。
+it	casa	noun	clash	family	家庭／王朝	已修	王朝 → dynasty。 同组「家庭」的完整英文核为 family。
+it	coltivare	verb	clash	to cultivate or grow	栽培／种植	已修	原裁定保留：词典 to cultivate or grow 指使作物生长，栽培与种植都合。 三轮复核（2026-11-21，Claude）：栽培 → to cultivate (plants)（卡面 to cultivate）；种植 → to grow (crops)（卡面 to grow）。
+it	complicare	verb	clash	to complicate	使复杂／弄复杂	保留	词典 to complicate 指使事情复杂，两条中文是同义句式。
+it	composizione	noun	clash	composition	作文／构图	已修	作文 → written composition；构图 → visual composition。
+it	compromettere	verb	clash	to compromise	危及／损害	已修	危及 → to jeopardise；损害 → to damage。
+it	congedo	noun	clash	leave	休假／离开	已修	离开 → departure。 同组「休假」的完整英文核为 leave from work。
+it	console	noun	clash	consul	执政官／领事	已修	执政官 → Roman consul。
+it	contesto	noun	clash	context	环境／语境	已修	复核后：环境 → setting or surroundings（卡面 setting）；语境 → linguistic context（卡面 context）。
+it	cosa	noun	clash	thing	东西／事件	已修	复核后：东西 → thing or object（卡面 thing）；事件 → matter or affair（卡面 matter）。
+it	cuore	noun	clash	heart	心情／心脏	已修	心情 → emotional state。 同组「心脏」的完整英文核为 heart (the organ)。
+it	deciso	adj	clash	determined	坚决／果断	已修	复核后：坚决 → determined or resolute（卡面 determined）；果断 → decisive。
+it	desiderare	verb	clash	to wish	希望／渴望	已修	复核后：渴望 → to long for；希望 → to wish for。
+it	dirigente	noun	clash	manager	主管／经理	已修	复核后：主管 → executive or supervisor（卡面 executive）；经理 → manager。
+it	dispiacere	noun	clash	regret	悲伤／遗憾	已修	悲伤 → sorrow。 同组「遗憾」的完整英文核为 regret。
+it	dubbio	noun	clash	doubt	怀疑／疑虑	已修	复核后：疑虑 → misgiving or uncertainty（卡面 misgiving）；怀疑 → doubt。
+it	economico	adj	clash	inexpensive	便宜／经济相关	已修	经济相关 → economic。
+it	equo	adj	clash	fair	公平／公正	已修	复核后：公正 → just or impartial（卡面 just）；公平 → fair or equitable（卡面 fair）。
+it	esclusivo	adj	clash	exclusive	独家／独有	已修	复核后：独家 → exclusive；独有 → unique to a person or thing（卡面 unique）。
+it	estremo	noun	clash	end	末端／极限	已修	极限 → limit。 同组「末端」的完整英文核为 end point。
+it	evolvere	verb	clash	to evolve	展开／进化	已修	展开 → to develop gradually。 同组「进化」的完整英文核为 to evolve。
+it	favola	noun	clash	fairy tale	寓言／故事	已修	寓言 → fable；故事 → tale。
+it	fisico	adj	clash	physical	物理／身体	已修	复核后：物理 → physical (relating to physics)（卡面 physics-related）；身体 → bodily or corporeal（卡面 bodily）。
+it	freddezza	noun	clash	coldness	冷淡／寒冷	已修	复核后：寒冷 → coldness in temperature（卡面 coldness）；冷淡 → coldness of manner, aloofness（卡面 aloofness）。
+it	galante	adj	clash	gallant	殷勤／英勇	已修	殷勤 → chivalrous toward women。 同组「英勇」的完整英文核为 gallant。
+it	gita	noun	clash	trip	短途出游／远足	已修	复核后：远足 → hike or outing on foot（卡面 hike）；短途出游 → short trip or excursion（卡面 short trip）。
+it	giusto	adj	clash	just	公正／正确	已修	正确 → right。 同组「公正」的完整英文核为 just。
+it	grazia	noun	clash	grace	优雅／恩典	已修	恩典 → divine grace。
+it	illuminazione	noun	clash	lighting	光／照明	已修	光 → light。 同组「照明」的完整英文核为 lighting。
+it	immune	adj	clash	immune	免疫／豁免	已修	豁免 → exempt。 同组「免疫」的完整英文核为 immune to disease。
+it	incasinato	adj	clash	confused	困惑／混乱	已修	复核后：混乱 → messy or disorganized（卡面 messy）；困惑 → confused or bewildered（卡面 confused）。
+it	liberale	adj	clash	liberal	心性自由／慷慨／自由主义	已修	心性自由 → free-spirited；慷慨 → generous；自由主义 → politically liberal。
+it	locale	noun	clash	room	房间／营业场所	已修	营业场所 → business premises。
+it	lontananza	noun	clash	distance	距离／远方	已修	复核后：远方 → a place far away, in the distance（卡面 far-off place）；距离 → distance。
+it	melopea	noun	clash	melopoeia	吟诵调／舒缓旋律	已修	吟诵调 → chant set to words；舒缓旋律 → slow chantlike melody。Treccani §2 区分配词歌唱与缓慢、近似礼仪歌唱的曲调。https://www.treccani.it/vocabolario/melopea/
+it	misericordia	noun	clash	pity	怜悯／怜悯短剑	已修	怜悯短剑 → misericord dagger。
+it	mnemonico	adj	clash	mnemonic	助记／记忆	已修	记忆 → related to memory。
+it	natura	noun	clash	nature	大自然／本性	已修	本性 → inherent character。 同组「大自然」的完整英文核为 the natural world。
+it	nostalgia	noun	clash	nostalgia	乡愁／思念	已修	乡愁 → homesickness；思念 → longing。
+it	occupazione	noun	clash	occupation	占领／工作	已修	工作 → employment。
+it	parabolico	adj	clash	parabolic	寓言／抛物线形	已修	寓言 → allegorical。
+it	parlata	noun	clash	parlance	口音／方言	已修	口音 → accent；方言 → local speech。
+it	perenne	adj	clash	perennial	常年／永恒	已修	永恒 → everlasting。
+it	principio	noun	clash	beginning	开始／开端	保留	词典 beginning、start 指起始，开始和开端都是名词用法。
+it	provvedere	verb	clash	to provide	供给／提供	保留	词典 to provide、to supply、to furnish 指供应所需，供给与提供同义。
+it	riduzione	noun	clash	reduction	减少／还原	已修	还原 → chemical reduction。
+it	rotto	adj	clash	broken	坏掉／破损	已修	复核后：坏掉 → broken or out of order（卡面 broken）；破损 → physically damaged（卡面 damaged）。
+it	russo	noun	clash	russian	俄国人／俄语	已修	俄国人 → Russian person；俄语 → Russian language。
+it	satellitare	adj	clash	satellite	卫星／卫星相关	保留	词典卫星相关形容词 satellitary；英语用名词 satellite 作前置定语表达同一关系。
+it	senato	noun	clash	senate	元老院／参议院	已修	元老院 → Roman Senate。
+it	separarsi	verb	clash	to separate	分手／离开	已修	分手 → to break up；离开 → to part company。
+it	smagliante	adj	clash	dazzling	灿烂／耀眼	已修	复核后：耀眼 → dazzling；灿烂 → brilliant or radiant（卡面 brilliant）。
+it	spettrale	adj	clash	ghostly	光谱／幽灵般	已修	光谱 → spectral。 同组「幽灵般」的完整英文核为 ghostly。
+it	splendido	adj	clash	splendid	极好／灿烂	已修	极好 → excellent。 同组「灿烂」的完整英文核为 splendid。
+it	stalla	noun	clash	stable	牛棚／畜棚	已修	牛棚 → cowshed；畜棚 → animal shelter。
+it	stressato	adj	clash	stressed	感到有压力／紧张	已修	复核后：感到有压力 → stressed；紧张 → tense。
+it	togliersi	verb	clash	to get out of the way	摆脱／离开／脱掉	已修	摆脱 → to get rid of；脱掉 → to take off。
+it	tonalità	noun	clash	tonality	色调／调性	已修	色调 → hue。 同组「调性」的完整英文核为 musical tonality。
+it	tragico	adj	clash	tragic	悲剧／悲惨	已修	复核后：悲惨 → tragic or grievous（卡面 tragic）；悲剧 → tragic (of the genre of tragedy)（卡面 of tragedy）。
+it	variazione	noun	clash	variation	变奏／变更	已修	变奏 → musical variation；变更 → change。
+it	vecchio	adj	clash	old	年老／旧的	已修	复核后：旧的 → old or outworn（卡面 old）；年老 → elderly。
+it	verità	noun	clash	truth	真理／真相	已修	复核后：真相 → the truth of the matter（卡面 the facts）；真理 → truth as a general principle（卡面 truth）。
+it	visione	noun	clash	vision	幻象／视觉	已修	视觉 → sight。 同组「幻象」的完整英文核为 vision (apparition)。
+it	zia	noun	clash	aunt	姑姑／阿姨	已修	复核后：姑姑 → father's sister（卡面 paternal aunt）；阿姨 → mother's sister（卡面 maternal aunt）。
+it	affido	noun	form	synonym of affidamento (“custody”)	寄养	已修	寄养 → foster care。顺查 Kaikki affidamento 的儿童方面词义，取寄养。
+it	affido	noun	form	synonym of affidamento (“custody”)	儿童监护	已修	儿童监护 → child custody。顺查 Kaikki affidamento 的儿童方面词义，取监护。
+it	proiettile	adj	form	synonym of propulsivo	推进	已修	推进 → propulsive。顺查 Kaikki propulsivo，取有推进作用的形容词义。
+it	raso	noun	form	synonym of satin: satin	缎子	已修	缎子 → satin。顺查 Kaikki satin，取织物义。
+it	sacro	verb	form	synonym of sacrato	被奉为神圣的	已修	被奉为神圣的 → consecrated。Kaikki 指向 sacrare 的过去分词，取被奉为神圣的结果状态。
+it	terapista	noun	form	synonym of terapeuta	治疗学家	已修	治疗学家 → therapist。顺查 Kaikki terapeuta，取从事治疗的人。
+la	aspiciō	verb	clash	to look at	注视／看见	已修	看见 → to catch sight of。 同组「注视」的完整英文核为 to look attentively at。
+la	aureus	adj	clash	made of gold	金制／金色	已修	金色 → gold-colored。 同组「金制」的完整英文核为 made of gold。
+la	causa	noun	clash	cause	原因／案件	已修	案件 → court case。
+la	cōdex	noun	clash	tree trunk	书／树干	已修	书 → bound book。 同组「树干」的完整英文核为 tree trunk。
+la	colō	verb	clash	to cultivate the land	耕作／耕种	保留	词典指耕作或照料田地，to cultivate the land 涵盖耕作、耕种。
+la	crēdō	verb	clash	to believe	托付／相信	已修	托付 → to entrust。
+la	fundō	verb	clash	to pour out	倒出／倾倒	保留	词典 to pour out 指把液体倾倒出来，两条中文同义。
+la	furor	noun	clash	frenzy	狂怒／疯狂	已修	狂怒 → fury；疯狂 → madness。
+la	hīc	adv	clash	here	在这里／这里	保留	词典 here 指在或朝向此处，「在这里」与「这里」都涵盖。
+la	imāgō	noun	clash	image	形象／肖像	已修	肖像 → portrait。 同组「形象」的完整英文核为 mental image。
+la	indicō	verb	clash	to indicate	指出／显示	已修	显示 → to show。 同组「指出」的完整英文核为 to point out。
+la	latus	noun	clash	side	侧面／身侧	已修	身侧 → flank。 同组「侧面」的完整英文核为 side。
+la	mollis	adj	clash	soft	柔和／柔软	已修	柔和 → gentle。
+la	perpetuus	adj	clash	perpetual	不间断／永久	已修	不间断 → uninterrupted。 同组「永久」的完整英文核为 perpetual。
+la	sōlus	adj	clash	alone	唯一／独自	已修	唯一 → sole。 同组「独自」的完整英文核为 alone。
+la	terra	noun	clash	earth	土壤／大地	已修	土壤 → soil。 同组「大地」的完整英文核为 the earth (land)。
+la	tūtēla	noun	clash	tutelage	守护／监护	已修	守护 → protection；监护 → guardianship。
+la	vetus	adj	clash	old	年迈／旧的	已修	年迈 → elderly。 同组「旧的」的完整英文核为 old。
+la	volō	verb	clash	to wish	希望／愿意	已修	愿意 → to be willing。 同组「希望」的完整英文核为 to wish。
+de	Anfänger	noun	form	agent noun of anfangen	初学者	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：初学者 → beginner。
+de	Arbeiter	noun	form	agent noun of arbeiten	工人	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：工人 → worker。
+de	Berater	noun	form	agent noun of beraten: adviser / advisor	顾问	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：顾问 → adviser。
+de	Besitzer	noun	form	agent noun of besitzen	拥有者	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：拥有者 → owner。
+de	Bewohner	noun	form	agent noun of bewohnen: inhabitant	居民	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：居民 → resident。
+de	Diener	noun	form	agent noun of dienen	仆人	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：仆人 → servant。
+de	Donnerwetter	noun	form	thunderstorm	雷暴	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：雷暴 → thunderstorm。
+de	Einbrecher	noun	form	agent noun of einbrechen	入室窃贼	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：入室窃贼 → burglar。
+de	Entführer	noun	form	agent noun of entführen	绑架者	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：绑架者 → kidnapper。
+de	Helfer	noun	form	agent noun of helfen: helper	助手	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：助手 → assistant。
+de	Herrscher	noun	form	agent noun of herrschen	统治者	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：统治者 → ruler。
+de	Käufer	noun	form	agent noun of kaufen	买家	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：买家 → buyer。
+de	Lehrer	noun	form	teacher	教师	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：教师 → teacher。
+de	Spieler	noun	form	agent noun of spielen	玩家	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：玩家 → player。
+de	Tänzer	noun	form	dancer	舞者	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：舞者 → dancer。
+de	Teilnehmer	noun	form	agent noun of teilnehmen	参与者	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：参与者 → participant。
+de	Zauberer	noun	form	agent noun of zaubern: magician	魔法师	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：魔法师 → wizard。
+it	gioia	noun	form	jewel	珠宝	已修	扩展扫描查词典完整英文。采用去除派生或同义指针后的实际词义：珠宝 → jewel。

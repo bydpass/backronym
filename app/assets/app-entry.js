@@ -1,6 +1,7 @@
 /* 藏头 - Backronym：入场与改单词确认。ES2017 经典脚本。 */
 (function (app) {
   "use strict";
+  var STR = window.I18N.t; // 界面文案到 i18n.js 取，代码里只写编号（v00.04.00 批 0）
   app.entry = {};
   var CORE = app.model.CORE, state = app.model.state, el = app.model.el, blocked = app.model.blocked, displayWord = app.model.displayWord;
 
@@ -24,14 +25,14 @@
   var splits = Object.create(null);
   function splitFor(w) { return w in splits ? splits[w] : null; }
   function resetSplits() { splits = Object.create(null); splits[state.letters.join("")] = state.split; }
-  var SAVE_FAIL = { write: "没能保存到本设备，你的修改还在。点「重试保存」再试一次。", guard: "原稿暂时无法保全，先不保存；修改还在，可以稍后重试。" };
+  var SAVE_FAIL = { write: STR("entry.saveFail"), guard: STR("entry.saveFail") }; // 两种原因共用一句（用户 11-21 定）
   app.entry.BLOCKED_FILLER = CORE.BLOCKED_MSG; // 「填入内容」对名字也通顺（U14）
   // ---- 语言栏（T20；2026-11-12 起多选）----
   // 语言属于作品，可以选几门，一律平等：候选、查词、预设词、屏蔽词表、数字格读法都按选中的各门语言合起来算（CORE.useLangs）。
   // 勾上就算选中（规则随页面已在），语言包随后加载，行内写状态；有一门没就绪就不能开始 / 保存。勾选和取消都不清空已填的内容。
   // langBusy / langFail = 正在加载 / 上次没加载成功的语言
   var langOpen = false, langBusy = Object.create(null), langFail = Object.create(null);
-  var LANG_RULE = { de: "ß 会占两格（SS）" }; // 2026-11-12：法、西、意的「可以打 É、Ç 这类字母」删去，只留输入前必须知道的
+  var LANG_RULE = { de: STR("entry.ruleDe") }; // 2026-11-12：法、西、意的「可以打 É、Ç 这类字母」删去，只留输入前必须知道的
 
   function openEntry(from, focusField) {
     app.model.retryForms();
@@ -73,18 +74,22 @@
   }
 
   // 改成 w 会被清空、且已经有内容的格：[{ i, letter, word, parts }]（同位置字母没变的格由 keepSame 保留，不在其中）。
-  // 只调过默认图取景、没填词的格也算有内容（Astra 第 4 批验收 P2：否则缩放被静默清掉）
+  // 只在这一格单独调过取景、没填词的格也算有内容（Astra 第 4 批验收 P2：否则缩放被静默清掉）；各格共用的默认图取景会沿用，不算
   function lostCells(w) {
     var out = [];
     state.letters.forEach(function (l, i) {
       if (w.charAt(i) === l) return;
       var parts = [];
-      if (state.picks[i]) parts.push("词");
-      if (state.glosses[i]) parts.push("释义");
-      if (state.captions[i]) parts.push("配文");
+      if (state.picks[i]) parts.push(STR("lost.word"));
+      if (state.glosses[i]) parts.push(STR("lost.gloss"));
+      if (state.captions[i]) parts.push(STR("lost.caption"));
       var held = app.draft.heldAt(i);
-      if (state.images[i] || held.img) parts.push("配图");
-      if (cropEdited(state.crops[i]) || cropEdited(held.crop)) parts.push("取景");
+      if (state.images[i] || held.img) parts.push(STR("lost.image"));
+      // 取景：这一格用的是默认图、取景又正是各格共用的那一份，改词后会原样沿用（setLetters），不算会丢（复审 L4-A1：以前照样列进清空项，是误报）。
+      // 有单独配图的格，或在默认图上单独调过、与共用那份不同的格，取景确实会丢，照旧列出
+      var own = state.images[i] || held.img, shared = app.model.sharedCrop(), c = state.crops[i];
+      var kept = !own && shared && c && c.z === shared.z && c.x === shared.x && c.y === shared.y && !cropEdited(held.crop);
+      if (!kept && (cropEdited(c) || cropEdited(held.crop))) parts.push(STR("lost.crop"));
       if (parts.length) out.push({ i: i, letter: l, word: state.picks[i] ? displayWord(i) : "", parts: parts });
     });
     return out;
@@ -111,12 +116,12 @@
     if (!on) return;
     if (!entryPresets.length || presetsLang !== state.langs.join(",")) pickEntryPresets(); // 启动、18h 重载直接进来时也要有预设；按草稿恢复成别的语言后重抽
     renderLang();
-    el.entryTitle.textContent = edit ? "改单词 · 填表人" : "起一个单词";
+    el.entryTitle.textContent = edit ? STR("entry.titleEdit") : STR("entry.titleNew");
     el.entryNote.textContent = ""; // 2026-11-12：页标题下的玩法说明删去（界面本身看得出来） // T49：改词页的「返回时自动保存」说明删去，由保存按钮与返回确认表达
     el.entryStart.hidden = edit; // 从编辑界面进来：返回箭头即「应用并返回」，不再放第二个按钮做同一件事
     var w = CORE.normalizeWord(el.wordInput.value), f = el.fillerCtl.value;
     if (!app.entry.entryComposing) renderSense(w); // 组字结束后才更新，拼音阶段不闪
-    el.wordCount.textContent = w.length + " / " + CORE.MAX_LETTERS + " 个字符"; // T41：含数字时「个字母」不准确
+    el.wordCount.textContent = STR("entry.count", { n: w.length, max: CORE.MAX_LETTERS }); // T41：含数字时「个字母」不准确
     var fn = CORE.textUnits(f).length;
     el.fillerCount.textContent = fn + " / " + CORE.FILLER_MAX;
     // v00.03.01 U03（用户 11-18 定）：12 字起计数墨色粗体，写满朱色；只改计数，不改输入框
@@ -136,10 +141,10 @@
     el.presetField.hidden = !entryPresets.length;
     el.presets.textContent = "";
     entryPresets.forEach(function (p) {
-      var info = CORE.presetInfo(p), b = app.model.make("button", "preset"), g = info ? info.gloss : "", pw = app.model.make("b", null, p);
+      var info = CORE.presetInfo(p), b = app.model.make("button", "preset"), g = info ? (app.model.uiEn ? info.glossEn : info.gloss) : "", pw = app.model.make("b", null, p);
       pw.lang = info ? info.lang : state.lang;
       b.appendChild(pw);
-      if (g) { b.appendChild(app.model.make("span", null, g)); b.setAttribute("aria-label", p + "，" + g); }
+      if (g) { b.appendChild(app.model.make("span", null, g)); b.setAttribute("aria-label", p + STR("sep.comma") + g); }
       b.type = "button";
       b.setAttribute("aria-pressed", String(p === w)); // 与单词一致的预设：实心 + aria-pressed，不只靠颜色（WCAG 1.4.1 / 4.1.2）
       b.addEventListener("click", function () { el.wordInput.value = p; setEntryErr("word", ""); renderEntry(); el.wordInput.focus(); });
@@ -155,7 +160,7 @@
     if (langBusy[code]) return "loading";
     return langFail[code] || state.langs.indexOf(code) >= 0 ? "failed" : "";
   }
-  var LANG_ST = { ready: "已就绪", loading: "正在加载", failed: "没加载成功" };
+  var LANG_ST = { ready: STR("langst.ready"), loading: STR("langst.loading"), failed: STR("langst.failed") };
   // 选中的语言里第一门没就绪的（没有为 ""）
   function langWaiting() { for (var k = 0; k < state.langs.length; k++) if (langStatus(state.langs[k]) !== "ready") return state.langs[k]; return ""; }
   // 语言没就绪时不能开始 / 保存：返回要写在按钮上方的原因（没有就是 ""），写明是哪一门
@@ -163,35 +168,37 @@
     var code = langWaiting();
     if (!code) return "";
     var name = app.model.langName(code);
-    return langStatus(code) === "failed" ? name + "词库没加载成功，点语言栏里的「重试」" : name + "词库还在加载，加载完就能开始";
+    return langStatus(code) === "failed" ? STR("entry.packFailed", { name: name }) : STR("entry.packLoading", { name: name });
   }
   function nameNodes(row, parent) { // 「中文 + 原文」，原文带各自的 lang
+    if (row[1] === row[2]) { parent.appendChild(document.createTextNode(row[1])); return; } // 英文界面下英语的名字与原文相同，只写一遍
     parent.appendChild(document.createTextNode(row[1] + " "));
     var o = app.model.make("span", "lang-orig", row[2]);
     o.lang = row[0];
     parent.appendChild(o);
   }
+  var CODE_ABBR = { en: "En", fr: "Fr", de: "De", es: "Es", it: "It", la: "La" }; // 英文界面多选摘要的写法（语言代码，不是界面字，不进文案表）
   function renderLang() {
     var had = el.langList.contains(document.activeElement) ? document.activeElement : null;
     var hadCode = had ? had.value || had.getAttribute("data-code") : "", multi = state.langs.length > 1, wait = langWaiting();
     el.langNow.textContent = "";
     var full = [], abbr = [];
-    app.model.LANGS.forEach(function (row) { // 摘要行：只选一门写全名加原文；选了多门只写首字（英 法 德 西 意 拉），全名交给读屏（2026-11-17 真机反馈）
+    app.model.LANGS.forEach(function (row) { // 摘要行：只选一门写全名加原文；选了多门只写首字（英 法 德 西 意 拉；英文界面 En Fr De Es It La），全名交给读屏（2026-11-17 真机反馈）
       if (state.langs.indexOf(row[0]) < 0) return;
-      full.push(row[1]); abbr.push(row[1].charAt(0));
+      full.push(row[1]); abbr.push(app.model.uiEn ? CODE_ABBR[row[0]] : row[1].charAt(0)); // 英文界面写 En Fr De（真机第一轮 D3：取英文名首字母会成 E F G）
       if (!multi) nameNodes(row, el.langNow);
     });
     if (multi) { // 首字只给眼睛看，读屏读隐藏的全名（span 上的 aria-label 读屏多半不读，读了又会盖掉后面的加载状态）
       var ab = app.model.make("span", null, abbr.join(" "));
       ab.setAttribute("aria-hidden", "true");
       el.langNow.appendChild(ab);
-      el.langNow.appendChild(app.model.make("span", "sr-only", full.join("、")));
+      el.langNow.appendChild(app.model.make("span", "sr-only", full.join(STR("sep.list"))));
     }
     // 状态：只选英语且就绪不写（随包加载）；有没就绪的写明是哪一门（多选时）；都就绪写「已就绪」
     if (wait) el.langNow.appendChild(app.model.make("span", "lang-st", " · " + (multi ? app.model.langName(wait) : "") + LANG_ST[langStatus(wait)]));
     else if (multi || state.langs[0] !== "en") el.langNow.appendChild(app.model.make("span", "lang-st", " · " + LANG_ST.ready));
     el.langMore.setAttribute("aria-expanded", String(langOpen));
-    el.langMore.textContent = langOpen ? "收起" : "更多语言……";
+    el.langMore.textContent = langOpen ? STR("entry.langLess") : STR("entry.langMore");
     el.langList.hidden = !langOpen;
     el.langList.textContent = "";
     if (langOpen) app.model.LANGS.forEach(function (row) {
@@ -207,10 +214,10 @@
       line.appendChild(lab);
       if (s && (code !== "en")) line.appendChild(app.model.make("span", "lang-st", LANG_ST[s]));
       if (s === "failed") {
-        var again = app.model.make("button", "lang-retry", "重试");
+        var again = app.model.make("button", "lang-retry", STR("entry.retry"));
         again.type = "button";
         again.setAttribute("data-code", code);
-        again.setAttribute("aria-label", "重试加载" + row[1]);
+        again.setAttribute("aria-label", STR("entry.retryLabel", { name: row[1] }));
         again.addEventListener("click", function () { loadLang(code); });
         line.appendChild(again);
       }
@@ -222,7 +229,7 @@
     }
     el.langRule.textContent = state.langs.indexOf("de") >= 0 ? LANG_RULE.de : "";
     el.wordInput.lang = state.lang;
-    el.wordInput.placeholder = multi ? "输入一个单词" : "输入一个" + app.model.langName(state.langs[0]) + "单词";
+    el.wordInput.placeholder = multi ? STR("entry.wordPh") : STR("entry.wordPhLang", { lang: app.model.langName(state.langs[0]) });
     var why = langBlock();
     el.langWait.textContent = why;
     el.entryStart.disabled = !!why;
@@ -255,14 +262,17 @@
     else if (!on) app.model.cancelLang(code);
     app.draft.quietly(function () {
       if (on) return;
-      state.picks.forEach(function (p, i) { if (state.pickLangs[i] === code) state.pickLangs[i] = ""; });
+      var gone = [];
+      state.picks.forEach(function (p, i) { if (state.pickLangs[i] === code || (p && !state.pickLangs[i] && app.model.itemLang(p) === code)) { state.pickLangs[i] = ""; gone.push(i); } });
       app.model.refreshPicks(); // V003-B4-R12：等着这门语言才没认的格，现在不用等了——按剩下的语言重对一遍（与重新载入后的结果一致）
+      app.model.dropLangArticles(gone); // 剩下的语言没认回来的格：那门语言的冠词不留
+      app.model.pruneArtOwn(); // 另选的冠词随这门语言一起清掉，再勾回来也不恢复
     });
     pickEntryPresets();
     setEntryErr("word", "");
     app.model.changed();
     renderEntry();
-    el.live.textContent = (on ? "已加上" : "已去掉") + app.model.langName(code);
+    el.live.textContent = STR(on ? "entry.langOn" : "entry.langOff", { lang: app.model.langName(code) });
   }
 
   // T36：单词框下的义项行。查到 → 「LIFE：生活」（与卡上默认释义同一个义项，已去名字标注）；查不到 → 明说；屏蔽词 → U14 提示，不复述原词。
@@ -273,9 +283,11 @@
       if (blocked(w)) t = BLOCKED_HINT;
       else if (/^[0-9]+$/.test(w)) t = ""; // 全是数字：入场页不再写读法（2026-11-17 真机：多语言互相覆盖、四位数溢出）；编辑面每格的「T 开头」已经说了
       else {
-        var g = CORE.defaultGloss(app.model.itemFor(w)); // itemFor 查词不分大小写
+        var item = app.model.itemFor(w), g = CORE.defaultGloss(item); // itemFor 查词不分大小写
+        // 英文界面（批 2）：英语的词没有释义、只写词性（用户定）：「LIFE: n.」；几个词性用逗号并列
+        if (!g && item && app.model.uiEn) g = CORE.displayGroups(item).map(function (x) { return x.pos; }).filter(function (x, k, a) { return x && x.charAt(0) !== "[" && a.indexOf(x) === k; }).join(", ");
         var status = app.model.formStatus(w);
-        t = g ? w + "：" + g : status || "词库里没有 " + w + " 的释义";
+        t = g ? STR("entry.senseLine", { w: w, g: g }) : status || STR("entry.noGloss", { w: w });
       }
     }
     el.wordSense.textContent = t;
@@ -287,7 +299,7 @@
     el.splitInfo.hidden = el.splitAdjust.hidden = !on;
     if (!on) { el.splitInfo.textContent = ""; return; }
     var manual = splitFor(w) != null && splitFor(w) !== app.model.autoCut(w), lw = CORE.LANG.fold(w);
-    el.splitInfo.textContent = "分 2 张（" + cut + " + " + (w.length - cut) + "）· " + (manual ? "已手动调整" : "切点 " + lw.slice(0, cut) + " | " + lw.slice(cut) /* 全角「｜」不在字体子集里，用半角 */);
+    el.splitInfo.textContent = STR("split.info", { a: cut, b: w.length - cut, how: manual ? STR("split.manual") : STR("split.auto", { l: lw.slice(0, cut), r: lw.slice(cut) }) /* 全角「｜」不在字体子集里，用半角 */ });
     el.splitLeft.disabled = cut <= r.lo;
     el.splitRight.disabled = cut >= r.hi;
     el.splitAuto.disabled = !manual;
@@ -306,7 +318,7 @@
   function morePresets() {
     pickEntryPresets(entryPresets);
     renderEntry();
-    el.live.textContent = "已换一组预设";
+    el.live.textContent = STR("entry.reshuffled");
   }
 
   // ---- T30：保存按钮与返回确认 ----
@@ -326,19 +338,19 @@
     el.entrySave.hidden = !edit;
     if (!edit) { el.entrySaveMsg.textContent = el.entryWait.textContent = ""; return; }
     var busy = !!saving, can = !busy && entryPending() && !langBlock(); // 语言没就绪不能保存（原因写在语言栏与按钮上方）
-    el.entrySaveText.textContent = busy ? "保存中…" : saveFail && can ? "重试保存" : "保存";
+    el.entrySaveText.textContent = busy ? STR("common.saving") : saveFail && can ? STR("entry.retrySave") : STR("entry.save");
     el.entrySave.setAttribute("aria-disabled", String(!can));
     el.entrySave.setAttribute("aria-busy", String(busy));
     el.entrySave.classList.toggle("on", can);
     el.entrySaveMsg.textContent = saveFail && can ? SAVE_FAIL[saveFail] : "";
-    el.entryWait.textContent = busy && backAfterSave ? "正在保存，保存好就返回" : "";
+    el.entryWait.textContent = busy && backAfterSave ? STR("entry.savingBack") : "";
   }
 
   // 校验（与「开始填充」同一套）：失败就地说明并把焦点交给出错字段，返回 null
   function validateEntry() {
     var v = entryValues();
     setEntryErr("word", ""); setEntryErr("filler", "");
-    if (!v.w) { setEntryErr("word", "先输入一个单词"); el.wordInput.focus(); return null; }
+    if (!v.w) { setEntryErr("word", STR("common.needWord")); el.wordInput.focus(); return null; }
     if (blocked(v.w)) { setEntryErr("word", app.entry.BLOCKED_WORD); el.wordInput.focus(); return null; } // 说明不复述被拦的词
     if (blocked(v.f)) { setEntryErr("filler", app.entry.BLOCKED_FILLER); el.fillerCtl.focus(); return null; }
     return v;
@@ -375,7 +387,7 @@
         saveFail = "";
         var dirty = entryDirty();
         if (go && !dirty) { leaveEntry(); return; }
-        if (!dirty) app.model.showToast("已保存", 2500); // U1
+        if (!dirty) app.model.showToast(STR("entry.savedToast"), 2500); // U1
         renderSave();
         if (go) openLeave(); // 保存期间又改了：还有没存的，返回前照样问
         return;
@@ -415,11 +427,11 @@
   function openLeave() {
     var v = entryValues(), oldW = state.letters.join(""), oldF = state.filler || "";
     el.leaveDiff.textContent = "";
-    [["单词", oldW, v.w], ["填表人", oldF, v.f]].forEach(function (r) {
-      var shown = function (t) { return t || "（空）"; };
-      el.leaveDiff.appendChild(app.model.make("li", null, r[0] + " " + (r[1] === r[2] ? shown(r[1]) + "（未改）" : shown(r[1]) + " → " + shown(r[2]))));
+    [[STR("field.word"), oldW, v.w], [STR("field.filler"), oldF, v.f]].forEach(function (r) {
+      var shown = function (t) { return t || STR("leave.empty"); };
+      el.leaveDiff.appendChild(app.model.make("li", null, r[0] + " " + (r[1] === r[2] ? STR("leave.same", { v: shown(r[1]) }) : shown(r[1]) + " → " + shown(r[2]))));
     });
-    if (!entryDirty()) el.leaveDiff.appendChild(app.model.make("li", null, "已应用的修改还没写进本设备"));
+    if (!entryDirty()) el.leaveDiff.appendChild(app.model.make("li", null, STR("leave.applied")));
     app.model.showToast(""); // B2-R2：做决定时旧提示（如刚才的「已保存」）已过时，先清掉，不遮确认层；保存失败的说明在页内 #entrySaveMsg，不受影响
     el.leavePop.hidden = false;
     el.entryBack.setAttribute("aria-expanded", "true");
@@ -507,11 +519,11 @@
   function showConfirm(w, f, lost, mode) {
     var old = state.letters.join("");
     confirmCtx = { w: w, f: f, mode: mode || "apply" };
-    el.confTitle.textContent = "改成 " + w + " 会清空以下 " + lost.length + " 格，不可撤销"; // U5：标题与说明并成一句，哪几格由下面的列表写明
+    el.confTitle.textContent = STR("conf.title", { w: w, n: lost.length }); // U5：标题与说明并成一句，哪几格由下面的列表写明
     el.confList.textContent = "";
     lost.forEach(function (c) { el.confList.appendChild(lostRow(c)); });
-    el.confClear.textContent = "清空 " + lost.length + " 格，改成 " + w;
-    el.confKeep.textContent = "保留 " + old;
+    el.confClear.textContent = STR("conf.clear", { n: lost.length, w: w });
+    el.confKeep.textContent = STR("conf.keep", { old: old });
     el.wordConfirm.hidden = false;
     el.confKeep.focus(); // 初始焦点在安全选项（ATAG A.4.1.1 / WCAG 3.3.4）
   }

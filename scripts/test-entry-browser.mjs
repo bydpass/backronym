@@ -34,6 +34,7 @@ let browser;
 const word = (raw) => JSON.parse(raw).word;
 try {
   browser = await chromium.launch({ headless: true, ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
+  { const make = browser.newContext.bind(browser); browser.newContext = options => make({ locale: "zh-CN", ...options }); } // v00.04.00 批 1：界面语言跟随环境，无头浏览器默认报英文；本脚本测的是中文界面
   // draft：植入的草稿（null = 没有草稿）；slowRead：端存储读取延迟毫秒（模拟慢读取，T14）；width：视口宽；tipSeen：首次提示是否已看过
   async function pageFor({ draft = null, slowRead = 0, width = 375, height = 812, tipSeen = true, init = "", phraseDelay = 0 } = {}) {
     const context = await browser.newContext({ viewport: { width, height } });
@@ -110,7 +111,7 @@ try {
     assert.equal(await page.evaluate(() => document.activeElement.id), "wordCtl", "焦点交给第 1 格的词");
     await savedWhere(page, "d.word === 'LIFE'");
     assert.equal(word(await stored(page)), "LIFE"); assert.equal(JSON.parse(await stored(page)).filler, "小满");
-    assert.match(await page.locator("#mirror").innerText(), /填表人 小满/, "卡顶填表人只显示（镜像画出）");
+    assert.match(await page.locator("#mirror .b-info-filler").innerText(), /^小满$/, "卡顶填表人只显示名字（镜像画出；F13 去掉「填表人」三字）");
     assert.deepEqual(errors, []); await context.close();
   }
   // 2 有草稿直接进编辑界面；「改单词 / 填表人」→ 入场界面（返回箭头、预填）；屏蔽词留在本页、原稿不变；返回箭头应用并保存
@@ -119,7 +120,7 @@ try {
     assert.equal(await visible(page, "#entry"), false, "有草稿直接进编辑界面"); assert.equal(await visible(page, "#card"), true);
     assert.equal(await page.locator("#pageNo").count(), 0, "字母栏不再重复页码");
     const before = await stored(page);
-    await page.getByRole("button", { name: "改单词 / 填表人" }).click();
+    await page.getByRole("button", { name: /^改单词/ }).click();
     assert.ok(await page.getByRole("button", { name: "返回编辑界面" }).isVisible(), "返回箭头的读屏名");
     assert.equal(await page.locator("#wordInput").inputValue(), "LIFE"); assert.equal(await page.locator("#fillerCtl").inputValue(), "小满", "预先填好");
     assert.equal(await visible(page, "#entryStart"), false, "从编辑界面进来没有主按钮");
@@ -380,7 +381,7 @@ try {
     await page.evaluate(() => { window.__failLocal = true; });
     await page.locator("#entrySave").click();
     await page.waitForFunction(() => document.getElementById("entrySave").textContent === "重试保存");
-    assert.match(await page.locator("#entrySaveMsg").innerText(), /没能保存到本设备，你的修改还在/, "页内说明原因与下一步");
+    assert.match(await page.locator("#entrySaveMsg").innerText(), /保存失败，点「重试保存」再试一次/, "页内说明原因与下一步");
     assert.equal(await page.locator("#entrySaveMsg").getAttribute("role"), "alert");
     assert.equal(await page.locator("#entrySave").getAttribute("aria-disabled"), "false", "失败后仍可点");
     assert.notEqual(await page.locator("#toast").innerText(), "已保存", "失败不报已保存");
@@ -710,9 +711,9 @@ try {
     await page.locator("#viewGrid").click();
     assert.equal(await page.locator("#sheetTabs").isVisible(), true, "列阵分图：有页签");
     assert.deepEqual(await page.locator("#sheetTabs .sheet-tab").allInnerTexts(), ["01–06 第 1 张", "07–11 第 2 张"]);
-    assert.match(await page.locator("#mirror").innerText(), /01–06 \/ 11/, "页眉写起止格");
+    assert.doesNotMatch(await page.locator("#mirror").innerText(), /01–06 \/ 11/, "页眉默认不写起止格（F4：格子进度默认隐藏；起止格在页签上）");
     await page.locator("#sheet-1").click();
-    assert.match(await page.locator("#mirror").innerText(), /07–11 \/ 11/, "点页签换张");
+    assert.match(await page.locator("#mirror").innerText(), /P\s*M\s*E\s*N\s*T/, "点页签换张");
     assert.equal(await page.locator("#sheet-1").getAttribute("aria-selected"), "true");
     assert.ok((await page.locator("#sheetTabs .sheet-tab").first().boundingBox()).height >= 44, "页签 ≥ 44px 高");
     assert.deepEqual(errors, []); await context.close();

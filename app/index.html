@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <!-- 不禁止双指缩放：视力不好的用户需要放大（WCAG 1.4.4） -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>藏头 - Backronym</title>
+  <title data-i18n="h.page.title1">藏头 - Backronym</title>
   <link rel="stylesheet" href="./assets/style.css" />
   <script src="./assets/theme.js"></script>
 </head>
@@ -15,46 +15,52 @@
     <symbol id="i-check" viewBox="0 0 256 256"><path d="M228.24,76.24l-128,128a6,6,0,0,1-8.48,0l-56-56a6,6,0,0,1,8.48-8.48L96,191.51,219.76,67.76a6,6,0,0,1,8.48,8.48Z"/></symbol>
     <symbol id="i-back" viewBox="0 0 256 256"><path d="M222,128a6,6,0,0,1-6,6H54.49l61.75,61.76a6,6,0,1,1-8.48,8.48l-72-72a6,6,0,0,1,0-8.48l72-72a6,6,0,0,1,8.48,8.48L54.49,122H216A6,6,0,0,1,222,128Z"/></symbol>
     <symbol id="i-save" viewBox="0 0 256 256"><path d="M217.9,73.42,182.58,38.1a13.9,13.9,0,0,0-9.89-4.1H48A14,14,0,0,0,34,48V208a14,14,0,0,0,14,14H208a14,14,0,0,0,14-14V83.31A13.9,13.9,0,0,0,217.9,73.42ZM170,210H86V152a2,2,0,0,1,2-2h80a2,2,0,0,1,2,2Zm40-2a2,2,0,0,1-2,2H182V152a14,14,0,0,0-14-14H88a14,14,0,0,0-14,14v58H48a2,2,0,0,1-2-2V48a2,2,0,0,1,2-2H172.69a2,2,0,0,1,1.41.58L209.42,81.9a2,2,0,0,1,.58,1.41ZM158,72a6,6,0,0,1-6,6H96a6,6,0,0,1,0-12h56A6,6,0,0,1,158,72Z"/></symbol>
+    <!-- 这两个是自己画的（同样 256 网格、12 线宽），不是 Phosphor：版面、笔 -->
+    <symbol id="i-layout" viewBox="0 0 256 256"><path d="M40 48h176v160H40zM40 104h176M104 104v104" fill="none" stroke="currentColor" stroke-width="12" stroke-linejoin="round"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 256 256"><path d="M36 220l14-54L174 42l40 40L90 206zM146 70l40 40" fill="none" stroke="currentColor" stroke-width="12" stroke-linejoin="round" stroke-linecap="round"/></symbol>
     <symbol id="i-x" viewBox="0 0 256 256"><path d="M204.24,195.76a6,6,0,1,1-8.48,8.48L128,136.49,60.24,204.24a6,6,0,0,1-8.48-8.48L119.51,128,51.76,60.24a6,6,0,0,1,8.48-8.48L128,119.51l67.76-67.75a6,6,0,0,1,8.48,8.48L136.49,128Z"/></symbol>
   </svg>
   <div id="app" class="app">
     <!-- 顶部栏（v00.03.00 界面重构）：编辑页 左 单图 / 列阵，右 设置 + 完成；入场页 左 品牌名或返回，右（改词时）保存 + 设置。
-         按钮一律「图标 + 文字」（Phosphor light 20px，点按区高 44px）；深浅收进设置页。一行放不下时「单图 / 列阵」移到下一行（style.css）。
+         按钮一律带框（v00.03.03 L4：看得见的框高 36px，点按区高 44px），「单图｜列阵」是相连的两格、当前格实心，「完成」实心；图标 16px 在字前。
+         深浅收进设置页。一行放不下时「单图 / 列阵」移到下一行；容器按钮让位后屏宽不到 360px 时「设置」「完成」只留字（style.css）。
          #leavePop（T30 / R2）：改词页有未保存修改时点返回，从返回按钮向下展开的确认 -->
     <header id="top" class="top">
-      <span id="brand" class="brand" hidden>藏头 - Backronym</span>
-      <button id="entryBack" class="tbtn back" type="button" aria-label="返回编辑界面" aria-haspopup="dialog" aria-expanded="false" hidden><svg class="ic" width="20" height="20" aria-hidden="true" focusable="false"><use xlink:href="#i-back"/></svg><span>返回</span></button>
-      <div class="views" role="group" aria-label="版式">
-        <button id="viewSingle" class="vbtn" type="button" aria-pressed="true"><span>单图</span></button>
-        <button id="viewGrid" class="vbtn" type="button" aria-pressed="false"><span>列阵</span></button>
+      <span id="brand" class="brand" hidden data-i18n="h.brand">藏头 - Backronym</span>
+      <button id="entryBack" class="tbtn back" type="button" aria-label="返回编辑界面" aria-haspopup="dialog" aria-expanded="false" hidden data-i18n-attrs="aria-label:h.entryBack@aria-label"><svg class="ic" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-back"/></svg><span data-i18n="h.entryBack.span1">返回</span></button>
+      <div class="views" role="group" aria-label="视图" data-i18n-attrs="aria-label:h.top.div1@aria-label">
+        <button id="viewSingle" class="sbtn vbtn" type="button" aria-pressed="true"><span data-i18n="h.viewSingle.span1">单图</span></button>
+        <button id="viewGrid" class="sbtn vbtn" type="button" aria-pressed="false"><span data-i18n="h.viewGrid.span1">列阵</span></button>
       </div>
       <div class="top-r">
-        <button id="entrySave" class="tbtn save" type="button" aria-disabled="true" hidden><svg class="ic" width="20" height="20" aria-hidden="true" focusable="false"><use xlink:href="#i-save"/></svg><span id="entrySaveText">保存</span></button>
-        <button id="settingsOpen" class="tbtn" type="button"><svg class="ic" width="20" height="20" aria-hidden="true" focusable="false"><use xlink:href="#i-gear"/></svg><span>设置</span></button>
-        <button id="finish" class="tbtn finish" type="button" disabled><svg class="ic" width="20" height="20" aria-hidden="true" focusable="false"><use xlink:href="#i-check"/></svg><span id="finishText">完成</span></button>
+        <button id="entrySave" class="tbtn save" type="button" aria-disabled="true" hidden><svg class="ic" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-save"/></svg><span id="entrySaveText" data-i18n="h.entrySaveText">保存</span></button>
+        <button id="settingsOpen" class="tbtn" type="button"><svg class="ic" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-gear"/></svg><span data-i18n="h.settingsOpen.span1">设置</span></button>
+        <button id="finish" class="tbtn finish" type="button" disabled><svg class="ic" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-check"/></svg><span id="finishText" data-i18n="h.finishText">完成</span></button>
       </div>
       <div id="leavePop" class="leave-pop" role="alertdialog" aria-labelledby="leaveTitle" aria-describedby="leaveDiff" hidden>
-        <p id="leaveTitle" class="leave-title">有未保存的修改</p>
+        <p id="leaveTitle" class="leave-title" data-i18n="h.leaveTitle">有未保存的修改</p>
         <ul id="leaveDiff" class="leave-diff"></ul>
         <div class="leave-btns">
-          <button id="leaveSave" class="btn solid" type="button">保存并返回</button>
-          <button id="leaveDrop" class="btn outline" type="button">放弃修改</button>
-          <button id="leaveStay" class="btn outline" type="button">继续编辑</button>
+          <button id="leaveSave" class="btn solid" type="button" data-i18n="h.leaveSave">保存并返回</button>
+          <button id="leaveDrop" class="btn outline" type="button" data-i18n="h.leaveDrop">放弃修改</button>
+          <button id="leaveStay" class="btn outline" type="button" data-i18n="h.leaveStay">继续编辑</button>
         </div>
       </div>
     </header>
 
-    <!-- 入场界面（T18，闸口 A 第 1 节）：没有草稿时先到这里；编辑界面里点「改单词 / 填表人」也回到这里。
+    <!-- 入场界面（T18，闸口 A 第 1 节）：没有草稿时先到这里；编辑界面里点「改单词」也回到这里。
          输入只暂存在本页，点「开始填充」或返回箭头时统一校验，通过后一次性更新作品并保存 -->
+    <main id="main">
+    <h1 id="editTitle" class="sr-only edit-h" data-i18n="h.editTitle">编辑卡片</h1>
     <section id="entry" class="entry" aria-labelledby="entryTitle" hidden>
       <h1 id="entryTitle" class="ent-h"></h1>
       <p id="entryNote" class="ent-note"></p>
       <p id="entryWait" class="ent-note" role="status"></p>
       <p id="entrySaveMsg" class="ent-save-msg" role="alert"></p>
       <div class="ent-field">
-        <div class="ent-lab"><label for="wordInput">单词</label><span id="wordCount" class="ent-count"></span></div>
+        <div class="ent-lab"><label for="wordInput" data-i18n="h.entry.label1">单词</label><span id="wordCount" class="ent-count"></span></div>
         <input id="wordInput" class="ent-input word" type="text" disabled placeholder="输入一个英语单词" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" lang="en"
-               aria-describedby="wordSense wordErr" />
+               aria-describedby="wordSense wordErr" data-i18n-attrs="placeholder:h.wordInput@placeholder" />
         <!-- T36：单词框下固定一行——查到的第一个义项 / 词库里没有 / 屏蔽提示；点「开始填充」或保存被拦下时，这一行让给错误说明（U10），行高不变（T28） -->
         <div class="ent-line">
           <p id="wordSense" class="ent-sense"></p>
@@ -64,39 +70,39 @@
         <!-- T42：超过 10 格时自动分两张：写明分几张、各几格、切在哪；「调整分图」默认折叠（U17），只移动分界、不改内容 -->
         <p id="splitInfo" class="ent-help" role="status" hidden></p>
         <details id="splitAdjust" class="ent-split" hidden>
-          <summary>调整分图</summary>
+          <summary data-i18n="h.splitAdjust.summary1">调整分图</summary>
           <div class="split-btns">
-            <button id="splitLeft" class="split-btn" type="button">‹ 分界左移</button>
-            <button id="splitRight" class="split-btn" type="button">分界右移 ›</button>
-            <button id="splitAuto" class="split-btn" type="button">恢复自动</button>
+            <button id="splitLeft" class="split-btn" type="button" data-i18n="h.splitLeft">‹ 分界左移</button>
+            <button id="splitRight" class="split-btn" type="button" data-i18n="h.splitRight">分界右移 ›</button>
+            <button id="splitAuto" class="split-btn" type="button" data-i18n="h.splitAuto">恢复自动</button>
           </div>
-          <p class="ent-help">每张 3～10 格</p>
+          <p class="ent-help" data-i18n="h.splitAdjust.p1">每张 3～10 格</p>
         </details>
         <!-- 语言栏（T20）：语言属于作品，存进草稿。默认折叠成一行摘要；「更多语言……」展开六个单选（app-entry.js 生成）。
              选中别的语言先加载语言包，行内写状态；已填的格会被清空时先确认（#wordConfirm） -->
         <div class="ent-lang">
           <div class="lang-sum">
-            <span class="lang-k">语言</span>
+            <span class="lang-k" data-i18n="h.entry.span1">语言</span>
             <span id="langNow" class="lang-now"></span>
-            <button id="langMore" class="ent-more" type="button" aria-expanded="false" aria-controls="langList">更多语言……</button>
+            <button id="langMore" class="lang-more" type="button" aria-expanded="false" aria-controls="langList" data-i18n="h.langMore">更多语言……</button>
           </div>
-          <div id="langList" class="lang-list" role="group" aria-label="作品的语言（可多选）" hidden></div>
+          <div id="langList" class="lang-list" role="group" aria-label="作品的语言（可多选）" hidden data-i18n-attrs="aria-label:h.langList@aria-label"></div>
           <p id="langRule" class="ent-help"></p>
         </div>
       </div>
       <div id="presetField" class="ent-field">
-        <div class="ent-lab"><span id="presetLab">选一个单词作为主题：</span><button id="presetMore" class="ent-more" type="button">换一组</button></div>
+        <div class="ent-lab"><span id="presetLab" data-i18n="h.presetLab">选一个单词作为主题：</span><button id="presetMore" class="sbtn ent-more" type="button" data-i18n="h.presetMore">换一组</button></div>
         <div id="presets" class="ent-presets" role="group" aria-labelledby="presetLab"></div>
       </div>
       <div class="ent-field">
-        <div class="ent-lab"><label for="fillerCtl">填表人（选填）</label><span id="fillerCount" class="ent-count"></span></div>
+        <div class="ent-lab"><label for="fillerCtl" data-i18n="h.entry.label2">填表人（选填）</label><span id="fillerCount" class="ent-count"></span></div>
         <input id="fillerCtl" class="ent-input" type="text" maxlength="16" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
                aria-describedby="fillerHelp fillerErr" />
-        <p id="fillerHelp" class="ent-help">留空则图上不出现</p>
+        <p id="fillerHelp" class="ent-help" data-i18n="h.fillerHelp">留空则图上不出现</p>
         <p id="fillerErr" class="ent-err" role="alert"></p>
       </div>
       <p id="langWait" class="ent-help ent-wait" role="status"></p>
-      <button id="entryStart" class="btn solid ent-start" type="button">开始填充</button>
+      <button id="entryStart" class="btn solid ent-start" type="button" data-i18n="h.entryStart">开始填充</button>
     </section>
 
     <!-- 满宽卡：内容由 app.js 按 CORE.layoutCard / layoutGrid 的框摆（T09）；单图只渲染当前格，列阵整张只预览 -->
@@ -104,12 +110,12 @@
          透明文字叠在镜像对应的字上：T12 单词、T15 释义 / 配文）。卡顶三个控件是可见的真控件、镜像不画它们：标题框 #title（富文本，T16）、
          填表人只显示（T18 / D3：在入场界面改，镜像画出来）。#plateHit = 整块图版上的透明按钮（点了出配图面板）。
          #cand = 贴在词下方的平直栏：焦点在单词框时是候选栏（T13），在释义框时是义项栏（T15） -->
-    <div id="card" class="card" role="group" aria-label="卡">
+    <div id="card" class="card" role="group" aria-label="卡" data-i18n-attrs="aria-label:h.card@aria-label">
       <div id="mirror" class="layer"></div>
       <div id="ctl" class="layer">
         <div id="title" class="ctl ctl-title" contenteditable="true" role="textbox" aria-multiline="false"
-             aria-label="标题（留空则导出时用单词作标题）" aria-describedby="titleHint" spellcheck="false" hidden></div>
-        <p id="titleHint" class="sr-only">选中部分文字再点样式，可以单独改颜色、粗细、斜体；不选则改整个标题</p>
+             aria-label="标题（留空则导出时用单词作标题）" aria-describedby="titleHint" spellcheck="false" hidden data-i18n-attrs="aria-label:h.title@aria-label"></div>
+        <p id="titleHint" class="sr-only" data-i18n="h.titleHint">选中部分文字再点样式，可以单独改颜色、粗细、斜体；不选则改整个标题</p>
         <button id="plateHit" class="hit" type="button" hidden></button>
         <input id="wordCtl" class="ctl ctl-word" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="en" hidden />
         <input id="glossCtl" class="ctl ctl-line" type="text" maxlength="16" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" hidden />
@@ -124,29 +130,33 @@
             <span id="candCount" class="cand-count ent-count" hidden></span>
           </div>
           <div id="candRow" class="cand-row">
-            <button id="candMore" class="cand-more" type="button" aria-pressed="false"><span class="cand-box" aria-hidden="true"></span><span class="cand-more-t">专业、历史文化词</span><span id="candMoreN" class="cand-more-n"></span></button>
+            <button id="candMore" class="cand-more" type="button" aria-pressed="false"><span class="cand-box" aria-hidden="true"></span><span class="cand-more-t" data-i18n="h.candMore.span1">专业、历史文化词</span><span id="candMoreN" class="cand-more-n"></span></button>
             <span class="cand-acts">
-              <button id="candRandom" class="cand-act" type="button">随机一个</button>
-              <button id="candNext" class="cand-act" type="button">下一批</button>
+              <button id="candRandom" class="cand-act" type="button" data-i18n="h.candRandom">随机一个</button>
+              <button id="candNext" class="cand-act" type="button" data-i18n="h.candNext">下一批</button>
             </span>
           </div>
-          <ul id="candList" class="cand-grid" aria-label="候选词"></ul>
-          <div id="senseList" class="sense-list" role="group" aria-label="可选释义"></div>
+          <ul id="candList" class="cand-grid" aria-label="候选词" data-i18n-attrs="aria-label:h.candList@aria-label"></ul>
+          <div id="senseList" class="sense-list" role="group" aria-label="可选释义" data-i18n-attrs="aria-label:h.senseList@aria-label"></div>
         </div>
       </div>
     </div>
     <!-- 卡下字母栏 + 提示行（列阵时只有提示行）。页码在卡顶左上已有，字母栏不再重复（闸口 A · A3）；提示行右侧是去入场界面的入口 -->
     <!-- T42：超过 10 格时列阵分两张，这里是换张的页签（横滑也可以） -->
-    <div id="sheetTabs" class="sheet-tabs" role="tablist" aria-label="分图" hidden></div>
-    <nav id="pager" class="pager" aria-label="字母">
+    <div id="sheetTabs" class="sheet-tabs" role="tablist" aria-label="分图" hidden data-i18n-attrs="aria-label:h.sheetTabs@aria-label"></div>
+    <nav id="pager" class="pager" aria-label="字母" data-i18n-attrs="aria-label:h.pager@aria-label">
       <span id="pagerLetters" class="ls"></span>
     </nav>
     <div id="hintRow" class="hint-row">
       <p id="hint" class="foot-hint"></p>
-      <button id="toEntry" class="to-entry" type="button">改单词 / 填表人</button>
+      <span class="hint-acts"><!-- 两个入口一组：提示句放不下时整组挪到下一行靠右（真机第二轮 E1） -->
+      <button id="toLayout" class="sbtn to-entry" type="button" hidden data-i18n="h.toLayout"><svg class="ic" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-layout"/></svg>版式</button>
+      <button id="toEntry" class="sbtn to-entry" type="button" aria-label="改单词（也在这里改填表人）" data-i18n="h.toEntry" data-i18n-attrs="aria-label:h.toEntry@aria-label"><svg class="ic" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-pen"/></svg>改单词</button>
+      </span>
     </div>
+    </main>
     <footer class="draft-note">
-      <p>草稿存在本设备，18 小时未改动自动清除</p>
+      <p data-i18n="h.app.p1">草稿存在本设备，18 小时未改动自动清除</p>
       <p id="draftStatus" role="status" aria-live="polite"></p>
     </footer>
     <!-- 给读屏的状态播报（不显示）：点「完成」被拦下的原因、导出 / 保存结果、标题超出两行等 -->
@@ -161,14 +171,14 @@
   <div id="kbRow" class="kbrow" hidden>
     <div class="kb-in">
       <span id="kbText" class="kb-text" hidden></span>
-      <div id="kbTools" class="rte-toolbar" role="toolbar" aria-label="标题格式" aria-controls="title" hidden>
-        <button type="button" class="tool" data-cmd="bold" aria-pressed="true" aria-label="粗体"><b>B</b></button>
-        <button type="button" class="tool" data-cmd="italic" aria-pressed="false" aria-label="斜体"><i>I</i></button>
+      <div id="kbTools" class="rte-toolbar" role="toolbar" aria-label="标题格式" aria-controls="title" hidden data-i18n-attrs="aria-label:h.kbTools@aria-label">
+        <button type="button" class="tool" data-cmd="bold" aria-pressed="true" aria-label="粗体" data-i18n-attrs="aria-label:h.kbTools.button1@aria-label"><b>B</b></button>
+        <button type="button" class="tool" data-cmd="italic" aria-pressed="false" aria-label="斜体" data-i18n-attrs="aria-label:h.kbTools.button2@aria-label"><i>I</i></button>
         <span class="tool-sep" aria-hidden="true"></span>
-        <button type="button" class="tool dot" data-color="default" aria-label="墨色"><i class="sw ink"></i></button>
-        <button type="button" class="tool dot" data-color="red" aria-label="朱红"><i class="sw red"></i></button>
-        <button type="button" class="tool dot" data-color="#8d877d" aria-label="灰色"><i class="sw" style="background:#8d877d"></i></button>
-        <label class="tool dot pick"><span class="custom-mark" aria-hidden="true">＋</span><input id="tcolorCustom" class="tool-color" type="color" value="#b0301c" aria-label="自选颜色" /><span class="pick-lab" aria-hidden="true">自选色</span></label>
+        <button type="button" class="tool dot" data-color="default" aria-label="墨色" data-i18n-attrs="aria-label:h.kbTools.button3@aria-label"><i class="sw ink"></i></button>
+        <button type="button" class="tool dot" data-color="red" aria-label="朱红" data-i18n-attrs="aria-label:h.kbTools.button4@aria-label"><i class="sw red"></i></button>
+        <button type="button" class="tool dot" data-color="#8d877d" aria-label="灰色" data-i18n-attrs="aria-label:h.kbTools.button5@aria-label"><i class="sw" style="background:#8d877d"></i></button>
+        <label class="tool dot pick"><span class="custom-mark" aria-hidden="true">＋</span><input id="tcolorCustom" class="tool-color" type="color" value="#b0301c" aria-label="自选颜色" data-i18n-attrs="aria-label:h.tcolorCustom@aria-label" /><span class="pick-lab" aria-hidden="true" data-i18n="h.kbTools.span1">自选色</span></label>
       </div>
       <span id="kbNote" class="kb-note" hidden></span>
     </div>
@@ -182,25 +192,25 @@
       <div class="fin-lab"><b id="finTitle"></b><span id="finCount"></span></div>
       <div id="finProg" class="fin-prog" role="progressbar" aria-labelledby="finTitle" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="finBar"></i></div>
       <!-- T43：导出完成后按顺序排的缩略图（编号 + 字母），点开看大图；不强制先看（U15）。图多时这一排自己横向滚动，页面不横滚 -->
-      <ul id="finThumbs" class="fin-thumbs" aria-label="导出的图" hidden></ul>
+      <ul id="finThumbs" class="fin-thumbs" aria-label="导出的图" hidden data-i18n-attrs="aria-label:h.finThumbs@aria-label"></ul>
       <div class="fin-btns">
-        <button id="save" class="btn solid" type="button">保存到相册</button>
-        <button id="post" class="btn outline" type="button">发布笔记</button>
-        <button id="exportView" class="btn solid" type="button" hidden>导出图片</button>
+        <button id="save" class="btn solid" type="button" data-i18n="h.save">保存到相册</button>
+        <button id="post" class="btn outline" type="button" data-i18n="h.post">发布笔记</button>
+        <button id="exportView" class="btn solid" type="button" hidden data-i18n="h.exportView">导出图片</button>
       </div>
       <p id="finMsg" class="fin-msg"></p>
-      <div class="fin-foot"><button id="creditsOpen" class="fin-credit" type="button">借物与版权</button><span>v00.03.00</span></div>
+      <div class="fin-foot"><button id="creditsOpen" class="sbtn fin-credit" type="button" data-i18n="h.creditsOpen">借物与版权</button><span>v01.00.00</span></div>
     </div>
   </div>
 
   <!-- T43：缩略图点开的大图（全屏模态）：上一张 / 下一张 / 左右滑动 / 方向键换张，Esc 或关闭回到刚才点的缩略图 -->
   <div id="viewer" class="page viewer" hidden>
     <div class="page-in" role="dialog" aria-modal="true" aria-labelledby="viewTitle">
-      <div class="page-top"><h2 id="viewTitle"></h2><button id="viewClose" class="tbtn close" type="button" aria-label="关闭大图"><svg class="ic" width="20" height="20" aria-hidden="true" focusable="false"><use xlink:href="#i-x"/></svg><span>关闭</span></button></div>
+      <div class="page-top"><h2 id="viewTitle"></h2><button id="viewClose" class="tbtn close" type="button" aria-label="关闭大图" data-i18n-attrs="aria-label:h.viewClose@aria-label"><svg class="ic" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-x"/></svg><span data-i18n="h.viewClose.span1">关闭</span></button></div>
       <img id="viewImg" class="view-img" alt="" draggable="false" />
       <div class="view-nav">
-        <button id="viewPrev" class="btn outline" type="button">‹ 上一张</button>
-        <button id="viewNext" class="btn outline" type="button">下一张 ›</button>
+        <button id="viewPrev" class="btn outline" type="button" data-i18n="h.viewPrev">‹ 上一张</button>
+        <button id="viewNext" class="btn outline" type="button" data-i18n="h.viewNext">下一张 ›</button>
       </div>
     </div>
   </div>
@@ -220,8 +230,8 @@
   <!-- 浏览器里没有端能力时的全屏「导出结果」页（§3-⑪）：逐张列出，长按或右键图片保存 -->
   <div id="results" class="page" hidden>
     <div class="page-in" role="dialog" aria-modal="true" aria-labelledby="resTitle">
-      <div class="page-top"><h2 id="resTitle">导出结果<span id="resCount"></span></h2><button id="resClose" class="tbtn close" type="button" aria-label="关闭导出结果"><svg class="ic" width="20" height="20" aria-hidden="true" focusable="false"><use xlink:href="#i-x"/></svg><span>关闭</span></button></div>
-      <p class="page-note">当前不在小红书内：长按或右键图片保存</p>
+      <div class="page-top"><h2 id="resTitle" data-i18n="h.resTitle">导出结果<span id="resCount"></span></h2><button id="resClose" class="tbtn close" type="button" aria-label="关闭导出结果" data-i18n-attrs="aria-label:h.resClose@aria-label"><svg class="ic" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-x"/></svg><span data-i18n="h.resClose.span1">关闭</span></button></div>
+      <p class="page-note" data-i18n="h.results.p1">当前不在小红书内：长按或右键图片保存</p>
       <div id="resList" class="res-list"></div>
     </div>
   </div>
@@ -229,63 +239,64 @@
   <!-- 全屏借物与版权页（§3-⑪）：从完成面板底行或设置页底行进入 -->
   <div id="credits" class="page" hidden>
     <div class="page-in" role="dialog" aria-modal="true" aria-labelledby="creditsTitle">
-      <div class="page-top"><h2 id="creditsTitle">借物与版权</h2><button id="creditsClose" class="tbtn close" type="button" aria-label="关闭借物与版权"><svg class="ic" width="20" height="20" aria-hidden="true" focusable="false"><use xlink:href="#i-x"/></svg><span>关闭</span></button></div>
+      <div class="page-top"><h2 id="creditsTitle" data-i18n="h.creditsTitle">借物与版权</h2><button id="creditsClose" class="tbtn close" type="button" aria-label="关闭借物与版权" data-i18n-attrs="aria-label:h.creditsClose@aria-label"><svg class="ic" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-x"/></svg><span data-i18n="h.creditsClose.span1">关闭</span></button></div>
       <div class="credits-body">
         <div class="credits-own">
-          <p><b>藏头 - Backronym</b> v00.03.00 · © 2026 BeyondPassenger</p>
-          <p>本程序是自由软件：你可以按自由软件基金会发布的 GNU 通用公共许可证的条款再分发、修改它，适用第 3 版，或由你选择的任一更新版本。</p>
-          <p>本程序不提供任何担保，包括不保证适销，也不保证适合某一特定用途。</p>
-          <p>许可全文在本页末尾「许可全文」里的第一项，也在源代码仓库的 <span lang="en">LICENSES/</span> 目录。源代码：<span lang="en">github.com/bydpass/backronym</span></p>
+          <p><b data-i18n="h.credits.b1">藏头 - Backronym</b> v01.00.00 · © 2026 BeyondPassenger</p>
+          <p data-i18n="h.credits.p1">本程序是自由软件：你可以按自由软件基金会发布的 GNU 通用公共许可证的条款再分发、修改它，适用第 3 版，或由你选择的任一更新版本。</p>
+          <p data-i18n="h.credits.p2">本程序不提供任何担保，包括不保证适销，也不保证适合某一特定用途。</p>
+          <p data-i18n-html="h.credits.p3">许可全文在本页末尾「许可全文」里的第一项，也在源代码仓库的 <span lang="en">LICENSES/</span> 目录。源代码：<span lang="en">github.com/bydpass/backronym</span></p>
         </div>
-        <h3>省流</h3>
+        <h3 data-i18n="h.credits.h31">省流</h3>
         <ul class="credits-tldr">
-          <li><b>可以</b>：用本工具做的图，署名即可商用（署名可写「版式：藏头 - Backronym（BeyondPassenger），CC BY 4.0，creativecommons.org/licenses/by/4.0」；图上直接取自词库的释义仍按词库的许可）；代码可以改，可以商用。</li>
-          <li><b>不可以</b>：把改过的程序分发给别人，却不向对方提供源码；删掉署名或许可声明；把设计稿与文档拿去商用。</li>
-          <li><b>注意</b>：第三方资源各守原许可；一切以许可原文为准，这段中文说明不具法律效力；本工具不提供担保。</li>
+          <li data-i18n="h.credits.li1"><b data-i18n="h.credits.b2">可以</b>：用本工具做的图，署名即可商用（署名可写「版式：藏头 - Backronym（BeyondPassenger），CC BY 4.0，creativecommons.org/licenses/by/4.0」；图上直接取自词库的释义仍按词库的许可）；代码可以改，可以商用。</li>
+          <li data-i18n="h.credits.li2"><b data-i18n="h.credits.b3">不可以</b>：把改过的程序分发给别人，却不向对方提供源码；删掉署名或许可声明；把设计稿与文档拿去商用。</li>
+          <li data-i18n="h.credits.li3"><b data-i18n="h.credits.b4">注意</b>：第三方资源各守原许可；一切以许可原文为准，这段中文说明不具法律效力；本工具不提供担保。</li>
         </ul>
-        <p class="credits-parts">各部分的许可：代码（含界面文案）<span lang="en">GPL-3.0-or-later</span>；五门西文词库 <span lang="en">CC BY-SA 4.0</span>；设计稿与文档 <span lang="en">CC BY-NC-SA 4.0</span>（不随包）；用本工具做出的图里，属于本工具的版式部分 <span lang="en">CC BY 4.0</span>；制作者自己写的文字、放的照片归制作者，直接取自词库的释义仍按词库的许可。</p>
-        <h3>来源</h3>
+        <p class="credits-parts" data-i18n-html="h.credits.p4">各部分的许可：代码（含界面文案）<span lang="en">GPL-3.0-or-later</span>；五门西文词库 <span lang="en">CC BY-SA 4.0</span>；设计稿与文档 <span lang="en">CC BY-NC-SA 4.0</span>（不随包）；用本工具做出的图里，属于本工具的版式部分 <span lang="en">CC BY 4.0</span>；制作者自己写的文字、放的照片归制作者，直接取自词库的释义仍按词库的许可。</p>
+        <h3 data-i18n="h.credits.h32">来源</h3>
         <table class="credits-table">
-          <caption class="sr-only">借物与版权</caption>
-          <thead><tr><th scope="col">用途</th><th scope="col">名称与版权人</th><th scope="col">许可证</th></tr></thead>
+          <caption class="sr-only" data-i18n="h.credits.caption1">借物与版权</caption>
+          <thead><tr><th scope="col" data-i18n="h.credits.th1">用途</th><th scope="col" data-i18n="h.credits.th2">名称与版权人</th><th scope="col" data-i18n="h.credits.th3">许可证</th></tr></thead>
           <tbody>
-            <tr><th scope="row">本工具</th><td>藏头 - Backronym v00.03.00 · © 2026 BeyondPassenger<br>源代码：<span lang="en">github.com/bydpass/backronym</span></td><td><span lang="en">GPL-3.0-or-later</span></td></tr>
-            <tr><th scope="row">词库 · 英语</th><td>ECDICT（<span lang="en">github.com/skywind3000/ECDICT</span>）· © 2025 Linwei<br>英语的选词、词形和释义依据。</td><td>MIT License</td></tr>
-            <tr><th scope="row">词库 · 法、德、西、意、拉丁</th><td>维基词典（<span lang="en">Wiktionary</span>，经 <span lang="en">kaikki.org</span> 抽取）· 维基词典的编者们<br>五门语言的词头、词性、变格变位和英文释义依据。法、德、西、意的人名中文译写取自 ECDICT（MIT，© 2025 Linwei）。</td><td>CC BY-SA 4.0（来源是双许可，这里按 CC BY-SA 4.0 使用）</td></tr>
-            <tr><th scope="row">词库 · 选词用的词频</th><td>FrequencyWords（<span lang="en">github.com/hermitdave/FrequencyWords</span>）· Hermit Dave，法、德、西、意字幕词频<br>Lexique 4.10（<span lang="fr">www.lexique.org</span>）· Boris New、Christophe Pallier 等，法语按原形与词性分开的字幕频次<br>ParlaMint 4.1 带标注议会语料（CLARIN.SI，<span lang="en">hdl.handle.net/11356/1911</span>）· Tomaž Erjavec 等 ParlaMint 项目，西语、意语、奥地利、英国分库，用来把字幕次数和英语词频按原形与词性拆分<br>百科语料取自 <span lang="en">Universal Dependencies Parallel UD 2.16</span> 四语树库的 Wikipedia 部分（<span lang="en">universaldependencies.org</span>）。按原形计数并合成名次。<br><span lang="en">Dickinson College Commentaries</span> 拉丁语核心词表（<span lang="en">dcc.dickinson.edu</span>）· Dickinson College，Christopher Francese 主持<br>仅用于筛选，未随包分发其内容。</td><td>字幕词频 CC BY-SA 4.0；Lexique CC BY-SA 4.0；ParlaMint CC BY 4.0；百科树库 CC BY-SA 3.0；核心词表 <span lang="en">CC BY-SA 3.0 Unported</span></td></tr>
-            <tr><th scope="row">词库 · 早期参考</th><td>CFDICT（法语，<span lang="en">chine.in</span>）· David Houstin 创办，<span lang="en">Chine Informations</span><br>HanDeDict（德语，<span lang="en">handedict.zydeo.net</span>）· Gábor L Ugray 与原始团队<br><span lang="en">Whitaker's Words</span>（拉丁语，<span lang="en">github.com/mk270/whitakers-words</span>）· William A. Whitaker。作者的许可原句：<span lang="en">“Permission is hereby freely given for any and all use of program and data. You can sell it as your own, but at least tell me.”</span><br>早期选词与中文释义的参考；现在的中文释义已逐条重写。<span lang="en">Whitaker's Words</span> 仅用于筛选，未随包分发其内容。</td><td>CFDICT：CC BY-SA 3.0；HanDeDict：CC BY-SA 3.0（介绍页另写 2.0 DE）；<span lang="en">Whitaker's Words</span>：作者的自由使用声明（原句见左）</td></tr>
-            <tr><th scope="row">断词点</th><td>TeX hyph-utf8 连字符模式（<span lang="en">github.com/hyphenation/tex-hyphen</span>）<br>法语 © Daniel Flipo、Bernard Gaulle、Arthur Reutenauer；德语 © 2013-2024 <span lang="de">Stephan Hennig, Werner Lemberg, Günter Milde, Sander van Geloven, Georg Pfeiffer, Gisbert W. Selke, Tobias Wendorf, Keno Wehr</span>（作者署名：<span lang="de">Deutschsprachige Trennmustermannschaft</span>）；西语 © Javier Bezos、CervanTeX；意语、拉丁语 © Claudio Beccari</td><td>MIT License（意语、拉丁语的来源是双许可：意语 MIT 或 LPPL 1.3 及更高版本，拉丁语 MIT 或 LPPL 1 及更高版本；这里都取 MIT）</td></tr>
-            <tr><th scope="row">词库的改编</th><td>已改编：据以上数据抽取、筛选、合并词形、去掉不属于本词的词形，翻译为中文并人工审核；中文释义、冠词和用法说明逐条核写。改编后的五门西文词库整体按 CC BY-SA 4.0 发布，数据随源代码公开，可在本页开头的地址取得。核对时查阅了 Lewis &amp; Short、Gaffiot（经芝加哥大学 Logeion）、TLFi、Duden、DWDS、RAE、Treccani 等词典，未收录它们的文字。各语言的声明附在 <code>words.js</code> 文件头。许可原文见本页末尾的全文，也可查 <span lang="en">creativecommons.org/licenses/by-sa/4.0</span>、<span lang="en">creativecommons.org/licenses/by-sa/3.0</span></td><td>CC BY-SA 4.0</td></tr>
-            <tr><th scope="row">屏蔽词表 · 五门西文</th><td><span lang="en">List of Dirty, Naughty, Obscene, and Otherwise Bad Words</span>（LDNOOBW，<span lang="en">github.com/LDNOOBW</span>）· Shutterstock, Inc.；维基词典的不雅、冒犯标注<br>经审核后取用，有增删。许可原文：<span lang="en">creativecommons.org/licenses/by/4.0</span></td><td>CC BY 4.0；维基词典 CC BY-SA 4.0</td></tr>
-            <tr><th scope="row">英文字体</th><td>Noto Sans · © 2022 The Noto Project Authors（<span lang="en">github.com/notofonts</span>）<br>已子集化为拉丁字符，含西文带变音符的字母。</td><td>SIL Open Font License 1.1</td></tr>
-            <tr><th scope="row">中文字体</th><td>Noto Sans CJK SC（Noto Sans SC）· © 2014-2021 Adobe（<span lang="en">github.com/notofonts/noto-cjk</span>）<br>已子集化为常用字。</td><td>SIL Open Font License 1.1</td></tr>
-            <tr><th scope="row">主题字体 · 西文</th><td>fandom：Libre Baskerville · © 2012 The Libre Baskerville Project Authors（<span lang="en">github.com/impallari/Libre-Baskerville</span>）<br>单色画：Gowun Batang · © 2021 The Gowun Batang Project Authors（<span lang="en">github.com/yangheeryu/Gowun-Batang</span>）<br>印象派：Cormorant Garamond · © 2015 the Cormorant Project Authors（<span lang="en">github.com/CatharsisFonts/Cormorant</span>）<br>分离派：Federo · © 2011 Cyreal（<span lang="en">cyreal.org</span>）<br>都已子集化为拉丁字符，含西文带变音符的字母。Libre Baskerville 与 Federo 是保留字体名，裁剪后的文件已改名为 BK Fandom Serif、BK Secession Display。</td><td>SIL Open Font License 1.1</td></tr>
-            <tr><th scope="row">主题字体 · 中文</th><td>fandom、分离派：思源宋体 Noto Serif CJK SC（Noto Serif SC）· © 2017-2024 Adobe（<span lang="en">github.com/notofonts/noto-cjk</span>）<br>单色画：霞鹜文楷 LXGW WenKai · © 2021-2026 LXGW（<span lang="en">github.com/lxgw/LxgwWenKai</span>），基于 Klee One · © 2020 The Klee Project Authors<br>都已子集化为常用字。霞鹜、霞鶩、落霞孤鹜、落霞孤鶩、LXGW 是保留字体名，裁剪后的文件已改名为 BK Dansaekhwa Kai。</td><td>SIL Open Font License 1.1</td></tr>
-            <tr><th scope="row">图标</th><td>Phosphor Icons（<span lang="en">github.com/phosphor-icons/core</span>）· © 2023 Phosphor Icons<br>用了 light 粗细的五个图标，内嵌在页面里。</td><td>MIT License</td></tr>
-            <tr><th scope="row">主题的颜色</th><td>fandom 主题的颜色取自 <span lang="en">Archive of Our Own</span> 默认皮肤的样式表（<span lang="en">github.com/otwcode/otwarchive</span>）；其余三个主题的颜色是自己配的。只取了色值，没有使用其代码。</td><td>—</td></tr>
-            <tr><th scope="row">审核规则参考</th><td>《小红书社区公约 2.0》（内置的屏蔽词表依据此整理；小红书版与网页版相同）。</td><td>—</td></tr>
+            <tr><th scope="row" data-i18n="h.credits.th4">本工具</th><td data-i18n-html="h.credits.td1">藏头 - Backronym v01.00.00 · © 2026 BeyondPassenger<br>源代码：<span lang="en">github.com/bydpass/backronym</span></td><td><span lang="en">GPL-3.0-or-later</span></td></tr>
+            <tr><th scope="row" data-i18n="h.credits.th5">词库 · 英语</th><td data-i18n-html="h.credits.td2">ECDICT（<span lang="en">github.com/skywind3000/ECDICT</span>）· © 2025 Linwei<br>英语的选词、词形和释义依据。</td><td>MIT License</td></tr>
+            <tr><th scope="row" data-i18n="h.credits.th6">词库 · 法、德、西、意、拉丁</th><td data-i18n-html="h.credits.td3">维基词典（<span lang="en">Wiktionary</span>，经 <span lang="en">kaikki.org</span> 抽取）· 维基词典的编者们<br>五门语言的词头、词性、变格变位和英文释义依据；英文界面下显示的英文释义取自这里，有删节，少数为机器翻译。法、德、西、意的人名中文译写取自 ECDICT（MIT，© 2025 Linwei）。</td><td data-i18n="h.credits.td4">CC BY-SA 4.0（来源是双许可，这里按 CC BY-SA 4.0 使用）</td></tr>
+            <tr><th scope="row" data-i18n="h.credits.th7">词库 · 选词用的词频</th><td data-i18n-html="h.credits.td5">FrequencyWords（<span lang="en">github.com/hermitdave/FrequencyWords</span>）· Hermit Dave，法、德、西、意字幕词频<br>Lexique 4.10（<span lang="fr">www.lexique.org</span>）· Boris New、Christophe Pallier 等，法语按原形与词性分开的字幕频次<br>ParlaMint 4.1 带标注议会语料（CLARIN.SI，<span lang="en">hdl.handle.net/11356/1911</span>）· Tomaž Erjavec 等 ParlaMint 项目，西语、意语、奥地利、英国分库，用来把字幕次数和英语词频按原形与词性拆分<br>百科语料取自 <span lang="en">Universal Dependencies Parallel UD 2.16</span> 四语树库的 Wikipedia 部分（<span lang="en">universaldependencies.org</span>）。按原形计数并合成名次。<br><span lang="en">Dickinson College Commentaries</span> 拉丁语核心词表（<span lang="en">dcc.dickinson.edu</span>）· Dickinson College，Christopher Francese 主持<br>仅用于筛选，未随包分发其内容。</td><td data-i18n="h.credits.td6">字幕词频 CC BY-SA 4.0；Lexique CC BY-SA 4.0；ParlaMint CC BY 4.0；百科树库 CC BY-SA 3.0；核心词表 <span lang="en">CC BY-SA 3.0 Unported</span></td></tr>
+            <tr><th scope="row" data-i18n="h.credits.th8">词库 · 早期参考</th><td data-i18n-html="h.credits.td7">CFDICT（法语，<span lang="en">chine.in</span>）· David Houstin 创办，<span lang="en">Chine Informations</span><br>HanDeDict（德语，<span lang="en">handedict.zydeo.net</span>）· Gábor L Ugray 与原始团队<br><span lang="en">Whitaker's Words</span>（拉丁语，<span lang="en">github.com/mk270/whitakers-words</span>）· William A. Whitaker。作者的许可原句：<span lang="en">“Permission is hereby freely given for any and all use of program and data. You can sell it as your own, but at least tell me.”</span><br>早期选词与中文释义的参考；现在的中文释义已逐条重写。<span lang="en">Whitaker's Words</span> 仅用于筛选，未随包分发其内容。</td><td data-i18n-html="h.credits.td8">CFDICT：CC BY-SA 3.0；HanDeDict：CC BY-SA 3.0（介绍页另写 2.0 DE）；<span lang="en">Whitaker's Words</span>：作者的自由使用声明（原句见左）</td></tr>
+            <tr><th scope="row" data-i18n="h.credits.th19">词库 · 英文释义的补充</th><td data-i18n-html="h.credits.td21">FreeDict 意英词典（<span lang="en">freedict.org</span>）· Karl Bartel 与 FreeDict、WikDict 项目<br>英文界面里有 12 条意大利语词的英文释义在维基词典里挑不出，取自这本词典。</td><td data-i18n="h.credits.td22">CC BY-SA 3.0 Unported</td></tr>
+            <tr><th scope="row" data-i18n="h.credits.th9">断词点</th><td data-i18n-html="h.credits.td9">TeX hyph-utf8 连字符模式（<span lang="en">github.com/hyphenation/tex-hyphen</span>）<br>法语 © Daniel Flipo、Bernard Gaulle、Arthur Reutenauer；德语 © 2013-2024 <span lang="de">Stephan Hennig, Werner Lemberg, Günter Milde, Sander van Geloven, Georg Pfeiffer, Gisbert W. Selke, Tobias Wendorf, Keno Wehr</span>（作者署名：<span lang="de">Deutschsprachige Trennmustermannschaft</span>）；西语 © Javier Bezos、CervanTeX；意语、拉丁语 © Claudio Beccari</td><td data-i18n="h.credits.td10">MIT License（意语、拉丁语的来源是双许可：意语 MIT 或 LPPL 1.3 及更高版本，拉丁语 MIT 或 LPPL 1 及更高版本；这里都取 MIT）</td></tr>
+            <tr><th scope="row" data-i18n="h.credits.th10">词库的改编</th><td data-i18n-html="h.credits.td11">已改编：据以上数据抽取、筛选、合并词形、去掉不属于本词的词形，翻译为中文并人工审核；中文释义、冠词和用法说明逐条核写。改编后的五门西文词库整体按 CC BY-SA 4.0 发布，数据随源代码公开，可在本页开头的地址取得。核对时查阅了 Lewis &amp; Short、Gaffiot（经芝加哥大学 Logeion）、TLFi、Duden、DWDS、RAE、Treccani 等词典，未收录它们的文字。各语言的声明附在 <code>words.js</code> 文件头。许可原文见本页末尾的全文，也可查 <span lang="en">creativecommons.org/licenses/by-sa/4.0</span>、<span lang="en">creativecommons.org/licenses/by-sa/3.0</span></td><td>CC BY-SA 4.0</td></tr>
+            <tr><th scope="row" data-i18n="h.credits.th11">屏蔽词表 · 五门西文</th><td data-i18n-html="h.credits.td12"><span lang="en">List of Dirty, Naughty, Obscene, and Otherwise Bad Words</span>（LDNOOBW，<span lang="en">github.com/LDNOOBW</span>）· Shutterstock, Inc.；维基词典的不雅、冒犯标注<br>经审核后取用，有增删。许可原文：<span lang="en">creativecommons.org/licenses/by/4.0</span></td><td data-i18n="h.credits.td13">CC BY 4.0；维基词典 CC BY-SA 4.0</td></tr>
+            <tr><th scope="row" data-i18n="h.credits.th12">英文字体</th><td data-i18n-html="h.credits.td14">Noto Sans · © 2022 The Noto Project Authors（<span lang="en">github.com/notofonts</span>）<br>已子集化为拉丁字符，含西文带变音符的字母。</td><td>SIL Open Font License 1.1</td></tr>
+            <tr><th scope="row" data-i18n="h.credits.th13">中文字体</th><td data-i18n-html="h.credits.td15">Noto Sans CJK SC（Noto Sans SC）· © 2014-2021 Adobe（<span lang="en">github.com/notofonts/noto-cjk</span>）<br>已子集化为常用字。</td><td>SIL Open Font License 1.1</td></tr>
+            <tr><th scope="row" data-i18n="h.credits.th14">主题字体 · 西文</th><td data-i18n-html="h.credits.td16">fandom：Libre Baskerville · © 2012 The Libre Baskerville Project Authors（<span lang="en">github.com/impallari/Libre-Baskerville</span>）<br>单色画：Gowun Batang · © 2021 The Gowun Batang Project Authors（<span lang="en">github.com/yangheeryu/Gowun-Batang</span>）<br>印象派：Cormorant Garamond · © 2015 the Cormorant Project Authors（<span lang="en">github.com/CatharsisFonts/Cormorant</span>）<br>分离派：Federo · © 2011 Cyreal（<span lang="en">cyreal.org</span>）<br>都已子集化为拉丁字符，含西文带变音符的字母。Libre Baskerville 与 Federo 是保留字体名，裁剪后的文件已改名为 BK Fandom Serif、BK Secession Display。</td><td>SIL Open Font License 1.1</td></tr>
+            <tr><th scope="row" data-i18n="h.credits.th15">主题字体 · 中文</th><td data-i18n-html="h.credits.td17">fandom、分离派：思源宋体 Noto Serif CJK SC（Noto Serif SC）· © 2017-2024 Adobe（<span lang="en">github.com/notofonts/noto-cjk</span>）<br>单色画：霞鹜文楷 LXGW WenKai · © 2021-2026 LXGW（<span lang="en">github.com/lxgw/LxgwWenKai</span>），基于 Klee One · © 2020 The Klee Project Authors<br>都已子集化为常用字。霞鹜、霞鶩、落霞孤鹜、落霞孤鶩、LXGW 是保留字体名，裁剪后的文件已改名为 BK Dansaekhwa Kai。</td><td>SIL Open Font License 1.1</td></tr>
+            <tr><th scope="row" data-i18n="h.credits.th16">图标</th><td data-i18n-html="h.credits.td18">Phosphor Icons（<span lang="en">github.com/phosphor-icons/core</span>）· © 2023 Phosphor Icons<br>用了 light 粗细的五个图标，内嵌在页面里。</td><td>MIT License</td></tr>
+            <tr><th scope="row" data-i18n="h.credits.th17">主题的颜色</th><td data-i18n-html="h.credits.td19">fandom 主题的颜色取自 <span lang="en">Archive of Our Own</span> 默认皮肤的样式表（<span lang="en">github.com/otwcode/otwarchive</span>）；其余三个主题的颜色是自己配的。只取了色值，没有使用其代码。</td><td>—</td></tr>
+            <tr><th scope="row" data-i18n="h.credits.th18">审核规则参考</th><td data-i18n="h.credits.td20">《小红书社区公约 2.0》（内置的屏蔽词表依据此整理；小红书版与网页版相同）。</td><td>—</td></tr>
           </tbody>
         </table>
 
-        <h3>许可全文</h3>
+        <h3 data-i18n="h.credits.h33">许可全文</h3>
         <details data-license="GPL-3.0">
-          <summary>GNU General Public License 第 3 版（本工具的代码）</summary>
-          <pre lang="zh-CN">展开后读取全文；读不到时请看源代码仓库的 LICENSES/GPL-3.0.txt。</pre>
+          <summary data-i18n="h.credits.summary1">GNU General Public License 第 3 版（本工具的代码）</summary>
+          <pre lang="zh-CN" data-i18n="h.credits.pre1">展开后读取全文；读不到时请看源代码仓库的 LICENSES/GPL-3.0.txt。</pre>
         </details>
         <details data-license="CC-BY-SA-4.0">
-          <summary>CC BY-SA 4.0（五门西文词库 / 维基词典 / FrequencyWords / Lexique）</summary>
-          <pre lang="zh-CN">展开后读取全文；读不到时请看源代码仓库的 LICENSES/CC-BY-SA-4.0.txt。</pre>
+          <summary data-i18n="h.credits.summary2">CC BY-SA 4.0（五门西文词库 / 维基词典 / FrequencyWords / Lexique）</summary>
+          <pre lang="zh-CN" data-i18n="h.credits.pre2">展开后读取全文；读不到时请看源代码仓库的 LICENSES/CC-BY-SA-4.0.txt。</pre>
         </details>
         <details data-license="CC-BY-SA-3.0">
-          <summary>CC BY-SA 3.0（CFDICT / HanDeDict / 拉丁语核心词表）</summary>
-          <pre lang="zh-CN">展开后读取全文；读不到时请看源代码仓库的 LICENSES/CC-BY-SA-3.0.txt。</pre>
+          <summary data-i18n="h.credits.summary3">CC BY-SA 3.0（CFDICT / HanDeDict / 拉丁语核心词表 / FreeDict 意英词典）</summary>
+          <pre lang="zh-CN" data-i18n="h.credits.pre3">展开后读取全文；读不到时请看源代码仓库的 LICENSES/CC-BY-SA-3.0.txt。</pre>
         </details>
         <details data-license="CC-BY-4.0">
-          <summary>CC BY 4.0（屏蔽词表 LDNOOBW / ParlaMint / 用本工具做出的图的版式部分）</summary>
-          <pre lang="zh-CN">展开后读取全文；读不到时请看源代码仓库的 LICENSES/CC-BY-4.0.txt。</pre>
+          <summary data-i18n="h.credits.summary4">CC BY 4.0（屏蔽词表 LDNOOBW / ParlaMint / 用本工具做出的图的版式部分）</summary>
+          <pre lang="zh-CN" data-i18n="h.credits.pre4">展开后读取全文；读不到时请看源代码仓库的 LICENSES/CC-BY-4.0.txt。</pre>
         </details>
         <details>
-          <summary>MIT License（ECDICT / Phosphor Icons / TeX 连字符模式）</summary>
+          <summary data-i18n="h.credits.summary5">MIT License（ECDICT / Phosphor Icons / TeX 连字符模式）</summary>
           <pre lang="en">Copyright (c) 2025 Linwei (ECDICT)
 Copyright (c) 2023 Phosphor Icons
 Copyright (C) 1994-2002 Daniel Flipo, Bernard Gaulle, 2016 Arthur Reutenauer (hyph-fr)
@@ -313,8 +324,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.</pre>
         </details>
         <details>
-          <summary>SIL Open Font License 1.1（Noto Sans / Noto Sans CJK SC / 六套主题字体）</summary>
-          <pre lang="en">Noto Sans: Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)
+          <summary data-i18n="h.credits.summary6">SIL Open Font License 1.1（Noto Sans / Noto Sans CJK SC / 六套主题字体）</summary>
+          <pre lang="en" data-i18n-skip>Noto Sans: Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)
 Noto Sans CJK SC: © 2014-2021 Adobe (http://www.adobe.com/).
 Libre Baskerville: Copyright 2012 The Libre Baskerville Project Authors (https://github.com/impallari/Libre-Baskerville) with Reserved Font Name Libre Baskerville.
 Gowun Batang: Copyright 2021 The Gowun Batang Project Authors (https://github.com/yangheeryu/Gowun-Batang)
@@ -420,49 +431,82 @@ OTHER DEALINGS IN THE FONT SOFTWARE.</pre>
     </div>
   </div>
 
+  <!-- 版式页（v00.03.03 L2）：这份作品的卡怎么排。编辑面提示行的「版式」进，关闭后焦点还给它。版式跟着草稿走；主题在设置页，跟着设备走。
+       顶上一块钉住：左边是当前格的小样，小样下一对「单图｜列阵」只换小样、不换编辑面的视图；右边两个预设。
+       下面「自定义」三组开关由 app-layout.js 生成。改动立刻生效，没有「应用 / 取消」。预设下面那行会变的说明只留给读屏（真机反馈：它一变页面就下移） -->
+  <div id="layoutPage" class="page" hidden>
+    <div class="page-in" role="dialog" aria-modal="true" aria-labelledby="layoutTitle">
+      <div class="page-top"><h2 id="layoutTitle" data-i18n="h.layoutTitle">版式</h2><button id="layoutClose" class="tbtn close" type="button" aria-label="关闭版式" data-i18n-attrs="aria-label:h.layoutClose@aria-label"><svg class="ic" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-x"/></svg><span data-i18n="h.layoutClose.span1">关闭</span></button></div>
+      <div class="lay-top">
+        <div class="lay-left">
+          <div id="layPrev" class="lay-prev" role="img" aria-label="按现在的版式排出来的小样" data-i18n-attrs="aria-label:h.layPrev@aria-label"></div>
+          <div class="lay-views" role="group" aria-label="小样看哪种视图" data-i18n-attrs="aria-label:h.layoutPage.div1@aria-label">
+            <button id="layViewSingle" class="sbtn vbtn" type="button" aria-pressed="true" data-i18n="h.layViewSingle">单图</button>
+            <button id="layViewGrid" class="sbtn vbtn" type="button" aria-pressed="false" data-i18n="h.layViewGrid">列阵</button>
+          </div>
+        </div>
+        <div class="lay-side">
+          <h3 id="layBaseLab" class="set-lab lay-group" data-i18n="h.layBaseLab">预设</h3>
+          <div id="layBase" class="set-seg" role="radiogroup" aria-labelledby="layBaseLab" aria-describedby="layBaseWhy"></div>
+          <p id="layBaseWhy" class="sr-only"></p>
+        </div>
+      </div>
+      <div id="layRows"></div>
+    </div>
+  </div>
+
   <!-- 设置页（v00.03.00 界面重构）：这台设备怎么显示。顶栏「设置」进，关闭后焦点还给「设置」。偏好存在设备上，不进草稿。
-       本批只有深浅三档；四个主题在第三步（主题）加进来。底行：借物与版权、版本号 -->
+       两组：主题（五选一）与深浅三档（选着只有一套的主题时停用）。底行：借物与版权、版本号 -->
   <div id="settings" class="page" hidden>
     <div class="page-in" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
-      <div class="page-top"><h2 id="settingsTitle">设置</h2><button id="settingsClose" class="tbtn close" type="button" aria-label="关闭设置"><svg class="ic" width="20" height="20" aria-hidden="true" focusable="false"><use xlink:href="#i-x"/></svg><span>关闭</span></button></div>
+      <div class="page-top"><h2 id="settingsTitle" data-i18n="h.settingsTitle">设置</h2><button id="settingsClose" class="tbtn close" type="button" aria-label="关闭设置" data-i18n-attrs="aria-label:h.settingsClose@aria-label"><svg class="ic" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-x"/></svg><span data-i18n="h.settingsClose.span1">关闭</span></button></div>
       <div class="set-body">
-        <h3 id="skinLab" class="set-lab">主题</h3>
+        <h3 id="skinLab" class="set-lab" data-i18n="h.skinLab">主题</h3>
         <div id="skinGroup" class="set-ths" role="radiogroup" aria-labelledby="skinLab">
-          <label class="set-th"><input type="radio" name="skin" value="fandom" /><span class="set-th-in skin-opt"><span class="set-sw sk-fandom"></span><span class="set-th-n" lang="en">fandom</span><span class="set-th-x">仅浅色</span></span></label>
-          <label class="set-th"><input type="radio" name="skin" value="dansaekhwa" /><span class="set-th-in skin-opt"><span class="set-sw sk-dansaekhwa"></span><span class="set-th-n">单色画</span></span></label>
-          <label class="set-th"><input type="radio" name="skin" value="impressionism" /><span class="set-th-in skin-opt"><span class="set-sw sk-impressionism"></span><span class="set-th-n">印象派</span></span></label>
-          <label class="set-th"><input type="radio" name="skin" value="secession" /><span class="set-th-in skin-opt"><span class="set-sw sk-secession"></span><span class="set-th-n">分离派</span></span></label>
+          <label class="set-th"><input type="radio" name="skin" value="fandom" /><span class="set-th-in skin-opt"><span class="set-sw sk-fandom"></span><span class="set-th-n" lang="en">fandom</span><span class="set-th-x" data-i18n="h.skinGroup.span1">仅浅色</span></span></label>
+          <label class="set-th"><input type="radio" name="skin" value="dansaekhwa" /><span class="set-th-in skin-opt"><span class="set-sw sk-dansaekhwa"></span><span class="set-th-n" data-i18n="h.skinGroup.span2">单色画</span></span></label>
+          <label class="set-th"><input type="radio" name="skin" value="impressionism" /><span class="set-th-in skin-opt"><span class="set-sw sk-impressionism"></span><span class="set-th-n" data-i18n="h.skinGroup.span3">印象派</span></span></label>
+          <label class="set-th"><input type="radio" name="skin" value="secession" /><span class="set-th-in skin-opt"><span class="set-sw sk-secession"></span><span class="set-th-n" data-i18n="h.skinGroup.span4">分离派</span></span></label>
+          <label class="set-th"><input type="radio" name="skin" value="table" /><span class="set-th-in skin-opt"><span class="set-sw sk-table"></span><span class="set-th-n" data-i18n="h.skinGroup.span5">表格</span><span class="set-th-x" data-i18n="h.skinGroup.span6">仅深色</span></span></label>
         </div>
-        <h3 id="modeLab" class="set-lab set-lab2">深浅</h3>
-        <div id="modeGroup" class="set-seg" role="radiogroup" aria-labelledby="modeLab" aria-describedby="modeWhy">
-          <label class="set-opt"><input type="radio" name="mode" value="auto" /><span><svg class="ic set-ck" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-check"/></svg>跟随系统</span></label>
-          <label class="set-opt"><input type="radio" name="mode" value="light" /><span><svg class="ic set-ck" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-check"/></svg>浅色</span></label>
-          <label class="set-opt"><input type="radio" name="mode" value="dark" /><span><svg class="ic set-ck" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-check"/></svg>深色</span></label>
+        <h3 id="modeLab" class="set-lab set-lab2" data-i18n="h.modeLab">深浅</h3>
+        <div id="modeGroup" class="set-seg" role="radiogroup" aria-labelledby="modeLab">
+          <label class="set-opt"><input type="radio" name="mode" value="auto" /><span data-i18n="h.modeGroup.span1"><svg class="ic set-ck" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-check"/></svg>跟随系统</span></label>
+          <label class="set-opt"><input type="radio" name="mode" value="light" /><span data-i18n="h.modeGroup.span2"><svg class="ic set-ck" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-check"/></svg>浅色</span></label>
+          <label class="set-opt"><input type="radio" name="mode" value="dark" /><span data-i18n="h.modeGroup.span3"><svg class="ic set-ck" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-check"/></svg>深色</span></label>
         </div>
-        <p id="modeWhy" class="ent-help" hidden>这个主题只有浅色。系统是深色模式时，整个界面也是浅色</p>
-        <div class="set-foot"><button id="setCredits" class="fin-credit" type="button">借物与版权</button><span>v00.03.00</span></div>
+        <!-- 界面语言（v00.04.00 批 1）：只存本机；选项名不随界面语言变。换了以后页面重新载入一次 -->
+        <h3 id="uiLangLab" class="set-lab set-lab2" data-i18n="h.uiLangLab">界面语言</h3>
+        <div id="uiLangGroup" class="set-seg" role="radiogroup" aria-labelledby="uiLangLab">
+          <label class="set-opt"><input type="radio" name="uilang" value="auto" /><span data-i18n="h.uiLangGroup.span1"><svg class="ic set-ck" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-check"/></svg>跟随系统</span></label>
+          <label class="set-opt"><input type="radio" name="uilang" value="zh" /><span lang="zh-CN" data-i18n-skip><svg class="ic set-ck" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-check"/></svg>中文</span></label>
+          <label class="set-opt"><input type="radio" name="uilang" value="en" /><span lang="en"><svg class="ic set-ck" width="16" height="16" aria-hidden="true" focusable="false"><use xlink:href="#i-check"/></svg>English</span></label>
+        </div>
+        <div class="set-foot"><button id="setCredits" class="sbtn fin-credit" type="button" data-i18n="h.setCredits">借物与版权</button><span>v01.00.00</span></div>
       </div>
     </div>
   </div>
 
-  <!-- 配图面板（§3-③）：点卡上的图版出来。底部平直面板，不遮卡（透明遮罩，点外面关闭）。两个隐藏的文件框：本格配图 / 默认图 -->
+  <!-- 配图面板（§3-③）：点卡上的图版出来。底部平直面板（透明遮罩，点外面关闭）。两个隐藏的文件框：本格配图 / 默认图。
+       行都是带框的按钮（v00.03.03 L4）；默认图一组也能「调整取景」，调的是所有没有单独配图的格共用的那一份 -->
   <div id="imgPanel" class="sheet flat" hidden>
     <div class="sheet-panel img-panel" role="dialog" aria-modal="true" aria-labelledby="imgTitle">
       <div class="sheet-head">
         <h2 id="imgTitle"></h2>
-        <button id="imgClose" class="link" type="button">关闭</button>
+        <button id="imgClose" class="sbtn" type="button" data-i18n="h.imgClose">关闭</button>
       </div>
       <input id="cellPhoto" class="sr-only" type="file" accept="image/*" tabindex="-1" aria-hidden="true" />
       <div class="plist">
-        <button id="imgPick" class="prow" type="button" aria-label="选择图片，这一格">选择图片</button>
-        <button id="imgAdjust" class="prow" type="button">调整取景</button>
-        <button id="imgRemove" class="prow" type="button" aria-label="移除这一格的配图">移除</button>
+        <button id="imgPick" class="prow" type="button" aria-label="选择图片，这一格" data-i18n="h.imgPick" data-i18n-attrs="aria-label:h.imgPick@aria-label">选择图片</button>
+        <button id="imgAdjust" class="prow" type="button" data-i18n="h.imgAdjust">调整取景</button>
+        <button id="imgRemove" class="prow" type="button" aria-label="移除这一格的配图" data-i18n="h.imgRemove" data-i18n-attrs="aria-label:h.imgRemove@aria-label">移除</button>
       </div>
-      <div class="plab"><b>所有格共用的默认图</b></div>
+      <div class="plab"><b data-i18n="h.imgPanel.b1">所有格共用的默认图</b></div>
       <input id="photo" class="sr-only" type="file" accept="image/*" tabindex="-1" aria-hidden="true" />
-      <div class="plist inline">
-        <button id="defPick" class="prow" type="button" aria-label="选择图片，默认图">选择图片</button>
-        <button id="defRemove" class="prow" type="button" aria-label="移除默认图">移除</button>
+      <div class="plist">
+        <button id="defPick" class="prow" type="button" aria-label="选择图片，默认图" data-i18n="h.defPick" data-i18n-attrs="aria-label:h.defPick@aria-label">选择图片</button>
+        <button id="defAdjust" class="prow" type="button" aria-label="调整取景，默认图" data-i18n="h.defAdjust" data-i18n-attrs="aria-label:h.defAdjust@aria-label">调整取景</button>
+        <button id="defRemove" class="prow" type="button" aria-label="移除默认图" data-i18n="h.defRemove" data-i18n-attrs="aria-label:h.defRemove@aria-label">移除</button>
       </div>
     </div>
   </div>
@@ -473,29 +517,31 @@ OTHER DEALINGS IN THE FONT SOFTWARE.</pre>
       <div class="sheet-head">
         <h2 id="cropTitle"></h2>
       </div>
-      <p id="cropScope" class="crop-scope" hidden>应用后，所有没有单独配图的格都用它</p>
+      <p id="cropScope" class="crop-scope" hidden data-i18n="h.cropScope">应用后，所有没有单独配图的格都用它</p>
       <canvas id="cropCanvas" class="crop-canvas" tabindex="0"
-              aria-label="配图预览：拖动或用方向键移动，加号减号缩放"></canvas>
-      <div id="cropMoves" class="crop-moves" role="group" aria-label="移动取景">
-        <button type="button" data-move="ArrowLeft" aria-label="向左移动"><span class="crop-arrow" aria-hidden="true">→</span></button>
-        <button type="button" data-move="ArrowUp" aria-label="向上移动"><span class="crop-arrow" aria-hidden="true">→</span></button>
-        <button type="button" data-move="ArrowDown" aria-label="向下移动"><span class="crop-arrow" aria-hidden="true">→</span></button>
-        <button type="button" data-move="ArrowRight" aria-label="向右移动"><span class="crop-arrow" aria-hidden="true">→</span></button>
+              aria-label="配图预览：拖动或用方向键移动，加号减号缩放" data-i18n-attrs="aria-label:h.cropCanvas@aria-label"></canvas>
+      <div id="cropMoves" class="crop-moves" role="group" aria-label="移动取景" data-i18n-attrs="aria-label:h.cropMoves@aria-label">
+        <button type="button" data-move="ArrowLeft" aria-label="向左移动" data-i18n-attrs="aria-label:h.cropMoves.button1@aria-label"><span class="crop-arrow" aria-hidden="true">→</span></button>
+        <button type="button" data-move="ArrowUp" aria-label="向上移动" data-i18n-attrs="aria-label:h.cropMoves.button2@aria-label"><span class="crop-arrow" aria-hidden="true">→</span></button>
+        <button type="button" data-move="ArrowDown" aria-label="向下移动" data-i18n-attrs="aria-label:h.cropMoves.button3@aria-label"><span class="crop-arrow" aria-hidden="true">→</span></button>
+        <button type="button" data-move="ArrowRight" aria-label="向右移动" data-i18n-attrs="aria-label:h.cropMoves.button4@aria-label"><span class="crop-arrow" aria-hidden="true">→</span></button>
       </div>
       <div class="crop-zoom">
-        <button id="cropMinus" type="button" aria-label="缩小">−</button>
-        <input id="cropZoom" type="range" min="1" max="3" step="0.01" value="1" aria-label="缩放" />
-        <button id="cropPlus" type="button" aria-label="放大">＋</button>
+        <button id="cropMinus" type="button" aria-label="缩小" data-i18n-attrs="aria-label:h.cropMinus@aria-label">−</button>
+        <input id="cropZoom" type="range" min="1" max="3" step="0.01" value="1" aria-label="缩放" data-i18n-attrs="aria-label:h.cropZoom@aria-label" />
+        <button id="cropPlus" type="button" aria-label="放大" data-i18n-attrs="aria-label:h.cropPlus@aria-label">＋</button>
       </div>
       <div class="btns crop-btns">
-        <button id="cropCancel" class="btn outline" type="button">取消</button>
-        <button id="cropReset" class="btn outline" type="button">还原</button>
-        <button id="cropApply" class="btn solid" type="button">应用</button>
+        <button id="cropCancel" class="btn outline" type="button" data-i18n="h.cropCancel">取消</button>
+        <button id="cropReset" class="btn outline" type="button" data-i18n="h.cropReset">还原</button>
+        <button id="cropApply" class="btn solid" type="button" data-i18n="h.cropApply">应用</button>
       </div>
     </div>
   </div>
 
+  <!-- v00.04.00 批 0：界面文案表，暴露 window.I18N；排在所有取文案的脚本之前。本页带 data-i18n* 的元素与它逐字对应 -->
   <!-- v00.03.00 T02 / T03：英语语言包（词库、屏蔽词表）在 lang/en/；屏蔽器公共部分 block/core.js 先于各语言词表 -->
+  <script src="./assets/i18n.js"></script>
   <script src="./assets/lang/en/words.js"></script>
   <script src="./assets/block/core.js"></script>
   <script src="./assets/lang/en/block.js"></script>
@@ -522,6 +568,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.</pre>
   <script src="./assets/app-editor.js"></script>
   <script src="./assets/app-entry.js"></script>
   <script src="./assets/app-publish.js"></script>
+  <script src="./assets/app-layout.js"></script>
   <script src="./assets/app-draft.js"></script>
   <script src="./assets/app.js"></script>
 </body>

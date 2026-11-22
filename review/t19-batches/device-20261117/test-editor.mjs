@@ -54,6 +54,7 @@ function load(file, expose = '') {
   const code = fs.readFileSync(new URL('../../../app/assets/' + file, import.meta.url), 'utf8');
   vm.runInContext(expose ? code.replace(/\}\)\(window.Backronym\);\s*$/, expose + '\n})(window.Backronym);') : code, env, {filename: file});
 }
+load('i18n.js');
 load('core.js');
 load('lang/packs.js');
 load('block/core.js');

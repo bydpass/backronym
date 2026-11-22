@@ -1,6 +1,7 @@
 /* 藏头 - Backronym：配图、取景与配图面板。ES2017 经典脚本。 */
 (function (app) {
   "use strict";
+  var STR = window.I18N.t; // 界面文案到 i18n.js 取，代码里只写编号（v00.04.00 批 0）
   app.media = {};
   var CORE = app.model.CORE, state = app.model.state, el = app.model.el;
 
@@ -18,7 +19,7 @@
     if (!file) return;
     // 鸿蒙上放宽了可选类型（见 pickAccept），会选到视频：类型写明是视频的，解码前就拦下。
     // 只认 video/：类型为空或是 application/octet-stream 的（部分 HEIC、文件管理器给不出类型）照常解码，解不出再提示
-    if (file.type && file.type.indexOf("video/") === 0) { app.model.showToast("只能选图片，换一张试试", 2500); return; } // v00.03.01 E1：容器把浏览器原生弹窗画成无字深色框，改用页内提示
+    if (file.type && file.type.indexOf("video/") === 0) { app.model.showToast(STR("media.onlyImage"), 2500); return; } // v00.03.01 E1：容器把浏览器原生弹窗画成无字深色框，改用页内提示
     bumpImg(key);
     var epoch = app.draft.draftEpoch, seq = imgSeq[key], url = URL.createObjectURL(file);
     var img = new Image();
@@ -30,7 +31,7 @@
     img.onerror = function () {
       URL.revokeObjectURL(url);
       if (seq !== imgSeq[key] || epoch !== app.draft.draftEpoch || app.draft.checkDraftExpiry()) return;
-      app.model.showToast("这张图片读不出来，换一张试试", 2500);
+      app.model.showToast(STR("media.unreadable"), 2500);
     };
     img.src = url;
   }
@@ -114,8 +115,12 @@
   // ---------- 取景（缩放 + 拖动裁剪） ----------
   // 取景存成比例 {z 放大倍数, x/y 可见区域中心在原图的位置 0..1}，与画框尺寸无关，两种视图共用
 
-  // 取景只在单图的配图面板里做（列阵只预览），框比例 = 图版 920:600（D14，§3-⑪）
-  var FRAME = { single: [920, 600] };
+  // 取景只在单图的配图面板里做（列阵只预览），框 = 这份作品单图的图版（D14，§3-⑪）：高 600，宽随版式的比例走（3:2 是 920，1:1 是 600，3:4 是 450）。
+  // v00.03.03 外部复审 L2-A1：原先写死 920:600，图版改成 1:1、3:4 后取景框里看到的与卡上、导出的不是同一块
+  function cropFrame() {
+    var P = CORE.CARD.PLATE;
+    return [P.w[CORE.layoutOf(state.layout).ratio] || CORE.CARD.CW, P.h];
+  }
 
   // 算出原图上要截取的矩形，并把中心夹在合法范围内（不露出图外的空白）
   function cropRect(img, w, h, crop) {
@@ -145,10 +150,10 @@
     return work.crop;
   }
 
-  // 预览画布含外围；内框与导出使用同一比例，坐标仍以原图为准。
+  // 预览画布含外围；内框与导出使用同一比例，坐标仍以原图为准。内框最宽 312、最高 252（四周至少留 24），居中
   function cropPreviewFrame() {
-    var w = 312, h = w * FRAME.single[1] / FRAME.single[0];
-    return { width: 360, height: 300, x: 24, y: (300 - h) / 2, w: w, h: h };
+    var F = cropFrame(), w = Math.min(312, 252 * F[0] / F[1]), h = w * F[1] / F[0];
+    return { width: 360, height: 300, x: (360 - w) / 2, y: (300 - h) / 2, w: w, h: h };
   }
 
   function drawCropPreview() {
@@ -157,7 +162,7 @@
     var f = cropPreviewFrame(), c = el.cropCanvas;
     if (c.width !== f.width) c.width = f.width;
     if (c.height !== f.height) c.height = f.height;
-    var r = cropRect(img, FRAME.single[0], FRAME.single[1], currentCrop());
+    var F = cropFrame(), r = cropRect(img, F[0], F[1], currentCrop());
     var ctx = c.getContext("2d"), scale = f.w / r.vw;
     ctx.fillStyle = CORE.PALETTE.dark.bg;
     ctx.fillRect(0, 0, c.width, c.height);
@@ -176,7 +181,7 @@
   function clampCrop() {
     var img = workImage();
     if (!img) return;
-    var crop = currentCrop(), r = cropRect(img, FRAME.single[0], FRAME.single[1], crop);
+    var crop = currentCrop(), F = cropFrame(), r = cropRect(img, F[0], F[1], crop);
     crop.x = r.x;
     crop.y = r.y;
   }
@@ -185,7 +190,7 @@
   function panCrop(dx, dy) {
     var img = workImage(), crop = currentCrop(), f = cropPreviewFrame();
     if (!img) return;
-    var r = cropRect(img, FRAME.single[0], FRAME.single[1], crop);
+    var F = cropFrame(), r = cropRect(img, F[0], F[1], crop);
     crop.x = (r.x * r.iw - dx * r.vw / f.w) / r.iw;
     crop.y = (r.y * r.ih - dy * r.vh / f.h) / r.ih;
     clampCrop();
@@ -208,15 +213,18 @@
   }
 
   // 取景面板盖在配图面板上：从配图面板进，「取消｜还原｜应用」（U18）。取消 / Esc / 点外面 = 丢掉工作副本；应用 = 写进作品并保存。
-  // 都回到配图面板。img 不传 = 调整这一格现有的图（本格的或默认图）
-  function openCropper(i, kind, img) {
+  // 都回到配图面板。img 不传 = 调整这一格现有的图（本格的或默认图）。
+  // from = 从哪份取景接着调：配图面板「默认图 · 调整取景」传默认图现在的取景（kind 是 def，应用后所有没有单独配图的格都用它）；新选的图不传，从居中 1 倍起
+  var backDef = false; // 这次取景是不是从「默认图 · 调整取景」进的：关面板后焦点还给它
+  function openCropper(i, kind, img, from) {
     kind = kind || "adjust";
     var src = img || app.model.cellImage(i);
     if (!src) return;
-    work = { i: i, kind: kind, img: src, crop: kind === "adjust" ? copyCrop(state.crops[i]) : blankCrop(), epoch: app.draft.draftEpoch };
+    work = { i: i, kind: kind, img: src, crop: kind === "adjust" ? copyCrop(state.crops[i]) : from ? copyCrop(from) : blankCrop(), epoch: app.draft.draftEpoch };
+    backDef = kind === "def" && !!from;
     state.cropIndex = i;
     var pos = (i + 1) + state.letters[i]; // U6：该格在单词里的位置 + 字母，如 LIFE 第 1 格「1L」
-    el.cropTitle.textContent = "调整取景 · " + (kind === "def" ? "默认图（以 " + pos + " 格为例）" : pos);
+    el.cropTitle.textContent = STR("crop.title", { what: kind === "def" ? STR("crop.defOf", { pos: pos }) : pos });
     el.cropScope.hidden = kind !== "def"; // 默认图写明影响范围
     el.imgPanel.hidden = true;
     el.cropper.hidden = false;
@@ -262,7 +270,8 @@
     if (state.imgIndex < 0) return;
     el.imgPanel.hidden = false;
     renderImgPanel();
-    (el.imgAdjust.hidden ? el.imgPick : el.imgAdjust).focus();
+    (backDef && !el.defAdjust.hidden ? el.defAdjust : el.imgAdjust.hidden ? el.imgPick : el.imgAdjust).focus();
+    backDef = false;
   }
 
   // 拖动：有 Pointer Events 用它，老 iOS WebView 退回 touch。两根手指时交给 bindPinch（pinchOn），不平移
@@ -343,14 +352,14 @@
     var i = state.imgIndex;
     if (i < 0) return;
     var own = state.images[i];
-    el.imgTitle.textContent = "这一格（" + state.letters[i] + "）的配图";
-    el.imgPick.textContent = own ? "更换图片" : "选择图片";
-    el.imgPick.setAttribute("aria-label", own ? "更换图片，这一格" : "选择图片，这一格"); // 可访问名以可见文字开头（WCAG 2.5.3），后缀与默认图那组区分
+    el.imgTitle.textContent = STR("img.cellTitle", { letter: state.letters[i] });
+    el.imgPick.textContent = own ? STR("img.replace") : STR("img.pick");
+    el.imgPick.setAttribute("aria-label", own ? STR("img.replaceCell") : STR("img.pickCell")); // 可访问名以可见文字开头（WCAG 2.5.3），后缀与默认图那组区分
     el.imgAdjust.hidden = !app.model.cellImage(i); // 有图（本格的或默认图）才能调取景
     el.imgRemove.hidden = !own;
-    el.defPick.textContent = state.image ? "更换图片" : "选择图片";
-    el.defPick.setAttribute("aria-label", state.image ? "更换图片，默认图" : "选择图片，默认图");
-    el.defRemove.hidden = !state.image;
+    el.defPick.textContent = state.image ? STR("img.replace") : STR("img.pick");
+    el.defPick.setAttribute("aria-label", state.image ? STR("img.replaceDef") : STR("img.pickDef"));
+    el.defAdjust.hidden = el.defRemove.hidden = !state.image;
   }
 
   function onCellPhoto() {

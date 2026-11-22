@@ -1,12 +1,13 @@
-// 主题（四选一）与深浅（跟随系统 / 浅 / 深）。
+// 主题（五选一）与深浅（跟随系统 / 浅 / 深）。
 // 在 <head> 里同步执行，页面画出来之前就定好 <html data-theme>，手动选了深色的人不会先闪一下浅色。
 // 容器 CSP 禁止内联脚本，所以单独一个文件。颜色本身全在 style.css。
 // ponytail: 选择只存 localStorage（换设备不同步）；要跟草稿一起走再接 setStorage
 (function () {
   var KEY = "acronym-meme-theme"; // 旧项目名，保留不改：改了已存的深浅设置会读不到
-  var LABEL = { auto: "跟随系统", light: "浅色", dark: "深色" };
-  // 四个主题（2026-11-11 用户批准）：fandom 是默认，只有浅色；另外三个深浅兼备。颜色在 style.css 的 :root[data-skin]，导出色板在 core.js 的 PALETTES
-  var SKIN_KEY = "backronym-skin", SKINS = { fandom: { lightOnly: true }, dansaekhwa: {}, impressionism: {}, secession: {} };
+  var LABEL = { auto: "theme.auto", light: "theme.light", dark: "theme.dark" }; // 值是文案编号（i18n.js），显示时经 I18N.t 取；本文件在文案表之前加载
+  // 五个主题（前四个 2026-11-11 用户批准，表格是 v00.03.03 加的）：fandom 是默认，只有浅色；单色画、印象派、分离派深浅兼备；表格只有深色。颜色在 style.css 的 :root[data-skin]，导出色板在 core.js 的 PALETTES
+  // v00.03.03 L3：only = 这个主题只有哪一套（"light" / "dark"）；没有 = 深浅兼备。表格只有深色
+  var SKIN_KEY = "backronym-skin", SKINS = { fandom: { only: "light" }, dansaekhwa: {}, impressionism: {}, secession: {}, table: { only: "dark" } };
   var root = document.documentElement;
   // 容器全屏时返回 / 分享浮在页顶两侧（DEVICE-R1），没有查询其位置或屏幕模式的已知接口，
   // 屏幕模式参数也没有证据会传进页面地址（B8-R1），所以一律预留两侧空间；宽度见 style.css 的 --container-gutter，以真机为准。
@@ -53,10 +54,10 @@
     return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
   }
 
-  // 只有浅色的主题：不管选的是哪一档、系统是不是深色，界面一律浅色（固定写 data-theme="light"）；换回别的主题时恢复原来的档位
+  // 只有一套的主题：不管选的是哪一档、系统是深是浅，界面一律用那一套（固定写 data-theme）；换回别的主题时恢复原来的档位
   function apply() {
     root.setAttribute("data-skin", skin);
-    var m = SKINS[skin].lightOnly ? "light" : mode;
+    var m = SKINS[skin].only || mode;
     if (m === "light" || m === "dark") root.setAttribute("data-theme", m);
     else root.removeAttribute("data-theme");
   }
@@ -83,7 +84,8 @@
       try { localStorage.setItem(KEY, mode); } catch (e) { /* 存不了就只管这一次 */ }
     },
     skin: function () { return skin; },
-    lightOnly: function () { return !!SKINS[skin].lightOnly; },
+    only: function () { return SKINS[skin].only || ""; }, // 当前主题只有哪一套："light" / "dark" / ""（深浅兼备）
+    lightOnly: function () { return SKINS[skin].only === "light"; },
     setSkin: function (k) {
       if (!Object.prototype.hasOwnProperty.call(SKINS, k)) k = "fandom";
       skin = k;

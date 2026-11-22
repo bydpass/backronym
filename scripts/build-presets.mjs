@@ -26,9 +26,27 @@ export function readTable(dir, lang) {
   }
   return out;
 }
+const foldW = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+function tsv(file) {
+  if (!fs.existsSync(file)) return [];
+  const [head, ...lines] = fs.readFileSync(file, "utf8").replace(/\n+$/, "").split("\n"), cols = head.split("\t");
+  return lines.filter(Boolean).map(l => Object.fromEntries(l.split("\t").map((c, j) => [cols[j], c])));
+}
+let manual = null;
+export function presetEn(lang, word, gloss) {
+  if (!manual) manual = new Map(tsv("review/en-gloss/presets.tsv").map(r => [r["语言"] + "\t" + foldW(r["词"]), r]));
+  const m = manual.get(lang + "\t" + foldW(word));
+  if (m) { assert.equal(m["中文命题释义"], gloss, "presets.tsv 的中文与预设表不一致：" + word); return m["英文"]; }
+  const hit = tsv(`review/en-gloss/${lang}.tsv`).find(r => foldW(r.display) === foldW(word) && r.zh === gloss);
+  assert.ok(hit, `预设 ${lang} ${word}「${gloss}」借不到英文，要写进 review/en-gloss/presets.tsv`);
+  return hit.short || hit.en;
+}
 export function build(dir = approvedDir(), out = "app/assets/lang/presets.js") {
   const table = {};
   for (const l of LANGS) { const t = readTable(dir, l); if (t.length) table[l] = t; }
+  // 英文界面用的英文命题释义（v00.04.00 批 2）：外语预设借词库里同词、同中文义项的英文短写（review/en-gloss/<语言>.tsv）；
+  // 借不到的人工写在 review/en-gloss/presets.tsv。英语预设不给（英语的词只标词性）。每行变成 [词, 中文, 英文]。
+  for (const l of LANGS) if (l !== "en" && table[l]) table[l] = table[l].map(([word, gloss]) => [word, gloss, presetEn(l, word, gloss)]);
   const src = dir ? dir.replace(/\\/g, "/") : "（还没有审定的表）";
   fs.writeFileSync(out, `/* 入场页预设词与文学命题释义。由 scripts/build-presets.mjs 从 ${src} 生成，勿手改；表由人工审定。\n   在 core.js 与各语言 rules.js 之后加载：没有表的语言不出预设（英语只显示词）。 */\n(function (root) {\n  "use strict";\n  var T = ${JSON.stringify(table)};\n  Object.keys(T).forEach(function (code) { root.CORE.setPresets(code, T[code]); });\n})(window);\n`);
   return Object.fromEntries(LANGS.map(l => [l, (table[l] || []).length]));

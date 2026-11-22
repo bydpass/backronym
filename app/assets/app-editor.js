@@ -1,8 +1,11 @@
 /* 藏头 - Backronym：卡上输入、候选与释义栏。ES2017 经典脚本。 */
 (function (app) {
   "use strict";
+  var STR = window.I18N.t; // 界面文案到 i18n.js 取，代码里只写编号（v00.04.00 批 0）
   app.editor = {};
   var CORE = app.model.CORE, state = app.model.state, el = app.model.el, blocked = app.model.blocked, senseGroups = app.model.senseGroups, defaultGloss = app.model.defaultGloss;
+  // 候选栏里义项之间、词性组之间的分隔：中文的「，」「；」是释义数据自己的写法；英文界面的释义是英文，用英文标点（批 2）
+  var SEP_SENSE = app.model.uiEn ? ", " : "，", SEP_GROUP = app.model.uiEn ? "; " : "；";
 
   // ---- 卡上编辑·单词 / 释义 / 配文（T12 / T13 / T15） ----
   // 三个透明文字的 <input>（#wordCtl / #glossCtl / #capCtl，在控件层 #ctl 里）叠在镜像（卡上对应的文字框）上：位置、字号、字距都取自版式框（renderCtl），
@@ -19,6 +22,7 @@
   var wordWrapped = false;
   // 配文框是多行 textarea，透明叠在镜像上，镜像实时折行（不再像折行的词那样改由输入框自己显示）。capDy = 词折行后配文下移的量
   var capDy = 0;
+  var candTy = 0; // 版式「图在下」时词与释义整体上移的量（CARD.FLIP.dy，renderCtl 记下）；词下方的栏跟着移
   function syncOwn() {
     var value = el.wordCtl.value;
     // 框里的字和镜像不一样（如德语保留大小写前后）时由输入框自己显示；组字期间除外：镜像已在画正在组的字（composePreview），
@@ -26,6 +30,10 @@
     var own = app.editor.focusKind === "word" && (wordWrapped || (!app.editor.wordComposing && value !== app.model.displayWord(curCell())));
     el.wordCtl.classList.toggle("own", own);
     el.card.classList.toggle("word-own", own);
+    // 版式开了配文引号（v00.03.03）：镜像里的配文带引号，透明的配文框对不上；正在写配文时由配文框自己显示，镜像先藏起来
+    var capOwn = app.editor.focusKind === "cap" && CORE.layoutOf(state.layout).quote;
+    el.capCtl.classList.toggle("own", capOwn);
+    el.card.classList.toggle("cap-own", capOwn);
   }
 
   // 组字预览：组字期间不校验、不写数据，但把框里正在组的字交给镜像先画出来（app-view.js 的 layoutData 读它）。
@@ -139,7 +147,7 @@
     if (!r.value) { // 清空 = 回到空格占位；自动带出的释义属于旧词，一起清掉（D7）
       state.picks[i] = null;
       state.keys[i] = 0;
-      state.arts[i] = state.poss[i] = state.pickLangs[i] = "";
+      state.arts[i] = state.poss[i] = state.pickLangs[i] = ""; if (state.artOwn) state.artOwn[i] = "";
       if (state.glossAuto[i]) state.glosses[i] = "";
     } else {
       app.model.setPick(i, item);
@@ -191,7 +199,8 @@
       // full：排不下；末尾是空格时看它后面还能不能再放一个字（排版会去掉行尾空格，不这样查，写满后还能一直打进看不见的空格直到 maxlength）。
       // 只放过「没变长、原来就排不下」的修改（超长旧稿删字、等长替换），同字数换成更宽的字照样不收
       var before = state.captions[i] || "";
-      var full = function (s) { return CORE.wrapCaption(app.view.measure, /\s$/.test(s) ? s + "i" : s, capDy).cut; };
+      // 版式开了引号时连引号一起算（CORE.captionText，与 layoutCard 同一份字），写满的配文不会把后引号挤掉
+      var full = function (s) { return CORE.wrapCaption(app.view.measure, CORE.captionText(/\s$/.test(s) ? s + "i" : s, state.layout), capDy).cut; };
       if (full(v) && !(v.length <= before.length && full(before))) {
         // 这次新加的那段（粘贴或输入法一次上屏）只收放得下的前段（v00.03.01 R01，同标题的 pasteTitle）；一个字也放不下才整次不收
         // 新加的那段按输入前记下的选区定（lineRange）：只比字的话，在「甲乙」中间粘贴「乙…」会把粘贴的乙认成原有的，截短时丢掉原来的乙（复审）。
@@ -211,7 +220,7 @@
         var keep = n ? head.length : Math.max(0, Math.min(before.length, (c.selectionStart || 0) - (v.length - before.length))); // 先按改值前的光标算（改值会把光标挪到末尾）
         c.value = n ? head + tail : before;
         try { c.setSelectionRange(keep, keep); } catch (e2) { /* 同上 */ }
-        app.model.showToast("配文写满了", 2000); // v00.03.01 E4：截短与否都是这一句
+        app.model.showToast(STR("cap.full"), 2000); // v00.03.01 E4：截短与否都是这一句
         if (!n) return;
         v = c.value;
       }
@@ -234,25 +243,29 @@
   }
 
   // 一个卡上输入框对准镜像里的一行：top 往上 pad、高度多 2 × pad，把点按区撑到母版 §3-⑩ 的可点区域（pad 用 1080 坐标，× k）
-  function placeLine(c, spec, weight, pad, k, ratio, on, dy) {
+  // align（v00.03.03）：版式里这一行靠左、居中还是靠右。框仍占满内容宽，字在框里按同样的方式对齐，光标才落在镜像的字之间
+  function placeLine(c, spec, weight, pad, k, ratio, on, dy, align) {
     c.hidden = !on;
     if (!on) return;
     var st = c.style;
     st.left = CORE.CARD.M * k + "px";
     st.top = (spec.base + (dy || 0) - ratio * spec.size - pad) * k + "px";
     st.fontWeight = String(weight);
+    st.textAlign = align || "left";
     fitInput(c, spec.size * k, CORE.CARD.CW * k, (spec.size + 2 * pad) * k, pad * k, 0);
   }
 
   // 配文框（textarea）对准镜像里的几行配文：首行同 placeLine，行高 = 版式行距，高度够放这格最多能排的行数
   // （行数算法同 CORE.wrapCaption：末行基线不超过 CAPTION.last）。内边距减去半个行距差，首行的字仍落在原位
-  function placeCaption(c, k, ratio, on, dy) {
+  // dy = 词折行后下移的量（决定最多几行）；ty = 版式「图在下」时文字整体上移的量（只挪位置，不影响行数）；align 同 placeLine
+  function placeCaption(c, k, ratio, on, dy, ty, align) {
     c.hidden = !on;
     if (!on) return;
     var S = CORE.CARD.CAPTION, pad = 13, half = (S.lead - S.size) / 2, st = c.style;
     var max = Math.max(1, Math.floor((S.last - (S.base + (dy || 0))) / S.lead) + 1);
     st.left = CORE.CARD.M * k + "px";
-    st.top = (S.base + (dy || 0) - ratio * S.size - pad) * k + "px";
+    st.top = (S.base + (dy || 0) + (ty || 0) - ratio * S.size - pad) * k + "px";
+    st.textAlign = align || "left";
     st.fontWeight = "700"; // v00.03.01 U04：配文粗体，框与卡面同字重，光标才对得上
     fitInput(c, S.size * k, CORE.CARD.CW * k, (S.size + (max - 1) * S.lead + 2 * pad) * k, (pad - half) * k, 0);
     st.lineHeight = S.lead * k / Math.min(1, S.size * k / MIN_INPUT_PX) + "px"; // 和 fitInput 同一个缩放
@@ -285,39 +298,42 @@
     ctlK = k;
     app.title.renderTopCtl(L, grid, k, ratio);
     if (grid || n < 1) { c.hidden = el.glossCtl.hidden = el.capCtl.hidden = el.plateHit.hidden = true; renderCand(); return; }
-    var dy = 0, wrapped = false; // dy = 词折行后词下面各行下移的量；wrapped = 词排了不止一行
+    // dy = 词折行后词下面各行下移的量；wrapped = 词排了不止一行。
+    // v00.03.03：dy 按词的行数算（原先从墨条的位置反推，版式隐去线饰后没有墨条）；ty = 版式「图在下」时文字整体上移的量；plate = 图版的框
+    var dy = 0, wrapped = false, plate = null, lay = CORE.layoutOf(state.layout), ty = lay.order === "text" ? CORE.CARD.FLIP.dy : 0;
     L.boxes.forEach(function (x) {
       if (x.i === i && (x.role === "empty" || (x.role === "word" && !x.line))) b = x; // 输入框对准第一行（冠词块之后）
-      if (x.i === i && x.role === "word" && x.line) wrapped = true;
-      if (x.role === "bar") dy = x.y - CORE.CARD.BAR.y;
+      if (x.i === i && x.role === "word" && x.line) { wrapped = true; dy = Math.max(dy, x.line * CORE.CARD.WORD.lead); }
+      if (x.role === "plate") plate = x;
     });
     c.hidden = false;
     var st = c.style;
     st.left = b.x * k + "px";
     st.top = (b.baseline - ratio * b.size) * k + "px";
     st.fontWeight = String(b.weight);
-    fitInput(c, b.size * k, (CORE.CARD.CW - (b.x - CORE.CARD.M)) * k, b.size * k, null, (b.track || 0) * k);
+    // 靠左：框从词的左端一直到内容右沿。居中、靠右：词的左端随字数变，框一直铺到卡的右边，免得光标在词尾被框截住
+    fitInput(c, b.size * k, (lay.text === "left" ? CORE.CARD.CW - (b.x - CORE.CARD.M) : CORE.CARD.W - b.x) * k, b.size * k, null, (b.track || 0) * k);
     syncValue(c, i, cellWord(i), app.editor.wordComposing);
-    wordWrapped = wrapped; capDy = dy; syncOwn();
-    c.setAttribute("aria-label", "第 " + (i + 1) + " 格 " + state.letters[i] + " 的词（要以 " + CORE.startSpoken(state.letters[i]) + " 开头）");
+    wordWrapped = wrapped; capDy = dy; candTy = ty; syncOwn();
+    c.setAttribute("aria-label", STR("ed.wordLabel", { n: i + 1, letter: state.letters[i], s: CORE.startSpoken(state.letters[i]) }));
     // 释义 / 配文：有词才有（母版 §2-④ 空格只有词位占位）
     var hasWord = b.role === "word", C = CORE.CARD;
-    placeLine(el.glossCtl, C.GLOSS, 400, 8, k, ratio, hasWord, dy); // U04：释义常规
-    placeCaption(el.capCtl, k, ratio, hasWord, dy);
+    placeLine(el.glossCtl, C.GLOSS, 400, 8, k, ratio, hasWord, dy + ty, lay.text); // U04：释义常规
+    placeCaption(el.capCtl, k, ratio, hasWord, dy, ty, lay.cap);
     if (hasWord) {
       syncValue(el.glossCtl, i, state.glosses[i] || "", app.editor.lineComposing);
       syncValue(el.capCtl, i, state.captions[i] || "", app.editor.lineComposing);
-      el.glossCtl.setAttribute("aria-label", "第 " + (i + 1) + " 格的释义（最多 16 字）");
-      el.capCtl.setAttribute("aria-label", "第 " + (i + 1) + " 格的配文（选填，写满配文框为止）");
+      el.glossCtl.setAttribute("aria-label", STR("ed.glossLabel", { n: i + 1 }));
+      el.capCtl.setAttribute("aria-label", STR("ed.captionLabel", { n: i + 1 }));
     }
     // 图版：整块是一个透明按钮，点了出配图面板（不加 .ctl：触点起于控件内不算横滑，图版是最大的横滑起点）
     var ph = el.plateHit.style;
     el.plateHit.hidden = false;
-    ph.left = C.M * k + "px";
-    ph.top = C.PLATE.y * k + "px";
-    ph.width = C.CW * k + "px";
-    ph.height = C.PLATE.h * k + "px";
-    el.plateHit.setAttribute("aria-label", "第 " + (i + 1) + " 格 " + state.letters[i] + " 的配图：点此选择、调整或移除");
+    ph.left = (plate ? plate.x : C.M) * k + "px"; // 跟着版式里的图版走（比例收窄、左右位置、图在下）
+    ph.top = (plate ? plate.y : C.PLATE.y) * k + "px";
+    ph.width = (plate ? plate.w : C.CW) * k + "px";
+    ph.height = (plate ? plate.h : C.PLATE.h) * k + "px";
+    el.plateHit.setAttribute("aria-label", STR("ed.plateLabel", { n: i + 1, letter: state.letters[i] }));
     renderCand();
   }
 
@@ -348,7 +364,8 @@
     // T09：候选 / 义项栏开着时，栏下方的首次提示虚框不画（否则下沿被栏压住）
     el.card.classList.toggle("sense-open", show && mode === "gloss");
     el.card.classList.toggle("cand-open", show);
-    if (show) el.cand.style.top = (mode === "gloss" ? 1180 : 1082) * ctlK + "px"; // 母版 §2-②：词下方 1082 × k；§3-⑦：释义下方 1180 × k
+    // 母版 §2-②：词下方 1082 × k；§3-⑦：释义下方 1180 × k。v00.03.03 真机反馈：版式「图在下」时词与释义整体上移，栏跟着上移（candTy），不再落在图版下面被键盘盖住
+    if (show) el.cand.style.top = ((mode === "gloss" ? 1180 : 1082) + candTy) * ctlK + "px";
     // 栏是绝对定位，DOM 位置不影响显示：挪到所属输入框紧后，Tab 与读屏顺序都是「输入框 → 它的候选」
     var anchor = mode === "gloss" ? el.glossCtl : el.wordCtl;
     if (show && !had && anchor.nextSibling !== el.cand) anchor.parentNode.insertBefore(el.cand, anchor.nextSibling);
@@ -364,16 +381,17 @@
     var w = app.model.candidateWord(item, from), at = CORE.resolveKeyAt(w, L), art = CORE.articleOf(item, "", CORE.defaultSense(item)).text; // 候选显示的是第一组义项，冠词也取它的（形容词在前的 jeune 不带；livre 写 le，不写 le|la）
     // 释义行只放前两个义项（T27），每段前标词性缩写（第六轮真机建议，用户 11-19 定）：「v. 离开，遗落」「n. m. 书；n. f. 磅」；
     // 缩写按这门语言的词典写法、名词带这组义项的阴阳性（app.model.posAbbr）；相邻两段缩写相同就并成一段。领域标签组（[计]）不标
-    var parts = [], left = 2;
+    // 英文界面（批 2）：义项经 CORE.glossText 换成英文短写，英语的词换成空（只留词性缩写）；空的不列，英文界面里与前面重复的也不列（中文界面照旧，同名义项各列一个）
+    var parts = [], left = 2, shown = {};
     senseGroups(item).forEach(function (g) {
       if (left <= 0) return;
-      var take = g.senses.slice(0, left), plain = !g.pos || g.pos.charAt(0) === "[", gen = plain ? "" : app.model.senseGender(item, from, g);
+      var take = g.senses.slice(0, left).map(function (sn) { return CORE.glossText(item, g, sn); }).filter(function (t) { if (!t || (app.model.uiEn && shown[t])) return false; shown[t] = 1; return true; }), plain = !g.pos || g.pos.charAt(0) === "[", gen = plain ? "" : app.model.senseGender(item, from, g);
       var abbr = plain ? "" : app.model.posAbbr(from, g.pos, gen), last = parts[parts.length - 1];
-      left -= take.length;
+      left -= Math.min(left, g.senses.length);
       if (last && last.abbr === abbr) last.senses = last.senses.concat(take);
       else parts.push({ abbr: abbr, spoken: plain ? "" : app.model.posSpoken(g.pos, gen), senses: take });
     });
-    var gloss = parts.map(function (pt) { return pt.senses.join("，"); }).join("；");
+    var gloss = parts.map(function (pt) { return pt.senses.join(SEP_SENSE); }).join(SEP_GROUP);
     var li = app.model.make("li"), btn = app.model.make("button", "cand-it"), line = app.model.make("span", "cand-w"), b = app.model.make("b");
     btn.type = "button";
     b.lang = from;
@@ -388,20 +406,20 @@
     }
     line.appendChild(b);
     btn.appendChild(line);
-    var g = app.model.make("span", "cand-g"), tag = item[4] || ""; // 开关加进来的词：释义前标「专业」「历史文化」（只在候选栏显示，不进卡上的释义）
+    var g = app.model.make("span", "cand-g"), tag = item[4] === "pro" ? STR("cand.tagPro") : item[4] === "hist" ? STR("cand.tagHist") : ""; // 词包第五列存类别代码（批 2），字按界面语言取：中文「专业」「历史文化」，英文 Tec / HisCul（用户 11-21 定） // 开关加进来的词：释义前标「专业」「历史文化」（只在候选栏显示，不进卡上的释义）
     // 选了不止一门语言：释义前标语言「[法] 战争」（v00.03.01 U05，用户 11-18 定甲：只在候选栏、义项栏标，卡面与导出不标）；
     // 同时是开关加进来的词写成「[德] 专业 · 感染」。只选一门时不标
-    var mark = many ? app.model.langName(from).charAt(0) : "";
+    var mark = many ? app.model.langMark(from) : "";
     if (mark) g.appendChild(app.model.make("span", "cand-tag cand-lang", "[" + mark + "] "));
     if (tag) g.appendChild(app.model.make("span", "cand-tag", tag + " · "));
     parts.forEach(function (pt, k) {
-      if (k) g.appendChild(document.createTextNode("；"));
-      if (pt.abbr) { g.appendChild(app.model.make("i", "cand-pos", pt.abbr)); g.appendChild(document.createTextNode(" ")); }
-      g.appendChild(document.createTextNode(pt.senses.join("，")));
+      if (k) g.appendChild(document.createTextNode(SEP_GROUP));
+      if (pt.abbr) { g.appendChild(app.model.make("i", "cand-pos", pt.abbr)); if (pt.senses.length) g.appendChild(document.createTextNode(" ")); }
+      g.appendChild(document.createTextNode(pt.senses.join(SEP_SENSE)));
     });
     btn.appendChild(g);
-    var said = parts.map(function (pt) { return [pt.spoken, pt.senses.join("，")].filter(Boolean).join("，"); }).join("；");
-    btn.setAttribute("aria-label", [(art ? art + (elided ? "" : " ") : "") + w, many ? app.model.langName(from) : "", tag, said].filter(Boolean).join("，")); // 截断只在视觉上，读屏名是完整的
+    var said = parts.map(function (pt) { return [pt.spoken, pt.senses.join(SEP_SENSE)].filter(Boolean).join(STR("sep.comma")); }).join(STR("sep.semi")); // 义项之间的「，」是释义数据自己的写法，不换
+    btn.setAttribute("aria-label", [(art ? art + (elided ? "" : " ") : "") + w, many ? app.model.langName(from) : "", tag, said].filter(Boolean).join(STR("sep.comma"))); // 截断只在视觉上，读屏名是完整的
     btn.addEventListener("click", function () { chooseCand(i, item); });
     li.appendChild(btn);
     return li;
@@ -416,7 +434,7 @@
     el.wordCtl.value = cellWord(i);
     app.editor.candQuiet = false;
     app.model.changed();
-    el.live.textContent = "第 " + (i + 1) + " 格已选 " + app.model.displayWord(i);
+    el.live.textContent = STR("ed.picked", { n: i + 1, word: app.model.displayWord(i) });
     if (kb) el.wordCtl.focus(); else el.wordCtl.blur(); // 触屏收键盘；键盘用户留在单词框，接着 Tab 去释义
   }
 
@@ -437,7 +455,7 @@
         });
       });
     });
-    if (!pool.length) { el.live.textContent = "这个字母没有可换的词了"; return; }
+    if (!pool.length) { el.live.textContent = STR("ed.noMore"); return; }
     var draw = Math.random() * total;
     var p = pool.find(function (row) { return draw < row.end; }).item;
     app.model.setPick(i, p, app.model.itemLang(p));
@@ -445,7 +463,7 @@
     app.editor.candQuiet = true;
     app.editor.candKey = "";
     app.model.changed();
-    el.live.textContent = "第 " + (i + 1) + " 格随机换成 " + app.model.displayWord(i);
+    el.live.textContent = STR("ed.randomed", { n: i + 1, word: app.model.displayWord(i) });
   }
 
   // 栏头位置固定：操作行在词栏里始终都在，用不上的操作停用（disabled）而不拿掉；义项栏没有操作行。
@@ -465,8 +483,8 @@
     var on = !!app.editor.more, n = extra || 0;
     el.candMore.disabled = !on && !n; // 没有可加的词：停用；开着时始终能关
     el.candMore.setAttribute("aria-pressed", String(on));
-    el.candMoreN.textContent = (on ? "已加 " : "+") + n;
-    el.candMore.setAttribute("aria-label", on ? "已包含专业、历史文化词，这一格 " + n + " 个，点按收起" : "也看专业、历史文化词，这一格多 " + n + " 个");
+    el.candMoreN.textContent = on ? STR("cand.moreOn", { n: n }) : "+" + n;
+    el.candMore.setAttribute("aria-label", on ? STR("cand.moreOnLabel", { n: n }) : STR("cand.moreOffLabel", { n: n }));
   }
 
   function renderWordBar(i) {
@@ -478,12 +496,12 @@
     var packs = state.langs.map(function (c) { return app.model.inLang(c, function () { return [app.model.words(), app.model.moreWords()]; }); });
     var extraOf = function (q) { return weave(each(function () { return CORE.candidates(app.model.moreWords(), L, q, null, app.model.langData("lexicon")).filter(function (it) { return !blocked(it[0]); }); })); };
     // T41 / U19：数字格的词以读法首字母或数字本身开头都算对；提示只列读法首字母（v00.03.01 R03）。E3：格首提示与占位同一写法「T 开头」
-    var LS = CORE.startText(L), say = LS + " 开头"; // 格首提示把算对的写法全列出来（CORE.startText，与校验同一条规则）
+    var LS = CORE.startText(L), say = STR("common.startsWith", { s: LS }); // 格首提示把算对的写法全列出来（CORE.startText，与校验同一条规则）
     if (word && blocked(word)) {
       msg = CORE.BLOCKED_MSG; // T40 / U14：不复述被拦的词
       lab = say;
     } else {
-      if (st === "bad") msg = han ? "先打一个以 " + LS + " 开头的" + (state.langs.length > 1 ? "" : state.lang === "en" ? "英文" : app.model.langName(state.lang)) + "词" : word + " 不是以 " + LS + " 开头";
+      if (st === "bad") msg = han ? (state.langs.length > 1 ? STR("ed.typeOne", { s: LS }) : STR("ed.typeOneLang", { s: LS, lang: state.lang === "en" ? STR("lang.enShort") : app.model.langName(state.lang) })) : STR("ed.notStart", { word: word, s: LS });
       if (!word || (app.editor.candQuiet && st !== "bad")) lab = say; // D6-3：关键词框为空不出候选；T49：「打几个字母…」「想换就接着打字」不再说
       else {
         var key = state.langs.join(",") + "|" + L + "|" + word + (app.editor.more ? "|+" : ""); // T05：候选缓存按语言隔离；开关换了算另一份、翻页回到第 1 批
@@ -514,14 +532,14 @@
         // 打的是变形：写明释义取自哪个原形（suis → être），免得用户以为词库里就有这个词
         var lemma = ph ? app.model.formOf(word, hits[0].lang) : "";
         var status = !han && st !== "bad" ? app.model.formStatus(word) : "";
-        lab = items.length ? say + " · " + (app.editor.candPage + 1) + " / " + pages + " 批" + (lemma ? " · " + word + " 是 " + lemma + " 的变形" + (state.langs.length > 1 ? "（" + app.model.langName(hits[0].lang) + "）" : "") : "") + (status ? " · " + status : "") // 多选时写明是哪门语言的变形（R02） // 提示只有一行：批数紧跟格首提示，放不下时省略的是后面的补充
-          : st === "bad" ? L + " 格的词要以 " + LS + " 开头"
-          : status || "词库里没有输入的词"; // 用户 11-19 第六轮真机：不复述输入，免得长词把提示挤出一行
+        lab = items.length ? say + " · " + STR("cand.page", { i: app.editor.candPage + 1, n: pages }) + (lemma ? " · " + STR("cand.formOf", { word: word, lemma: lemma }) + (state.langs.length > 1 ? STR("common.paren", { x: app.model.langName(hits[0].lang) }) : "") : "") + (status ? " · " + status : "") // 多选时写明是哪门语言的变形（R02） // 提示只有一行：批数紧跟格首提示，放不下时省略的是后面的补充
+          : st === "bad" ? STR("cand.mustStart", { letter: L, s: LS })
+          : status || STR("cand.none"); // 用户 11-19 第六轮真机：不复述输入，免得长词把提示挤出一行
       }
     }
     // T28：到了格内上限就写明（词框不再接收，不静默截断）
     var count = CORE.wordUnits(word);
-    if (!msg && (app.editor.overNote || count >= CORE.LANG.wordMax)) msg = "这一格最多 " + CORE.LANG.wordMax + " 个字符";
+    if (!msg && (app.editor.overNote || count >= CORE.LANG.wordMax)) msg = STR("ed.cellMax", { n: CORE.LANG.wordMax });
     // 这次没出候选（还没打字、打错、刚随机过）：按这一格能拿到的展开词数。数字格按读法首字母取（2 → T），不能拿「2」当关键词去匹配（交付57复审）
     if (extraN < 0) extraN = each(function () { return CORE.letterTiers(app.model.moreWords(), L).head.filter(function (it) { return !blocked(it[0]); }); }).reduce(function (n, l) { return n + l.length; }, 0);
     showBar(msg, lab, true, pages > 1, extraN, word ? count : -1);
@@ -538,45 +556,70 @@
   // 候选列表与按钮仍收起（它们对应的是组字前的词，组字中点下去会落空）；超过上限先写明，免得一上屏超出的字就消失而不知为何
   function renderComposeBar(i) {
     var count = CORE.wordUnits(el.wordCtl.value), max = CORE.LANG.wordMax;
-    showBar(count > max ? "最多打 " + max + " 个字符" : "" /* 用户 11-19 定的文案 */, CORE.startText(state.letters[i]) + " 开头", false, false, 0, count || -1); // 还没打字（空格里刚开始组字）同词栏：不显示「0 / 28」
+    showBar(count > max ? STR("ed.maxChars", { n: max }) : "" /* 用户 11-19 定的文案 */, STR("common.startsWith", { s: CORE.startText(state.letters[i]) }), false, false, 0, count || -1); // 还没打字（空格里刚开始组字）同词栏：不显示「0 / 28」
     el.candList.hidden = el.senseList.hidden = true;
     return true;
   }
 
   // 义项栏：按词性分行列出义项，朱色 = 当前释义里有的；点一个 = 换成它（D7：手改过，换词时保留）。自填词没有义项，不出栏
   function renderSenseBar(i) {
-    var p = state.picks[i], groups = p ? senseGroups(p[1] ? p : app.model.itemFor(p[0])) : []; // 恢复时补充表还没加载完的短语：显示时再查一次
+    var p = state.picks[i], src = p ? (p[1] ? p : app.model.itemFor(p[0])) : null, groups = src ? senseGroups(src) : []; // 恢复时补充表还没加载完的短语：显示时再查一次
+    // 每个义项两种字（批 2）：text = 点了填进卡面的（CORE.glossText，英文界面是英文短写），label = 按钮上显示的（英文界面是完整英文，好分辨同一个词的几个义项）。
+    // 中文界面两者都是中文义项本身。英文界面里空的（英语的词、没有英文的）与同组里重复的不列（中文界面照旧），一组都不剩就整行不出
+    groups = groups.map(function (g) {
+      var seen = {}, items = g.senses.map(function (sn) { return { sn: sn, text: CORE.glossText(src, g, sn), label: app.model.uiEn ? app.model.enGloss(src, g, sn, true) : sn }; })
+        .filter(function (x) { if (!x.text || (app.model.uiEn && seen[x.label])) return false; seen[x.label] = 1; return true; });
+      return { pos: g.pos, id: g.id, senses: g.senses, items: items };
+    }).filter(function (g) { return g.items.length; });
     var art = p ? CORE.articleOf(p, state.arts[i], state.poss[i]) : { options: [] }, pickArt = art.options.length > 1; // 选的是名词义项才有冠词可选（R7）
-    if (!groups.length && !pickArt) return false;
-    showBar("", app.model.displayWord(i) + " 的义项", false, false);
+    // 冠词一行（v00.04.00）：有冠词的四门语言里，名词义项或自己打的词都能从这门语言的定冠词单数里另选一个（不让自己写，用户定）；
+    // 词库给了两个的仍须二选一
+    var own = app.model.ownArticle(i), ownable = app.model.takesArticle(i), showArt = pickArt || ownable;
+    var choices = art.options.slice();
+    if (ownable) app.model.articleChoices(i).forEach(function (a) { if (choices.indexOf(a) < 0) choices.push(a); });
+    choices = app.model.sortArticles(choices); // 固定排法：la le el il l’ lo，der die das 另起一行（真机第一轮 D4、D5）
+    if (!groups.length && !showArt) return false;
+    showBar("", STR("sense.of", { word: app.model.displayWord(i) }), false, false);
     el.candList.hidden = true;
     el.senseList.hidden = false;
     el.senseList.textContent = "";
     var now = (state.glosses[i] || "").split("，"), frag = document.createDocumentFragment();
-    var pressed = function (g, sn) {
-      if (now.indexOf(sn) < 0) return false;
-      var owners = groups.filter(function (h) { return h.senses.indexOf(sn) >= 0; }), mine = owners.filter(function (h) { return state.poss && CORE.senseId(h) === state.poss[i]; });
+    var pressed = function (g, text) {
+      if (now.indexOf(text) < 0) return false;
+      var owners = groups.filter(function (h) { return h.items.some(function (x) { return x.text === text; }); }), mine = owners.filter(function (h) { return state.poss && CORE.senseId(h) === state.poss[i]; });
       return owners.length < 2 || !mine.length || mine[0] === g;
     };
-    if (pickArt) { // 两性名词：冠词由用户二选一，不预选（T22）；没选时卡上写全，点「完成」会被拦下。有推荐冠词的（el (la)，R3-19）没选就按推荐的亮
-      var arow = app.model.make("div", "sense-row art-row");
+    if (showArt) { // 两性名词：冠词由用户二选一，不预选（T22）；没选时卡上写全，点「完成」会被拦下。有推荐冠词的（el (la)，R3-19）没选就按推荐的亮
+      var arow = app.model.make("div", pickArt ? "sense-row art-row" : "art-row art-only"); // 不必二选一的那一行不算义项行（样子相同）
       arow.setAttribute("role", "group");
-      arow.setAttribute("aria-label", "冠词" + (art.pending ? "（还没选）" : ""));
-      var atag = app.model.make("span", "pos", "冠词");
+      arow.setAttribute("aria-label", art.pending && !own ? STR("art.labelPending") : STR("art.label"));
+      var atag = app.model.make("span", "pos", STR("art.label"));
       atag.setAttribute("aria-hidden", "true");
       arow.appendChild(atag);
-      art.options.forEach(function (a) {
-        var ab = app.model.make("button", "sense", a);
-        ab.type = "button"; ab.lang = state.pickLangs[i] || state.lang;
-        ab.setAttribute("aria-pressed", String(!art.pending && art.text === a));
-        ab.addEventListener("click", function () { state.arts[i] = a; app.model.changed(); });
+      // 按钮按固定排法列（不再把词库给的排最前）。亮着的 = 另选的；没另选就是词库给的（二选一没选时都不亮）。
+      // 点词库给的 = 回到词库（两个的记进 arts）；点别的 = 另选；再点一次亮着的另选 = 取消
+      var DE = CORE.articlesOf("de");
+      choices.forEach(function (a, k) {
+        if (k && DE.indexOf(a) >= 0 && DE.indexOf(choices[k - 1]) < 0) { // 德语的冠词另起一行，与上一行的按钮对齐（用户 11-21 定）
+          arow.appendChild(app.model.make("span", "art-br"));
+          var pad = app.model.make("span", "pos"); pad.setAttribute("aria-hidden", "true"); arow.appendChild(pad);
+        }
+        var ab = app.model.make("button", "sense", a), fromLex = art.options.indexOf(a) >= 0;
+        ab.type = "button"; ab.lang = app.model.articleLang(i, a);
+        ab.setAttribute("aria-pressed", String(own ? own === a : !art.pending && art.text === a));
+        ab.addEventListener("click", function () {
+          if (!state.artOwn) state.artOwn = [];
+          if (fromLex) { if (pickArt) state.arts[i] = a; state.artOwn[i] = ""; }
+          else state.artOwn[i] = own === a ? "" : a;
+          app.model.changed();
+        });
         arow.appendChild(ab);
       });
       frag.appendChild(arow);
     }
     var multiNoun = groups.filter(function (g) { return g.pos === "n."; }).length > 1;
     var langFull = state.langs.length > 1 && p ? app.model.langName(state.pickLangs[i] || app.model.itemLang(p) || state.lang) : "";
-    var langMark = langFull ? "[" + langFull.charAt(0) + "] " : ""; // U05：多选时义项行首标语言；行首标记对读屏隐藏，组名写全称（同候选的读屏名「法语，动词」）
+    var markCode = langFull ? app.model.langMark(state.pickLangs[i] || app.model.itemLang(p) || state.lang) : "", langMark = markCode ? "[" + markCode + "] " : ""; // U05：多选时义项行首标语言；行首标记对读屏隐藏，组名写全称（同候选的读屏名「法语，动词」）
     groups.forEach(function (g) {
       var row = app.model.make("div", "sense-row");
       row.setAttribute("role", "group");
@@ -584,20 +627,20 @@
         // 行首词性按这门语言的缩写（用户 11-19 定，同候选栏）；名词知道阴阳性就写进缩写（n. m. / n. f.），不知道时几组名词义项仍写冠词好分辨（Subst. der / Subst. die）
         var code = state.pickLangs[i] || app.model.itemLang(p) || state.lang, gen = g.pos.charAt(0) === "[" ? "" : app.model.senseGender(p, code, g);
         var own = multiNoun && g.pos === "n." && !gen ? CORE.articleOptions(p, CORE.senseId(g)).join(" / ") : "";
-        row.setAttribute("aria-label", (langFull ? langFull + "，" : "") + app.model.posSpoken(g.pos, gen) + (own ? "，" + own : ""));
+        row.setAttribute("aria-label", (langFull ? langFull + STR("sep.comma") : "") + app.model.posSpoken(g.pos, gen) + (own ? STR("sep.comma") + own : ""));
         var tag = app.model.make("span", "pos", langMark + app.model.posAbbr(code, g.pos, gen) + (own ? " " + own : ""));
         tag.setAttribute("aria-hidden", "true");
         row.appendChild(tag);
       }
-      g.senses.forEach(function (sn) {
-        var btn = app.model.make("button", "sense", sn);
+      g.items.forEach(function (x) {
+        var btn = app.model.make("button", "sense", x.label);
         btn.type = "button";
-        btn.setAttribute("aria-pressed", String(pressed(g, sn)));
+        btn.setAttribute("aria-pressed", String(pressed(g, x.text)));
         btn.addEventListener("click", function () {
-          state.glosses[i] = sn;
+          state.glosses[i] = x.text;
           state.glossAuto[i] = false;
           state.poss[i] = CORE.senseId(g); // 记下选的是哪一组义项：冠词跟着它走（R7；同形不同性别的名词各是一组）
-          el.glossCtl.value = sn;
+          el.glossCtl.value = x.text;
           app.model.changed();
         });
         row.appendChild(btn);
