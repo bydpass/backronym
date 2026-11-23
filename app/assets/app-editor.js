@@ -567,7 +567,13 @@
     // 每个义项两种字（批 2）：text = 点了填进卡面的（CORE.glossText，英文界面是英文短写），label = 按钮上显示的（英文界面是完整英文，好分辨同一个词的几个义项）。
     // 中文界面两者都是中文义项本身。英文界面里空的（英语的词、没有英文的）与同组里重复的不列（中文界面照旧），一组都不剩就整行不出
     groups = groups.map(function (g) {
-      var seen = {}, items = g.senses.map(function (sn) { return { sn: sn, text: CORE.glossText(src, g, sn), label: app.model.uiEn ? app.model.enGloss(src, g, sn, true) : sn }; })
+      // 英文界面：完整英文里用「; 」连着的几个意思拆成几个按钮（用户 11-22 定）。第一段照旧填词库的人工短写，后几段去掉末尾括号注释后填
+      var seen = {}, items = g.senses.reduce(function (all, sn) {
+        var x = { sn: sn, text: CORE.glossText(src, g, sn), label: app.model.uiEn ? app.model.enGloss(src, g, sn, true) : sn };
+        var parts = app.model.uiEn && x.text ? CORE.glossParts(x.label) : [];
+        if (parts.length < 2) return all.concat([x]);
+        return all.concat(parts.map(function (part, k) { return { sn: sn, text: k ? CORE.glossCore(part) : x.text, label: part }; }));
+      }, [])
         .filter(function (x) { if (!x.text || (app.model.uiEn && seen[x.label])) return false; seen[x.label] = 1; return true; });
       return { pos: g.pos, id: g.id, senses: g.senses, items: items };
     }).filter(function (g) { return g.items.length; });

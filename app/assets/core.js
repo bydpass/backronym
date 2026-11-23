@@ -422,6 +422,25 @@
   var glossHook = null, glossAlt = null;
   function setGlossText(fn, alt) { glossHook = typeof fn === "function" ? fn : null; glossAlt = typeof alt === "function" ? alt : null; }
   function glossText(item, g, sn, full) { return glossHook ? glossHook(item, g, sn, !!full) : sn; }
+  // 英文完整释义按最外层「; 」拆成几个意思（用户 11-22 定：account of events; story 拆成两个按钮）。括号里的分号不拆（to sink (…; …)）
+  function glossParts(full) {
+    var out = [], depth = 0, cur = "", s = String(full || "");
+    for (var k = 0; k < s.length; k++) {
+      var c = s.charAt(k);
+      if (c === "(" || c === "[") depth++;
+      else if ((c === ")" || c === "]") && depth) depth--;
+      if (!depth && c === ";" && s.charAt(k + 1) === " ") { out.push(cur.trim()); cur = ""; k++; continue; }
+      cur += c;
+    }
+    out.push(cur.trim());
+    return out.filter(Boolean);
+  }
+  // 拆出来的后几段没有人工短写：去掉末尾的括号注释再填（news (in a newspaper) → news）；整段都是注释就原样
+  function glossCore(part) {
+    var s = String(part || ""), t = s, tail = /\s*(\([^()]*\)|\[[^\[\]]*\])\s*$/;
+    while (tail.test(t)) t = t.replace(tail, "");
+    return t.trim() || s.trim();
+  }
 
   function senseList(item) {
     return senseGroups(item).reduce(function (all, g) { return all.concat(g.senses); }, []);
@@ -1537,7 +1556,7 @@
     resolveEntry: resolveEntry,
     blocked: blocked,
     filterWords: filterWords, filterTiers: filterTiers, uniqueHan: uniqueHan, customWord: customWord, wordUnits: wordUnits,
-    entryData: entryData, senseGroups: senseGroups, glossText: glossText, setGlossText: setGlossText, senseList: senseList, defaultGloss: defaultGloss, defaultPos: defaultPos, defaultSense: defaultSense, senseId: senseId, capitalize: capitalize,
+    entryData: entryData, senseGroups: senseGroups, glossText: glossText, glossParts: glossParts, glossCore: glossCore, setGlossText: setGlossText, senseList: senseList, defaultGloss: defaultGloss, defaultPos: defaultPos, defaultSense: defaultSense, senseId: senseId, capitalize: capitalize,
     containsLetter: containsLetter, resolveKeyAt: resolveKeyAt, rewriteWord: rewriteWord, useLang: useLang, useLangs: useLangs, withLang: withLang, activeLangs: activeLangs, presetInfo: presetInfo, digitInitials: digitInitials, addLang: addLang, articlesOf: articlesOf, hasLang: hasLang, PRESETS: PRESETS, pickPresets: pickPresets, setPresets: setPresets,
     wrapCaption: wrapCaption, FILLER_MAX: FILLER_MAX, CAPTION_MAX: 160, swipeDir: swipeDir, swipeAllowed: swipeAllowed, swipeTarget: swipeTarget, SWIPE: SWIPE, WORD_MAX: WORD_MAX,
     domColor: domColor, domBox: domBox,

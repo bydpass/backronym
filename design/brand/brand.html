@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>藏头 - Backronym：图标与封面</title>
+<!-- G1 图标与封面定稿（2026-11-22 用户定：图标走「Back / ro / nym 三行」，封面走「一份藏头」）。
+     颜色、字体取产品默认主题 fandom：纸 #ffffff、墨 #2a2a2a、强调色 #990000，西文 Libre Baskerville、中文思源宋体。
+     字体用 scripts/.cache/fonts/ 里的完整原字体（包内的是子集，会缺字）；该目录不进仓库。
+     出图：node scripts/render-brand.mjs（见 docs/agent/commands.md）。带 data-out 的画板出成品，带 data-check 的只出自查图。 -->
+<style>
+@font-face { font-family: "BK Latin"; src: url("../../scripts/.cache/fonts/LibreBaskerville[wght].ttf"); font-weight: 400 700; }
+@font-face { font-family: "BK CJK"; src: url("../../scripts/.cache/fonts/NotoSerifSC-Regular.otf"); font-weight: 400; }
+@font-face { font-family: "BK CJK"; src: url("../../scripts/.cache/fonts/NotoSerifSC-Bold.otf"); font-weight: 700; }
+:root { --paper: #ffffff; --ink: #2a2a2a; --mute: #606060; --line: #cccccc; --red: #990000; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #8a8a8a; padding: 40px; font-family: "BK Latin", "BK CJK", serif; color: var(--ink); }
+.board { background: var(--paper); position: relative; overflow: hidden; margin: 0 0 40px; }
+
+/* 图标：名字拆成三行，行首染色，名字自己排成一份藏头。
+   字块整体居中，四角都落在内切圆里（平台把图标裁成圆角方块或圆都不伤字）；改字号后看自查图的圆形一列。 */
+.icon { width: 1024px; height: 1024px; }
+.icon .rows { position: absolute; left: 214px; top: 122px; font: 700 236px/246px "BK Latin"; letter-spacing: -3px; white-space: nowrap; }
+.icon .rows i { font-style: normal; color: var(--red); }
+
+/* 封面：一份真的藏头（四个词都是词库里的词条，冠词与释义照词库），上名称、下简介 */
+.cover { width: 1242px; height: 1656px; padding: 104px 104px 0; }
+.cover .name { font: 700 46px/1 "BK CJK"; letter-spacing: 2px; }
+.cover .name span { font-family: "BK Latin"; font-weight: 400; letter-spacing: 0; color: var(--mute); margin-left: 18px; }
+.cover .rule { height: 6px; background: var(--ink); margin: 40px 0 104px; }
+.cover .row { display: flex; align-items: baseline; height: 264px; }
+.cover .w { font: 700 140px/1 "BK Latin"; letter-spacing: -2px; white-space: nowrap; }
+.cover .w em { font: 400 56px/1 "BK Latin"; font-style: normal; color: var(--mute); margin-right: 22px; letter-spacing: 0; }
+.cover .w em.el { margin-right: 12px; } /* l’ 这类省音冠词紧贴词 */
+.cover .w i { font-style: normal; color: var(--red); }
+.cover .g { font: 400 44px/1 "BK CJK"; color: var(--mute); margin-left: 34px; white-space: nowrap; }
+.cover .foot { position: absolute; left: 104px; right: 104px; bottom: 104px; border-top: 2px solid var(--line); padding-top: 44px; }
+.cover .foot p { font: 700 62px/1.25 "BK CJK"; }
+.cover .foot small { display: block; font: 400 34px/1 "BK Latin"; color: var(--mute); margin-top: 26px; }
+
+/* 自查图：图标缩到 120 / 64 / 40，分别裁成圆角方块和圆，浅底深底各一排 */
+.check { width: 1024px; padding: 44px; }
+.check h2 { font: 400 26px/1 "BK CJK"; color: var(--mute); margin-bottom: 26px; }
+.check .row { display: flex; align-items: center; gap: 36px; padding: 26px; margin-bottom: 20px; }
+.check .row.dark { background: #1c1c1c; }
+.mini { background: var(--paper); border: 1px solid var(--line); border-radius: 22%; overflow: hidden; position: relative; flex: none; }
+.mini.round { border-radius: 50%; }
+.dark .mini { border-color: transparent; }
+.mini > div { width: 1024px; height: 1024px; position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+</style>
+</head>
+<body>
+
+<div class="board icon" data-out="icon"><div class="rows"><i>B</i>ack<br><i>r</i>o<br><i>n</i>ym</div></div>
+
+<div class="board cover" data-out="cover">
+  <div class="name">藏头<span>Backronym</span></div>
+  <div class="rule"></div>
+  <div class="row"><div class="w"><em>der</em><i>B</i>uchstabe</div><div class="g">字母</div></div>
+  <div class="row"><div class="w"><em class="el">l’</em><i>A</i>lphabet</div><div class="g">字母表</div></div>
+  <div class="row"><div class="w"><em>la</em><i>C</i>arta</div><div class="g">纸</div></div>
+  <div class="row"><div class="w"><i>K</i>ey</div><div class="g">钥匙</div></div>
+  <div class="foot"><p>给单词的每个字母赋予意义</p><small>Give every letter of a word a meaning</small></div>
+</div>
+
+<div class="board check" data-check="icon-check">
+  <h2>图标自查：120 / 64 / 40 px，圆角方块与圆形裁切</h2>
+  <div class="row" data-mini></div>
+  <div class="row dark" data-mini></div>
+</div>
+
+<script>
+document.querySelectorAll("[data-mini]").forEach(function (row) {
+  var src = document.querySelector(".board.icon");
+  ["", " round"].forEach(function (shape) {
+    [120, 64, 40].forEach(function (px) {
+      var box = document.createElement("div"); box.className = "mini" + shape; box.style.width = box.style.height = px + "px";
+      var inner = document.createElement("div"); inner.className = "icon"; inner.innerHTML = src.innerHTML;
+      inner.style.transform = "scale(" + px / 1024 + ")"; box.appendChild(inner); row.appendChild(box);
+    });
+  });
+});
+</script>
+</body>
+</html>

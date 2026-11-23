@@ -15,7 +15,7 @@
 
 ### 1. 读文件：按需、按进度
 
-- 开工只读三样：本文件、`HANDOFF.md` 最上面一条、它指向的当前任务文件（现在是 [plans/v01.00.00/PLAN.md](plans/v01.00.00/PLAN.md)，转正的宣发七项，正式版相关的决断都记在这里；v00.04.00 本体见 [plans/v00.04.00/PLAN.md](plans/v00.04.00/PLAN.md)，分支仍是 `dev/v00.04.00`；v00.03.04 的 G-A2 返工已过外部复审，返工版真机待验，见 [plans/v00.03.04/PLAN.md](plans/v00.03.04/PLAN.md)）。
+- 开工只读三样：本文件、`HANDOFF.md` 最上面一条、它指向的当前任务文件（现在是 [plans/v01.00.00/PLAN.md](plans/v01.00.00/PLAN.md)，转正的宣发八项，正式版相关的决断都记在这里；v00.04.00 本体见 [plans/v00.04.00/PLAN.md](plans/v00.04.00/PLAN.md)，分支仍是 `dev/v00.04.00`；v00.03.04 的 G-A2 返工已过外部复审，返工版真机待验，见 [plans/v00.03.04/PLAN.md](plans/v00.03.04/PLAN.md)）。
 - 「按需读的文档」表里的文件，做到那件事时才打开。
 - 其余不主动打开：`HANDOFF.md` 里更早的记录、`review/`、旧版本的 `plans/`、`design/` 里的旧稿。用户点名或当前任务明确指向时才读。
 
@@ -100,7 +100,7 @@ npm run pack:web   # 外链网页版 → dist/web/
 | 打包、端能力、容器限制、上架 | [docs/agent/container.md](docs/agent/container.md)、`.claude/skills/minitool-zip-builder/`、[RELEASE.md](RELEASE.md) |
 | 交付、审核、派子代理 | [docs/agent/workflow.md](docs/agent/workflow.md) |
 | 改界面、颜色、文案 | [docs/agent/design.md](docs/agent/design.md)、`design/TASK_BRIEF.md` |
-| 当前版本计划与任务 | 转正（宣发七项、部署方案）[plans/v01.00.00/PLAN.md](plans/v01.00.00/PLAN.md)；v00.04.00 本体 [plans/v00.04.00/PLAN.md](plans/v00.04.00/PLAN.md)；上一版未收尾的事（G-A2 返工版真机待验）在 [plans/v00.03.04/PLAN.md](plans/v00.03.04/PLAN.md) |
+| 当前版本计划与任务 | 转正（宣发八项、门户与部署方案）[plans/v01.00.00/PLAN.md](plans/v01.00.00/PLAN.md)；v00.04.00 本体 [plans/v00.04.00/PLAN.md](plans/v00.04.00/PLAN.md)；上一版未收尾的事（G-A2 返工版真机待验）在 [plans/v00.03.04/PLAN.md](plans/v00.03.04/PLAN.md) |
 | 返工说明与状态 | [plans/v00.04.00/REPAIR.md](plans/v00.04.00/REPAIR.md)（更早的在各版本自己的 `plans/<版本>/REPAIR.md`） |
 | 审核发现的未解决问题 | [AUDIT.MD](AUDIT.MD) |
 | 词库第三次重建：数据结构、必需字段、选词规则（草案） | [docs/lexicon-spec.md](docs/lexicon-spec.md) |

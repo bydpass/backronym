@@ -90,6 +90,17 @@ node scripts/design-system/render.mjs <project 目录> <输出目录> EntryScree
 
 生成后按 [design.md](design.md) 的方法把改过的 `preview.html` 发布到设计系统。对照脚本报的「结构不同」里，运行时才填内容的容器（预设词、字母栏、缩略图等）属于正常。
 
+## 图标与封面怎么重出
+
+图标与封面（宣发 G1）的定稿页是 `design/brand/brand.html`，成品在同一目录。改了定稿页后重出：
+
+```bash
+# 设好 PLAYWRIGHT_MODULE、CHROMIUM_PATH（同浏览器回归）；scripts/.cache/fonts/ 里要有原字体，字体没载入会报错退出
+node scripts/render-brand.mjs <临时目录>     # 写 icon-1024.png、icon-512.png、cover-1242x1656.png；临时目录里另出一张缩小与裁切的自查图
+```
+
+脚本会核对画板尺寸与文件大小上限（图标 5 MB、封面 10 MB）。改了图标的字号或位置，看自查图里圆形裁切的一列有没有伤到字。
+
 ## 公开快照怎么重做
 
 公开仓库（远端 `public`）只放不带项目历史的快照：本地 `public` 分支每次更新加一个提交，推到远端的 `main`。远端只应有 `main` 和版本 tag。**推送要用户明确授权。**
@@ -120,6 +131,8 @@ git worktree remove <临时目录>                              # 9 收尾
 ```
 
 发版本时在第 6 步后给快照提交打 tag `vxx.xx.xx`，另推 `git push public refs/tags/vxx.xx.xx`。
+
+第 8 步推送后，公开仓库的 `.github/workflows/pages.yml` 会自动把网页版部署到 <https://bydpass.com/backronym/>（2026-11-22 起；域名配在个人站仓库 `bydpass/bydpass.github.io` 上，旧 github.io 地址 301 跳过来）。查结果：`gh run list -R bydpass/backronym -L 1`；失败时线上停在上一版，不会变空。
 
 ### 示例：2026-11-20 的一次更新
 

@@ -172,5 +172,32 @@ C.useLangs(['en']);
   C.setGlossText(null, null);
   assert.equal(C.defaultGloss(livre), '书', '卸下后恢复原样');
 }
+// 6. 英文义项按最外层「; 」拆成几个按钮（用户 11-22 定）：括号里的分号不拆；后几段去掉末尾括号注释再填
+{
+  const gp = s => [...C.glossParts(s)]; // core.js 在 vm 里加载，返回的数组换成本环境的再比
+  assert.deepEqual(gp('account of events; story'), ['account of events', 'story'], 'narrative 拆成两个');
+  assert.deepEqual(gp('book'), ['book'], '没有分号原样一个');
+  assert.deepEqual(gp('to sink (to submerge into a liquid; to cause to be submerged into a liquid)'), ['to sink (to submerge into a liquid; to cause to be submerged into a liquid)'], '括号里的分号不拆');
+  assert.deepEqual(gp('to correspond (to match up) [with a ‘to’; or with con ‘with’]; to agree'), ['to correspond (to match up) [with a ‘to’; or with con ‘with’]', 'to agree'], '方括号里的也不拆');
+  assert.deepEqual(gp('firm, business, company; corporate'), ['firm, business, company', 'corporate'], '逗号不拆');
+  assert.deepEqual(gp(''), [], '空串');
+  assert.equal(C.glossCore('news (in a newspaper)'), 'news', '去掉末尾括号注释');
+  assert.equal(C.glossCore('to correspond (to match up) [with con]'), 'to correspond', '末尾连着几个注释都去掉');
+  assert.equal(C.glossCore('(the) least'), '(the) least', '开头的括号不动');
+  assert.equal(C.glossCore('(linguistics)'), '(linguistics)', '整段都是注释原样');
+  // 真实词包：拆出来的每段都非空，且用「; 」拼回去就是原文（只在分隔处切，不丢字）
+  let split = 0;
+  for (const code of ['fr', 'de', 'es', 'it', 'la', 'en']) {
+    const src = fs.readFileSync(new URL(`../app/assets/lang/${code}/words.js`, import.meta.url), 'utf8');
+    for (const m of src.matchAll(/\["((?:[^"\\]|\\.)*)","((?:[^"\\]|\\.)*)"\]/g)) {
+      const parts = C.glossParts(m[1]);
+      if (parts.length < 2) continue;
+      split++;
+      assert.ok(parts.every(p => p && C.glossCore(p)), `${code} 拆出空段：${m[1]}`);
+      assert.equal(parts.join('; '), m[1].trim(), `${code} 拆了不该拆的地方：${m[1]}`);
+    }
+  }
+  assert.ok(split > 1000, '真实词包里应有上千条要拆：' + split);
+}
 assert.deepEqual(sameCardProblems, [], '同词撞名或非释义串没处理完（修掉，或在 review/en-gloss/same-card.tsv 登记并写明理由）');
 console.log(`en-gloss ok：五门外语 ${total} 条义项都有英文，${presetCount} 个外语预设有英文命题释义；解包校验、释义钩子通过；${accepted.size} 组有保留理由（其中 ${enSame} 组完整英文也相同），格式串与用法说明 0 条`);

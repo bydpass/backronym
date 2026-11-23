@@ -6,6 +6,8 @@
 
 设计系统 Artifact「藏头 - Backronym」<https://claude.ai/artifact/RozXkcF9R3FjEiBqo2T8HG> 是界面的唯一敲定处。
 
+项目门户（G8）另用一套：Artifact「藏头 - Backronym 门户」<https://claude.ai/artifact/UzRtpUeYL4aubPpv2ZE5LT>（2026-11-22 用户定）。门户的界面在那一套里敲定，产品这一套不管门户；下面的更新办法两套相同，「实现后的核对」只针对产品这一套。
+
 - 颜色、字号、间距、组件、文案、交互的任何改动，先改它：`tokens.json`、`README.md`（总则）、`components/<组件>/` 的说明与预览。用户确认后才改 `app/`。
 - 还没确认的方案做成一张方案稿卡片，并在总则「已定、未实现」一节登记。确认并实现后把登记划掉，方案稿移到 `archived/components/`。
 - 每批界面实现收尾时，回设计系统把对应的「未实现」划掉。
