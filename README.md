@@ -11,6 +11,16 @@ E  Eternal    永恒的，永远的    ← 首字母标朱红
 
 **在线使用**：<https://bydpass.com/backronym/>（网页版，不用安装）。小红书小工具尚未上架，正式版是 v01.00.00。
 
+**本地部署**：也可以在自己的电脑或服务器上跑网页版。只需要 Node 22 或更新的版本，不用安装任何依赖。
+
+```bash
+git clone https://github.com/bydpass/backronym.git
+cd backronym
+npm start          # 生成网页版，并在 http://127.0.0.1:8080 提供服务
+```
+
+换端口：`npm start -- --port 9000`。让同一网络里的其他设备也能打开：`npm start -- --host 0.0.0.0`。`npm run pack:web` 生成的 `dist/web/` 是纯静态文件，也可以直接交给 Nginx、Caddy 等任何静态服务器。草稿存在浏览器里，按地址分开，换一个地址或端口打开看不到之前的草稿。
+
 发布前的模拟器与真机检查项见 [RELEASE.md](RELEASE.md)。
 
 ---
@@ -43,6 +53,7 @@ npm test           # 屏蔽器 + core.js 纯函数 + 应用模块 + draft.js 18h
 npm run audit      # 审计 app/ 的文件与体积（不检查 ES2017 语法或 CSP，这两项另测）
 npm run pack       # test → 审计 → dist/backronym.zip（小红书版，含屏蔽器）
 npm run pack:web   # dist/web/（外链网页版，同样含屏蔽器）
+npm start          # 本地部署：生成 dist/web/ 并在 http://127.0.0.1:8080 提供服务（scripts/serve.mjs）
 npm run packs      # 从 review/t19-batches 里的当前批次重新生成六语词包
 npm run licenses   # 从 LICENSES/*.txt 重新生成许可全文的两种载体（app/LICENSES/*.html 只进网页版；借物页展开时读的 licenses.js 两版都带）
 npm run dict       # 旧管线：重新生成英语词库（需 scripts/.cache/ecdict.csv）

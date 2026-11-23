@@ -87,6 +87,7 @@ npm test           # 全部自检脚本串行（清单见 package.json），每�
 npm run audit      # 只审计 app/ 的文件与体积
 npm run pack       # test → 审计 → 打 zip → 再审计 zip 体积
 npm run pack:web   # 外链网页版 → dist/web/
+npm start          # 本地部署：生成 dist/web/ 并在 http://127.0.0.1:8080 提供服务（scripts/serve.mjs）
 ```
 
 词库、屏蔽词表、字体的生成命令，以及不在 `npm test` 里的浏览器回归脚本，见 `docs/agent/commands.md`。

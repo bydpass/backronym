@@ -8,6 +8,7 @@ npm test           # 全部自检脚本串行，清单见 package.json；每个�
 npm run audit      # 只审计 app/ 的文件与体积（语法和运行行为另测），不打包
 npm run pack       # test → 审计 app/ → 打 zip → 再审计 zip 体积
 npm run pack:web   # 外链网页版 → dist/web/
+npm start          # 本地部署：先跑 pack:web，再用 scripts/serve.mjs 在 http://127.0.0.1:8080 提供 dist/web/；参数 -- --port <端口> --host <地址> --dir <目录> --no-build
 npm run pack:diag  # 只用于诊断的包 → dist/backronym-diag.zip：app/ 原样加一个打开耗时的诊断脚本（scripts/diag/diag.js），不是发布包；上传、生成预览码前要用户同意
 ```
 
