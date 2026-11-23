@@ -1546,6 +1546,44 @@
     return Array.from(titleOrWord(title, word)).slice(0, 20).join("");
   }
 
+  // 网页版「导出图片」打成一个 zip 下载（用户 11-23 定）。只存不压（STORE）：JPEG 本身已压缩，再压几乎不变小，还省一个解压库。
+  // files = [{ name: "01-B.jpg", data: Uint8Array }]，when = Date（写进包里的修改时间）。文件名按 UTF-8 存（通用标志位第 11 位）
+  var CRC_TABLE = null;
+  function crc32(bytes) {
+    if (!CRC_TABLE) {
+      CRC_TABLE = new Uint32Array(256);
+      for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; CRC_TABLE[n] = c >>> 0; }
+    }
+    var crc = 0xFFFFFFFF;
+    for (var i = 0; i < bytes.length; i++) crc = CRC_TABLE[(crc ^ bytes[i]) & 0xFF] ^ (crc >>> 8);
+    return (crc ^ 0xFFFFFFFF) >>> 0;
+  }
+  function zipStore(files, when) {
+    var d = when || new Date(1980, 0, 1);
+    var time = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1), date = ((Math.max(d.getFullYear(), 1980) - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+    var enc = function (s) { return new TextEncoder().encode(s); };
+    var items = files.map(function (f) { return { name: enc(f.name), data: f.data, crc: crc32(f.data) }; });
+    var size = 22;
+    items.forEach(function (it) { size += 30 + it.name.length + it.data.length + 46 + it.name.length; });
+    var out = new Uint8Array(size), v = new DataView(out.buffer), p = 0;
+    var u16 = function (x) { v.setUint16(p, x, true); p += 2; }, u32 = function (x) { v.setUint32(p, x >>> 0, true); p += 4; };
+    var head = function (it) { u16(20); u16(0x0800); u16(0); u16(time); u16(date); u32(it.crc); u32(it.data.length); u32(it.data.length); u16(it.name.length); u16(0); }; // 版本、标志、方法 0、时间、CRC、两种大小、名长、扩展长
+    items.forEach(function (it) {
+      it.at = p;
+      u32(0x04034B50); head(it);
+      out.set(it.name, p); p += it.name.length;
+      out.set(it.data, p); p += it.data.length;
+    });
+    var dir = p;
+    items.forEach(function (it) {
+      u32(0x02014B50); u16(20); head(it); u16(0); u16(0); u16(0); u32(0); u32(it.at); // 中央目录：多一个「制作版本」，再加注释长、盘号、内外属性、本地头偏移
+      out.set(it.name, p); p += it.name.length;
+    });
+    var dirSize = p - dir; // 先量好：下面写结束记录时 p 还会往前走
+    u32(0x06054B50); u16(0); u16(0); u16(items.length); u16(items.length); u32(dirSize); u32(dir); u16(0);
+    return out;
+  }
+
   // 改单词后按位置保留（D18）：同一位置字母没变就保留该位置的数据，其余用 empty。prev / next = 改前 / 改后的字母数组
   function keepSame(prev, next, arr, empty) {
     return next.map(function (l, i) { return prev[i] === l && i in arr ? arr[i] : empty; });
@@ -1567,7 +1605,7 @@
     displayGroups: displayGroups, stripNameLabel: stripNameLabel,
     phraseHit: phraseHit, lookupEntry: lookupEntry, formLemma: formLemma, formEntry: formEntry,
     articleOptions: articleOptions, articleOf: articleOf, sensePos: sensePos, wrapWord: wrapWord, wordBlock: wordBlock, wordBoxes: wordBoxes,
-    nextGloss: nextGloss, savedAutoGloss: savedAutoGloss, savedSense: savedSense, migrateDraft: migrateDraft, DRAFT_FIELDS: DRAFT_FIELDS, mediaName: mediaName, mediaNames: mediaNames, cropOf: cropOf, titleOrWord: titleOrWord, noteTitle: noteTitle, titleModeOf: titleModeOf, normalizeWord: normalizeWord, keepSame: keepSame, titleEditKept: titleEditKept, pasteFitLength: pasteFitLength, MAX_LETTERS: MAX_LETTERS,
+    nextGloss: nextGloss, savedAutoGloss: savedAutoGloss, savedSense: savedSense, migrateDraft: migrateDraft, DRAFT_FIELDS: DRAFT_FIELDS, mediaName: mediaName, mediaNames: mediaNames, cropOf: cropOf, titleOrWord: titleOrWord, noteTitle: noteTitle, crc32: crc32, zipStore: zipStore, titleModeOf: titleModeOf, normalizeWord: normalizeWord, keepSame: keepSame, titleEditKept: titleEditKept, pasteFitLength: pasteFitLength, MAX_LETTERS: MAX_LETTERS,
   };
   // CORE.LANG 读当前规则（useLang 之后跟着变；不能是加载时的快照）
   // 带界面文字的两项读的时候才取文案

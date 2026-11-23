@@ -199,7 +199,7 @@
   app.model.trapKeys(el.imgPanel, app.media.closeImagePanel);
   el.save.addEventListener("click", app.publish.onSave);
   el.post.addEventListener("click", app.publish.onPost);
-  el.exportView.addEventListener("click", function () { if (!app.publish.busy && state.outputs.length) app.publish.showBrowserResults(state.outputs); });
+  el.exportView.addEventListener("click", function () { if (!app.publish.busy && state.outputs.length) app.publish.downloadOutputs(state.outputs); });
   app.model.trapKeys(el.finishPanel, app.publish.closeFinishPanel);
   el.resClose.addEventListener("click", app.publish.closeResults);
   // T43：大图查看——按钮、方向键、左右滑动换张；Esc / 关闭回缩略图

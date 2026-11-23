@@ -17,6 +17,16 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+// 网页版「导出图片」下载的 zip（只存不压）：按中央目录逐条取出 [{ name, data }]
+function unzipStored(zip) {
+  const out = [];
+  for (let p = zip.readUInt32LE(zip.length - 6), k = 0; k < zip.readUInt16LE(zip.length - 12); k++) {
+    const len = zip.readUInt16LE(p + 28), size = zip.readUInt32LE(p + 20), at = zip.readUInt32LE(p + 42), body = at + 30 + zip.readUInt16LE(at + 26);
+    out.push({ name: zip.toString("utf8", p + 46, p + 46 + len), data: zip.subarray(body, body + size) });
+    p += 46 + len;
+  }
+  return out;
+}
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || "playwright");
 const root = fileURLToPath(new URL("../app/", import.meta.url));
@@ -201,8 +211,12 @@ try {
     await page.click("#finish");
     await page.waitForFunction(() => /失败/.test(document.getElementById("finMsg").textContent) || (!document.getElementById("exportView").hidden && !document.getElementById("exportView").disabled), null, { timeout: 20000 });
     assert.ok(!/失败/.test(await page.locator("#finMsg").textContent()), "居中版式能导出");
-    await page.click("#exportView");
-    assert.equal(await page.locator("#resList img").count(), 4, "导出四张单图");
+    // 11-23：网页版点「导出图片」直接下载一个 zip（不再开长按 / 右键保存页）
+    const [dl] = await Promise.all([page.waitForEvent("download"), page.click("#exportView")]);
+    assert.equal(dl.suggestedFilename(), "LIFE.zip", "包以单词命名");
+    const names = unzipStored(await readFile(await dl.path())).map(f => f.name);
+    assert.deepEqual(names, ["LIFE1.jpg", "LIFE2.jpg", "LIFE3.jpg", "LIFE4.jpg"], "包里四张单图，单词加序号");
+    assert.equal(await page.locator("#results").isVisible(), false, "不再弹导出结果页");
     assert.deepEqual(errors, [], "页面没有报错");
     await context.close();
   }
@@ -545,15 +559,17 @@ try {
     await page.click("#toLayout"); await page.click("#layBase label:nth-child(2)"); await page.keyboard.press("Escape");
     await page.click("#finish");
     await page.waitForFunction(() => /失败/.test(document.getElementById("finMsg").textContent) || (!document.getElementById("exportView").hidden && !document.getElementById("exportView").disabled), null, { timeout: 20000 });
-    await page.click("#exportView");
-    const px = await page.evaluate(async () => {
-      const img = document.querySelector("#resList img"), c = document.createElement("canvas");
+    const [dl] = await Promise.all([page.waitForEvent("download"), page.click("#exportView")]); // 网页版点按钮是下载 zip：取包里第一张
+    const first = unzipStored(await readFile(await dl.path()))[0].data.toString("base64");
+    const px = await page.evaluate(async (b64) => {
+      const img = new Image(), c = document.createElement("canvas");
+      img.src = "data:image/jpeg;base64," + b64;
       await img.decode();
       c.width = img.naturalWidth; c.height = img.naturalHeight;
       const x = c.getContext("2d"); x.drawImage(img, 0, 0);
       const at = (u, v) => Array.from(x.getImageData(Math.round(u * c.width / 1080), Math.round(v * c.height / 1440), 1, 1).data.slice(0, 3));
       return { w: c.width, h: c.height, corner: at(20, 20), plate: at(900, 320) }; // 图版右上角一带没有大字母
-    });
+    }, first);
     assert.equal(px.w / px.h, 0.75, "导出仍是 3:4");
     assert.ok(px.corner.every(v => v < 12), "表格导出图的底是黑的：" + px.corner);
     assert.ok(px.plate.every(v => v > 243), "表格导出图里没配图的图版是白的：" + px.plate);

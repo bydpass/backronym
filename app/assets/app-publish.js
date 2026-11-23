@@ -85,7 +85,7 @@
 
   // ---- 完成面板与导出（D9 / D16，T18） ----
   // 顶部栏「完成」→ 先检查（有问题就跳到那一格那一个字段，不弹面板）→ 通过后弹底部面板，自动开始逐张导出；导出完才有「保存到相册」「发布笔记」
-  // （浏览器里没有端能力，换成「导出图片」→ 全屏导出结果页）。导出的色板在点「完成」那一刻取一次（D19）；面板盖住整个页面（透明遮罩），
+  // （浏览器里没有端能力，换成「导出图片」→ 直接下载 zip，下载不可用才开全屏导出结果页）。导出的色板在点「完成」那一刻取一次（D19）；面板盖住整个页面（透明遮罩），
   // 导出 / 保存中不接受任何编辑，所以图和卡一致。导出、保存、发布共用一个 busy：顶部栏「完成」禁用并显示「保存中…」，面板按钮禁用，面板不可关，不会重入
   app.publish.busy = false;
   app.publish.finishLag = ""; // finishNote 说的是哪门语言还没加载好（别的原因为空）；那门语言到了，prepareLang 据此清掉提示（V003-B4-R11）
@@ -182,7 +182,7 @@
       if (epoch !== app.draft.draftEpoch) return;
       state.outputs = urls;
       renderThumbs(urls);
-      say(el.finMsg, STR("pub.exported", { n: urls.length })); // T43（U15：不强制先看）；T49：浏览器里的长按 / 右键说明在导出结果页
+      say(el.finMsg, STR("pub.exported", { n: urls.length })); // T43（U15：不强制先看）；浏览器里点「导出图片」直接下载 zip（11-23）
     } catch (e) {
       if (epoch !== app.draft.draftEpoch) return;
       state.outputs = [];
@@ -297,7 +297,35 @@
     viewAt = -1; viewFrom = null;
   }
 
-  // 没有端能力时的全屏「导出结果」页：逐张列出，长按或右键图片保存
+  // 浏览器里点「导出图片」：把这批图打成一个 zip 直接下载（用户 11-23 定）。包以单词命名（LIFE.zip），包里的图按单词加序号（LIFE1.jpg、LIFE2.jpg…）；
+  // 列阵也一样按张编号。浏览器不支持下载（无 Blob / a[download]）或打包出错时，退回下面的导出结果页
+  function exportBase() { return state.letters.join("") || "backronym"; }
+  function dataUrlBytes(url) {
+    var bin = atob(url.slice(url.indexOf(",") + 1)), out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function zipOutputs(urls) {
+    return CORE.zipStore(urls.map(function (url, k) { return { name: exportBase() + (k + 1) + ".jpg", data: dataUrlBytes(url) }; }), new Date());
+  }
+  function downloadOutputs(urls) {
+    var a = document.createElement("a");
+    if (typeof Blob !== "function" || !window.URL || !URL.createObjectURL || !("download" in a)) return showBrowserResults(urls);
+    try {
+      var href = URL.createObjectURL(new Blob([zipOutputs(urls)], { type: "application/zip" }));
+      a.href = href;
+      a.download = exportBase() + ".zip";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(href); }, 60000); // 立即释放有的浏览器会下载失败；留一分钟
+      result(STR("pub.downloaded", { n: urls.length }));
+    } catch (e) {
+      showBrowserResults(urls);
+    }
+  }
+
+  // 下载不可用时的全屏「导出结果」页：逐张列出，长按或右键图片保存
   function showBrowserResults(urls) {
     el.resList.textContent = "";
     urls.forEach(function (url, k) {
@@ -328,6 +356,8 @@
     onFinish: onFinish,
     onSave: onSave,
     onPost: onPost,
+    downloadOutputs: downloadOutputs,
+    zipOutputs: zipOutputs,
     showBrowserResults: showBrowserResults,
     closeFinishPanel: closeFinishPanel,
     closeResults: closeResults,

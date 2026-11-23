@@ -1798,3 +1798,31 @@ for (const p of [C.PALETTE.light, C.PALETTE.dark]) {
   assert.equal("arts" in C.migrateDraft({ v: 2, word: "AB", arts: "la" }), false, "不是数组：当没有");
 }
 console.log("core ok (article + wrap)");
+
+// 网页版「导出图片」打 zip（11-23）：只存不压、UTF-8 文件名、CRC 与 Node 自带的 zlib.crc32 一致、目录偏移能找回每个文件
+{
+  const zlib = await import("node:zlib");
+  const files = [{ name: "01-B.jpg", data: new Uint8Array([0xFF, 0xD8, 1, 2, 3, 0xFF, 0xD9]) }, { name: "02-É.jpg", data: new Uint8Array(0) }];
+  const zip = C.zipStore(files, new Date(2026, 10, 23, 9, 30, 10));
+  const v = new DataView(zip.buffer, zip.byteOffset, zip.byteLength);
+  assert.equal(C.crc32(new TextEncoder().encode("123456789")), 0xCBF43926, "CRC-32 标准校验串");
+  const end = zip.length - 22;
+  assert.equal(v.getUint32(end, true), 0x06054B50, "末尾是目录结束记录");
+  assert.equal(v.getUint16(end + 10, true), 2, "两条目录");
+  assert.equal(v.getUint32(end + 12, true), end - v.getUint32(end + 16, true), "目录长度 = 结束记录起点 − 目录起点");
+  let p = v.getUint32(end + 16, true);
+  for (const f of files) {
+    assert.equal(v.getUint32(p, true), 0x02014B50, "中央目录头");
+    assert.equal(v.getUint16(p + 8, true) & 0x0800, 0x0800, "文件名按 UTF-8");
+    assert.equal(v.getUint16(p + 10, true), 0, "只存不压");
+    assert.equal(v.getUint32(p + 16, true), zlib.crc32(f.data), f.name + " 的 CRC");
+    const len = v.getUint16(p + 28, true), at = v.getUint32(p + 42, true);
+    assert.equal(new TextDecoder().decode(zip.subarray(p + 46, p + 46 + len)), f.name);
+    assert.equal(v.getUint32(at, true), 0x04034B50, "偏移指向本地头");
+    const body = at + 30 + v.getUint16(at + 26, true);
+    assert.deepEqual(Array.from(zip.subarray(body, body + f.data.length)), Array.from(f.data), f.name + " 内容原样");
+    p += 46 + len;
+  }
+  fs.writeFileSync(process.env.ZIP_OUT || "/dev/null", zip); // 手工核对时设 ZIP_OUT 再用 unzip -t 看
+}
+console.log("core ok (zip)");
