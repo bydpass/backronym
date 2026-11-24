@@ -115,11 +115,11 @@ README 顶部的七语简介长图另有一页源稿 `design/brand/slogan.html`�
 node scripts/render-slogan.mjs     # 写 design/brand/slogan-desktop.png（宽 1520）、slogan-mobile.png（宽 780）
 ```
 
-README 里长图下方的预告片（宣发 G9）有两份：`design/brand/trailer.mp4` 是成片原样复制来的，`design/brand/trailer.gif` 是给 README 显示的无声动图。GitHub 的 README 不认视频标签，所以显示动图，点开才是带声音的原片。成片出自独立仓库 `RED/`（不公开），重出成片后两份一起换：
+README 里长图下方的预告片（宣发 G9）有两份：`site/backronymsite/portal/trailer.mp4` 是成片原样复制来的，随门户一起发布到 <https://bydpass.com/backronym/trailer.mp4>；`design/brand/trailer.gif` 是给 README 显示的无声动图，点它就打开那个地址。这样分开放是因为 GitHub 两头都不播：README 不认视频标签，仓库里的文件页对这个大小的视频只给下载。成片出自独立仓库 `RED/`（不公开），重出成片后两份一起换，再重新发布网站：
 
 ```bash
-cp RED/v01.00.00RED/out/藏头-预告.mp4 design/brand/trailer.mp4
-ffmpeg -y -i design/brand/trailer.mp4 -vf "fps=15,scale=360:-2:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle" -loop 0 design/brand/trailer.gif     # 360×640，约 2.8 MB
+cp RED/v01.00.00RED/out/藏头-预告.mp4 site/backronymsite/portal/trailer.mp4
+ffmpeg -y -i site/backronymsite/portal/trailer.mp4 -vf "fps=15,scale=360:-2:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle" -loop 0 design/brand/trailer.gif     # 360×640，约 2.8 MB
 ```
 
 两份都要小于 5,000,000 B（提交钩子的单文件上限）。每秒 15 帧是成片 30 帧的一半，隔一帧取一帧；换成 12 帧会取得不匀，画面发顿。

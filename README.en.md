@@ -8,10 +8,10 @@
 </picture>
 
 <p align="center">
-  <a href="design/brand/trailer.mp4"><img src="design/brand/trailer.gif" width="300" alt="A 15-second trailer: a word is typed, each of its nine letters brings out a word, then pictures, themes and nine exported cards"></a>
+  <a href="https://bydpass.com/backronym/trailer.mp4"><img src="design/brand/trailer.gif" width="300" alt="A 15-second trailer: a word is typed, each of its nine letters brings out a word, then pictures, themes and nine exported cards"></a>
 </p>
 
-<p align="center">A 15-second trailer. The image above is silent — <a href="design/brand/trailer.mp4">watch the original with sound</a>.</p>
+<p align="center">A 15-second trailer. The image above is silent — <a href="https://bydpass.com/backronym/trailer.mp4">watch the original with sound</a>.</p>
 
 Type a word, and match each letter with a word that starts with it and its meaning.
 

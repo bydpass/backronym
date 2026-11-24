@@ -8,10 +8,10 @@
 </picture>
 
 <p align="center">
-  <a href="design/brand/trailer.mp4"><img src="design/brand/trailer.gif" width="300" alt="15 秒预告片：打出一个词，九个字母各带出一个词，配图、换主题、导出成九张卡片"></a>
+  <a href="https://bydpass.com/backronym/trailer.mp4"><img src="design/brand/trailer.gif" width="300" alt="15 秒预告片：打出一个词，九个字母各带出一个词，配图、换主题、导出成九张卡片"></a>
 </p>
 
-<p align="center">15 秒预告片。上面是无声的动图，<a href="design/brand/trailer.mp4">点这里看带声音的原片</a>。</p>
+<p align="center">15 秒预告片。上面是无声的动图，<a href="https://bydpass.com/backronym/trailer.mp4">点这里看带声音的原片</a>。</p>
 
 打一个单词，给单词的每个字母配一个同首字母的词及其意义。
 
