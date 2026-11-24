@@ -112,6 +112,7 @@ html:not(.locked) .hint{display:none}
 /* 提示下方的「快速开始」：不选语言、不看介绍，直接去网页版。字号同提示，样子同语言按钮（墨色、点线底） */
 .quick{max-width:none;margin:.9em 0 0;font-size:max(.7071em,12px);line-height:1.4;opacity:0}
 .quick.in{opacity:1}
+.quick-source{display:block;margin-top:.4em}
 .quick a{color:var(--ink);text-decoration:none;border-bottom:1px dotted var(--ink);padding:2px 1px;letter-spacing:.04em}
 .quick a:hover{color:var(--zhu);border-bottom-color:var(--zhu)}
 .quick a:focus-visible{outline:2px solid var(--zhu);outline-offset:3px}

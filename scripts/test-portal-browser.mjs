@@ -92,10 +92,22 @@ try {
     console.log(`滚动 ${rhythm}：样稿 ${referenceTime}，门户 ${portalTime}，各段和子页均完整`);
   }
 
+  async function checkHeroLinks(page) {
+    await page.evaluate(() => __tick(1000));
+    const quick = page.locator("#quick > a");
+    const github = page.locator("#quick .quick-source a");
+    assert.equal(await quick.getAttribute("href"), "./app/");
+    assert.equal(await github.getAttribute("href"), "https://github.com/bydpass/backronym");
+    assert.equal(await github.getAttribute("target"), "_blank");
+    assert.equal(await github.isVisible(), true);
+    const [first, second] = await Promise.all([quick.boundingBox(), github.boundingBox()]);
+    assert.ok(second.y >= first.y + first.height);
+    return [first.height, second.height];
+  }
+  await withPage({ calm: true }, checkHeroLinks);
   await withPage({ mobile: true, calm: true }, async page => {
     assert.equal(await page.title(), "藏头 - Backronym");
-    assert.equal(await page.locator("#quick a").getAttribute("href"), "./app/");
-    assert.ok((await page.locator("#quick a").boundingBox()).height >= 44);
+    assert.ok((await checkHeroLinks(page)).every(height => height >= 44));
     await page.evaluate(() => {
       document.querySelector("#btn-en").click();
       window.dispatchEvent(new Event("scroll"));
