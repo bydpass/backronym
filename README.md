@@ -1,6 +1,13 @@
 # 藏头 - Backronym
 
-小红书小工具。输入一个单词，逐个字母在一张和成品一样的卡上填词，导出 1080×1440 的图，保存到相册或直接发笔记。支持英、法、德、西、意、拉丁六门语言，可以同时选几门。
+中文 · [English](README.en.md)
+
+<picture>
+  <source media="(max-width: 640px)" srcset="design/brand/slogan-mobile.png">
+  <img src="design/brand/slogan-desktop.png" width="880" alt="给单词的每个字母赋予意义。同一句话的七种语言：中文、英语、法语、德语、西班牙语、意大利语、拉丁语">
+</picture>
+
+打一个单词，给单词的每个字母配一个同首字母的词及其意义。
 
 ```
 L  Living     活的，逼真的
@@ -9,9 +16,46 @@ F  Fearless   大胆的，勇敢的
 E  Eternal    永恒的，永远的    ← 首字母标朱红
 ```
 
-**在线使用**：<https://bydpass.com/backronym/>（网页版，不用安装）。小红书小工具尚未上架，正式版是 v01.00.00。
+<p align="center">
+  <img src="site/backronymsite/portal/cards/fanwork-grid.jpg" height="280" alt="英语 FANWORK 的列阵，fandom 主题">
+  <img src="site/backronymsite/portal/cards/tesoro-t.jpg" height="280" alt="意大利语 TESORO 的 T 格，单色画主题">
+  <img src="site/backronymsite/portal/cards/astra-a.jpg" height="280" alt="拉丁语 ASTRA 的 A 格，印象派主题">
+  <img src="site/backronymsite/portal/cards/fable-f.jpg" height="280" alt="Fable 的 F 格，表格主题">
+</p>
 
-**本地部署**：也可以在自己的电脑或服务器上跑网页版。只需要 Node 22 或更新的版本，不用安装任何依赖。
+<p align="center">四张都是用网页版做出来、直接导出的成品。主题依次是 fandom、单色画、印象派、表格。</p>
+
+## 在哪里用
+
+| 入口 | 地址 |
+|---|---|
+| 小红书小工具 | 已上架，在小红书搜索「藏头 - Backronym」 |
+| 项目门户 | <https://bydpass.com/backronym/> |
+| 网页版（打开即用，不用安装） | <https://bydpass.com/backronym/app/> |
+| 自己部署 | 见下文「03 本地部署」 |
+
+---
+
+## 01　怎么玩
+
+1. **起词。** 选好语言，输入单词和填表人，或者直接选个预设词，点「开始填充」。
+2. **填词。** 每个字符占一格，直接在卡上打一个同首字母的词；没思路时看候选栏，也能点「下一批」或「随机一个」。
+3. **补全。** 词库会自动带出释义，可以自己改，再补上配文和配图。
+4. **排版。** 在「版式」里选对开、居中或自己调，在「设置」里换主题。
+5. **完成。** 点「完成」导出成图。网页版直接保存图片，小红书里可以存进相册，或直接发成笔记。
+
+## 02　特性
+
+- **六门语言。** 英、法、德、西、意、拉丁，共三万多条义项，支持中英双语释义、名词冠词、常用动词变位与中文反查。
+- **在图上编辑。** 编辑时看到的卡片就是导出的成品，支持单图逐格导出和列阵合排。
+- **版式与主题。** 提供对开、居中两套预设和十个微调开关，内置 fandom、单色画、印象派、分离派、表格五套主题，部分支持深浅切换；界面支持中英文。
+- **不依赖生成式人工智能。** 本工具的运行及其功能不依赖、也不使用任何生成式人工智能。词库是灵感，不是答案，先打自己的词。
+- **内容留在本机。** 你填的词、写的字、放的图只存在自己的设备上；除了你自己点的「发布笔记」，工具运行时不向外发送任何内容。草稿连续 18 小时无改动自动清除。
+- **开源。** 代码以 GPL 3.0 or later 开源，可以抱回自己的电脑上部署、改造。
+
+## 03　本地部署
+
+可以在自己的电脑或服务器上跑网页版。只需要 Node 22 或更新的版本，不用安装任何依赖。
 
 ```bash
 git clone https://github.com/bydpass/backronym.git
@@ -21,95 +65,11 @@ npm start          # 生成网页版，并在 http://127.0.0.1:8080 提供服务
 
 换端口：`npm start -- --port 9000`。让同一网络里的其他设备也能打开：`npm start -- --host 0.0.0.0`。`npm run pack:web` 生成的 `dist/web/` 是纯静态文件，也可以直接交给 Nginx、Caddy 等任何静态服务器。草稿存在浏览器里，按地址分开，换一个地址或端口打开看不到之前的草稿。
 
-发布前的模拟器与真机检查项见 [RELEASE.md](RELEASE.md)。
+## 04　开发
 
----
+无构建链、无框架、无 npm 依赖。命令、目录结构、容器约束与文档索引见 [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)；上架清单见 [RELEASE.md](RELEASE.md)。
 
-## 01　用法
-
-1. 在入场页选语言（可多选，选中的语言一律平等），输入单词（字母或数字，最多 14 个字符）和填表人，也可选一个预设词，再点“开始填充”。
-2. 每个字符一格。直接在卡上打一个以该字母开头的词（数字格以该数字或其读法的首字母开头都算对）；候选栏每次给 8 个灵感，可点「下一批」或「随机一个」。候选只来自该首字母。
-3. 首字母固定标朱红；要改单词或填表人，从编辑页返回入场页，有内容将被清空时先确认。
-4. 补释义（默认带出词库释义，可改）、配文、配图；标题留空时导出单词本身。
-5. 点「完成」后，工具检查每格是否合法、是否命中屏蔽词，再按当前视图导出。
-
-四个主题（fandom、单色画、印象派、分离派），各有自己的颜色和字体，卡和导出图跟着主题走。fandom 只有浅色；其余三个有深浅三档（跟随系统 / 浅 / 深）。
-
-候选词来自内置词库：六门语言共三万多条义项，带中文释义；法、德、西、意的名词按义项标注冠词，动词的常用变位也能查到。
-
-## 02　产品边界
-
-- 路线「4 + 1」：**在图上编辑**，编辑时看到的就是导出的那张图；**词库是灵感，不是答案**，先打自己的词。
-- 单图与列阵都可以导出，默认单图。单图每个字符一张，按输入顺序排列；列阵把各格合排，10 格以内一张，11～14 格分两张。例如输入 LOVE，单图导出四张，列阵导出一张。
-- 不做：账号、社区、信息流；AI 生成；背单词 / 教学。
-
-## 03　开发
-
-无构建链、无框架、无 npm 依赖。需要 Node 和 Python 3（本地预览服务器）。
-
-```bash
-npm run dev        # 本地预览 http://localhost:5173
-npm test           # 屏蔽器 + core.js 纯函数 + 应用模块 + draft.js 18h存储 + media.js 配图存储 + 语言接缝 + 西文词库规则与词条范围 + 网页版构建保护
-npm run audit      # 审计 app/ 的文件与体积（不检查 ES2017 语法或 CSP，这两项另测）
-npm run pack       # test → 审计 → dist/backronym.zip（小红书版，含屏蔽器）
-npm run pack:web   # dist/web/（外链网页版，同样含屏蔽器）
-npm start          # 本地部署：生成 dist/web/ 并在 http://127.0.0.1:8080 提供服务（scripts/serve.mjs）
-npm run packs      # 从 review/t19-batches 里的当前批次重新生成六语词包
-npm run licenses   # 从 LICENSES/*.txt 重新生成许可全文的两种载体（app/LICENSES/*.html 只进网页版；借物页展开时读的 licenses.js 两版都带）
-npm run dict       # 旧管线：重新生成英语词库（需 scripts/.cache/ecdict.csv）
-npm run fonts      # 重新生成字体子集（需原始字体 + pyftsubset）
-```
-
-新克隆的副本可以直接跑 `npm test`。其中两项要读 `scripts/.cache/ecdict.csv`（ECDICT 的词表，约 63 MB，不进仓库），没有这个文件时会跳过并打印一句说明，不算失败。
-
-改版式或绘制代码前后，在 `127.0.0.1:5173` 的控制台运行 `scripts/export-hash.js`（52 张导出图的哈希）和 `scripts/check-dom-layout.js`（DOM 卡与版式数值的偏差）对照。
-
-## 04　结构
-
-```
-app/                 离线 H5（小红书 zip 打包时排除 LICENSES/ 与隐藏文件）
-  index.html
-  assets/
-    lang/<语言>/      六个语言包（en fr de es it la）：words.js 词库（生成产物）、rules.js 字母规则、block.js 屏蔽词表
-    lang/presets.js  预设词与释义（生成产物）
-    licenses.js      许可全文（生成产物，借物页展开时才读）
-    lang/packs.js    语言包注册表与按需加载器
-    block/core.js    屏蔽器公共部分（两版都有）
-    core.js          纯函数：版式、候选、释义、草稿迁移；浏览器与 Node 测试共用
-    draft.js         草稿读写、18h 到期校验与清理
-    media.js         配图存储（容器文件系统 / IndexedDB）与清理
-    theme.js         四个主题与深浅三档
-    app-*.js         八个职责模块：model/title/media/view/editor/entry/publish/draft
-    app.js           事件绑定与启动（模块加载顺序及共享状态见 docs/agent/architecture.md）
-    style.css
-    fonts/           界面字体与四套主题字体的子集
-  LICENSES/          许可全文的独立网页（生成产物，只进外链网页版；小红书包只许一个 html，不带它）
-scripts/             构建、测试、回归脚本
-design/              设计记录；第六稿母版 folio-swiss.html
-docs/                项目地图（file-map.html）、代理规则细则
-plans/v00.03.02/     当前计划（包体缩减与打开耗时）；各版本计划在 plans/<版本>/
-```
-
-**排版只算一次。** `core.js` 的 `layoutCard` / `layoutGrid` 输出 1080×1440 坐标的版式框；编辑用的 DOM 卡和 Canvas 导出按同一份框摆放和绘制，所以编辑所见即导出所得。
-
-**草稿。** 存在端存储与 localStorage 两处，读取时取未过期、能迁移且较新的一份；连续18小时未更新保存则清除当前作品、草稿及过期备份。关闭期间到期，下次打开时清除；底部显示预计清除时间。配图（第七批 T45）另存为文件（小红书 9.49+ 用容器文件系统，否则 IndexedDB），草稿只记文件名与取景；先写图片并读回核对再写草稿，没存成时沿用上一次的图与取景并在状态行说明；草稿到期或不再被任何草稿引用的图随清理删除。
-
-## 05　容器约束
-
-- JS / CSS 基线 Chrome / WebView 61（ES2017，无转译），新 API 先做能力检测。
-- CSP 禁内联脚本；不联网，所有资源在包内。
-- 发布包严格小于 10,000,000 B；6 MB 起提示、8 MB 起加强提示（本地提交 hook，十进制 MB，见 docs/size-hook.md）。`npm run audit` 用的是 skill 脚本的 MiB 阈值（> 10 MiB 报错、> 2 MiB 警告），比 hook 宽，以 hook 为准。字体与词库占大头，实际大小以 `npm run pack` 输出为准。
-
-## 06　文档
-
-| 文件 | 内容 |
-|---|---|
-| [`CLAUDE.md`](CLAUDE.md) | 规则入口与文档索引（Claude 与 GPT 共用）；细则在 `docs/agent/` |
-| [`RELEASE.md`](RELEASE.md) | 上架清单 |
-| [`ROADMAP.md`](ROADMAP.md) | 迭代标准 |
-| [`design/folio-swiss.html`](design/folio-swiss.html) | 界面母版（满版 folio × 国际主义 × 左对齐） |
-
-## 07　许可
+## 05　许可
 
 © 2026 BeyondPassenger。源代码：<https://github.com/bydpass/backronym>
 

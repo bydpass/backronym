@@ -196,7 +196,7 @@ try {
     await context.close();
   }
   // ---- 顶栏：英文界面下「设置」只留图标，顶栏不再比中文多出一行（用户 11-21 定） ----
-  for (const width of [320, 360, 390]) {
+  for (const width of [320, 346, 360, 375, 383, 390]) {
     const tops = {};
     for (const locale of ["zh-CN", "en-US"]) {
       const { context, page } = await open(locale, width, LIFE);
@@ -207,9 +207,11 @@ try {
       tops[locale] = { edit, reword: await page.evaluate(() => Math.round(document.querySelector(".top").getBoundingClientRect().height)), gear };
       await context.close();
     }
+    // 这句守的是用户 11-21 定的「英文不比中文多一行」。11-23 右侧让位改 96 后它在 360 宽失败过（中文一行、英文两行），
+    // 11-24 给英文 344～383 宽收紧内边距与间距后恢复（style.css「英文在 344～383 宽」）。再失败时先查样式，不要改这句。
     assert.ok(tops["en-US"].edit <= tops["zh-CN"].edit && tops["en-US"].reword <= tops["zh-CN"].reword, width + "：英文顶栏不比中文高 " + JSON.stringify(tops));
     assert.ok(tops["en-US"].gear.text <= 1 && tops["en-US"].gear.icon >= 16 && tops["en-US"].gear.name === "Settings" && tops["en-US"].gear.w >= 36, width + "：英文的设置按钮只见图标，名字还在");
-    if (width >= 360) assert.ok(tops["zh-CN"].gear.text > 10, "中文的设置按钮照旧带字");
+    assert.ok(tops["zh-CN"].gear.text <= 1 && tops["zh-CN"].gear.icon >= 16 && tops["zh-CN"].gear.name === "设置", width + "：中文的设置按钮也只见齿轮，名字还在（11-23 顶栏让位补丁，用户确认中英一律只留齿轮）");
   }
   // ---- 借物页来源表：英文不再一个字母占一行 ----
   for (const width of [320, 360]) {

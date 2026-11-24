@@ -63,3 +63,7 @@ __pycache__/
 
 # 个人站 bydpass.github.io 的克隆：它是独立的仓库，有自己的远端，不进本仓库
 site/bydpass.github.io/
+
+# site/ 那套 AOCI 的 Codex 接入配置：写着本机路径，不随仓库走（与上面的 .mcp.json 同理）。
+# site/aoci*.txt 与 site/.aoci/ 里白名单放行的文件照常跟踪，做法同根目录那一套。
+site/.codex/

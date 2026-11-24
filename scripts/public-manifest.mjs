@@ -19,6 +19,7 @@ const DROP_ROOT = [
   "ROADMAP.md", "HANDOFF.md", "AUDIT.MD", "HISTORY.md",
   "docs/roadmap-archive.md",
   "site/backronymsite/PLAN.md", // 网站计划是内部记录；Pages 构建要用同目录下的 portal/ 源码和本地资源
+  "site/backronymsite/deploy/cn/GUIDE.md", // 国内版服务器的操作指南是私人的（用户 2026-11-24 定），写着公网 IP；同目录的配置与发布脚本不含主机信息，照常公开
   // site/ 自己的那套 AOCI 索引逐条描述网站计划等内部文件，连同它的运行目录与 Codex 接入配置（写着本机路径）都不公开
   "site/aoci.txt", "site/aoci.code.txt", "site/aoci.meta.txt", "site/.aoci/", "site/.codex/",
   "aoci.txt", "aoci.code.txt", "aoci.meta.txt", ".aoci/",

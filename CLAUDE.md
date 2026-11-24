@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-本文件是 Claude 与 GPT（Astra）共用的规则入口。根目录的 `CLAUDE.md` 与 `AGENTS.md` 内容完全相同：Claude 读前者，GPT 读后者；改规则时两份一起改，保持一致。**本项目一律用中文回答**（说明、进度、报告、提交信息都用中文）。
+本文件是 Claude、GPT（Astra、Sol）与 Gemini（Neon）共用的规则入口。根目录的 `CLAUDE.md`、`AGENTS.md` 与 `GEMINI.md` 内容完全相同：Claude 读第一份，GPT 读第二份，Gemini 读第三份（2026-11-24 用户定加）；改规则时三份一起改，保持一致。**本项目一律用中文回答**（说明、进度、报告、提交信息都用中文）。
 
 本文件只放规则和索引；细则在 `docs/agent/`，按下面「按需读的文档」到用时才打开。
 
@@ -15,7 +15,7 @@
 
 ### 1. 读文件：按需、按进度
 
-- 开工只读三样：本文件、`HANDOFF.md` 最上面一条、它指向的当前任务文件（现在是 [plans/v01.00.00/PLAN.md](plans/v01.00.00/PLAN.md)，转正的宣发八项，正式版相关的决断都记在这里；v00.04.00 本体见 [plans/v00.04.00/PLAN.md](plans/v00.04.00/PLAN.md)，分支仍是 `dev/v00.04.00`；v00.03.04 的 G-A2 返工已过外部复审，返工版真机待验，见 [plans/v00.03.04/PLAN.md](plans/v00.03.04/PLAN.md)）。
+- 开工只读三样：本文件、`HANDOFF.md` 最上面一条、它指向的当前任务文件（现在是 [plans/v01.00.00/PLAN.md](plans/v01.00.00/PLAN.md)，转正的宣发八项，正式版相关的决断都记在这里；v00.04.00 本体见 [plans/v00.04.00/PLAN.md](plans/v00.04.00/PLAN.md)，分支仍是 `dev/v00.04.00`；v00.03.04 的 G-A2 返工已过外部复审，它的场景在真机上触发不了，已由模拟器复验、不再等真机，见 [plans/v00.03.04/PLAN.md](plans/v00.03.04/PLAN.md)）。
 - 「按需读的文档」表里的文件，做到那件事时才打开。
 - 其余不主动打开：`HANDOFF.md` 里更早的记录、`review/`、旧版本的 `plans/`、`design/` 里的旧稿。用户点名或当前任务明确指向时才读。
 
@@ -41,17 +41,20 @@
 | 文件 | 上限 | 超出怎么办 |
 |---|---|---|
 | `HANDOFF.md` | 9 条记录，新的写在最上面 | 删掉最旧的 |
-| `HISTORY.md` | 「最近记录」9 条，新的写在最上面 | 最旧的整条搬进 `docs/roadmap-archive.md`，插在「一、文件头旧记录」的最上面（新的在上；2026-11-23 用户定），不删 |
+| `HISTORY.md` | 「最近记录」9 条，新的写在最上面 | 最旧的整条搬进 `docs/roadmap-archive.md`，插在「一、文件头旧记录」的最上面（新的在上；2026-11-23 用户定），不删。条目里指向仓库文件的相对链接，搬过去时要补 `../`（2026-11-24 用户定） |
 | `plans/<版本>/REPAIR.md` | 「已关闭」只留最近 3 轮 | 删掉更早的轮次 |
 | `AUDIT.MD` | 同 REPAIR：历史摘要只留最近 3 轮 | 删掉更早的 |
 
 未关闭的条目（待做、已返工待复审）不受上限影响，不删。
 
+记录里的日期一律按本机时间写（终端里 `date` 给出的那一天，与提交时间同一口径），不用 UTC 或别的时区（2026-11-24 用户定）。此前的记录有的比提交时间晚一天，不回头改。
+
 ### 5. 分工与代称
 
 - 实现方与审核方须是不同的一方；实现方自测通过只能写「待复审」。当前谁实现谁审核，看 `HANDOFF.md` 最上面一条。
 - 四份记录各管一件事：`AUDIT.MD` 记审核发现的问题，`REPAIR.md` 记返工说明与状态，`PLAN.md` / `T19.md` 记计划与当前任务，`HANDOFF.md` 只做交接通知。
-- 代称：Claude（含主会话与子代理）用「她」；ChatGPT（含 Astra）与 DeepSeek 用「他」。
+- 公开文档与宣发文案由 Gemini Neon 负责（2026-11-24 用户定）：`README.md`、`README.en.md`、首发笔记等对外的文字由她写，用户逐段把关；别的一方起草的只算底稿。代码、自检与内部记录不在她的范围内。
+- 代称：Claude（含主会话与子代理）与 Gemini（含 Neon）用「她」；ChatGPT（含 Astra、Sol）与 DeepSeek 用「他」。
 
 ### 6. 改代码前的硬约束
 
@@ -64,13 +67,14 @@
 
 ### 7. 暂缓事项
 
-- `review/` 已于 2026-11-12 清理（用户定）：中间批次只留报告，自检读的编译包、当前词库源（device-20261117）与上游交付 63、概念清单与审定表保留。各类文件谁在用见 [docs/file-map.html](docs/file-map.html)；被删的内容在 git 历史里。
+- `review/` 已于 2026-11-12 清理（用户定）：中间批次只留报告，自检读的编译包、正式词库批次（rebuild-20261119，11-19 起词包由它生成）、它读的旧批次（device-20261117）与上游交付 63、概念清单与审定表保留。各类文件谁在用见 [docs/file-map.html](docs/file-map.html)；被删的内容在 git 历史里。
 - `core.js` 未用导出、`style.css` 未用变量，正式版发布后再清。
 
 ### 8. 每次工作都关注 AOCI 索引（2026-11-19 用户定）
 
 - 每次工作都要顾到 AOCI 索引，检索与更新两头都算：开工先靠它建立或恢复对仓库的认知，找对象、查关系时先检索索引；改了受管理的对象，收尾时更新对应条目。
 - 具体怎么调用、什么情况可以不调，按下文「AOCI 仓库认知」。
+- 简单说（2026-11-24 加，细则以下文为准）：AOCI 是一份给代理看的仓库地图，每个受管理的文件一条，写它干什么、和谁有关、改它要当心什么。开工先调 `aoci_rules`，再调 `aoci_overview` 把地图整份读完。改过受管理的文件，全部改完后调一次 `aoci_maintain`，按它列出的文件重写条目，用 `aoci_update_entry` 一次交上去；只读不改的任务不用调这两个。下文那一节在 `aoci:begin` 与 `aoci:end` 两个标记之间，是工具自己写进来的，不要手改。
 
 ### 9. 进度写 HISTORY.md，README 只做介绍与入门（2026-11-20 用户定）
 
@@ -102,10 +106,10 @@ npm start          # 本地部署：生成 dist/web/ 并在 http://127.0.0.1:808
 | 交付、审核、派子代理 | [docs/agent/workflow.md](docs/agent/workflow.md) |
 | 改界面、颜色、文案 | [docs/agent/design.md](docs/agent/design.md)、`design/TASK_BRIEF.md` |
 | 网站：门户、个人站、两地部署（2026-11-24 用户定：网站工作都在 `site/` 里做，相关文档也放这里；藏头的部分同日搬进 `site/backronymsite/`） | [site/backronymsite/README.md](site/backronymsite/README.md)、[site/backronymsite/PLAN.md](site/backronymsite/PLAN.md)；国内版服务器看 [site/backronymsite/deploy/cn/GUIDE.md](site/backronymsite/deploy/cn/GUIDE.md)。`site/` 另有它自己的一套 AOCI 索引（`site/aoci*.txt`），不归根索引管。`site/bydpass.github.io/` 是个人站的独立仓库，本仓库忽略它，改完在里面单独提交 |
-| 当前版本计划与任务 | 转正（宣发八项）[plans/v01.00.00/PLAN.md](plans/v01.00.00/PLAN.md)；v00.04.00 本体 [plans/v00.04.00/PLAN.md](plans/v00.04.00/PLAN.md)；上一版未收尾的事（G-A2 返工版真机待验）在 [plans/v00.03.04/PLAN.md](plans/v00.03.04/PLAN.md) |
+| 当前版本计划与任务 | 转正（宣发八项）[plans/v01.00.00/PLAN.md](plans/v01.00.00/PLAN.md)；v00.04.00 本体 [plans/v00.04.00/PLAN.md](plans/v00.04.00/PLAN.md)；上一版的 G-A2 返工（真机触发不了，已由模拟器复验）在 [plans/v00.03.04/PLAN.md](plans/v00.03.04/PLAN.md) |
 | 返工说明与状态 | [plans/v00.04.00/REPAIR.md](plans/v00.04.00/REPAIR.md)（更早的在各版本自己的 `plans/<版本>/REPAIR.md`） |
 | 审核发现的未解决问题 | [AUDIT.MD](AUDIT.MD) |
-| 词库第三次重建：数据结构、必需字段、选词规则（草案） | [docs/lexicon-spec.md](docs/lexicon-spec.md) |
+| 词库第三次重建：数据结构、必需字段、选词规则（已落实，11-19 起正式词包按它生成；还没定的在第 9 节） | [docs/lexicon-spec.md](docs/lexicon-spec.md) |
 | 词库审核文件的格式与流程 | [review/lexicon/README.md](review/lexicon/README.md) |
 | 草稿 18h 到期的设计依据 | [docs/draft-expiry-assessment.md](docs/draft-expiry-assessment.md) |
 | 体积 hook 怎么装、怎么判 | [docs/size-hook.md](docs/size-hook.md) |

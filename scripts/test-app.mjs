@@ -1620,12 +1620,12 @@ assert.doesNotMatch(html, /见来源项目/, "不再有「见来源项目」这�
   assert.doesNotMatch(html, /Copyright \(c\) 2026 BeyondPassenger/, "MIT 全文里不再有本工具的版权行");
   assert.doesNotMatch(html, /GFDL/, "维基词典只按 CC BY-SA 4.0 使用（用户 11-12 定）");
   assert.match(html, /仅用于筛选，未随包分发其内容/); assert.doesNotMatch(html, /工具不可商用/);
-  // 省流三行：借物页与 README 第 07 节是同一段文字
+  // 省流三行：借物页与 README「许可」一节是同一段文字
   const plain = t => t.replace(/<[^>]+>/g, "").replace(/\*\*/g, "").replace(/\s+/g, " ").trim();
   const lis = [...html.matchAll(/<li><b>(可以|不可以|注意)<\/b>([\s\S]*?)<\/li>/g)].map(m => plain(m[1] + m[2]));
   assert.equal(lis.length, 3);
   const readme = plain(fs.readFileSync(new URL("../README.md", import.meta.url), "utf8"));
-  for (const li of lis) assert.ok(readme.includes(li), "README 第 07 节缺这一行：" + li.slice(0, 12));
+  for (const li of lis) assert.ok(readme.includes(li), "README「许可」一节缺这一行：" + li.slice(0, 12));
   const mdLis = fs.readFileSync(new URL("../README.md", import.meta.url), "utf8").split("\n").filter(l => /^- \*\*(可以|不可以|注意)\*\*/.test(l)).map(l => plain(l.slice(2)));
   assert.deepEqual(mdLis, lis, "README 的省流与借物页逐行相同，不多不少");
   // 许可全文：来源是仓库根目录 LICENSES/*.txt；随包的是由它生成的六份 html（容器不收 txt）；借物页里直接写的 MIT、OFL 与文件同文；展开才读的四份与 licenses.js 一致
@@ -1663,7 +1663,7 @@ assert.doesNotMatch(html, /见来源项目/, "不再有「见来源项目」这�
   assert.equal(JSON.parse(fs.readFileSync(new URL("../package.json", import.meta.url), "utf8")).license, "GPL-3.0-or-later AND CC-BY-SA-4.0");
 }
 // G7：版本号以 package.json 为准。页面上四处（完成面板、设置页、借物页两处）与文案表中英各一处手写，漏改一处就在这里报。
-// 页面注释里的版本号是改动记录，不算；页面写 v01.00.00，平台表单填 1.0.0，是同一版的两种写法。
+// 页面注释里的版本号是改动记录，不算；页面写 v01.00.00，package.json 写 1.0.0，平台表单填 01.00.00（用户 11-24 定），是同一版的几种写法。
 {
   const want = "v" + JSON.parse(fs.readFileSync(new URL("../package.json", import.meta.url), "utf8")).version.split(".").map(n => n.padStart(2, "0")).join(".");
   const VER = /v\d\d\.\d\d\.\d\d/g;

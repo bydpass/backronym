@@ -390,6 +390,13 @@ button { font-size: inherit; }
 /* 英文字更宽（Single｜Grid、Done）：带图标要 412 宽才排得下一行，界线放到 420（留几 px 余量，2026-11-23 真机 402 宽英文折行）；
    只留字约 385 起一行，更窄时「Single / Grid」落到第二行 */
 @media (max-width: 419px) { html[data-container-full][lang="en"] .top .tbtn .ic { display: none; } }
+/* 英文在 344～383 宽（2026-11-24 用户定）：带字的按钮左右内边距 10 → 7，齿轮与 Done 的间距 8 → 4，让「Single｜Grid」与右边一组排回一行。
+   这一段宽度中文是一行、英文原来是两行；343 及以下中英文都是两行，不动。界线随字体差几 px，两头留了余量 */
+@media (min-width: 344px) and (max-width: 383px) {
+  html[data-container-full][lang="en"] .top .sbtn, html[data-container-full][lang="en"] .top .tbtn { padding: 0 7px; }
+  html[data-container-full][lang="en"] .top #settingsOpen { padding: 0; }
+  html[data-container-full][lang="en"] .top-r .tbtn + .tbtn { margin-left: 4px; }
+}
 /* 改词页保存（T30）：无修改 = 虚线框灰字（aria-disabled，仍可聚焦，读屏听得到）；有修改 / 重试 = 实心墨底；保存中 = 实线框灰字 */
 .top .save { border: 1.5px dashed var(--mute); color: var(--mute); }
 .top .save { color: var(--mute); }

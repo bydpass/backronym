@@ -111,7 +111,9 @@ try {
     await page.locator("#settingsOpen").click();
     assert.deepEqual((await mode()).checked, ["light"], "再打开：选中的是当前档");
     assert.deepEqual(await box("#settingsClose"), { h: 36, iw: 16, ih: 16, text: "关闭", hidden: "true" }, "关闭：图标 + 文字");
-    assert.match(await page.locator(".set-foot").innerText(), /借物与版权\s*v00\.03\.00/, "设置页底行：借物与版权、版本号");
+    // 版本号以 package.json 为准（写法同 test-app.mjs：1.0.0 → v01.00.00），不在这里写死，免得改版本时漏改
+    const shownVersion = "v" + JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8")).version.split(".").map(n => n.padStart(2, "0")).join(".");
+    assert.equal((await page.locator(".set-foot").innerText()).replace(/\s+/g, " ").trim(), "借物与版权 " + shownVersion, "设置页底行：借物与版权、版本号");
     await page.locator("#setCredits").click();
     assert.equal(await page.locator("#creditsClose").getAttribute("aria-label"), "关闭借物与版权");
     assert.deepEqual(await box("#creditsClose"), { h: 36, iw: 16, ih: 16, text: "关闭", hidden: "true" });
@@ -262,8 +264,9 @@ try {
     const { page, context, errors } = await pageFor({ width: 320 });
     const r = await page.evaluate(() => { const t = document.querySelector(".top"), cs = getComputedStyle(t), tg = document.getElementById("settingsOpen").getBoundingClientRect(), fin = document.getElementById("finish").getBoundingClientRect();
       return { pl: cs.paddingLeft, pr: cs.paddingRight, h: t.getBoundingClientRect().height, right: Math.max(tg.right, fin.right), sameRow: Math.abs(tg.top - fin.top) < 1, fits: document.documentElement.scrollWidth <= innerWidth }; });
-    assert.deepEqual([r.pl, r.pr], ["48px", "48px"], "左右各让 48px");
-    assert.ok(r.right <= 320 - 48 + 0.5 && r.sameRow && r.fits && r.h < 52, "320 宽让位后不溢出、不换行：" + JSON.stringify(r));
+    assert.deepEqual([r.pl, r.pr], ["48px", "96px"], "左让 48px、右让 96px（11-23 顶栏让位补丁：公开版右上有两个容器按钮）");
+    // 右侧让到 96 后，320 宽一行放不下：「单图｜列阵」挪到第二行，「设置 · 完成」仍同在第一行（方案稿 design/topbar-gutter-patch.html，用户 11-23 确认），所以不再断言只有一行高
+    assert.ok(r.right <= 320 - 96 + 0.5 && r.sameRow && r.fits, "320 宽让位后不溢出，「设置 · 完成」同在第一行：" + JSON.stringify(r));
     // v00.03.00（2026-11-10 定）：一行放不下时「单图 / 列阵」移到下一行，「设置 · 完成」留在第一行；文字与 44px 点按区都保留，不溢出
     await page.evaluate(() => document.documentElement.style.setProperty("--container-gutter", "84px"));
     const w = await page.evaluate(() => { const g = id => document.getElementById(id).getBoundingClientRect(), v = g("viewSingle"), s = g("settingsOpen"), f = g("finish"), t = document.querySelector(".top").getBoundingClientRect();

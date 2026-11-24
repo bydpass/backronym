@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>七语简介长图 · 源稿</title>
+<!-- README 顶部的简介配图（用户 2026-11-24 定）：把「给单词的每个字母赋予意义」用工具支持的六门语言加中文写成七行，
+     电脑端一版、手机端一版。气质取暖象牙色底、暖墨色字、陶土色强调、衬线体；不放任何别家的标志或字标。
+     七行一样大，不分主次（工具里选中的语言一律平等）；不标语言名（用户 11-24 定去掉）；每行首字母染陶土色，对应卡片上的首字母标色。
+     中文、英文两句是用户 11-22 定稿的原文；法、德、西、意、拉丁五句是 Claude 译的，待用户或 Neon 过目。
+     出图：node scripts/render-slogan.mjs（见 docs/agent/commands.md）。带 data-out 的画板出成品。 -->
+<style>
+@font-face { font-family: "SL Latin"; src: url("../../scripts/.cache/fonts/CormorantGaramond[wght].ttf"); font-weight: 300 700; }
+@font-face { font-family: "SL CJK"; src: url("../../scripts/.cache/fonts/NotoSerifSC[wght].ttf"); font-weight: 200 900; }
+:root { --paper: #f0eee6; --ink: #1f1e1d; --line: #d6d3c7; --clay: #c96442; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #8a8a8a; padding: 40px; }
+.board { background: var(--paper); color: var(--ink); font-family: "SL Latin", "SL CJK", serif; margin-bottom: 40px; }
+.row { border-top: 1px solid var(--line); }
+.row:last-child { border-bottom: 1px solid var(--line); }
+.txt { font-weight: 500; }
+.txt i { font-style: normal; color: var(--clay); }
+
+/* 行高一律写整数像素：画板高度落在整像素上，截图底边才不会带出一条背景色。
+   电脑端：每句一行 */
+.desktop { width: 1520px; padding: 72px 96px; } /* 去掉语言名一栏后收窄，右边不留一大片空 */
+.desktop .row { padding: 30px 0 34px; }
+.desktop .txt { font-size: 58px; line-height: 66px; letter-spacing: 0.005em; white-space: nowrap; }
+.desktop .txt[lang="zh-CN"] { font-size: 48px; letter-spacing: 0.06em; }
+
+/* 手机端：放不下就折行 */
+.mobile { width: 780px; padding: 56px 56px; }
+.mobile .row { padding: 32px 0 36px; }
+.mobile .txt { font-size: 56px; line-height: 64px; text-wrap: balance; } /* 两行尽量等长，末行不剩一个词 */
+.mobile .txt[lang="zh-CN"] { font-size: 47px; letter-spacing: 0.06em; }
+</style>
+</head>
+<body>
+
+<div class="board desktop" data-out="desktop">
+  <div class="row"><div class="txt" lang="zh-CN"><i>给</i>单词的每个字母赋予意义</div></div>
+  <div class="row"><div class="txt" lang="en"><i>G</i>ive every letter of a word a meaning</div></div>
+  <div class="row"><div class="txt" lang="fr"><i>D</i>onner un sens à chaque lettre d’un mot</div></div>
+  <div class="row"><div class="txt" lang="de"><i>J</i>edem Buchstaben eines Wortes eine Bedeutung geben</div></div>
+  <div class="row"><div class="txt" lang="es"><i>D</i>ar un significado a cada letra de una palabra</div></div>
+  <div class="row"><div class="txt" lang="it"><i>D</i>are un significato a ogni lettera di una parola</div></div>
+  <div class="row"><div class="txt" lang="la"><i>C</i>uique litterae verbi sensum dare</div></div>
+</div>
+
+<div class="board mobile" data-out="mobile">
+  <div class="row"><div class="txt" lang="zh-CN"><i>给</i>单词的每个字母赋予意义</div></div>
+  <div class="row"><div class="txt" lang="en"><i>G</i>ive every letter of a word a meaning</div></div>
+  <div class="row"><div class="txt" lang="fr"><i>D</i>onner un sens à chaque lettre d’un mot</div></div>
+  <div class="row"><div class="txt" lang="de"><i>J</i>edem Buchstaben eines Wortes eine Bedeutung geben</div></div>
+  <div class="row"><div class="txt" lang="es"><i>D</i>ar un significado a cada letra de una palabra</div></div>
+  <div class="row"><div class="txt" lang="it"><i>D</i>are un significato a ogni lettera di una parola</div></div>
+  <div class="row"><div class="txt" lang="la"><i>C</i>uique litterae verbi sensum dare</div></div>
+</div>
+
+</body>
+</html>

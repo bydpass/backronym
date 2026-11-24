@@ -109,6 +109,23 @@ node scripts/render-brand.mjs <临时目录>     # 写 icon-1024.png、icon-512.
 
 脚本会核对画板尺寸与文件大小上限（图标 5 MB、封面 10 MB）。改了图标的字号或位置，看自查图里圆形裁切的一列有没有伤到字。
 
+README 顶部的七语简介长图另有一页源稿 `design/brand/slogan.html`，改了以后重出（同样要原字体）：
+
+```bash
+node scripts/render-slogan.mjs     # 写 design/brand/slogan-desktop.png（宽 1520）、slogan-mobile.png（宽 780）
+```
+
+## 首发笔记的教程图怎么重出
+
+首发笔记（宣发 G5）的五张教程图，是把门户第 5 部分的 GIOCO 五步做成一份藏头、用工具自己导出的单图，成品在 `plans/v01.00.00/note/`。词、要点的义项与配文写在脚本开头的 `CELLS` 里，改文案只改那里：
+
+```bash
+# 设好 PLAYWRIGHT_MODULE、CHROMIUM_PATH（同浏览器回归）
+node scripts/render-note-cards.mjs plans/v01.00.00/note     # 写 gioco-1-g.jpg … gioco-5-o.jpg，都是 1620×2160
+```
+
+脚本开着真的应用，植入只有词与配文的草稿，冠词与释义由应用到词库里查，再点「完成」取导出图；卡上的字与 `CELLS` 里的定稿对不上就报错退出。工具的配文不认手动换行，定稿里分两行的句子用空格连成一句，放不下时由工具折行。
+
 ## 公开快照怎么重做
 
 公开仓库（远端 `public`）只放不带项目历史的快照：本地 `public` 分支每次更新加一个提交，推到远端的 `main`。远端只应有 `main` 和版本 tag。**推送要用户明确授权。**
@@ -117,7 +134,7 @@ node scripts/render-brand.mjs <临时目录>     # 写 icon-1024.png、icon-512.
 
 - 引用一律写全名（`refs/heads/…`、`refs/tags/…`）。本仓库同时有 `public` 分支和 `public` 远端，只写 `public` 会报歧义；分支与 tag 同名时 git 会取 tag。
 - 每一步单独跑并看结果，不用 `&&`、`;` 串成一条：前一步出错时，后面的删除照样会执行。
-- 取哪些文件以 `scripts/public-manifest.mjs` 里的 `DROP_ROOT` 与 `KEEP` 两张表为准。任何一条保留规则匹配不到文件，脚本会报错退出，这时去查是目录改了名，还是测试不再读它。
+- 取哪些文件以 `scripts/public-manifest.mjs` 里的 `DROP_ROOT` 与 `KEEP` 两张表为准。国内版服务器的操作指南 `site/backronymsite/deploy/cn/GUIDE.md` 是私人的，在 `DROP_ROOT` 里（2026-11-24 用户定）；名单只管以后的快照，已推出去的旧提交不受影响。任何一条保留规则匹配不到文件，脚本会报错退出，这时去查是目录改了名，还是测试不再读它。
 
 取舍的大意：取来源提交的全部文件，去掉内部记录（`ROADMAP.md`、`HANDOFF.md`、`AUDIT.MD`、`HISTORY.md`、路线图归档、AOCI 索引）和整个 `plans/`；`review/` 只留 `npm test` 要读的那些。测试新读了 `review/` 或 `plans/` 下的文件时，先加进 `KEEP`。
 
