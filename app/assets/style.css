@@ -387,6 +387,9 @@ button { font-size: inherit; }
 /* 窄屏：容器按钮让位后（左 48、右 96）屏宽不到 375 时，其余带图标的按钮（完成、返回、保存）只留字；齿轮不受影响（上一条）。
    实测编辑页带图标 375 起排得下一行、370 折行；只留字约 350 起一行，更窄时「单图｜列阵」落到第二行（见 .top） */
 @media (max-width: 374px) { html[data-container-full] .top .tbtn .ic { display: none; } }
+/* 英文字更宽（Single｜Grid、Done）：带图标要 412 宽才排得下一行，界线放到 420（留几 px 余量，2026-11-23 真机 402 宽英文折行）；
+   只留字约 385 起一行，更窄时「Single / Grid」落到第二行 */
+@media (max-width: 419px) { html[data-container-full][lang="en"] .top .tbtn .ic { display: none; } }
 /* 改词页保存（T30）：无修改 = 虚线框灰字（aria-disabled，仍可聚焦，读屏听得到）；有修改 / 重试 = 实心墨底；保存中 = 实线框灰字 */
 .top .save { border: 1.5px dashed var(--mute); color: var(--mute); }
 .top .save { color: var(--mute); }

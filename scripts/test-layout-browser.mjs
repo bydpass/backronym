@@ -51,8 +51,8 @@ let browser;
 try {
   browser = await chromium.launch({ headless: true, ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}) });
   { const make = browser.newContext.bind(browser); browser.newContext = options => make({ locale: "zh-CN", ...options }); } // v00.04.00 批 1：界面语言跟随环境，无头浏览器默认报英文；本脚本测的是中文界面
-  async function pageFor({ draft = LIFE, width = 375, height = 700, age = 5000 } = {}) {
-    const context = await browser.newContext({ viewport: { width, height } });
+  async function pageFor({ draft = LIFE, width = 375, height = 700, age = 5000, locale } = {}) {
+    const context = await browser.newContext({ viewport: { width, height }, ...(locale ? { locale } : {}) });
     await context.addInitScript(({ draft, KEY, age }) => {
       if (!sessionStorage.getItem("seeded")) {
         if (draft) localStorage.setItem(KEY, JSON.stringify({ ...draft, t: Date.now() - age }));
@@ -696,6 +696,16 @@ try {
     const r = await page.evaluate(() => { const g = (id) => document.getElementById(id).getBoundingClientRect(), v = g("viewSingle"), s = g("settingsOpen"), f = g("finish"), t = document.querySelector(".top"), cs = getComputedStyle(t), tr = t.getBoundingClientRect();
       return { gear: getComputedStyle(document.querySelector("#settingsOpen svg")).display !== "none" && s.width === 36, icon: getComputedStyle(document.querySelector("#finish svg")).display !== "none", row: Math.abs(v.top - s.top) < 1 && Math.abs(s.top - f.top) < 1, left: v.left >= tr.left + parseFloat(cs.paddingLeft) - 0.5, right: f.right <= tr.right - parseFloat(cs.paddingRight) + 0.5, fits: document.documentElement.scrollWidth <= innerWidth, text: document.getElementById("settingsOpen").innerText.trim() + document.getElementById("finish").innerText.trim() }; });
     assert.deepEqual(r, { gear: true, icon, row, left: true, right: true, fits: true, text: "设置完成" }, width + " 宽的顶栏：" + JSON.stringify(r));
+    assert.deepEqual(errors, []);
+    await context.close();
+  }
+  // 英文界面（2026-11-23 真机 402 宽折行）：字更宽，屏宽不到 420 时「Done」只留字，390～419 仍是一行；「Settings」只读给读屏
+  for (const [width, icon] of [[390, false], [402, false], [419, false], [420, true], [430, true]]) {
+    const { page, context, errors } = await pageFor({ width, locale: "en-US" });
+    await page.evaluate(() => document.documentElement.setAttribute("data-container-full", "true"));
+    const r = await page.evaluate(() => { const g = (id) => document.getElementById(id).getBoundingClientRect(), v = g("viewSingle"), s = g("settingsOpen"), f = g("finish"), t = document.querySelector(".top"), cs = getComputedStyle(t), tr = t.getBoundingClientRect();
+      return { lang: document.documentElement.lang, gear: getComputedStyle(document.querySelector("#settingsOpen svg")).display !== "none" && s.width === 36, icon: getComputedStyle(document.querySelector("#finish svg")).display !== "none", row: Math.abs(v.top - s.top) < 1 && Math.abs(s.top - f.top) < 1, right: f.right <= tr.right - parseFloat(cs.paddingRight) + 0.5, fits: document.documentElement.scrollWidth <= innerWidth }; });
+    assert.deepEqual(r, { lang: "en", gear: true, icon, row: true, right: true, fits: true }, width + " 宽的英文顶栏：" + JSON.stringify(r));
     assert.deepEqual(errors, []);
     await context.close();
   }
