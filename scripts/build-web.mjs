@@ -8,6 +8,8 @@
 //   · 已存在的目录只有这些情况可以覆盖：空目录、带本构建器标记文件（上次由这里构建）；
 //     默认的 dist/web 另外兼容加标记之前的旧产物：整棵树里每个文件在 app/ 都有同路径文件、且没有符号链接。其余一律拒绝，不删、不覆盖。
 // 构建完写标记文件，之后重建可识别。
+// 站点图标（用户 2026-11-23 定）：取品牌定稿的 design/brand/icon-512.png，只进网页版——复制到输出目录并在输出的 index.html 里加两行 <link>；
+// app/ 与小红书包都不动。源图不在（如只拿到 app/ 的场合）就不带图标，照常构建。
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -19,6 +21,7 @@ const src = path.join(root, "app");
 const at = process.argv.indexOf("--out");
 if (at > 0 && !process.argv[at + 1]) fail("--out 后面要给一个目录");
 const out = at > 0 ? path.resolve(process.argv[at + 1]) : path.join(root, "dist/web");
+const ICON_SRC = path.join(root, "design/brand/icon-512.png"), ICON = "icon-512.png";
 const BLOCKERS = ["assets/block/core.js", "assets/lang/en/block.js"];
 const tagOf = (f) => new RegExp("^\\s*<script src=\"\\./" + f.replace(/[./]/g, "\\$&") + "\"><\\/script>$", "m");
 
@@ -86,6 +89,13 @@ checkOut();
 fs.rmSync(out, { recursive: true, force: true });
 fs.cpSync(src, out, { recursive: true, filter: (p) => !path.basename(p).startsWith(".") && path.basename(p) !== "_recovery" });
 fs.writeFileSync(path.join(out, MARK), MARK_TEXT);
+if (fs.existsSync(ICON_SRC)) {
+  const page = path.join(out, "index.html"), html = fs.readFileSync(page, "utf8");
+  if (fs.existsSync(path.join(out, ICON))) fail("app/ 里已有 " + ICON + "，和站点图标重名");
+  if (!html.includes("</head>")) fail("index.html 里没有 </head>，放不进站点图标");
+  fs.copyFileSync(ICON_SRC, path.join(out, ICON));
+  fs.writeFileSync(page, html.replace("</head>", '  <link rel="icon" type="image/png" href="./' + ICON + '">\n  <link rel="apple-touch-icon" href="./' + ICON + '">\n</head>'));
+} else console.warn("没找到 design/brand/icon-512.png，网页版不带站点图标");
 assertBlocker(out, "网页版");
 assertLicenses(out, "网页版");
 console.log("网页版 → " + path.relative(root, out) + "（含屏蔽器）");

@@ -15,10 +15,11 @@ try {
   const w = (p, s) => { fs.mkdirSync(path.dirname(path.join(F, p)), { recursive: true }); fs.writeFileSync(path.join(F, p), s); };
   fs.mkdirSync(path.join(F, "scripts"));
   fs.copyFileSync(path.join(here, "build-web.mjs"), path.join(F, "scripts/build-web.mjs"));
-  w("app/index.html", '<html>\n  <script src="./assets/block/core.js"></script>\n  <script src="./assets/lang/en/block.js"></script>\n</html>\n');
+  w("app/index.html", '<html>\n<head>\n</head>\n  <script src="./assets/block/core.js"></script>\n  <script src="./assets/lang/en/block.js"></script>\n</html>\n');
   w("app/assets/block/core.js", "window.BLOCK = {};\n");
   w("app/assets/lang/en/block.js", "window.BLOCK.add = 1;\n");
   w("app/assets/app.js", "// 源码哨兵\n");
+  w("design/brand/icon-512.png", "icon fixture"); // 站点图标只进网页版
   for (const k of ["GPL-3.0", "CC-BY-SA-4.0", "CC-BY-SA-3.0", "CC-BY-4.0", "MIT", "OFL-1.1"]) w("app/LICENSES/" + k + ".html", "license text fixture\n"); // T07：两版都要带许可全文
   w("app/assets/lang/en/_recovery/fixture/words.js", "private recovery fixture");
   w("app/_recovery/fixture/index.html", "private recovery fixture");
@@ -76,6 +77,9 @@ try {
     assert.ok(!fs.existsSync(path.join(dir, "_recovery")), "顶层恢复副本不打包");
     assert.ok(!fs.existsSync(path.join(dir, "assets/lang/en/_recovery")), "嵌套恢复副本不打包");
     assert.ok(fs.existsSync(path.join(dir, ".backronym-web-build")), why + "：写了构建标记");
+    assert.equal(fs.readFileSync(path.join(dir, "icon-512.png"), "utf8"), "icon fixture", why + "：带站点图标");
+    assert.match(fs.readFileSync(path.join(dir, "index.html"), "utf8"), /<link rel="icon" type="image\/png" href="\.\/icon-512\.png">\n  <link rel="apple-touch-icon" href="\.\/icon-512\.png">\n<\/head>/, why + "：页面里引用了站点图标");
+    assert.ok(!fs.readFileSync(path.join(F, "app/index.html"), "utf8").includes("icon-512"), why + "：源码 app/index.html 不带图标引用");
   };
   ok(["--out", path.join(F, "new")], path.join(F, "new"), "新目录");
   ok(["--out", path.join(F, "new")], path.join(F, "new"), "上次构建的目录可重建");
@@ -84,6 +88,7 @@ try {
   ok([], path.join(F, "dist/web"), "默认 dist/web");
   ok([], path.join(F, "dist/web"), "默认 dist/web 重建");
   fs.rmSync(path.join(F, "dist/web/.backronym-web-build"));
+  fs.rmSync(path.join(F, "dist/web/icon-512.png")); // 加标记之前的旧产物也还没有站点图标
   ok([], path.join(F, "dist/web"), "默认 dist/web 的旧产物（无标记、只含 index.html / assets）");
   // B4-R1 复审：无标记的 dist/web 里只要有一个 app/ 里没有的文件（顶层、assets 里、更深一层），或有符号链接，就拒绝且整棵树（含 dist）字节不变
   for (const [rel, why] of [["author.txt", "顶层陌生文件"], ["assets/author.txt", "assets 里的作者文件"], ["assets/fonts/old/notes.md", "更深嵌套的未知文件"]]) {
