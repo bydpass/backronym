@@ -60,3 +60,6 @@ review/t19-batches/t19-*/rebuild/
 
 # Python 字节码缓存（跑 scripts/lexicon3、review 下的脚本时生成），不入库
 __pycache__/
+
+# 个人站 bydpass.github.io 的克隆：它是独立的仓库，有自己的远端，不进本仓库
+site/bydpass.github.io/

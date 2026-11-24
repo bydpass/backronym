@@ -8,6 +8,7 @@ npm test           # 全部自检脚本串行，清单见 package.json；每个�
 npm run audit      # 只审计 app/ 的文件与体积（语法和运行行为另测），不打包
 npm run pack       # test → 审计 app/ → 打 zip → 再审计 zip 体积
 npm run pack:web   # 外链网页版 → dist/web/
+npm run pack:site  # 门户 + 网页版 → dist/site/（网页版在 app/）
 npm start          # 本地部署：先跑 pack:web，再用 scripts/serve.mjs 在 http://127.0.0.1:8080 提供 dist/web/；参数 -- --port <端口> --host <地址> --dir <目录> --no-build
 npm run pack:diag  # 只用于诊断的包 → dist/backronym-diag.zip：app/ 原样加一个打开耗时的诊断脚本（scripts/diag/diag.js），不是发布包；上传、生成预览码前要用户同意
 ```
@@ -24,6 +25,8 @@ npm run presets    # 从人工审定的表生成入场预设词 app/assets/lang/
 npm run en-gloss   # 生成 review/en-gloss/<语言>.tsv。先用补充表 picks/<语言>.tsv 或 Kaikki 自动对齐，再按 repairs.tsv 的义项 ID 应用完整英文和卡面短写。待挑项写入 scripts/.cache/en-gloss/pending-<语言>.json。补充词典只许脚本里 DICTS 列的（现只有 FreeDict 意英，GPL 词典不得用）。改完须对着 review/en-gloss/same-card.tsv 过自检：同词同词性、中文不同而卡面英文相同的每一组都要有裁定。保留共译须写理由，已修记录留表且不得复现；完整英文和卡面短写均检查词典格式串。依赖本机缓存 v003/stage3 与 ecdict.csv；改完跑 npm run packs、npm run presets
 npm run block      # 西文五语屏蔽词表 app/assets/lang/<语种>/block.js 与送审表 review/lexicon/block-review.tsv
 ```
+
+门户更改文案后，用带 WOFF2 支持的 fontTools 运行 `python scripts/build-portal-fonts.py`。本机可用 `scripts/.cache/font-tools-venv/bin/python`。源字体放在 `scripts/.cache/fonts/`，额外的 Cinzel、Cormorant Garamond 斜体和 Noto Serif SC 可变字体的来源见脚本。此命令只重出门户字体，`npm run pack:site` 直接使用入库的子集。
 
 词库重建（选词 → 构建 → 词包），依赖 `scripts/.cache/` 下的 `v003`、`lexique410`、`parlamint`，规格见 [docs/lexicon-spec.md](../lexicon-spec.md)：
 
@@ -47,6 +50,10 @@ node scripts/t19/pack-ranks.mjs <编译目录> <新排名文件> <新断词文�
 ```
 
 ## 浏览器回归
+
+G8 门户回归沿用下方的 Playwright 和 Chromium 环境。运行 `node scripts/test-portal-browser.mjs` 测源码，或先跑 `npm run pack:site`，再运行 `node scripts/test-portal-browser.mjs dist/site` 测整站产物。它对样稿和门户各跑八种下滑节奏，检查七节、十个子页和结束页，另查无脚本内容、移动端和备案号的域名限制。所有浏览器资源均从本地夹具返回。
+
+本地浏览整站可运行 `npm start -- --dir dist/site --no-build`。在 `/` 打开门户，点「快速开始」进入 `/app/`。正式站把同一产物挂在 `/backronym/` 下。
 
 不在 `npm test` 里。用已安装的 Playwright 起本地临时端口和新的浏览器上下文，不碰预览页的存储。无头浏览器默认报英文环境，测中文界面的脚本都在启动后把上下文固定成 `zh-CN`。要指定模块与浏览器路径，例如本机：
 

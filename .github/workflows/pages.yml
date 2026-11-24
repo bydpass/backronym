@@ -1,5 +1,5 @@
-# 外链网页版（国际版）部署到 GitHub Pages：公开仓库的 main 一更新就重建、重发。
-# 产物与 `npm run pack:web` 本地得到的 dist/web/ 是同一份；国内版服务器发的也是这一份。
+# 国际版门户和网页版部署到 GitHub Pages：公开仓库的 main 一更新就重建、重发。
+# 国内版同样用 pack:site 的 dist/site/，门户在根，网页版在 app/。
 # 只在公开仓库 bydpass/backronym 上跑：私有的完整历史仓库也带着这个文件，那边不部署。
 name: Pages
 
@@ -27,11 +27,13 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-      # 不装依赖：项目没有 npm 依赖，构建只是复制 app/ 并核对屏蔽器在不在
-      - run: npm run pack:web
+      # 字体子集已入库，发布不安装依赖、不取外站资源。
+      - run: |
+          npm run pack:site
+          rm dist/site/.backronym-site-build dist/site/app/.backronym-web-build
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: dist/web
+          path: dist/site
 
   deploy:
     needs: build

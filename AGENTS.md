@@ -101,7 +101,8 @@ npm start          # 本地部署：生成 dist/web/ 并在 http://127.0.0.1:808
 | 打包、端能力、容器限制、上架 | [docs/agent/container.md](docs/agent/container.md)、`.claude/skills/minitool-zip-builder/`、[RELEASE.md](RELEASE.md) |
 | 交付、审核、派子代理 | [docs/agent/workflow.md](docs/agent/workflow.md) |
 | 改界面、颜色、文案 | [docs/agent/design.md](docs/agent/design.md)、`design/TASK_BRIEF.md` |
-| 当前版本计划与任务 | 转正（宣发八项、门户与部署方案）[plans/v01.00.00/PLAN.md](plans/v01.00.00/PLAN.md)；v00.04.00 本体 [plans/v00.04.00/PLAN.md](plans/v00.04.00/PLAN.md)；上一版未收尾的事（G-A2 返工版真机待验）在 [plans/v00.03.04/PLAN.md](plans/v00.03.04/PLAN.md) |
+| 网站：门户、个人站、两地部署（2026-11-24 用户定：网站工作都在 `site/` 里做，相关文档也放这里；藏头的部分同日搬进 `site/backronymsite/`） | [site/backronymsite/README.md](site/backronymsite/README.md)、[site/backronymsite/PLAN.md](site/backronymsite/PLAN.md)；国内版服务器看 [site/backronymsite/deploy/cn/GUIDE.md](site/backronymsite/deploy/cn/GUIDE.md)。`site/` 另有它自己的一套 AOCI 索引（`site/aoci*.txt`），不归根索引管。`site/bydpass.github.io/` 是个人站的独立仓库，本仓库忽略它，改完在里面单独提交 |
+| 当前版本计划与任务 | 转正（宣发八项）[plans/v01.00.00/PLAN.md](plans/v01.00.00/PLAN.md)；v00.04.00 本体 [plans/v00.04.00/PLAN.md](plans/v00.04.00/PLAN.md)；上一版未收尾的事（G-A2 返工版真机待验）在 [plans/v00.03.04/PLAN.md](plans/v00.03.04/PLAN.md) |
 | 返工说明与状态 | [plans/v00.04.00/REPAIR.md](plans/v00.04.00/REPAIR.md)（更早的在各版本自己的 `plans/<版本>/REPAIR.md`） |
 | 审核发现的未解决问题 | [AUDIT.MD](AUDIT.MD) |
 | 词库第三次重建：数据结构、必需字段、选词规则（草案） | [docs/lexicon-spec.md](docs/lexicon-spec.md) |

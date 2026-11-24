@@ -688,13 +688,14 @@ try {
     assert.deepEqual(errors, []);
     await context.close();
   }
-  // 窄屏：容器按钮让位后屏宽不到 360（内宽不到 264），顶栏按钮只留字；仍在一行、不横滚。360 起照常带图标
-  for (const [width, icon] of [[320, false], [340, false], [359, false], [360, true], [375, true], [414, true]]) {
+  // 窄屏：容器按钮让位（左 48、右 96，2026-11-23）后屏宽不到 375，「完成」只留字；「设置」始终只是齿轮。不横滚，最右不进右侧 96 的让位；
+  // 约 350 起一行（界线随字体差几 px，不在界线上断言），320 时「单图｜列阵」落到第二行（右边那组仍在第一行）
+  for (const [width, icon, row] of [[320, false, false], [360, false, true], [374, false, true], [375, true, true], [402, true, true], [414, true, true]]) {
     const { page, context, errors } = await pageFor({ width });
     await page.evaluate(() => document.documentElement.setAttribute("data-container-full", "true"));
     const r = await page.evaluate(() => { const g = (id) => document.getElementById(id).getBoundingClientRect(), v = g("viewSingle"), s = g("settingsOpen"), f = g("finish"), t = document.querySelector(".top"), cs = getComputedStyle(t), tr = t.getBoundingClientRect();
-      return { icon: getComputedStyle(document.querySelector("#settingsOpen svg")).display !== "none", row: Math.abs(v.top - s.top) < 1 && Math.abs(s.top - f.top) < 1, left: v.left >= tr.left + parseFloat(cs.paddingLeft) - 0.5, right: f.right <= tr.right - parseFloat(cs.paddingRight) + 0.5, fits: document.documentElement.scrollWidth <= innerWidth, text: document.getElementById("settingsOpen").innerText.trim() + document.getElementById("finish").innerText.trim() }; });
-    assert.deepEqual(r, { icon, row: true, left: true, right: true, fits: true, text: "设置完成" }, width + " 宽的顶栏：" + JSON.stringify(r));
+      return { gear: getComputedStyle(document.querySelector("#settingsOpen svg")).display !== "none" && s.width === 36, icon: getComputedStyle(document.querySelector("#finish svg")).display !== "none", row: Math.abs(v.top - s.top) < 1 && Math.abs(s.top - f.top) < 1, left: v.left >= tr.left + parseFloat(cs.paddingLeft) - 0.5, right: f.right <= tr.right - parseFloat(cs.paddingRight) + 0.5, fits: document.documentElement.scrollWidth <= innerWidth, text: document.getElementById("settingsOpen").innerText.trim() + document.getElementById("finish").innerText.trim() }; });
+    assert.deepEqual(r, { gear: true, icon, row, left: true, right: true, fits: true, text: "设置完成" }, width + " 宽的顶栏：" + JSON.stringify(r));
     assert.deepEqual(errors, []);
     await context.close();
   }

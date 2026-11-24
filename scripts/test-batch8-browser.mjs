@@ -123,7 +123,7 @@ try {
   for(const width of [320,375,414]) {
     const {page,context}=await pageFor({width});await page.goto(url+'/index.html?xhsMpScreenMode=full');
     const b=await page.locator('.brand').boundingBox(),t=await page.locator('#settingsOpen').boundingBox();
-    assert.ok(b.x>=48 && t.x+t.width<=width-48,'全屏两侧让位');
+    assert.ok(b.x>=48 && t.x+t.width<=width-96,'全屏两侧让位：左 48，右 96（右上有两个容器按钮）');
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'无横向溢出');await context.close();
   }
   console.log('batch8 browser: split height + DOM geometry, current-theme contrast + theme switch, container gutters PASS');

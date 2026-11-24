@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>藏头 - Backronym</title>
+  <meta name="description" content="给单词的每个字母赋予意义">
+  <meta property="og:title" content="藏头 - Backronym">
+  <meta property="og:description" content="给单词的每个字母赋予意义">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://bydpass.com/backronym/cards/fanwork-grid.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://bydpass.com/backronym/cards/fanwork-grid.jpg">
+  <meta name="backronym-version" content="">
+  <meta name="backronym-icp" content="">
+  <link rel="stylesheet" href="./portal.css">
+  <noscript>
+    <style>
+      .bgw, .stage, .parts, .fin, main[aria-hidden] { display: none !important; }
+      .portal-static { max-width: 42rem; margin: auto; padding: 1rem; }
+      .portal-static section { margin: 2rem 0; }
+    </style>
+  </noscript>
+</head>
+<body>
+<div class="bgw" id="bgw" aria-hidden="true"></div>
+
+<div class="fin" id="fin"></div>
+
+<header class="stage" id="stage">
+  <div class="wrap">
+    <h1 class="word" id="word" aria-label="Buergil"><span>B</span><span>U</span><span>E</span><span>R</span><span>G</span><span>I</span><span>L</span></h1>
+    <div class="under" id="under"></div>
+    <div class="gate" id="gate">
+      <button type="button" id="btn-zh" data-set="zh" lang="zh">中文</button><span class="sep">/</span><button type="button" id="btn-en" data-set="en" lang="en">EN</button>
+      <p class="hint"><span id="hint-zh" lang="zh">选一种语言以认识项目</span><span class="sep">·</span><span id="hint-en" lang="en">Choose a language to meet the project</span></p>
+      <p class="quick" id="quick"><a href="./app/"><span id="quick-zh" lang="zh">快速开始</span><span class="sep">·</span><span id="quick-en" lang="en">Quick start</span></a></p>
+    </div>
+  </div>
+  <p class="cue" id="cue"><span class="cue-t"><span class="zh" lang="zh"><i>下滑或</i><i>点击字母</i><i>以继续</i><br class="kb"><i class="kb">按住方向键</i><i class="kb">下滑为佳</i></span><span class="en" lang="en">Scroll or tap a letter to continue<br class="kb"><i class="kb">Best with the ↓ key held</i></span></span><svg viewBox="0 0 12 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1v13M1.5 9.5L6 14l4.5-4.5"/></svg></p>
+  <div class="label" id="label"><span class="art"></span><span class="w"></span><span class="sub"></span></div>
+</header>
+
+<main aria-hidden="true"></main>
+
+<div class="parts" id="parts">
+  <section class="part"><div class="in">
+    <p class="num">I / VII</p>
+    <div class="entry">
+      <p class="meta"><span class="ipa">/ˈbækrənɪm/</span><span class="pos"><span class="zh">名词</span><span class="en">noun</span></span><span class="etym">back + acronym</span></p>
+      <ol class="senses">
+        <li><span class="zh">逆向的缩写：先有一个词，再给它的每个字母各配一个以该字母开头的词</span><span class="en">An acronym in reverse: the word comes first, and each of its letters is then given a word that begins with it</span>
+          <div class="eg" lang="en"><div class="row"><em><b>F</b>andom</em><i lang="zh">同好</i></div><div class="row"><em><b>A</b>dore</em><i lang="zh">爱慕</i></div><div class="row"><em><b>N</b>arrative</em><i lang="zh">叙事</i></div><div class="row"><em><b>C</b>anon</em><i lang="zh">原作</i></div><div class="row"><em><b>R</b>efactor</em><i lang="zh">重构</i></div><div class="row"><em><b>E</b>cho</em><i lang="zh">回响</i></div><div class="row"><em><b>A</b>lternate</em><i lang="zh">变体</i></div><div class="row"><em><b>T</b>ribute</em><i lang="zh">致敬</i></div><div class="row"><em><b>I</b>magine</em><i lang="zh">想象</i></div><div class="row"><em><b>O</b>riginal</em><i lang="zh">原创</i></div><div class="row"><em><b>N</b>urture</em><i lang="zh">养育</i></div></div>
+        </li>
+        <li><span class="zh">「藏头」，做这件事的小工具：输入单词，逐个字母填词，配上释义和图，导出成一张卡</span><span class="en">“Backronym”, a small tool for doing this: type a word, fill in a word for each letter, add glosses and pictures, and export it as a card</span></li>
+      </ol>
+      <p class="tail"><span class="zh">这一页自己就是一份藏头</span><span class="en">This page is a backronym itself</span></p>
+    </div>
+  </div></section>
+
+  <section class="part"><div class="in">
+    <p class="num">II / VII</p>
+    <div class="sim" aria-hidden="true">
+      <div class="sim-word" id="sim-word"></div>
+      <div class="sim-pick" id="sim-pick"><span class="sim-k">F</span><span class="sim-in" id="sim-in"></span></div>
+      <p class="sim-gloss" id="sim-gloss"><span class="zh">幻想</span><span class="en">That which comes from one’s imagination or the act of imagining things</span></p>
+      <p class="sim-cap" id="sim-cap"></p>
+    </div>
+    <p><span class="zh">Backronym 可活用于描摹一种印象</span><span class="en">Backronym lends itself to sketching an impression</span></p>
+    <p><span class="zh">比如用一个词 / 一种象征形容你推 / 你的OC<br>—— 或ta们的别的什么，比如一生（Life）、历险（Adventure） et cetera……</span><span class="en">Say, one word / one symbol for your fave / your OC<br>— or something else of theirs, a lifetime (Life), an adventure (Adventure), et cetera……</span></p>
+  </div></section>
+
+  <section class="part wide"><div class="in">
+    <p class="num">III / VII</p>
+    <p class="shot lead"><span class="zh">1620×2160，可以直接存相册或发笔记</span><span class="en">1620×2160, ready to save or post</span></p>
+    <div class="cards" id="cards">
+      <figure class="card wait" style="--ar:2316/2370;--fr:.977"><img src="cards/fanwork-grid.jpg" alt="FANWORK，列阵：Fantasy 幻想、Affection 喜爱、Narrative 故事、Wish 希望、Obsession 执念、Romance 恋情、Kingdom 王国"><figcaption>fandom</figcaption></figure>
+      <figure class="card wait" style="--ar:3/4;--fr:.75"><img src="cards/tesoro-t.jpg" alt="TESORO，单图：il Tempo 时间。把时间都给你，我的宝贝"><figcaption><span class="zh">单色画</span><span class="en">Dansaek</span></figcaption></figure>
+      <figure class="card wait" style="--ar:3/4;--fr:.75"><img src="cards/astra-a.jpg" alt="ASTRA，单图：Aurōra 黎明。Per aspera ad astra，循此苦旅，以达天际"><figcaption><span class="zh">印象派</span><span class="en">Monet</span></figcaption></figure>
+      <figure class="card wait" style="--ar:3/4;--fr:.75"><img src="cards/fable-f.jpg" alt="Fable，单图：寓言。此门户网站的设计为 Fable 5.2 协助筹备、生成、制作"><figcaption><span class="zh">表格</span><span class="en">Table</span></figcaption></figure>
+    </div>
+  </div></section>
+
+  <section class="part"><div class="in">
+    <p class="num">IV / VII</p>
+    <div class="rg" id="rg">
+      <p class="rg-head" lang="es" id="rg-head" aria-label="RASGO"><span>R</span><span>A</span><span>S</span><span>G</span><span>O</span></p>
+      <p class="rg-word" lang="es"><span class="rg-art" id="rg-art"></span><b id="rg-k"></b><span class="rg-rest" id="rg-rest"></span></p>
+      <i class="rg-bar" id="rg-bar"></i>
+      <p class="rg-gloss" id="rg-gloss"></p>
+      <p class="rg-cap" id="rg-cap"></p>
+      <div class="rg-fig" id="rg-fig" aria-hidden="true"></div>
+      <div class="rg-strip" id="rg-strip"><span>R</span><span>A</span><span>S</span><span>G</span><span>O</span></div>
+    </div>
+  </div></section>
+
+  <section class="part"><div class="in">
+    <p class="num">V / VII</p>
+    <div class="rg gc" id="gc">
+      <p class="rg-head" lang="it" aria-label="GIOCO"><span>G</span><span>I</span><span>O</span><span>C</span><span>O</span></p>
+      <p class="rg-word" lang="it"><span class="rg-art"></span><b></b><span class="rg-rest"></span></p>
+      <i class="rg-bar"></i>
+      <p class="rg-gloss"></p>
+      <p class="rg-cap"></p>
+      <div class="rg-fig" aria-hidden="true"></div>
+      <div class="rg-strip"><span>G</span><span>I</span><span>O</span><span>C</span><span>O</span></div>
+    </div>
+  </div></section>
+
+  <section class="part"><div class="in">
+    <p class="num">VI / VII</p>
+    <div class="io" id="io"></div>
+  </div></section>
+
+  <section class="part"><div class="in">
+    <p class="num">VII / VII</p>
+    <div class="lc" id="lc"></div>
+  </div></section>
+</div>
+
+<noscript>
+  <article class="portal-static">
+    <h1>藏头 - Backronym</h1>
+    <p>给单词的每个字母赋予意义</p>
+    <p lang="en">Give every letter of a word a meaning</p>
+    <p><a href="./app/">快速开始 · Quick start</a></p>
+    <section>
+      <h2>Backronym</h2>
+      <p>「藏头」，做这件事的小工具：输入单词，逐个字母填词，配上释义和图，导出成一张卡</p>
+      <p lang="en">“Backronym”, a small tool for doing this: type a word, fill in a word for each letter, add glosses and pictures, and export it as a card</p>
+    </section>
+    <section>
+      <h2 lang="fr">l’Usage</h2>
+      <p>Backronym 可活用于描摹一种印象</p>
+      <p lang="en">Backronym lends itself to sketching an impression</p>
+    </section>
+    <section>
+      <h2 lang="de">das Ergebnis</h2>
+      <p>1620×2160，可以直接存相册或发笔记</p>
+      <p lang="en">1620×2160, ready to save or post</p>
+    </section>
+    <section>
+      <h2 lang="es">el Rasgo</h2>
+      <p>六门语言，均可选用</p>
+      <p>每一份作品都是你的，你的！</p>
+    </section>
+    <section>
+      <h2 lang="it">il Gioco</h2>
+      <p>先起一个单词<br>再选一门语言</p>
+      <p>每个字母，填一个以它开头的词<br>词库会给你候选</p>
+      <p>释义、配文、配图<br>一格一格填上</p>
+    </section>
+    <section>
+      <h2 lang="la">Introitus</h2>
+      <p><a href="https://github.com/bydpass/backronym">GitHub</a></p>
+      <p>小红书小工具</p>
+      <p><a href="https://www.xiaohongshu.com/user/profile/668f26660000000003033541">关注作者</a></p>
+    </section>
+    <section>
+      <h2 lang="la">Licentia</h2>
+      <p>许可全文与各家出处，见网页版的「借物与版权」</p>
+      <p lang="en">Full texts and sources: the web version’s credits page</p>
+    </section>
+  </article>
+</noscript>
+<script src="./portal.js" defer></script>
+</body>
+</html>

@@ -13,6 +13,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { checkBuildOutput } from "./build-output.mjs";
 
 const MARK = ".backronym-web-build";
 const MARK_TEXT = "由 scripts/build-web.mjs 生成；再次构建会整体替换本目录。\n";
@@ -38,54 +39,13 @@ const LICENSE_FILES = ["GPL-3.0", "CC-BY-SA-4.0", "CC-BY-SA-3.0", "CC-BY-4.0", "
 function assertLicenses(dir, name) {
   for (const f of LICENSE_FILES) if (!fs.existsSync(path.join(dir, f)) || !fs.statSync(path.join(dir, f)).size) throw new Error(name + " 缺许可全文 " + f);
 }
-// 还不存在的路径：取最近一级已存在的上级的真实路径，再接上剩下的部分
-function realOf(p) {
-  let head = p;
-  const rest = [];
-  while (!fs.existsSync(head)) { rest.unshift(path.basename(head)); const up = path.dirname(head); if (up === head) break; head = up; }
-  return path.join(fs.realpathSync(head), ...rest);
-}
-// 目录下全部文件的相对路径（递归，不跟进符号链接；遇到链接交给 onLink）
-function listFiles(dir, onLink, base = "") {
-  const out = [];
-  for (const e of fs.readdirSync(path.join(dir, base), { withFileTypes: true })) {
-    const rel = path.join(base, e.name);
-    if (e.isSymbolicLink()) { if (onLink) onLink(rel); }
-    else if (e.isDirectory()) out.push(...listFiles(dir, onLink, rel));
-    else out.push(rel);
-  }
-  return out;
-}
-const within = (a, b) => a === b || a.startsWith(b + path.sep); // a 在 b 里（含相等）
-
-function checkOut() {
-  const realSrc = fs.realpathSync(src), realRoot = fs.realpathSync(root);
-  if (fs.lstatSync(out, {throwIfNoEntry: false})?.isSymbolicLink()) fail(out + " 是符号链接");
-  const real = realOf(out);
-  if (within(real, realSrc)) fail(out + " 是源码 app/ 或在它里面");
-  if (within(realSrc, real)) fail(out + " 是源码 app/ 的上级（含项目根）");
-  if (within(realRoot, real)) fail(out + " 是项目根或它的上级");
-  if (!fs.existsSync(out)) return;
-  if (!fs.statSync(out).isDirectory()) fail(out + " 已存在且不是目录");
-  const names = fs.readdirSync(out);
-  if (!names.length) return;
-  if (names.includes(MARK)) {
-    const marker = path.join(out, MARK);
-    if (fs.lstatSync(marker).isFile() && fs.readFileSync(marker, "utf8") === MARK_TEXT) return;
-    fail(out + " 的构建标记无效，请检查目录内容");
-  }
-  if (at > 0) fail(out + " 已存在、不是空目录，也不是本构建器生成的；不删除，请换一个空目录或新路径");
-  // 默认的 dist/web：兼容加标记之前构建的旧产物。逐个检查整棵树（B4-R1 复审）：每个文件在 app/ 里都有同路径的文件才认作旧产物
-  // （内容可以不同——那是旧版本的构建）；里面有符号链接、或任何一个 app/ 里没有的文件（如 assets/author.txt），就无法证明是产物，拒绝、不删
-  const known = new Set(listFiles(src));
-  const unknown = [];
-  listFiles(out, (rel) => unknown.push(rel + "（符号链接）")).forEach((rel) => { if (!known.has(rel)) unknown.push(rel); });
-  if (unknown.length) fail(out + " 里有无法确认是构建产物的内容（" + unknown.slice(0, 5).join("、") + (unknown.length > 5 ? " 等" : "") + "），不删除；请自行处理后再构建");
-}
-
 assertBlocker(src, "app/（小红书版）");
 assertLicenses(src, "app/");
-checkOut();
+try {
+  checkBuildOutput({ out, root, sources: [src], marker: MARK, markerText: MARK_TEXT, legacySource: at < 0 ? src : undefined });
+} catch (error) {
+  fail(error.message);
+}
 fs.rmSync(out, { recursive: true, force: true });
 fs.cpSync(src, out, { recursive: true, filter: (p) => !path.basename(p).startsWith(".") && path.basename(p) !== "_recovery" });
 fs.writeFileSync(path.join(out, MARK), MARK_TEXT);

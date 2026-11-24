@@ -380,12 +380,13 @@ button { font-size: inherit; }
 .views .vbtn + .vbtn, .lay-views .vbtn + .vbtn { margin-left: -1.5px; }
 :root[data-skin="fandom"] .vbtn { border-radius: 0; }
 .vbtn[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
-/* 窄屏：容器按钮让位后（左右各 48px）屏宽不到 360、即顶栏内宽不到 264px 时，带图标的一排放不下，「设置」「完成」等只留字。
-   实测 346～359 宽带图标会折成两行，所以界线定在 360 */
-@media (max-width: 359px) { html[data-container-full] .top .tbtn .ic { display: none; } }
-:root[lang="en"] #settingsOpen span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-:root[lang="en"] #settingsOpen { position: relative; }
-:root[lang="en"] .top #settingsOpen .ic { display: inline-block; margin-right: 0; }
+/* 「设置」中英一律只留齿轮（2026-11-23 用户定，小工具公开版右上多了一个容器按钮）：36×36 方框，字收进读屏，读屏名仍是「设置」 */
+#settingsOpen { width: 36px; padding: 0; }
+#settingsOpen span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.top #settingsOpen .ic, html[data-container-full] .top #settingsOpen .ic { display: block; margin-right: 0; }
+/* 窄屏：容器按钮让位后（左 48、右 96）屏宽不到 375 时，其余带图标的按钮（完成、返回、保存）只留字；齿轮不受影响（上一条）。
+   实测编辑页带图标 375 起排得下一行、370 折行；只留字约 350 起一行，更窄时「单图｜列阵」落到第二行（见 .top） */
+@media (max-width: 374px) { html[data-container-full] .top .tbtn .ic { display: none; } }
 /* 改词页保存（T30）：无修改 = 虚线框灰字（aria-disabled，仍可聚焦，读屏听得到）；有修改 / 重试 = 实心墨底；保存中 = 实线框灰字 */
 .top .save { border: 1.5px dashed var(--mute); color: var(--mute); }
 .top .save { color: var(--mute); }
@@ -922,11 +923,12 @@ button { font-size: inherit; }
 .conf-btns .btn { width: 100%; height: 44px; line-height: 42px; padding: 0; font-size: calc(14px + var(--fs)); }
 .conf-btns .btn + .btn { margin-top: 8px; }
 
-/* 批次8：容器全屏按钮左右让位；48px 初值须真机复测。 */
-html[data-container-full] { --container-gutter: 48px; }
-html[data-container-full] .top { padding-left: var(--container-gutter); padding-right: var(--container-gutter); } /* 320 宽下编辑页一行放不下：「单图 / 列阵」落到第二行（见 .top） */
+/* 批次8：容器全屏按钮让位。左上一个（返回）让 48；右上两个（公开版的「我的」与分享，2026-11-23 真机截图量得各占 44 宽）让 96。
+   ponytail: 分不出公开版与预览版，右侧一律按两个让；只有分享一个按钮时右边多空 44 */
+html[data-container-full] { --container-gutter: 48px; --container-gutter-r: 96px; }
+html[data-container-full] .top { padding-left: var(--container-gutter); padding-right: var(--container-gutter-r); } /* 320 宽下编辑页一行放不下：「单图 / 列阵」落到第二行（见 .top） */
 html[data-container-full] .top .brand { display: flex; align-items: center; font-size: calc(10 * var(--u)); }
-html[data-container-full] .page-top { padding-left: var(--container-gutter); padding-right: var(--container-gutter); }
+html[data-container-full] .page-top { padding-left: var(--container-gutter); padding-right: var(--container-gutter-r); }
 /* 大图页的底是 paper 的颜色加透明度，后面的界面隐约可见；模糊不可用时沿用不透明的 paper（透着清晰的界面会干扰看图）。 */
 @supports ((backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px))) {
   .viewer { background: var(--paper-veil); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }

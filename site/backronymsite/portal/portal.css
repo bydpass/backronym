@@ -1,0 +1,544 @@
+@font-face { font-family: "Cinzel"; src: url("./fonts/Cinzel-Regular.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: "Cinzel"; src: url("./fonts/Cinzel-Medium.woff2") format("woff2"); font-style: normal; font-weight: 500; font-display: swap; }
+@font-face { font-family: "Cormorant Garamond"; src: url("./fonts/CormorantGaramond-Regular.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: "Cormorant Garamond"; src: url("./fonts/CormorantGaramond-Medium.woff2") format("woff2"); font-style: normal; font-weight: 500; font-display: swap; }
+@font-face { font-family: "Cormorant Garamond"; src: url("./fonts/CormorantGaramond-Italic.woff2") format("woff2"); font-style: italic; font-weight: 400; font-display: swap; }
+@font-face { font-family: "Noto Serif SC"; src: url("./fonts/NotoSerifSC-Regular.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: "Noto Serif SC"; src: url("./fonts/NotoSerifSC-Medium.woff2") format("woff2"); font-style: normal; font-weight: 500; font-display: swap; }
+@font-face { font-family: "Noto Serif SC"; src: url("./fonts/NotoSerifSC-Black.woff2") format("woff2"); font-style: normal; font-weight: 900; font-display: swap; }
+@font-face { font-family: "BK Fandom Serif"; src: url("./fonts/ThemeFandom-Regular.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: "BK Fandom Serif"; src: url("./fonts/ThemeFandom-Bold.woff2") format("woff2"); font-style: normal; font-weight: 700; font-display: swap; }
+@font-face { font-family: "Noto Sans"; src: url("./fonts/NotoSans-Regular.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: "Noto Sans"; src: url("./fonts/NotoSans-Bold.woff2") format("woff2"); font-style: normal; font-weight: 700; font-display: swap; }
+@font-face { font-family: "Noto Sans SC"; src: url("./fonts/NotoSansSC-Regular.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: "Noto Sans SC"; src: url("./fonts/NotoSansSC-Bold.woff2") format("woff2"); font-style: normal; font-weight: 700; font-display: swap; }
+@font-face { font-family: "Gowun Batang"; src: url("./fonts/GowunBatang-Regular.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: "Gowun Batang"; src: url("./fonts/GowunBatang-Bold.woff2") format("woff2"); font-style: normal; font-weight: 700; font-display: swap; }
+
+/* 布局：首屏是横排的大词 BUERGIL；选了语言往下滑，大词竖过来成为左侧字母栏（方案乙），
+   右边同一位置轮流显示七个部分，一次只有一个。背景有预设词浮现又消失。浅色新古典，单一浅色外观 */
+:root{
+  --marble:#F2F3F1; --ink:#20242B; --stone:#5E636B; --rule:#C4C8CC; --zhu:#C23A22; --panel:#FAFAF8;
+  --display:"Cinzel","Cormorant Garamond","Noto Serif SC",Georgia,serif;
+  --text:"Cormorant Garamond","Noto Serif SC",Georgia,serif;
+  --rail:clamp(64px,7.5vw,108px); --lf:min(8.2vh,calc(var(--rail)*.62));
+  --hw:min(calc(100vw - 48px),calc((100vh - 48px)*16/9)); --h2:clamp(1.7rem,4.6vw,2.7rem);
+  /* 首屏四级文字的字号比：大词 : Backronym = 1.618 : 1；Backronym : 语言按钮 = 16.18 : 5；语言按钮 : 提示 = √2 : 1。
+     窄屏上按钮不小于 16px、提示不小于 12px，否则看不清也点不准 */
+  --wf:calc(var(--hw)*.15); --lh:calc(var(--wf)/1.618); --gh:max(calc(var(--lh)*5/16.18),16px);
+  --seg:80vh;
+  /* 内容文字（不含字母栏、标题、节号）的放大倍数：电脑 125%，手机 100% */
+  --cs:1.25;
+  /* 内容左右的留白，以及内容最多能有多宽（电脑上左右对称，所以两边都减去字母栏与留白） */
+  --pad:clamp(18px,4.5vw,64px); --cw:calc(100vw - 2*(var(--rail) + var(--pad)));
+  /* 动画时长的系数：平时是 1；用户滑得快时脚本把它调小（最小 0.25），出现和消失都跟着变快 */
+  --k:1;
+  /* 字母栏里 B 那一行的顶边：七个字母竖排、整体垂直居中，每行高 1.34 个字号 */
+  --row:calc(var(--lf)*1.34); --brow:calc((100vh - var(--row)*7)/2);
+  color-scheme:light;
+}
+/* 手机：字母栏不再垂直居中，改为靠上排，B 那一行离顶 56px（上面留给节号），内容因此多出约 200px 的高度 */
+@media (max-width:760px){:root{--rail:48px;--cs:1;--cw:calc(100vw - var(--rail) - var(--pad) - 20px);--brow:calc(env(safe-area-inset-top,0px) + 56px)}
+  .stage.rail{align-items:flex-start}.rail .wrap{padding-top:56px}}
+body{min-height:100vh;min-height:100svh;background:var(--marble);color:var(--ink);font-family:var(--text);font-size:20px;line-height:1.6}
+
+/* 背景浮词 */
+.bgw{position:fixed;top:0;left:0;right:0;bottom:0;z-index:0;overflow:hidden;pointer-events:none}
+.bgw span{position:absolute;white-space:nowrap;font-style:italic;line-height:1.2;color:var(--ink);opacity:0;transition:opacity .9s ease;will-change:transform,opacity}
+.bgw span.show{opacity:.075}
+
+/* 大词：首屏横排，下滑后竖排成左栏 */
+.stage{position:fixed;top:0;left:0;z-index:5;box-sizing:border-box;width:100%;height:100vh;height:100svh;padding-top:env(safe-area-inset-top,0px);display:flex;align-items:center;justify-content:center;border-right:3px double transparent;transition:border-color .6s ease}
+.stage.rail{width:calc(var(--rail) + env(safe-area-inset-left,0px));padding-left:env(safe-area-inset-left,0px);border-right-color:var(--rule)}
+/* 首屏：大词连同小词、语言按钮，落在屏幕正中一个 16:9 的区域里 */
+.stage .wrap{width:var(--hw);min-height:calc(var(--hw)*9/16);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center}
+.rail .wrap{width:100%;min-height:0}
+.word{margin:0;display:flex;justify-content:space-between;width:75%;align-self:center;font-family:var(--display);font-weight:400;font-size:var(--wf);line-height:1;letter-spacing:0}
+.rail .word{width:100%;flex-direction:column;justify-content:flex-start;align-items:center;font-size:var(--lf);line-height:1.34;
+  /* 字母之间拉开：约半个字高；屏幕矮时收一些，保证七个字母排得下 */
+  gap:max(0px,min(calc(var(--lf)*.45),calc((100vh - var(--brow) - var(--row)*7 - 24px)/6)))}
+/* 字母栏从 B 那一行的位置往下排（不再整体垂直居中），这样加大间距时 B 与各部分的标题都不动 */
+.stage.rail{align-items:flex-start}
+.rail .wrap{padding-top:calc(var(--brow) - env(safe-area-inset-top,0px))}
+.word span{position:relative;opacity:0;transition:color .6s ease}
+.word span.shown{opacity:1}
+.word span.on{color:var(--zhu)}
+/* 字母栏里的字母可以点，跳到它领的那一部分 */
+.rail .word span{cursor:pointer}
+.rail .word span:hover{color:var(--zhu)}
+.rail .word span:focus-visible{outline:2px solid var(--zhu);outline-offset:2px}
+/* 字母栏里的提示：若隐若现的字，加一个不断往下滑的箭头。电脑上放在 B 上方的空处（字母已排到栏底），手机上放在 L 下方 */
+.cue{margin:0;max-width:none;position:absolute;left:env(safe-area-inset-left,0px);right:0;top:0;height:var(--brow);box-sizing:border-box;padding:0 5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;text-align:center;font-size:11px;line-height:1.4;letter-spacing:.04em;color:var(--stone);pointer-events:none;opacity:0;visibility:hidden}
+.rail .cue{opacity:1;visibility:visible;transition:opacity .6s ease .9s}
+.stage.rail.last .cue{opacity:0;transition:opacity .4s ease}
+.cue-t i{display:inline-block;font-style:normal}
+/* 第二行「按住方向键下滑为佳」：只给有键盘的设备看 */
+.cue-t .en .kb{display:inline}
+@media (hover:none),(max-width:760px){.cue-t .kb{display:none!important}}
+/* 窗口矮时 B 上方的空处不够放两句：720 到 779 高，字缩一号、行距收紧；再矮就不显示第二行 */
+@media (min-width:761px) and (min-height:720px) and (max-height:779px){.cue{font-size:10px;line-height:1.3;gap:5px}}
+@media (min-width:761px) and (max-height:719px){.cue-t .kb{display:none!important}}
+.cue-t{animation:cueT 3.2s ease-in-out infinite}
+.cue svg{width:12px;height:16px;overflow:visible;animation:cueA 1.9s cubic-bezier(.4,0,.6,1) infinite}
+@keyframes cueT{0%,100%{opacity:.38}50%{opacity:.9}}
+@keyframes cueA{0%{transform:translateY(-7px);opacity:0}35%{opacity:.85}70%{opacity:.85}100%{transform:translateY(7px);opacity:0}}
+@media (max-width:760px){.cue{top:auto;height:auto;bottom:calc(18px + env(safe-area-inset-bottom,0px));font-size:10px;padding:0 2px;letter-spacing:0}}
+@media (min-width:761px) and (max-height:639px),(max-width:760px) and (max-height:519px){.cue{display:none}}
+@media (prefers-reduced-motion:reduce){.cue-t{animation:none;opacity:.7}.cue svg{animation:none;opacity:.7}}
+.caret{position:absolute;left:100%;bottom:.12em;width:.06em;height:.76em;background:var(--ink);margin-left:.05em;animation:blink .9s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.under{height:1.3em;margin-top:.15em;font-size:var(--lh)}
+.rail .under,.rail .gate{display:none}
+.label{position:absolute;top:0;left:0;z-index:6;white-space:nowrap;opacity:0;transition:opacity .35s ease;font-style:italic;font-size:var(--lh);line-height:1.3}
+.label.in{opacity:1}
+.label .art{color:var(--stone)}
+/* 标题后半段（如「它是什么？」）：比标题小 5px，只在字母栏状态下有 */
+.label .sub{font-style:normal;font-size:calc(1em - 5px);margin-left:.4em}
+/* 各部分的标题：与字母栏的 B 同一行、同字号（基线由脚本对齐） */
+.rail .label{font-size:var(--lf);line-height:1.34}
+/* 语言按钮一直占着位置，只是先不显示：出现时上面的大词不会被顶动 */
+.gate{opacity:0;visibility:hidden;transition:opacity .5s ease;font-size:var(--gh);text-align:center;padding-top:.9em}
+.gate.in{opacity:1;visibility:visible}
+.gate button{font:inherit;color:var(--ink);background:none;border:0;border-bottom:1px dotted var(--ink);padding:2px 1px;cursor:pointer;letter-spacing:.04em}
+.gate button:hover{color:var(--zhu);border-bottom-color:var(--zhu)}
+.gate button:focus-visible{outline:2px solid var(--zhu);outline-offset:3px}
+.gate button[aria-pressed="true"]{border-bottom-style:solid}
+.gate .sep{color:var(--stone);margin:0 .35em}
+.hint{max-width:none;margin:.7em 0 0;font-size:max(.7071em,12px);line-height:1.4;color:var(--stone);opacity:0}
+.hint.in{opacity:1}
+html:not(.locked) .hint{display:none}
+/* 手机上一行放不下中英两句：各占一行，中间的间隔点不要 */
+@media (max-width:760px){.hint>span[lang]{display:block}.hint>.sep{display:none}}
+/* 提示下方的「快速开始」：不选语言、不看介绍，直接去网页版。字号同提示，样子同语言按钮（墨色、点线底） */
+.quick{max-width:none;margin:.9em 0 0;font-size:max(.7071em,12px);line-height:1.4;opacity:0}
+.quick.in{opacity:1}
+.quick a{color:var(--ink);text-decoration:none;border-bottom:1px dotted var(--ink);padding:2px 1px;letter-spacing:.04em}
+.quick a:hover{color:var(--zhu);border-bottom-color:var(--zhu)}
+.quick a:focus-visible{outline:2px solid var(--zhu);outline-offset:3px}
+.quick .sep{color:inherit}
+
+/* 滚动只是一条空的轨道；七个部分叠在同一处 */
+/* 第 4 部分有五个子部分，占三段的滚动距离，所以总长是 8 段 */
+main{position:relative;z-index:1;height:calc(200vh + 11 * var(--seg));height:calc(200svh + 11 * var(--seg))}
+.locked main{display:none}
+[data-lang="zh"] .en,[data-lang="en"] .zh{display:none}
+.parts{position:fixed;top:0;bottom:0;right:0;left:calc(var(--rail) + env(safe-area-inset-left,0px));z-index:2;opacity:0;visibility:hidden;transition:opacity .35s ease,visibility 0s .35s}
+.railed .parts{opacity:1;visibility:visible;transition:opacity .5s ease .45s,visibility 0s}
+.part{position:absolute;top:0;left:0;right:0;bottom:0;box-sizing:border-box;display:flex;align-items:flex-start;overflow:hidden;
+  padding:calc(var(--brow) + var(--row) + .6rem) max(20px,env(safe-area-inset-right,0px)) 24px clamp(18px,4.5vw,64px);
+  opacity:0;visibility:hidden;transition:opacity .3s ease,visibility 0s .3s}
+.part.on{opacity:1;visibility:visible;transition:opacity .25s ease,visibility 0s}
+/* 离场：小句按同样的次序依次消失，最后整块收掉 */
+.part.leaving{visibility:visible;opacity:0;transition:opacity calc(.25s*var(--k)) ease calc(.38s*var(--k)),visibility 0s calc(.63s*var(--k))}
+.part.leaving .seg{opacity:0;transition:opacity calc(.2s*var(--k)) ease;transition-delay:calc(var(--i,0)*var(--od,20ms))}
+/* 各部分的离场各不相同：内容里的每一块在淡出的同时朝不同的方向退场（第 3 部分是卡片逐张向右滑出） */
+.part.leaving>.in>*:not(.num){transition:transform .5s cubic-bezier(.5,0,.8,.4)}
+#parts>.part:nth-child(1).leaving>.in>*:not(.num){transform:translateX(-30px)}
+#parts>.part:nth-child(2).leaving>.in>*:not(.num){transform:translateY(-24px)}
+#parts>.part:nth-child(3).leaving .card{transform:translateX(46px);opacity:0;transition:transform .45s cubic-bezier(.5,0,.8,.4),opacity .35s ease}
+#parts>.part:nth-child(3).leaving .card:nth-child(3){transition-delay:50ms}
+#parts>.part:nth-child(3).leaving .card:nth-child(2){transition-delay:100ms}
+#parts>.part:nth-child(3).leaving .card:nth-child(1){transition-delay:150ms}
+#parts>.part:nth-child(4).leaving>.in>*:not(.num){transform:translateY(26px)}
+#parts>.part:nth-child(5).leaving>.in>*:not(.num){transform:translateX(30px)}
+#parts>.part:nth-child(6).leaving>.in>*:not(.num){transform:scale(.94)}
+#parts>.part:nth-child(7).leaving>.in>*:not(.num){transform:translateY(24px)}
+@media (max-width:760px){#parts>.part:nth-child(3).leaving .cards{transform:translateX(30px)}}
+/* 第 2 部分的过场：模拟产品界面。一行字母（单词）、选词栏、释义、配文，位置都先占好 */
+.sim{margin:0 0 1.2em}
+.sim-word{display:flex;font-family:var(--display);font-size:1.5em;line-height:1.2;height:1.2em;letter-spacing:.08em}
+.sim-word span{transition:color .5s ease,opacity .25s ease}
+.sim-word span.on{color:var(--zhu)}
+.sim-word span.hid{opacity:0}
+.sim-pick{display:flex;align-items:baseline;gap:.7em;max-width:15em;margin-top:.55em;padding:.2em 0;border-bottom:1px solid var(--ink);opacity:0;transition:opacity .3s ease}
+.sim-pick.in{opacity:1}
+.sim-k{font-family:var(--display);color:var(--zhu)}
+.sim-in{font-style:italic;min-height:1.6em}
+.sim-gloss{margin:.45em 0 0;max-width:30em;font-size:.84em;line-height:1.45;color:var(--stone);opacity:0;transition:opacity .4s ease}
+.sim-gloss.in{opacity:1}
+.sim-cap{margin:.5em 0 0;min-height:1.6em;font-size:.92em}
+.fly{position:fixed;z-index:4;transform-origin:0 0;pointer-events:none;white-space:nowrap}
+@media (max-width:760px){.sim-word{font-size:1.3em}}
+/* 内容入场：按标点断成一小句一小句，一句接一句地出现，相邻两句只差一点时间 */
+.part .seg{opacity:0;transition:opacity .2s ease}
+.part.on .seg.v{opacity:1;transition:opacity .35s ease}
+.part.on.all .seg{opacity:1;transition:none}
+/* 内容整块落在网页中轴上：一列、宽度随内容、居中；块内文字仍左对齐。节号是绝对定位的，仍在左边跟着标题 */
+.part>.in{position:relative;width:100%;font-size:calc(20px*var(--cs));display:grid;grid-template-columns:minmax(0,max-content);justify-content:center;justify-items:start;align-content:start}
+@media (min-width:761px){.part{padding-right:calc(var(--rail) + var(--pad))}}
+.part.wide>.in{max-width:46em}
+/* 节号在标题那一行的上方；标题本身是字母栏那边定位过来的 */
+.num{position:absolute;left:0;bottom:100%;font-family:var(--display);font-size:.85rem;letter-spacing:.28em;color:var(--stone);margin:0 0 calc(var(--row) + 1rem);white-space:nowrap}
+/* 第一部分：词典条目。词头就是上面的标题 */
+.entry .meta{display:flex;flex-wrap:wrap;gap:.1em 1.1em;align-items:baseline;margin:0 0 .9em;padding-bottom:.6em;border-bottom:1px solid var(--rule);color:var(--stone);font-size:.8em}
+.entry .ipa{font-family:Georgia,"Times New Roman",serif;font-size:.9em}
+.entry .pos{font-style:italic}
+.entry .etym{font-size:.9em}
+ol.senses{list-style:none;padding:0;margin:0;counter-reset:s;max-width:34em}
+ol.senses>li{position:relative;padding-left:1.7em;margin-bottom:.7em;counter-increment:s}
+ol.senses>li::before{content:counter(s);position:absolute;left:0;top:.12em;font-family:var(--display);font-size:.85em;color:var(--zhu)}
+.eg{margin:.55em 0 0;padding-left:.9em;border-left:1px solid var(--rule);font-size:.92em;line-height:1.45;display:grid;grid-auto-flow:column;grid-template-rows:repeat(6,auto);justify-content:start;column-gap:1.8em}
+.eg .row{display:flex;gap:.6em;align-items:baseline}
+/* 例词：每个词的首字母标红，不另起一列 */
+.eg b{font-weight:500;color:var(--zhu)}
+.eg em{min-width:4.4em}
+.eg i{white-space:nowrap}
+/* 手机：例子不跟着义项缩进，占满内容宽，两栏才放得下 */
+@media (max-width:760px){.eg{font-size:.75em;column-gap:.8em;margin-left:-1.4em}.eg .row{gap:.35em}.eg em{min-width:4.1em}ol.senses>li{padding-left:1.4em}}
+.eg i{font-style:normal;color:var(--stone);font-size:.88em}
+.entry .tail{margin:1em 0 0;font-size:.72em;color:var(--stone)}
+h2{font-family:var(--text);font-weight:500;font-size:1.1em;line-height:1.3;margin:0 0 .7em;text-wrap:balance}
+p{max-width:34em;margin:0 0 1em}
+.muted{color:var(--stone)}
+ul.plain{list-style:none;padding:0;margin:0;max-width:36em}
+ul.plain li{padding:.5em 0;border-top:1px solid var(--rule)}
+ul.plain li:last-child{border-bottom:1px solid var(--rule)}
+ol.steps{padding-left:1.2em;max-width:34em;margin:0 0 1.4em}
+ol.steps li{margin-bottom:.5em}
+/* 第 3 部分：四张工具导出的实物卡，按原比例排，每张下面写它用的主题。电脑上并排、图同高：
+   每张的 flex-grow 取它的宽高比，宽度就按比例分，图的高度自然相等。整排的宽度上限按屏幕剩下的高度算，免得卡片出屏 */
+.cards{display:flex;gap:14px;margin:0;align-items:flex-start;width:min(var(--cw),calc((100vh - var(--brow) - var(--row) - 11.5rem) * 3.227 + 42px))}
+.card{margin:0;min-width:0;flex:var(--fr) 1 0;transition:transform .55s cubic-bezier(.2,.7,.2,1),opacity .45s ease}
+.card img{display:block;width:100%;aspect-ratio:var(--ar);box-shadow:0 0 0 1px var(--rule)}
+.card figcaption{margin-top:.55em;font-size:.6em;line-height:1.3;color:var(--stone);letter-spacing:.06em;white-space:nowrap}
+/* 入场：标题打完后，卡片从左侧依次滑入 */
+.card.wait{opacity:0}
+.shot{margin:0 0 1em}
+@media (min-width:761px){.card.wait{transform:translateX(-36px)}}
+/* 手机：四张叠成一摞，图同高，最上面一张完整，其余依次露出右边（偏移由脚本按各张实际宽度算）；点一下换到下一张。
+   入场时整摞从左侧滑入；只有最上面那张显示主题 */
+@media (max-width:760px){
+  .cards{display:block;position:relative;width:var(--cw);--dh:min(230px,calc((100vw - 48px - 110px) / 1.05));height:calc(var(--dh) + 1.7em);transition:transform .55s cubic-bezier(.2,.7,.2,1)}
+  .cards.pre{transform:translateX(-28px)}
+  .card{position:absolute;left:0;top:0;transform-origin:0 0;cursor:pointer}
+  .card img{width:auto;height:var(--dh)}
+  .card:not([data-pos="0"]) figcaption{visibility:hidden}
+  .card[data-pos="0"]{z-index:4}
+  .card[data-pos="1"]{z-index:3}
+  .card[data-pos="2"]{z-index:2}
+  .card[data-pos="3"]{z-index:1}
+}
+/* 第 4 部分：RASGO 五个字母各一个子部分，在同一处轮流出现。样子照工具的单图：配图框、词（首字母标红）、短横、释义、配文、字母条 */
+.rg{font-size:1.2em;width:min(var(--cw),17em);display:flex;flex-direction:column;height:min(20.5em,calc(100vh - var(--brow) - var(--row) - .6rem - 24px))}
+.rg>*{flex:none}
+/* 照工具的「对开」预设、图在下：顶线与标题 → 词 → 短横 → 释义 → 配文 → 配图 */
+.rg-head{max-width:none;margin:0 0 .2em;padding-top:.45em;border-top:1.5px solid var(--ink);transition:border-color .4s ease;font-family:var(--display);font-size:.78em;letter-spacing:.08em}
+.rg-fig{position:relative;flex:1 1 0;min-height:3.2em;margin-top:.5em;background:var(--panel);box-shadow:0 0 0 1px var(--rule);opacity:0;transition:opacity .35s ease}
+.rg-fig.in{opacity:1}
+.rg-fig svg,.rg-fig .sx{position:absolute;left:0;top:0;width:100%;height:100%}
+/* 手机上配文最多三行，位置先按三行占好，换子部分时下面的图不跳 */
+@media (max-width:760px){.rg .rg-cap{min-height:4.4em}}
+.rg-word{max-width:none;margin:0;font-size:1.5em;line-height:1.25;min-height:1.25em;transition:opacity .25s ease}
+.rg-art{color:var(--stone)}
+.rg-word b{font-weight:500;color:var(--zhu)}
+.rg-bar{display:block;width:2.2em;height:3px;background:var(--ink);margin:.35em 0 .45em;opacity:0;transition:opacity .3s ease}
+.rg-gloss{max-width:none;margin:0;font-size:.72em;color:var(--stone);min-height:1.6em;opacity:0;transition:opacity .3s ease}
+.rg-bar.in,.rg-gloss.in{opacity:1}
+.rg-cap{max-width:none;margin:.1em 0 0;font-size:.84em;line-height:1.45;min-height:2.9em;transition:opacity .25s ease}
+/* 配文逐字打出：每个字各占一格、先藏着，位置一开始就排好，打字时下面的图不会跳 */
+.rg-cap .ln{display:block}
+.rg-cap .ln.sm{font-size:.8em;line-height:1.45;color:var(--stone);margin-top:.3em}
+.rg-cap .ln.xs{font-size:.7em;line-height:1.45;color:var(--stone);margin-top:.5em;opacity:0;transition:opacity .5s ease}
+.rg-cap .ln.xs.v{opacity:1}
+.rg-cap i{font-style:normal;visibility:hidden}
+.rg-cap i.v{visibility:visible}
+.rg-cap i.r{color:var(--zhu)}
+/* 所在的字母变红：卡片标题 Rasgo 里的那个字母，与底下字母条同步 */
+.rg-head span{transition:opacity .25s ease,color .3s ease}
+.rg-head span.on{color:var(--zhu)}
+/* 配图里的动画零件：data-s 是第几步出现；v 是已出现。退场时按相反的顺序撤掉 v */
+.rg-fig [data-s]{transition:opacity .4s ease,transform .55s cubic-bezier(.2,.7,.2,1),stroke-dashoffset .5s ease,clip-path .6s ease,-webkit-clip-path .6s ease}
+.rg-fig.now [data-s]{transition:none}
+.rg-fig .fd{opacity:0}.rg-fig .fd.v{opacity:1}
+.rg-fig .ft{opacity:0;transform:var(--from);transform-box:fill-box;transform-origin:var(--o,center)}
+.rg-fig .ft.v{opacity:1;transform:none}
+.rg-fig .ft.gone{opacity:0;transform:translateX(36px)}
+.rg-fig .fm{transform:var(--from);transform-box:fill-box;transform-origin:var(--o,center)}
+.rg-fig .fm.v{transform:none}
+.rg-fig .dr{stroke-dasharray:1;stroke-dashoffset:1}.rg-fig .dr.v{stroke-dashoffset:0}
+.rg-fig .wp{-webkit-clip-path:inset(-10% 100% -10% 0);clip-path:inset(-10% 100% -10% 0)}
+.rg-fig .wp.v{-webkit-clip-path:inset(-10% -10% -10% 0);clip-path:inset(-10% -10% -10% 0)}
+/* S 的配图：七个词，像落笔一样从左到右描出来 */
+.sx{display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:var(--serif,inherit);font-style:italic;font-size:.92em;line-height:1.4}
+.sx p{margin:0;max-width:none;display:flex;gap:1.2em;white-space:nowrap}
+.sx span{display:inline-block}
+.sx .han{font-style:normal}
+.sx em{color:var(--stone);opacity:.55;font-size:.78em;margin-right:.28em}
+.sx b{font-weight:500;color:var(--zhu)}
+.rg.out .rg-fig,.rg.out .rg-word,.rg.out .rg-bar,.rg.out .rg-gloss,.rg.out .rg-cap{opacity:0;transition:opacity .25s ease}
+.rg-head span.hid{opacity:0}
+/* 界面还没出现时（字母刚飞到标题位），顶线和底下的字母条先不显示 */
+.rg:not(.live) .rg-head{border-top-color:transparent}
+.rg:not(.live) .rg-strip{opacity:0;pointer-events:none}
+.rg-strip{display:flex;gap:.9em;margin-top:.7em;font-family:var(--display);font-size:.9em;transition:opacity .4s ease}
+.rg-strip span{cursor:pointer;padding:0 .12em;border-bottom:2px dotted var(--rule);transition:color .3s ease,border-color .3s ease,opacity .25s ease}
+.rg-strip span.hid{opacity:0}
+.rg-strip span.on{color:var(--zhu);border-bottom:2px solid var(--zhu)}
+.rg-strip span:focus-visible{outline:2px solid var(--zhu);outline-offset:2px}
+/* —— 第 5 部分：演示界面（照产品实际界面复刻，375 宽，按配图框宽度整体缩放；以下方阴影定边界） —— */
+.rg.gc .rg-fig{background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.14),0 16px 26px -12px rgba(0,0,0,.42);overflow:hidden}
+.rg.gc .rg-cap{min-height:0}
+@media (min-width:761px){
+  .rg.gc{display:grid;width:min(var(--cw),31em);grid-template-columns:minmax(0,1fr) 12.4em;grid-template-rows:auto auto auto auto 1fr auto;column-gap:1.6em}
+  .rg.gc .rg-head{grid-column:1 / 3}
+  .rg.gc .rg-word,.rg.gc .rg-bar,.rg.gc .rg-gloss,.rg.gc .rg-cap,.rg.gc .rg-strip{grid-column:1}
+  .rg.gc .rg-fig{grid-column:2;grid-row:2 / 7;margin-top:.3em;margin-bottom:.5em;min-height:0}
+  .rg.gc .rg-strip{align-self:end}
+}
+.pm{position:absolute;left:0;top:0;width:100%;height:100%;overflow:hidden}
+.ps{position:absolute;left:0;top:0;width:375px;transform-origin:0 0;transform:scale(var(--s,1)) translateY(calc(var(--pan,0) * -1px));transition:transform .85s cubic-bezier(.45,.05,.25,1),background-color .4s ease,color .4s ease;
+  --paper:#ffffff;--ink:#2a2a2a;--mute:#606060;--ph:#666666;--faint:#bbbbbb;--line:#cccccc;--plate:#dddddd;--panel:#eeeeee;--red:#990000;--pf:"BK Fandom Serif","Noto Serif SC",Georgia,serif;
+  background:var(--paper);color:var(--ink);font-family:"Noto Sans","Noto Sans SC",system-ui,sans-serif;font-size:14px;line-height:1.4;font-style:normal;text-align:left;letter-spacing:0}
+.rg-fig.now .ps,.rg-fig.now .ps *{transition:none!important}
+.ps[data-skin="dansaekhwa"]{--paper:#e9e6df;--ink:#2b2b2b;--mute:#605d56;--ph:#69655d;--faint:#c4bfb4;--line:#cfcac0;--plate:#dcd8ce;--panel:#f2f0ea;--red:#7a4f2a;--pf:"Gowun Batang","Noto Serif SC",Georgia,serif}
+.ps[data-skin="impressionism"]{--paper:#eef0ea;--ink:#2a3350;--mute:#5a6280;--ph:#626a85;--faint:#c3cad2;--line:#d0d6da;--plate:#dfe4e4;--panel:#f6f7f3;--red:#a34732;--pf:"Cormorant Garamond","Noto Serif SC",Georgia,serif}
+.ps *{box-sizing:border-box}
+.ps p,.ps h1,.ps ul{margin:0;padding:0;max-width:none;list-style:none}
+.ps .sc{display:none;position:relative;min-height:812px;padding:0 28px 24px}
+.ps .sc.on{display:block}
+/* 代表用户操作的小手：先移到要点的地方，再点一下（缩一下、荡开一圈） */
+.pcur{position:absolute;left:0;top:0;width:30px;height:34px;z-index:9;pointer-events:none;opacity:0;transform:translate(calc(var(--cx,190) * 1px),calc(var(--cy,420) * 1px));transition:transform .7s cubic-bezier(.45,.05,.25,1),opacity .35s ease}
+.pcur.on{opacity:1}
+.pcur svg{display:block;width:30px;height:34px;transform-origin:8px 3px;transition:transform .16s ease;filter:drop-shadow(0 2px 2px rgba(0,0,0,.28))}
+.pcur.tap svg{transform:scale(.8)}
+.pcur i{position:absolute;left:-10px;top:-15px;width:36px;height:36px;border-radius:50%;border:2px solid #b0301c;opacity:0;transform:scale(.25);transition:transform .32s ease-out,opacity .32s ease-out}
+.pcur.tap i{opacity:.75;transform:scale(1)}
+/* 顶栏与按钮 */
+.pbar{height:48px;margin:0 -28px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);font-size:14px}
+.pbar.c{justify-content:center;gap:10px;padding:0 28px}
+.pbtn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:36px;padding:0 11px;border:1.5px solid var(--ink);border-radius:3px;font-weight:700;font-size:15px;white-space:nowrap;background:var(--paper);color:var(--ink);transition:transform .15s ease,background-color .2s ease,color .2s ease}
+.pbtn.solid{background:var(--ink);color:var(--paper)}
+.pbtn.wide{display:flex;width:100%;height:44px}
+.pbtn.dash{border-style:dashed;border-width:1px;font-weight:400}
+.pbtn.thin{border-width:1px;font-weight:400}
+.pbtn.hit,.e-start.hit,.c-it.hit{transform:scale(.96);background:var(--red);border-color:var(--red);color:#fff}
+.pseg{display:inline-flex;border:1.5px solid var(--ink)}
+.pseg b{padding:0 9px;height:33px;line-height:33px;font-size:15px}
+.pseg b.on{background:var(--ink);color:var(--paper)}
+.gear{width:13px;height:13px;border:1.5px solid currentColor;border-radius:50%;position:relative;display:inline-block}
+.gear:after{content:"";position:absolute;left:3px;top:3px;width:4px;height:4px;border:1px solid currentColor;border-radius:50%}
+.pcaret{display:none;width:2px;height:.9em;background:var(--ink);margin-left:1px;vertical-align:-.08em;animation:blink .9s steps(1) infinite}
+.caret-on>.pcaret{display:inline-block}
+.phead{height:48px;display:flex;align-items:center;justify-content:space-around;border-bottom:3px solid var(--ink);font-weight:700;font-size:15px}
+/* 入场界面 */
+.e-h{font-family:var(--pf);font-weight:700;font-size:29px;line-height:1.2;padding:36px 0 26px}
+.e-row{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--mute)}
+.e-row b{color:var(--ink)}
+.e-in{font-family:var(--pf);font-weight:700;font-size:36px;line-height:1.5;border-bottom:2.5px solid var(--ink);min-height:58px;white-space:nowrap}
+.e-ph{font-weight:400;color:var(--ph)}
+.e-in.has .e-ph{display:none}
+.e-sense{font-size:13px;min-height:30px;padding-top:6px;color:var(--ink)}
+.e-let{display:flex;gap:12px;font-weight:700;font-size:21px;min-height:40px;padding-bottom:8px}
+.e-let b{border-bottom:2.5px dotted var(--mute);line-height:1.25}
+.e-lang{display:flex;align-items:baseline;gap:10px;font-size:14px;border-top:1px solid var(--line);padding:12px 0;color:var(--mute)}
+.e-lang b{color:var(--ink)}
+.e-lang u{margin-left:auto;font-weight:700;color:var(--ink)}
+.e-list{display:none}
+.e-list.open{display:block}
+.e-list li{display:flex;align-items:center;gap:9px;height:45px;border-top:1px solid var(--line);font-family:var(--pf);font-size:16px}
+.e-list li em{margin-left:auto;font-style:normal;font-family:"Noto Sans","Noto Sans SC",sans-serif;font-size:13px;color:var(--mute);opacity:0;transition:opacity .3s ease}
+.e-list li.tick{font-weight:700}
+.e-list li.tick em{opacity:1}
+.cb{width:15px;height:15px;border:1.5px solid var(--ink);display:inline-block;position:relative;flex:none}
+.tick>.cb:after,.cb.tick:after{content:"";position:absolute;left:2.5px;top:2.5px;width:7px;height:7px;background:var(--ink)}
+.e-pre{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mute);padding:26px 0 8px}
+.e-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.e-grid span{border:1.5px solid var(--ink);border-radius:3px;padding:8px 11px;font-family:var(--pf);font-weight:700;font-size:15px;line-height:1.3}
+.e-grid small{display:block;font-family:"Noto Sans","Noto Sans SC",sans-serif;font-weight:400;font-size:13px}
+.e-in2{height:44px;border-bottom:2.5px solid var(--ink)}
+.e-note{font-size:13px;color:var(--mute);padding:8px 0 34px}
+.e-start{height:52px;display:flex;align-items:center;justify-content:center;background:var(--ink);color:var(--paper);font-weight:700;font-size:16px;border-radius:3px;transition:transform .15s ease,background-color .2s ease}
+/* 编辑界面（在图上编辑的那张卡） */
+.d-rule{height:1.5px;background:var(--ink);margin-top:42px}
+.d-title{font-family:var(--pf);font-weight:700;font-size:25px;color:var(--mute);padding:14px 0 12px}
+.d-plate{position:relative;height:209px;background:var(--plate);overflow:hidden;transition:background-color .4s ease}
+.d-big{position:absolute;left:22px;top:-34px;font-family:var(--pf);font-weight:700;font-size:232px;line-height:1.15;color:var(--ink);transition:opacity .3s ease}
+.d-img{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;transform:scale(1.08);transition:opacity .45s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
+.d-img svg{display:block;width:100%;height:100%}
+.d-plate.img .d-img{opacity:1;transform:none}
+.d-plate.img .d-big{opacity:0}
+.d-word{font-family:var(--pf);font-weight:700;font-size:40px;line-height:1.3;padding-top:10px;white-space:nowrap;min-height:62px}
+.d-word.small{font-size:30px;padding-top:18px}
+.d-art{font-weight:400;color:var(--mute)}
+.d-ini{color:var(--red)}
+.d-ph{font-weight:400;font-size:27px;color:var(--ph);border-bottom:1px solid var(--ph)}
+.d-word.has .d-ph{display:none}
+.d-bar{display:block;width:48px;height:4px;background:var(--ink);margin-top:-2px}
+.d-gloss{font-size:14px;margin-top:14px;min-height:20px}
+.d-gloss span{border-bottom:1px dashed var(--ink)}
+.d-cap{font-family:var(--pf);font-size:18px;line-height:1.35;min-height:26px}
+.d-capph{color:var(--ph);border-bottom:1px dashed var(--ph)}
+.d-cap.has .d-capph{display:none}
+.d-cap.has{font-weight:700}
+.sc-d.center .d-title,.sc-d.center .d-word,.sc-d.center .d-gloss,.sc-d.center .d-cap{text-align:center}
+.sc-d.center .d-bar{margin-left:auto;margin-right:auto}
+.d-meta{min-height:92px}
+.sc-d.typing .d-meta{display:none}
+.d-cands{display:none;margin:0 -28px;padding:10px 28px 6px;background:var(--panel);border-top:2px solid var(--ink)}
+.sc-d.typing .d-cands{display:block}
+.c-head,.c-tools{display:flex;justify-content:space-between;align-items:center;font-family:var(--pf);font-size:13px;color:var(--mute);padding:4px 0 10px}
+.c-tools{color:var(--ink);gap:14px}
+.c-tools span:first-child{margin-right:auto;display:flex;align-items:center;gap:6px}
+.c-tools b{font-size:14px}
+.c-tools i{font-style:normal;color:var(--faint)}
+.c-grid{display:grid;grid-template-columns:1fr 1fr;column-gap:0;border-top:1px solid var(--line)}
+.c-it{padding:7px 4px 7px 0;border-bottom:1px solid var(--line);font-family:var(--pf);font-size:13px;line-height:1.35;opacity:0;transition:opacity .25s ease,transform .15s ease,background-color .2s ease,color .2s ease}
+.c-it.v{opacity:1}
+.c-it b{display:block;font-size:16px}
+.c-it b u{text-decoration:none;color:var(--red)}
+.c-it b s{text-decoration:none;font-weight:400;color:var(--mute)}
+.c-it em{font-style:italic}
+.c-it.hit b u,.c-it.hit b s{color:#fff}
+.d-strip{display:flex;gap:15px;font-weight:700;font-size:23px;padding-top:26px}
+.d-strip b{line-height:1.25;border-bottom:2.5px dotted var(--mute);transition:color .3s ease,border-color .3s ease}
+.d-strip b.f{border-bottom-color:transparent}
+.d-strip b.on{color:var(--red);border-bottom:2.5px solid var(--red)}
+.d-strip b.on:not(.f){border-bottom-style:dotted}
+.d-foot{display:flex;align-items:center;gap:8px;padding-top:12px;font-size:14px}
+.d-foot span:first-child{margin-right:auto}
+.d-note{font-size:13px;color:var(--mute);padding-top:16px}
+/* 从底部升起的面板：配图、完成 */
+.sheet{position:absolute;left:0;right:0;bottom:0;padding:18px 28px 22px;background:var(--panel);border-top:2px solid var(--ink);transform:translateY(102%);transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+.sheet.up{transform:none}
+.sh-row{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:15px;padding-bottom:12px}
+.sh-row span{font-weight:400}
+.sh-sub{font-weight:700;font-size:14px;border-top:1px solid var(--line);padding:12px 0 10px;margin-top:14px}
+.pbtn.left{justify-content:flex-start;padding-left:14px}
+.f-prog{height:3px;background:var(--line);margin-bottom:18px}
+.f-prog i{display:block;height:100%;width:0;background:var(--ink);transition:width .35s ease}
+.f-thumbs{display:flex;gap:8px;padding-bottom:14px;min-height:108px}
+.f-thumbs span{flex:1;font-size:12px;color:var(--mute);opacity:0;transform:translateY(8px);transition:opacity .3s ease,transform .3s ease}
+.f-thumbs span.v{opacity:1;transform:none}
+.f-thumbs i{display:block;aspect-ratio:3/4;background:var(--paper);border:1px solid var(--line);margin-bottom:4px;font:700 26px/1 var(--pf);color:var(--ink);font-style:normal;text-align:center;padding-top:16px;background-image:linear-gradient(var(--plate),var(--plate));background-size:80% 46%;background-position:50% 22%;background-repeat:no-repeat}
+.f-btns{display:flex;gap:9px}
+.f-btns .pbtn{flex:1;height:44px}
+.f-btns .pbtn.off{opacity:.4}
+.f-stat{font-size:13px;color:var(--mute);min-height:34px;padding-top:12px}
+/* 版式页与设置页 */
+.l-top{display:flex;gap:14px;padding-top:14px}
+.l-thumb{width:110px;height:146px;border:1px solid var(--line);padding:10px 8px;flex:none;font-family:var(--pf)}
+.l-thumb i{display:block;height:1px;background:var(--ink)}
+.l-thumb small{display:block;font-size:7px;font-weight:700;padding:3px 0}
+.l-thumb div{height:58px;background:var(--plate);font-weight:700;font-size:58px;line-height:62px;overflow:hidden;padding-left:6px}
+.l-thumb b{display:block;font-size:13px;padding-top:4px}
+.l-thumb b u{text-decoration:none;color:var(--red)}
+.l-thumb em{display:block;width:14px;height:2px;background:var(--ink)}
+.l-thumb.center small,.l-thumb.center b{text-align:center}
+.l-thumb.center em{margin:0 auto}
+.l-pre{flex:1;display:flex;flex-direction:column;gap:9px;font-weight:700;font-size:14px}
+.l-sec{font-weight:700;font-size:17px;border-top:1px solid var(--line);margin-top:18px;padding:18px 0 10px}
+.l-sub{font-weight:700;font-size:14px;padding:6px 0}
+.l-row{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:14px}
+.l-row>span:first-child{width:66px;flex:none}
+.l-row .pbtn{flex:1;height:44px}
+.s-lab{font-size:13px;color:var(--mute);padding:18px 0 8px}
+.s-skins{display:flex;gap:6px}
+.s-skins span{flex:1;height:108px;border:1px solid var(--line);border-radius:3px;padding:4px;font-size:12px;line-height:1.3;transition:border-color .3s ease,box-shadow .3s ease}
+.s-skins span.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink);font-weight:700}
+.s-skins i{display:block;height:40px;margin-bottom:6px;border-top:3px solid var(--c2);background:var(--c1)}
+.s-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);margin-top:18px;padding-top:10px;color:var(--mute)}
+.rg-fig .pm{transition:opacity .22s ease}
+.rg-fig.rew .pm{opacity:0}
+/* 结束页：大词退场后，屏幕正中的六句祝语；连词与 & 落在屏幕的正中轴上 */
+.fin{position:fixed;left:0;top:0;width:100%;height:100vh;height:100svh;z-index:7;display:flex;flex-direction:column;align-items:stretch;justify-content:center;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility 0s .25s;font-size:clamp(15px,2.1vw,25px)}
+.fin.on{opacity:1;visibility:visible;transition:opacity .2s ease,visibility 0s}
+.fin .fl{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;white-space:pre;font-family:var(--serif,inherit);font-style:italic;font-size:1.25em;line-height:1.7}
+.fin .fl .l{text-align:right}
+.fin .fl .c{padding:0 .32em;color:var(--zhu)}
+.fin .fl.zh{font-style:normal;font-size:1.55em;line-height:1.9;letter-spacing:.06em}
+.fin .fl.zh .c{padding:0}
+.fin i{font-style:inherit;visibility:hidden}
+.fin i.v{visibility:visible}
+.fin .fgo{align-self:center;margin:1.6em 0 0;font-size:max(.72em,13px);pointer-events:auto}
+.fin .fgo.re{margin-top:.9em;font-size:max(.6em,12px)}
+.fin .fgo button{font:inherit;color:var(--stone);background:none;border:0;border-bottom:1px dotted var(--stone);padding:2px 1px;letter-spacing:.08em;cursor:pointer}
+.fin .fgo button:hover{color:var(--zhu);border-bottom-color:var(--zhu)}
+.fin .fgo button:focus-visible{outline:2px solid var(--zhu);outline-offset:3px}
+.fin .fgo a{color:var(--ink);text-decoration:none;border-bottom:1px dotted var(--ink);padding:2px 1px;letter-spacing:.08em}
+.fin .fgo a:hover{color:var(--zhu);border-bottom-color:var(--zhu)}
+.fin .fgo a:focus-visible{outline:2px solid var(--zhu);outline-offset:3px}
+/* 结束页的页脚：版本号、免责声明、备案号（备案号只在国内站显示）。贴着屏幕底边，小字、灰色 */
+.fin .ffoot{position:absolute;left:0;right:0;bottom:max(14px,env(safe-area-inset-bottom,0px));margin:0;padding:0 16px;max-width:none;text-align:center;font-size:max(.5em,11px);line-height:1.8;letter-spacing:.04em;color:var(--stone);pointer-events:auto}
+.fin .ffoot span,.fin .ffoot a{display:inline-block;white-space:nowrap;margin:0 .7em;color:inherit;text-decoration:none}
+.fin .ffoot a{border-bottom:1px dotted var(--stone)}
+.fin .ffoot a:hover{color:var(--zhu);border-bottom-color:var(--zhu)}
+.stage.fin .cue,.stage.fin .gate,.stage.fin .label{opacity:0!important;visibility:hidden}
+.word span.typed-out{visibility:hidden}
+/* 第 6 部分：三个入口，各带一个一直在动的图标 */
+.io{justify-self:center;display:flex;gap:1.4em;margin-top:1em;align-items:flex-start}
+.io .door{width:10.5em;text-align:center;color:var(--ink);text-decoration:none;display:block}
+.io .ic{position:relative;width:6em;height:4.6em;margin:0 auto .6em;opacity:0;transition:opacity .45s ease}
+.io .door.in .ic{opacity:1}
+.io .door b{display:inline-block;font-family:var(--display);font-weight:400;letter-spacing:.14em;font-size:.95em;opacity:0;transition:opacity .3s ease;border-bottom:1px solid transparent;padding-bottom:.15em;margin-bottom:.3em}
+.io .door.in b{opacity:1;transition-delay:.35s}
+/* 品牌名不用碑铭体：它没有小写，会把 GitHub 排成 GITHUB（用户 11-23 定） */
+.io .door b.plain{font-family:var(--text);letter-spacing:.04em;font-size:1.08em}
+.io a.door b{border-bottom-color:var(--ink)}
+.io a.door:hover b{color:var(--zhu);border-bottom-color:var(--zhu)}
+.io .ln{display:block;min-height:1.6em;font-size:.72em;line-height:1.6;color:var(--stone);white-space:nowrap;text-decoration:none}
+/* GitHub：字符拼成的标志，波纹从中心往外荡 */
+.ic-gh canvas{position:absolute;left:50%;top:0;width:4.6em;height:4.6em;margin-left:-2.3em}
+/* 小红书：一本红皮的十九世纪杂志，翻开、翻到底、合上、翻个面，再来 */
+.ic-bk{perspective:20em}
+.bkw{position:absolute;left:50%;top:50%;width:2.7em;height:3.7em;margin-top:-1.85em;transform-style:preserve-3d;transform:translateX(-1.35em);transition:transform .85s cubic-bezier(.45,0,.3,1)}
+.bk{position:absolute;left:0;top:0;width:100%;height:100%;transform-style:preserve-3d;transform-origin:0 50%}
+.bk .lf{position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:0 50%;transform-style:preserve-3d;transition:transform .62s cubic-bezier(.45,0,.3,1)}
+.bk .lf:first-child,.bk .lf:last-child{transition-duration:.85s}
+.bk .f{position:absolute;left:0;top:0;width:100%;height:100%;-webkit-backface-visibility:hidden;backface-visibility:hidden;box-shadow:0 0 0 .5px rgba(40,30,20,.4)}
+.bk .f.b{transform:rotateY(180deg)}
+.bk svg{display:block;width:100%;height:100%}
+.bk .cR{fill:var(--zhu)}.bk .cP{fill:#f4ecd8}.bk .sC{stroke:#f4ecd8;fill:none}.bk .tC{fill:#f4ecd8;font-family:var(--display)}.bk .sK{stroke:#7d735f;fill:none}.bk .tK{fill:#5d5546;font-family:var(--display)}
+/* 作者：红字「过客」隔一阵直接出现、直接消失，不带任何效果 */
+.ic-gk .gk{position:absolute;left:0;top:0;width:100%;height:100%;box-sizing:border-box;padding-left:.35em;display:flex;align-items:center;justify-content:center;font-family:"Noto Serif SC",serif;font-weight:900;font-size:1.9em;letter-spacing:.35em;white-space:nowrap;color:var(--zhu);visibility:hidden}
+.ic-gk .gk.on{visibility:visible}
+@media (max-width:760px){
+  .io{flex-direction:column;gap:.9em;justify-self:start}
+  .io .door{width:auto;display:grid;grid-template-columns:4.4em auto;column-gap:1em;text-align:left;justify-items:start;align-content:center}
+  .io .ic{grid-row:1/4;font-size:.72em;margin:0;align-self:center}
+}
+/* 第 7 部分：一张卡的图解——卡上每样东西各归谁、按什么许可 */
+.lc{justify-self:start;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:2.6em;align-items:center;margin-top:1.1em;max-width:100%}
+.lx-fig{position:relative;padding:.5em .6em 0 1.2em}
+.lx-card{position:relative;width:8.6em;box-sizing:border-box;padding:.8em .8em .75em;background:#fff;color:#2a2a2a;box-shadow:0 .55em 1.1em -.4em rgba(0,0,0,.3),0 0 0 1px rgba(0,0,0,.05);opacity:0;transform:translateY(.5em);transition:opacity .4s ease,transform .45s cubic-bezier(.2,.7,.2,1)}
+.lx-fig.in .lx-card{opacity:1;transform:none}
+.lx-h{position:relative;display:flex;align-items:baseline;gap:.3em;padding-bottom:.25em;border-bottom:1px solid #2a2a2a}
+.lx-h b{font-family:var(--display);font-weight:400;font-size:1.5em;line-height:1;color:var(--zhu)}
+.lx-h em{font-size:.95em}
+.lx-g{position:relative;font-size:.62em;color:#666;margin:.5em 0 .5em}
+.lx-ci{position:relative}
+.lx-c{font-size:.7em;margin-bottom:.5em}
+.lx-i{height:3.4em;background:#e9dcc6}
+.lx-i svg{display:block;width:100%;height:100%}
+.lx-tool{position:relative;width:8.6em;margin:.95em 0 0;font-family:var(--display);font-size:1em;color:var(--stone);text-align:center;opacity:0;transition:opacity .4s ease .15s}
+.lx-tool span{font-size:.56em;letter-spacing:.22em;white-space:nowrap}
+.lx-fig.in .lx-tool{opacity:1}
+.lx-fig .hi{outline:1px dashed var(--zhu);outline-offset:3px}
+.mk{position:absolute;left:-23px;top:50%;width:17px;height:17px;margin-top:-9px;box-sizing:border-box;border-radius:50%;border:1px solid var(--zhu);background:#fff;color:var(--zhu);font:normal 400 10px/15px var(--display);letter-spacing:0;text-align:center;transform:scale(0);transition:transform .25s cubic-bezier(.3,1.5,.5,1)}
+.mk.in{transform:scale(1)}
+.mk.tr{left:auto;right:-9px;top:-9px;margin:0}
+.lx-tool .mk{left:-7px}
+.lx-leg{list-style:none;margin:0;padding:0;font-size:.8em;line-height:1.5}
+.lx-leg li{display:grid;grid-template-columns:1.7em minmax(0,1fr);align-items:baseline;padding:.38em 0}
+.lx-leg .n{font-family:var(--display);font-size:.85em;color:var(--zhu);opacity:0;transition:opacity .25s ease}
+.lx-leg li.in .n{opacity:1}
+.lx-leg .ln{display:block;min-height:1.5em}
+.lx-leg .ln.lic{color:var(--stone);font-size:.86em}
+.lx-foot{grid-column:1/-1;margin:1.1em 0 0;font-size:.66em;line-height:1.65;color:var(--stone);max-width:none}
+.lx-foot .ln{display:block;min-height:1.65em;color:inherit}
+.lx-foot a.ln{text-decoration:underline;text-underline-offset:.2em}
+.lx-foot a.ln:hover{color:var(--zhu)}
+@media (max-width:760px){
+  .lc{grid-template-columns:minmax(0,1fr);row-gap:.8em;margin-top:.6em}
+  .lx-fig{font-size:.74em;padding-top:.3em}
+  .lx-leg li{padding:.26em 0}
+  .lx-leg .ln{display:inline;min-height:0}
+  .lx-leg .ln.lic{margin-left:.6em}
+  .lx-foot{margin-top:.5em}
+}
+.small{font-size:.68em;color:var(--stone)}
+.calm *{transition:none!important;animation:none!important}
+.calm .bgw span{transition:opacity 2s ease!important}
+
+@media (max-width:760px) {
+  .quick a { display: inline-flex; min-height: 44px; align-items: center; }
+}

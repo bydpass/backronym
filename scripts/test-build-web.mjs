@@ -14,7 +14,9 @@ const F = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "backronym-build
 try {
   const w = (p, s) => { fs.mkdirSync(path.dirname(path.join(F, p)), { recursive: true }); fs.writeFileSync(path.join(F, p), s); };
   fs.mkdirSync(path.join(F, "scripts"));
-  fs.copyFileSync(path.join(here, "build-web.mjs"), path.join(F, "scripts/build-web.mjs"));
+  for (const script of ["build-web.mjs", "build-output.mjs"]) {
+    fs.copyFileSync(path.join(here, script), path.join(F, "scripts", script));
+  }
   w("app/index.html", '<html>\n<head>\n</head>\n  <script src="./assets/block/core.js"></script>\n  <script src="./assets/lang/en/block.js"></script>\n</html>\n');
   w("app/assets/block/core.js", "window.BLOCK = {};\n");
   w("app/assets/lang/en/block.js", "window.BLOCK.add = 1;\n");

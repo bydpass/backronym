@@ -80,7 +80,7 @@ try {
     const box = (sel) => page.locator(sel).evaluate(n => { const r = n.getBoundingClientRect(), ic = n.querySelector("svg").getBoundingClientRect(); return { h: r.height, iw: ic.width, ih: ic.height, text: n.innerText.trim(), hidden: n.querySelector("svg").getAttribute("aria-hidden") }; });
     // v00.03.03 L4：看得见的框高 36，上下各有 4px 透明点按区（::after），合计 44
     assert.ok(await page.locator("#settingsOpen").evaluate(n => { const r = n.getBoundingClientRect(), x = r.left + r.width / 2; return document.elementFromPoint(x, r.top - 3) === n && document.elementFromPoint(x, r.bottom + 3) === n && parseFloat(getComputedStyle(n).borderTopWidth) >= 1; }), "设置：带框，框外上下 3px 仍点得到");
-    assert.deepEqual(await box("#settingsOpen"), { h: 36, iw: 16, ih: 16, text: "设置", hidden: "true" }, "设置：图标 + 文字");
+    assert.deepEqual(await box("#settingsOpen"), { h: 36, iw: 16, ih: 16, text: "设置", hidden: "true" }, "设置：只显示齿轮，字留给读屏");
     assert.deepEqual(await box("#finish"), { h: 36, iw: 16, ih: 16, text: "完成", hidden: "true" }, "完成：图标 + 文字");
     assert.equal(await page.locator("#themeToggle").count(), 0, "顶栏不再有深浅按钮");
     assert.deepEqual(await page.locator("#top button").evaluateAll(ns => ns.filter(n => n.offsetParent).map(n => n.id)), ["viewSingle", "viewGrid", "settingsOpen", "finish"], "编辑页顶栏 Tab 顺序：先左后右");
