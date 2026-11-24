@@ -7,6 +7,12 @@
   <img src="design/brand/slogan-desktop.png" width="880" alt="Give every letter of a word a meaning. The same sentence in seven languages: Chinese, English, French, German, Spanish, Italian and Latin">
 </picture>
 
+<p align="center">
+  <a href="design/brand/trailer.mp4"><img src="design/brand/trailer.gif" width="300" alt="A 15-second trailer: a word is typed, each of its nine letters brings out a word, then pictures, themes and nine exported cards"></a>
+</p>
+
+<p align="center">A 15-second trailer. The image above is silent — <a href="design/brand/trailer.mp4">watch the original with sound</a>.</p>
+
 Type a word, and match each letter with a word that starts with it and its meaning.
 
 ```
@@ -29,7 +35,7 @@ E  Eternal    everlasting           ← the initial is always vermilion
 
 | Entry | Address |
 |---|---|
-| RedNote (Xiaohongshu) mini tool | Live on RedNote — search for “藏头 - Backronym” |
+| RedNote (Xiaohongshu) mini tool | Live on RedNote — search for “藏头 - Backronym”, or see the [launch note](https://www.xiaohongshu.com/discovery/item/6b060b4c000000001803898d?source=webshare&xhsshare=pc_web&xsec_token=AB_a6etllfjkD-BT7Grq9n69djZfqhKfgyQbqA_P-l5gc=&xsec_source=pc_share) |
 | Project portal | <https://bydpass.com/backronym/> |
 | Web version — opens in the browser, nothing to install | <https://bydpass.com/backronym/app/> |
 | Host it yourself | See “03 Run it locally” below |

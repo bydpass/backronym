@@ -15,7 +15,7 @@
 
 ### 1. 读文件：按需、按进度
 
-- 开工只读三样：本文件、`HANDOFF.md` 最上面一条、它指向的当前任务文件（现在是 [plans/v01.00.00/PLAN.md](plans/v01.00.00/PLAN.md)，转正的宣发八项，正式版相关的决断都记在这里；v00.04.00 本体见 [plans/v00.04.00/PLAN.md](plans/v00.04.00/PLAN.md)，分支仍是 `dev/v00.04.00`；v00.03.04 的 G-A2 返工已过外部复审，它的场景在真机上触发不了，已由模拟器复验、不再等真机，见 [plans/v00.03.04/PLAN.md](plans/v00.03.04/PLAN.md)）。
+- 开工只读三样：本文件、`HANDOFF.md` 最上面一条、它指向的当前任务文件（现在是 [plans/v01.00.00/PLAN.md](plans/v01.00.00/PLAN.md)，转正的宣发九项，正式版相关的决断都记在这里；v00.04.00 本体见 [plans/v00.04.00/PLAN.md](plans/v00.04.00/PLAN.md)，分支仍是 `dev/v00.04.00`；v00.03.04 的 G-A2 返工已过外部复审，它的场景在真机上触发不了，已由模拟器复验、不再等真机，见 [plans/v00.03.04/PLAN.md](plans/v00.03.04/PLAN.md)）。
 - 「按需读的文档」表里的文件，做到那件事时才打开。
 - 其余不主动打开：`HANDOFF.md` 里更早的记录、`review/`、旧版本的 `plans/`、`design/` 里的旧稿。用户点名或当前任务明确指向时才读。
 
@@ -106,7 +106,7 @@ npm start          # 本地部署：生成 dist/web/ 并在 http://127.0.0.1:808
 | 交付、审核、派子代理 | [docs/agent/workflow.md](docs/agent/workflow.md) |
 | 改界面、颜色、文案 | [docs/agent/design.md](docs/agent/design.md)、`design/TASK_BRIEF.md` |
 | 网站：门户、个人站、两地部署（2026-11-24 用户定：网站工作都在 `site/` 里做，相关文档也放这里；藏头的部分同日搬进 `site/backronymsite/`） | [site/backronymsite/README.md](site/backronymsite/README.md)、[site/backronymsite/PLAN.md](site/backronymsite/PLAN.md)；国内版服务器看 [site/backronymsite/deploy/cn/GUIDE.md](site/backronymsite/deploy/cn/GUIDE.md)。`site/` 另有它自己的一套 AOCI 索引（`site/aoci*.txt`），不归根索引管。`site/bydpass.github.io/` 是个人站的独立仓库，本仓库忽略它，改完在里面单独提交 |
-| 当前版本计划与任务 | 转正（宣发八项）[plans/v01.00.00/PLAN.md](plans/v01.00.00/PLAN.md)；v00.04.00 本体 [plans/v00.04.00/PLAN.md](plans/v00.04.00/PLAN.md)；上一版的 G-A2 返工（真机触发不了，已由模拟器复验）在 [plans/v00.03.04/PLAN.md](plans/v00.03.04/PLAN.md) |
+| 当前版本计划与任务 | 转正（宣发九项，G9 不卡验收）[plans/v01.00.00/PLAN.md](plans/v01.00.00/PLAN.md)；v00.04.00 本体 [plans/v00.04.00/PLAN.md](plans/v00.04.00/PLAN.md)；上一版的 G-A2 返工（真机触发不了，已由模拟器复验）在 [plans/v00.03.04/PLAN.md](plans/v00.03.04/PLAN.md) |
 | 返工说明与状态 | [plans/v00.04.00/REPAIR.md](plans/v00.04.00/REPAIR.md)（更早的在各版本自己的 `plans/<版本>/REPAIR.md`） |
 | 审核发现的未解决问题 | [AUDIT.MD](AUDIT.MD) |
 | 词库第三次重建：数据结构、必需字段、选词规则（已落实，11-19 起正式词包按它生成；还没定的在第 9 节） | [docs/lexicon-spec.md](docs/lexicon-spec.md) |

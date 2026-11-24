@@ -7,6 +7,12 @@
   <img src="design/brand/slogan-desktop.png" width="880" alt="给单词的每个字母赋予意义。同一句话的七种语言：中文、英语、法语、德语、西班牙语、意大利语、拉丁语">
 </picture>
 
+<p align="center">
+  <a href="design/brand/trailer.mp4"><img src="design/brand/trailer.gif" width="300" alt="15 秒预告片：打出一个词，九个字母各带出一个词，配图、换主题、导出成九张卡片"></a>
+</p>
+
+<p align="center">15 秒预告片。上面是无声的动图，<a href="design/brand/trailer.mp4">点这里看带声音的原片</a>。</p>
+
 打一个单词，给单词的每个字母配一个同首字母的词及其意义。
 
 ```
@@ -29,7 +35,7 @@ E  Eternal    永恒的，永远的    ← 首字母标朱红
 
 | 入口 | 地址 |
 |---|---|
-| 小红书小工具 | 已上架，在小红书搜索「藏头 - Backronym」 |
+| 小红书小工具 | 已上架，在小红书搜索「藏头 - Backronym」，或看[首发笔记](https://www.xiaohongshu.com/discovery/item/6b060b4c000000001803898d?source=webshare&xhsshare=pc_web&xsec_token=AB_a6etllfjkD-BT7Grq9n69djZfqhKfgyQbqA_P-l5gc=&xsec_source=pc_share) |
 | 项目门户 | <https://bydpass.com/backronym/> |
 | 网页版（打开即用，不用安装） | <https://bydpass.com/backronym/app/> |
 | 自己部署 | 见下文「03 本地部署」 |

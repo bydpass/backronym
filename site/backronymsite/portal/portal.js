@@ -540,10 +540,11 @@
   }
 
   // ── 第 6、7 部分。内容按当前语言现搭，文案逐字打出；离场时倒着收回 ──
-  // 小红书小工具那一项的链接等 G5 的笔记发出后补（用户 11-23 定：直接跳到对应笔记）
+  // 小红书小工具那一项直接跳到 G5 的首发笔记（用户 11-23 定，11-24 笔记发出后补上）。地址里的 xsec_token 不能删，去掉会跳 404；
+  // 这个地址要与 scripts/build-site.mjs 的外站名单逐字相同，否则整站构建会被拦下
   var IO=[
     {ic:"gh",plain:1,href:"https://github.com/bydpass/backronym",name:{zh:"GitHub",en:"GitHub"},ln:[{zh:"源代码都在这里",en:"All the source is here"},{zh:"可以拿去自己部署",en:"Take it and host your own"}]},
-    {ic:"bk",href:"",name:{zh:"小红书小工具",en:"Xiaohongshu"},ln:[{zh:"在小红书里用",en:"Use it inside the app"},{zh:"存相册，或直接发成笔记",en:"Save to album, or post as a note"}]},
+    {ic:"bk",href:"https://www.xiaohongshu.com/discovery/item/6b060b4c000000001803898d?source=webshare&xhsshare=pc_web&xsec_token=AB_a6etllfjkD-BT7Grq9n69djZfqhKfgyQbqA_P-l5gc=&xsec_source=pc_share",name:{zh:"小红书小工具",en:"Xiaohongshu"},ln:[{zh:"在小红书里用",en:"Use it inside the app"},{zh:"存相册，或直接发成笔记",en:"Save to album, or post as a note"}]},
     {ic:"gk",href:"https://www.xiaohongshu.com/user/profile/668f26660000000003033541",name:{zh:"关注作者",en:"Follow the author"},ln:[{zh:"小红书 @beyondpassenger",en:"Xiaohongshu @beyondpassenger"},{zh:"新作与更新都发在这里",en:"New work and updates land here"}]}
   ];
   var LX=[

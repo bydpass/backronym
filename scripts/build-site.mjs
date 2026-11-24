@@ -17,6 +17,8 @@ const canonicalPortal = "https://bydpass.com/backronym/";
 const navigation = new Set([
   "https://github.com/bydpass/backronym",
   "https://www.xiaohongshu.com/user/profile/668f26660000000003033541",
+  // G5 首发笔记（门户第 6 部分「小红书小工具」）。须与 portal.js 里的写法逐字相同
+  "https://www.xiaohongshu.com/discovery/item/6b060b4c000000001803898d?source=webshare&xhsshare=pc_web&xsec_token=AB_a6etllfjkD-BT7Grq9n69djZfqhKfgyQbqA_P-l5gc=&xsec_source=pc_share",
   "https://beian.miit.gov.cn/",
 ]);
 
