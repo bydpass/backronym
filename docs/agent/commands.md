@@ -119,7 +119,7 @@ README 里长图下方的预告片（宣发 G9）有两份：`site/backronymsite
 
 ```bash
 cp RED/v01.00.00RED/out/藏头-预告.mp4 site/backronymsite/portal/trailer.mp4
-ffmpeg -y -i site/backronymsite/portal/trailer.mp4 -vf "fps=15,scale=360:-2:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle" -loop 0 design/brand/trailer.gif     # 360×640，约 2.8 MB
+ffmpeg -y -i site/backronymsite/portal/trailer.mp4 -vf "fps=15,scale=360:-2:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle" -loop 0 design/brand/trailer.gif     # 360×640，约 4.5 MB（加了暖色背景层之后；之前约 2.8 MB）
 ```
 
 两份都要小于 5,000,000 B（提交钩子的单文件上限）。每秒 15 帧是成片 30 帧的一半，隔一帧取一帧；换成 12 帧会取得不匀，画面发顿。

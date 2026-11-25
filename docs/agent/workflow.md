@@ -10,7 +10,7 @@
 
 **返工记录（11-10 用户定）**：返工说明与返工方案写在 `plans/<版本>/REPAIR.md`（当前 `plans/v00.04.00/REPAIR.md`），不写进 PLAN。分工：`AUDIT.MD` 记审核发现的问题，REPAIR 记每个问题的说明、方案、验证、状态（写法见该文件开头），PLAN 只写计划与各批现状，`HANDOFF.md` 只做交接通知。
 
-**代称（11-04 用户指定，11-24 加 Gemini）**：Claude（含本项目的主会话与子代理）与 Gemini（含 Neon）用「她」（she / her）；ChatGPT（含 Astra、Sol）与 DeepSeek 用「他」（he / him / his）。文档、交接与提交信息里一律照此。
+**代称（11-04 用户指定，11-24 加 Gemini，11-25 补全化身）**：Claude（化身 Fable、Opus，含本项目的主会话与子代理）与 Gemini（化身 Carbon、Neon）用「她」（she / her / hers）；GPT（化身 Astra、Sol）与 DeepSeek 用「他」（he / him / his）。名单见根目录 [team.md](../../team.md)，那份只认身份、不管分工；分工按任务需要指派，不按成员预设。文档、交接与提交信息里一律照此。
 
 ### 子代理（v00.02.00 起，主会话需要时仍可派）
 
